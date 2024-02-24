@@ -32,7 +32,7 @@ export default function Home() {
         <Link href="/dashboard" passHref>
           {" "}
           {/* Use Link to navigate */}
-          <Button colorScheme="teal" variant="outline" mt={4}>
+          <Button size="lg" colorScheme="teal" variant="solid" mt={4}>
             Get Started
           </Button>
         </Link>
