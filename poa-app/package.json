@@ -9,12 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "4.7.3",
     "hardhat": "^2.20.1",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18"
   },
-  "devDependencies": {
-    "@openzeppelin/contracts": "^5.0.1"
-  }
+  "devDependencies": {}
 }

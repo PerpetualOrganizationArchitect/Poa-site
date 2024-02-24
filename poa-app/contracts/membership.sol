@@ -9,11 +9,10 @@ contract NFTMembership is ERC721URIStorage, Ownable{
    
     uint256 private _nextTokenId;
 
-    mapping(uint256 => string) public memberTypeNames; // tokenId to memberType name
-    mapping(string => string) public memberTypeImages; // memberType name to image URL
+    mapping(uint256 => string) public memberTypeNames; 
+    mapping(string => string) public memberTypeImages; 
 
-
-    constructor(string[] memory _memberTypeNames) ERC721("MembershipNFT", "MNF") Ownable(msg.sender) {
+    constructor(string[] memory _memberTypeNames) ERC721("MembershipNFT", "MNF") {
         for (uint256 i = 0; i < _memberTypeNames.length; i++) {
             memberTypeNames[i] = _memberTypeNames[i];
         }
@@ -32,17 +31,8 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         _mint(recipient, tokenId);
         _setTokenURI(tokenId, tokenURI);
     }
+
+    
 }
 
-contract NFTMembershipFactory {
-    address[] public deployedContracts;
 
-    function createNFTMembership(string[] memory memberTypeNames) public {
-        NFTMembership newContract = new NFTMembership(memberTypeNames);
-        deployedContracts.push(address(newContract));
-    }
-
-    function getDeployedContracts() public view returns (address[] memory) {
-        return deployedContracts;
-    }
-}
