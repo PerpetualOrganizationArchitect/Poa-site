@@ -1,7 +1,8 @@
 // src/components/Navigation.jsx
 import React from "react";
 import Link from "next/link";
-import { Flex, Button } from "@chakra-ui/react";
+import { Flex, Button, IconButton } from "@chakra-ui/react";
+import Image from "next/image";
 
 const Navigation = () => {
   return (
@@ -15,10 +16,19 @@ const Navigation = () => {
       opacity="0.5"
     >
       {/* Wrap each Link in a Button component */}
-      <Link href="/dashboard" passHref>
-        <Button variant="ghost" p={4}>
-          Home
-        </Button>
+      <Link href="/" passHref>
+        <IconButton
+          icon={
+            <Image
+              src="/images/poa_logo.png"
+              alt="Home"
+              width={54}
+              height={48}
+            />
+          }
+          variant="ghost"
+          aria-label="Home"
+        />
       </Link>
       <Link href="/about" passHref>
         <Button variant="ghost" p={4}>
