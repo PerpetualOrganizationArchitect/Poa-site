@@ -6,12 +6,12 @@ import { Box } from "@chakra-ui/react";
 const Layout = ({ children }) => {
   return (
     <>
-     <Navigation />
+      <Navigation />
       <Box as="main" p={4}>
         {children}
       </Box>
       <Box as="footer" p={4}>
-        © {new Date().getFullYear()} Poa. All rights reserved.
+        © {new Date().getFullYear()} Perpetuate. All rights reserved.
       </Box>
     </>
   );
