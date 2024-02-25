@@ -12,14 +12,12 @@ const Navigation = () => {
       wrap="wrap"
       padding="1rem"
       bg="pink.100"
-      opacity="0.5"
       position="fixed"
       top={0}
       w="100%"
-      //zIndex="sticky"
     >
       {/* Wrap each Link in a Button component */}
-      <Link href="/" passHref>
+      <Link href="/dashboard" passHref>
         <IconButton
           icon={
             <Image

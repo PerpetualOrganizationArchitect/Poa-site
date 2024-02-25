@@ -1,27 +1,30 @@
 import React from "react";
 import Navigation from "./Navigation";
-import { Box, Flex, Image } from "@chakra-ui/react";
+import { Box, Flex, Image, IconButton } from "@chakra-ui/react";
+import Link from "next/link";
 
 const Layout = ({ children, isArchitectPage }) => {
   return (
     <>
       {isArchitectPage ? (
-        <Flex
-          align="center"
-          justify="space-between"
-          wrap="wrap"
-          padding="1rem"
-          bg="transparent"
-        >
-          <Image
-            src="/images/poa_logo.png"
-            alt="Logo"
-            width="54px"
-            height="48px"
-          />
+        <Flex padding="1rem" position="fixed" top={0}>
+          <Link href="/dashboard" passHref>
+            <IconButton
+              icon={
+                <Image
+                  src="/images/poa_logo.png"
+                  alt="Home"
+                  width="auto"
+                  height="8"
+                />
+              }
+              variant="ghost"
+              aria-label="Home"
+            />
+          </Link>
         </Flex>
       ) : (
-        <Box pt="4rem" p={4}>
+        <Box>
           <Navigation />
         </Box>
       )}
