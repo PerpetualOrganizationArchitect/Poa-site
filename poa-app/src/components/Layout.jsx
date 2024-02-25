@@ -28,7 +28,7 @@ const Layout = ({ children, isArchitectPage }) => {
           <Navigation />
         </Box>
       )}
-      <Box p={4} minHeight={isArchitectPage ? "100vh" : "auto"}>
+      <Box as="main" pt="5rem" minHeight={isArchitectPage ? "100vh" : "auto"}>
         {children}
       </Box>
       {!isArchitectPage && (
