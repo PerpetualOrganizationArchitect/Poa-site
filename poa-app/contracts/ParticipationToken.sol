@@ -5,13 +5,28 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
+
+
 contract ParticipationToken is ERC20, Ownable {
+
+    address private taskManagerAddress;
 
     constructor(string memory name, string memory symbol) ERC20(name, symbol) {
     }
 
-    function mint(address to, uint256 amount) public onlyOwner {
+    modifier onlyTaskManager() {
+        require(msg.sender == taskManagerAddress, "Only the task manager can call this function.");
+        _;
+    }
+
+    function mint(address to, uint256 amount) public onlyTaskManager {
         _mint(to, amount);
+    }
+
+    function setTaskManagerAddress(address _taskManagerAddress) external onlyOwner {
+        taskManagerAddress = _taskManagerAddress;
+        // get rid of onwership
+        renounceOwnership();
     }
 
     function _transfer(

@@ -7,6 +7,10 @@ interface INFTMembership {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
 }
 
+interface IParticipationToken {
+    function mint(address to, uint256 amount) external;
+}
+
 contract TaskManager {
     struct Task {
         uint256 id;
@@ -16,8 +20,11 @@ contract TaskManager {
     }
 
 
-    IERC20 public token;
+    IParticipationToken public token;
     INFTMembership public nftMembership;
+
+
+
 
 
     mapping(uint256 => Task) public tasks;
@@ -32,7 +39,7 @@ contract TaskManager {
     mapping(string => bool) private allowedRoles;
 
     constructor(address _token, address _nftMembership, string[] memory _allowedRoleNames) {
-        token = IERC20(_token);
+        token = IParticipationToken(_token);
 
         nftMembership = INFTMembership(_nftMembership);
 
@@ -71,7 +78,7 @@ contract TaskManager {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
         task.isCompleted = true;
-        //implement functionality for token minting 
+        token.mint(task.claimer, task.payout);
         emit TaskCompleted(_taskId, msg.sender);
     }
 
