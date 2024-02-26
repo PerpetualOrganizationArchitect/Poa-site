@@ -4,10 +4,16 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+
+interface INFTMembership {
+    function checkMemberTypeByAddress(address user) external view returns (string memory);
+}
+
+
 contract ParticipationVoting {
     using SafeMath for uint256;
     IERC20 public ParticipationToken;
-    address public dao;
+    INFTMembership public nftMembership;
 
     struct PollOption {
         uint256 votes;
@@ -24,18 +30,25 @@ contract ParticipationVoting {
     Proposal[] private proposals;
 
     event NewProposal(uint256 indexed proposalId, string name, string description, string execution, uint256 timeInMinutes, uint256 creationTimestamp);
-
     event Voted(uint256 indexed proposalId, address indexed voter, uint256 optionIndex, uint256 voteWeight);
     event PollOptionNames(uint256 indexed proposalId, uint256 indexed optionIndex, string name);
     event WinnerAnnounced(uint256 indexed proposalId, uint256 winningOptionIndex);
 
-    constructor(address _ParticipationToken, address _dao) {
+    mapping(string => bool) private allowedRoles;
+
+    constructor(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames) {
         ParticipationToken = IERC20(_ParticipationToken);
-        dao = _dao;
+        nftMembership = INFTMembership(_nftMembership);
+
+        for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
+            allowedRoles[_allowedRoleNames[i]] = true;
+        }
+
     }
 
-    modifier onlyDAO() {
-        require(msg.sender == dao, "Only DAO can call this function");
+    modifier canCreateProposal() {
+        string memory memberType = nftMembership.checkMemberTypeByAddress(msg.sender);
+        require(allowedRoles[memberType], "Not authorized to create proposal");
         _;
     }
 
@@ -59,7 +72,7 @@ contract ParticipationVoting {
         string memory _execution,
         uint256 _timeInMinutes,
         string[] memory _optionNames
-    ) external  {
+    ) external canCreateProposal {
 
         Proposal storage newProposal = proposals.push();
         newProposal.totalVotes = 0;

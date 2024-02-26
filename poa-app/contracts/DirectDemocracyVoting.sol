@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// need to make it so only certain people can create polls
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
