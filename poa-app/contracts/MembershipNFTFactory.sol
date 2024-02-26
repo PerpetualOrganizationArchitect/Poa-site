@@ -7,8 +7,8 @@ import "./MembershipNFT.sol";
 contract NFTMembershipFactory {
     address[] public deployedContracts;
 
-    function createNFTMembership(string[] memory memberTypeNames) public {
-        NFTMembership newContract = new NFTMembership(memberTypeNames);
+    function createNFTMembership(string[] memory memberTypeNames, string memory _defaultImageURL) public {
+        NFTMembership newContract = new NFTMembership(memberTypeNames, _defaultImageURL);
         deployedContracts.push(address(newContract));
     }
 

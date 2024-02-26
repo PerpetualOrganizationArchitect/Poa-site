@@ -7,8 +7,8 @@ import "./DirectDemocracyVoting.sol";
 contract DirectDemocracyVotingFactory {
     address[] public deployedVotings;
 
-    function createDirectDemocracyVoting(address _ddToken, address _dao) public {
-        DirectDemocracyVoting newVoting = new DirectDemocracyVoting(_ddToken, _dao);
+    function createDirectDemocracyVoting(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames) public {
+        DirectDemocracyVoting newVoting = new DirectDemocracyVoting(_ddToken, _nftMembership, _allowedRoleNames);
         deployedVotings.push(address(newVoting));
     }
 

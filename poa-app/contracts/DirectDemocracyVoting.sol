@@ -5,9 +5,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface INFTMembership {
+    function checkMemberTypeByAddress(address user) external view returns (string memory);
+}
+
+
 contract DirectDemocracyVoting {
     IERC20 public DirectDemocracyToken;
-    address public dao;
+    INFTMembership public nftMembership;
 
     struct PollOption {
         uint256 votes;
@@ -29,26 +34,23 @@ contract DirectDemocracyVoting {
     event WinnerAnnounced(uint256 indexed proposalId, uint256 winningOptionIndex);
 
 
-    mapping(address => bool) public isOwner;
+    mapping(string => bool) private allowedRoles;
 
-    modifier onlyOwner() {
-        require(isOwner[msg.sender], "Caller is not an owner");
+    constructor(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames) {
+        DirectDemocracyToken = IERC20(_ddToken);
+        nftMembership = INFTMembership(_nftMembership); 
+        
+        for (uint i = 0; i < _allowedRoleNames.length; i++) {
+            allowedRoles[_allowedRoleNames[i]] = true;
+        }
+    }
+
+    modifier canCreateProposal() {
+        string memory memberType = nftMembership.checkMemberTypeByAddress(msg.sender);
+        require(allowedRoles[memberType], "Not authorized to create proposal");
         _;
     }
 
-    constructor(address _ddToken, address _dao) {
-        DirectDemocracyToken = IERC20(_ddToken);
-        dao = _dao;
-        isOwner[msg.sender] = true;
-    }
-
-    function addOwner(address _newOwner) public onlyOwner {
-        isOwner[_newOwner] = true;
-    }
-
-    function removeOwner(address _owner) public onlyOwner {
-        isOwner[_owner] = false;
-    }
 
     modifier whenNotExpired(uint256 _proposalId) {
         require(_proposalId < proposals.length, "Invalid proposal ID");
@@ -71,7 +73,7 @@ contract DirectDemocracyVoting {
         string memory _execution,
         uint256 _timeInMinutes,
         string[] memory _optionNames
-    ) external {
+    ) external canCreateProposal {
         Proposal storage newProposal = proposals.push();
         newProposal.totalVotes = 0;
         newProposal.timeInMinutes = _timeInMinutes;
