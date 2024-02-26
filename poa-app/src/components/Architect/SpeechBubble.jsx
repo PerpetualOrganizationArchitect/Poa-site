@@ -10,7 +10,10 @@ const SpeechBubble = ({ speaker, children }) => {
       borderRadius="lg"
       alignSelf={isUser ? "flex-end" : "flex-start"}
       maxWidth="80%"
-      m={2}
+      marginLeft={6}
+      marginRight={6}
+      marginTop={2}
+      marginBottom={2}
     >
       <Text>{children}</Text>
     </Box>
