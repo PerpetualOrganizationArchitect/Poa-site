@@ -3,6 +3,10 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface INFTMembership {
+    function checkMemberTypeByAddress(address user) external view returns (string memory);
+}
+
 contract TaskManager {
     struct Task {
         uint256 id;
@@ -11,8 +15,11 @@ contract TaskManager {
         address claimer;
     }
 
-    address public admin;
+
     IERC20 public token;
+    INFTMembership public nftMembership;
+
+
     mapping(uint256 => Task) public tasks;
     uint256 public nextTaskId;
 
@@ -22,23 +29,37 @@ contract TaskManager {
     event ProjectCreated(string projectName);
     event ProjectDeleted(string projectName);
 
-    constructor(address _token) {
-        admin = msg.sender;
+    mapping(string => bool) private allowedRoles;
+
+    constructor(address _token, address _nftMembership, string[] memory _allowedRoleNames) {
         token = IERC20(_token);
+
+        nftMembership = INFTMembership(_nftMembership);
+
+        for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
+            allowedRoles[_allowedRoleNames[i]] = true;
+        }
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can perform this action");
+    modifier canTask() {
+        string memory memberType = nftMembership.checkMemberTypeByAddress(msg.sender);
+        require(allowedRoles[memberType], "Not authorized to create task");
         _;
     }
 
-    function createTask(uint256 _payout, string calldata ipfsHash) external onlyAdmin {
+    modifier isMember() {
+        string memory memberType = nftMembership.checkMemberTypeByAddress(msg.sender);
+        require(bytes(memberType).length != 0, "Not a member");
+        _;
+    }
+
+    function createTask(uint256 _payout, string calldata ipfsHash) external canTask{
         uint256 taskId = nextTaskId++;
         tasks[taskId] = Task(taskId, _payout, false, address(0));
         emit TaskCreated(taskId, _payout, ipfsHash);
     }
 
-    function updateTask(uint256 _taskId, uint256 _payout, string calldata ipfsHash) external onlyAdmin {
+    function updateTask(uint256 _taskId, uint256 _payout, string calldata ipfsHash) external canTask {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
         require(task.claimer == address(0), "Task already claimed");
@@ -46,7 +67,7 @@ contract TaskManager {
         emit TaskUpdated(_taskId, _payout, ipfsHash);
     }
 
-    function completeTask(uint256 _taskId) external {
+    function completeTask(uint256 _taskId) external canTask {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
         task.isCompleted = true;
@@ -54,18 +75,18 @@ contract TaskManager {
         emit TaskCompleted(_taskId, msg.sender);
     }
 
-    function claimTask(uint256 _taskId) external {
+    function claimTask(uint256 _taskId) external isMember {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
         require(task.claimer == address(0), "Task already claimed");
         task.claimer = msg.sender;
     }
 
-    function createProject(string calldata projectName) external onlyAdmin {
+    function createProject(string calldata projectName) external canTask {
         emit ProjectCreated(projectName);
     }
 
-    function deleteProject(string calldata projectName) external onlyAdmin {
+    function deleteProject(string calldata projectName) external canTask  {
         emit ProjectDeleted(projectName);
     }
 

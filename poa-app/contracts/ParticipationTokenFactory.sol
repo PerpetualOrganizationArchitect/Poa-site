@@ -6,8 +6,8 @@ import "./ParticipationToken.sol";
 contract ParticipationTokenFactory {
     ParticipationToken[] public deployedTokens;
 
-    function createParticipationToken(string memory name, string memory symbol, address _nftMembership, string[] memory _allowedRoleNames) public {
-        ParticipationToken newToken = new ParticipationToken(name,  symbol, _nftMembership, _allowedRoleNames);
+    function createParticipationToken(string memory name, string memory symbol) public {
+        ParticipationToken newToken = new ParticipationToken(name, symbol);
         deployedTokens.push(newToken);
     }
 
