@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../components/Layout";
-import ArchitectInput from "@/components/ArchitectInput";
+import ArchitectInput from "@/components/Architect/ArchitectInput";
 import { Box } from "@chakra-ui/react";
 
 const ArchitectPage = () => {
