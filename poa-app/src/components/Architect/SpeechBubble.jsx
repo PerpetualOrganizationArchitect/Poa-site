@@ -4,7 +4,7 @@ const SpeechBubble = ({ speaker, children }) => {
   const isUser = speaker === "user";
   return (
     <Box
-      bg={isUser ? "blue.500" : "green.500"}
+      bg={isUser ? "purple.400" : "purple.600"}
       color="white"
       p={3}
       borderRadius="lg"
