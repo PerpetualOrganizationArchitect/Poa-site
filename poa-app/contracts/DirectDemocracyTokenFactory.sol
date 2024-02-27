@@ -14,3 +14,4 @@ contract DirectDemocracyTokenFactory {
         emit TokenCreated(address(newToken), name, symbol);
     }
 }
+

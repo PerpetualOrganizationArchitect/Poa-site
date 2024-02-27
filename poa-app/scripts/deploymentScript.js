@@ -2,8 +2,8 @@ require('dotenv').config({ path: '../.env.local' });
 const ethers = require('ethers'); 
 
 /*deployment order
-1. membership 
-2. dd token
+1. membership check
+2. dd token check 
 3. pt token
 4. treasury
 5. pt voting
@@ -134,8 +134,57 @@ async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImag
 
   console.log("NFT Membership contract address: ", lastDeployedContractAddress);
 
+  return lastDeployedContractAddress;
+
 
 }
+
+async function makeDDToken(ddTokenFactoryContract, name, symbol, nftMembershipAddress, allowedRoleNames) {
+  // Ensure all parameters are provided and valid, especially the contract addresses
+  if (!ddTokenFactoryContract || !name || !symbol || !nftMembershipAddress || !allowedRoleNames.length) {
+    console.error("Invalid parameters provided to makeDDToken function");
+    return;
+  }
+
+  // Call the createDirectDemocracyToken function on the factory contract
+  const tx = await ddTokenFactoryContract.createDirectDemocracyToken(name, symbol, nftMembershipAddress, allowedRoleNames);
+  await tx.wait();
+
+  /
+  const receipt = await tx.wait();
+  const tokenCreatedEvent = receipt.events?.filter((x) => x.event === "TokenCreated")[0];
+  if (tokenCreatedEvent) {
+    const ddTokenAddress = tokenCreatedEvent.args.tokenAddress;
+    console.log(`DD Token created at address: ${ddTokenAddress}`);
+    return ddTokenAddress;
+  } else {
+    console.error("DD Token address not found from the transaction receipt");
+  }
+
+}
+
+async function makePTToken(ptTokenFactoryContract, name, symbol) {
+  
+  if (!ptTokenFactoryContract || !name || !symbol) {
+    console.error("Invalid parameters provided to makePTToken function");
+    return;
+  }
+
+  
+  const tx = await ptTokenFactoryContract.createParticipationToken(name, symbol);
+  await tx.wait();
+
+  
+  
+  const deployedTokens = await ptTokenFactoryContract.getDeployedTokens();
+  const lastDeployedToken = deployedTokens[deployedTokens.length - 1]; 
+
+  console.log(`PT Token created at address: ${lastDeployedToken.address}`); 
+  return lastDeployedToken.address;
+}
+
+
+
 
 
 async function main() {
@@ -156,7 +205,10 @@ async function main() {
       const memberTypeNames = ["Gold", "Silver", "Bronze"];
       const defaultImageURL = "http://example.com/default.jpg";
 
-      await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL);
+      const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL);
+      const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames);
+      const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT");
+
 
 
       
