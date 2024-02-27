@@ -4,6 +4,7 @@ import ArchitectInput from "@/components/Architect/ArchitectInput";
 import { Box } from "@chakra-ui/react";
 import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
+import PoaPreview from "@/components/Dashboard/PoaPreview";
 
 const ArchitectPage = () => {
   const [userInput, setUserInput] = useState("");
@@ -28,6 +29,7 @@ const ArchitectPage = () => {
     <Layout isArchitectPage>
       <Character position={characterPosition} />
       <ConversationLog messages={messages} />
+
       <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10}>
         <ArchitectInput
           value={userInput}
