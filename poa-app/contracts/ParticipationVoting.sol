@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
 
 
 interface INFTMembership {
@@ -11,7 +11,6 @@ interface INFTMembership {
 
 
 contract ParticipationVoting {
-    using SafeMath for uint256;
     IERC20 public ParticipationToken;
     INFTMembership public nftMembership;
 
@@ -110,7 +109,7 @@ contract ParticipationVoting {
         emit Voted(_proposalId, _voter, _optionIndex, voteWeight);
     }
 
-    function calculateVoteWeight(uint256 _balance) public pure returns (uint256) {
+    function calculateVoteWeight(uint256 _balance) internal pure returns (uint256) {
         uint256 adjustedBalance = _balance;
 
         uint256 voteWeight = sqrt(adjustedBalance);
@@ -131,8 +130,6 @@ contract ParticipationVoting {
 
     function announceWinner(uint256 _proposalId) external whenExpired(_proposalId) {
         require(_proposalId < proposals.length, "Invalid proposal ID");
-        Proposal storage proposal = proposals[_proposalId];
-        require(block.timestamp > proposal.creationTimestamp + proposal.timeInMinutes * 1 minutes, "Voting is not yet closed");
 
         uint256 winningOptionIndex = getWinner(_proposalId);
 
