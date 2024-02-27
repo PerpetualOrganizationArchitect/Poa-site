@@ -1,30 +1,40 @@
-// Usage in a parent component
 import Organization from "./Organization";
 import { organizations } from "./TempOrgData";
-import { Box } from "@chakra-ui/react";
+import { Flex, Text, Box } from "@chakra-ui/react";
 
 const YourPerpetualOrganizations = () => {
   return (
-    <Box
-      w="full" // Takes the full width of the parent
-      h="full" // Takes the full height of the parent
-      p={4}
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-    >
-      {organizations.map((org, index) => (
-        <Organization
-          key={index}
-          title={org.title}
-          membership={org.membership}
-          status={org.status}
-          dateJoined={org.dateJoined}
-          logoUrl={org.logoUrl}
-          href={org.href}
-        />
-      ))}
-    </Box>
+    <>
+      <Box textAlign="center" mb={4}>
+        {" "}
+        {/* Center text and add margin below */}
+        <Text fontSize="2xl" fontWeight="bold" color="grey.600">
+          Your Perpetual Organizations
+        </Text>
+      </Box>
+      <Flex
+        justifyContent="center"
+        w="full"
+        h="full"
+        p={4}
+        borderWidth="1px"
+        borderRadius="lg"
+        overflowX="auto"
+        gap={4}
+        align="stretch"
+      >
+        {organizations.map((org, index) => (
+          <Organization
+            key={index}
+            title={org.title}
+            role={org.role}
+            dateJoined={org.dateJoined}
+            logoUrl={org.logoUrl}
+            href={org.href}
+          />
+        ))}
+      </Flex>
+    </>
   );
 };
 

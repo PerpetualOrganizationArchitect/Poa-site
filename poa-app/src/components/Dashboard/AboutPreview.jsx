@@ -13,12 +13,7 @@ const AboutPreview = () => {
       borderRadius="lg"
     >
       <Text mb={4} textAlign="center">
-        Our mission is to simplify the creation of and participation in fully
-        community owned organizations by leveraging AI for onboarding and
-        decentralized technologies for the infrastructure. Full decentralization
-        is our priority. We want to ensure that the created Perpetual
-        Organizations can’t be stopped or changed by anyone but the community
-        members.
+        Fully Yours. Forever.
       </Text>
       <Button colorScheme="teal" variant="solid">
         Learn More

@@ -1,32 +1,49 @@
 // components/Organization.jsx
-import { Box, Text, Image, LinkBox, LinkOverlay } from "@chakra-ui/react";
-import NextImage from "next/image"; // Assuming you're using Next.js for the Image component
+import {
+  Box,
+  Image,
+  LinkBox,
+  Text,
+  LinkOverlay,
+  VStack,
+} from "@chakra-ui/react";
 
-const Organization = ({
-  title,
-  membership,
-  status,
-  dateJoined,
-  logoUrl,
-  href,
-}) => {
+const Organization = ({ title, role, dateJoined, logoUrl, href }) => {
   return (
     <LinkBox
       borderWidth="1px"
-      borderColor="darkpink" // Adjust the color as needed
-      p={5}
+      borderColor="gray.300" // Adjusted for a neutral look
+      p={2}
       rounded="md"
       _hover={{ shadow: "md" }}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      w="200px" // Square dimensions
+      h="200px"
+      overflow="hidden" // Ensures content does not overflow the square
     >
-      <NextImage src={logoUrl} alt={`${title} logo`} width={50} height={50} />
-      <LinkOverlay href={href} isExternal>
-        <Text fontSize="xl" fontWeight="bold">
-          {title}
+      <Image
+        src={logoUrl}
+        alt={`${title} logo`}
+        boxSize="60px"
+        objectFit="contain"
+      />
+      <VStack spacing={1} mt={2} align="center" flexGrow={1}>
+        <LinkOverlay href={href} isExternal>
+          <Text fontSize="xs" fontWeight="bold" noOfLines={1}>
+            {title}
+          </Text>
+        </LinkOverlay>
+        <Text fontSize="xs" noOfLines={1}>
+          Role: {role}
         </Text>
-      </LinkOverlay>
-      <Text>Membership: {membership}</Text>
-      <Text>Status: {status}</Text>
-      <Text>Date Joined: {dateJoined}</Text>
+
+        <Text fontSize="xs" noOfLines={1}>
+          Joined {dateJoined}
+        </Text>
+      </VStack>
     </LinkBox>
   );
 };
