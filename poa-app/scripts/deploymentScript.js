@@ -4,12 +4,12 @@ const ethers = require('ethers');
 /*deployment order
 1. membership check
 2. dd token check 
-3. pt token
-4. treasury
-5. pt voting
-6. dd voting
-7. hybrid voting 
-8. task manager
+3. pt token check
+4. treasury check
+5. pt voting check
+6. dd voting check
+7. hybrid voting check 
+8. task manager check 
 9. set task manager in pt 
 10. set voting contract in treasury
 11. Registry
@@ -70,6 +70,8 @@ async function deployDirectDemocracyVoting( wallet, ddtokenAddress) {
 
 async function deployNFTMembership(wallet) {
   const factory = new ethers.ContractFactory(NFTMembershipFactory.abi, NFTMembershipFactory.bytecode, wallet);
+
+  console.log(factory)
   const contract = await factory.deploy();
   await contract.deployed();
   console.log(`NFT Membership Contract deployed at address: ${contract.address}`);
@@ -87,6 +89,8 @@ async function deployParticipationToken(wallet) {
 async function deployTreasury(wallet) {
   const factory = new ethers.ContractFactory(TreasuryFactory.abi, TreasuryFactory.bytecode, wallet);
   const contract = await factory.deploy(); 
+
+
   await contract.deployed();
   console.log(`Treasury Contract deployed at address: ${contract.address}`);
   return contract;
@@ -140,7 +144,7 @@ async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImag
 }
 
 async function makeDDToken(ddTokenFactoryContract, name, symbol, nftMembershipAddress, allowedRoleNames) {
-  // Ensure all parameters are provided and valid, especially the contract addresses
+  
   if (!ddTokenFactoryContract || !name || !symbol || !nftMembershipAddress || !allowedRoleNames.length) {
     console.error("Invalid parameters provided to makeDDToken function");
     return;
@@ -150,7 +154,7 @@ async function makeDDToken(ddTokenFactoryContract, name, symbol, nftMembershipAd
   const tx = await ddTokenFactoryContract.createDirectDemocracyToken(name, symbol, nftMembershipAddress, allowedRoleNames);
   await tx.wait();
 
-  /
+  
   const receipt = await tx.wait();
   const tokenCreatedEvent = receipt.events?.filter((x) => x.event === "TokenCreated")[0];
   if (tokenCreatedEvent) {
@@ -163,6 +167,9 @@ async function makeDDToken(ddTokenFactoryContract, name, symbol, nftMembershipAd
 
 }
 
+
+
+
 async function makePTToken(ptTokenFactoryContract, name, symbol) {
   
   if (!ptTokenFactoryContract || !name || !symbol) {
@@ -174,14 +181,180 @@ async function makePTToken(ptTokenFactoryContract, name, symbol) {
   const tx = await ptTokenFactoryContract.createParticipationToken(name, symbol);
   await tx.wait();
 
-  
-  
-  const deployedTokens = await ptTokenFactoryContract.getDeployedTokens();
-  const lastDeployedToken = deployedTokens[deployedTokens.length - 1]; 
+  // find the tokenCreated event from the transaction receipt
+  const receipt = await tx.wait();
+  const tokenCreatedEvent = receipt.events?.filter((x) => x.event === "TokenCreated")[0];
+  const ptTokenAddress = tokenCreatedEvent.args.tokenAddress;
 
-  console.log(`PT Token created at address: ${lastDeployedToken.address}`); 
-  return lastDeployedToken.address;
+  console.log(`PT Token created at address: ${ptTokenAddress}`);
+  return ptTokenAddress;
+
+
 }
+
+async function makeTreasury(treasuryFactoryContract) {
+
+  if (!treasuryFactoryContract) {
+    console.error("Invalid parameters provided to makeTreasury function");
+    return;
+  }
+
+  try {
+   
+    const txResponse = await treasuryFactoryContract.createTreasury();
+    const txReceipt = await txResponse.wait();
+
+   
+    const treasuryCreatedEvent = txReceipt.events?.find(event => event.event === "TreasuryCreated");
+    const treasuryAddress = treasuryCreatedEvent.args.treasuryAddress;
+
+    console.log(`Treasury Contract deployed at address: ${treasuryAddress}`);
+
+    
+    return treasuryAddress;
+  } catch (error) {
+    console.error("Failed to create Treasury:", error);
+    throw error; 
+  }
+}
+
+async function makeParticipationVoting(
+  participationVotingFactoryContract, 
+  participationTokenAddress, 
+  nftMembershipAddress, 
+  allowedRoleNames, 
+  quadraticVotingEnabled, 
+  treasuryAddress
+) {
+  
+  if (!participationVotingFactoryContract || !ethers.utils.isAddress(participationTokenAddress) || !ethers.utils.isAddress(nftMembershipAddress) || !ethers.utils.isAddress(treasuryAddress)) {
+    console.error("Invalid parameters provided to createParticipationVoting function");
+    return;
+  }
+
+  try {
+   
+    const txResponse = await participationVotingFactoryContract.createParticipationVoting(
+      participationTokenAddress, 
+      nftMembershipAddress, 
+      allowedRoleNames, 
+      quadraticVotingEnabled, 
+      treasuryAddress
+    );
+    const txReceipt = await txResponse.wait();
+
+    
+    const votingContractCreatedEvent = txReceipt.events?.find(event => event.event === "VotingContractCreated");
+    const votingContractAddress = votingContractCreatedEvent.args.votingContractAddress;
+
+    console.log(`Participation Voting Contract deployed at address: ${votingContractAddress}`);
+
+    
+    return votingContractAddress;
+  } catch (error) {
+    console.error("Failed to create Participation Voting contract:", error);
+    throw error; 
+  }
+}
+
+async function makeHybridVoting(
+  hybridVotingFactoryContract,
+  participationTokenAddress,
+  democracyTokenAddress,
+  nftMembershipAddress,
+  allowedRoleNames,
+  quadraticVotingEnabled,
+  democracyVoteWeight,
+  participationVoteWeight,
+  treasuryAddress
+) {
+  
+  if (!hybridVotingFactoryContract || !ethers.utils.isAddress(participationTokenAddress) || !ethers.utils.isAddress(democracyTokenAddress)) {
+    console.error("Invalid parameters provided to createHybridVoting function");
+    return;
+  }
+
+  try {
+    
+    const txResponse = await hybridVotingFactoryContract.createHybridVoting(
+      participationTokenAddress,
+      democracyTokenAddress,
+      nftMembershipAddress,
+      allowedRoleNames,
+      quadraticVotingEnabled,
+      democracyVoteWeight,
+      participationVoteWeight,
+      treasuryAddress
+    );
+    const txReceipt = await txResponse.wait();
+
+    
+    const hybridVotingCreatedEvent = txReceipt.events?.find(event => event.event === "HybridVotingCreated");
+    const newHybridVotingAddress = hybridVotingCreatedEvent.args.hybridVotingAddress;
+
+    console.log(`Hybrid Voting contract created at address: ${newHybridVotingAddress}`);
+
+    
+    return newHybridVotingAddress;
+  } catch (error) {
+    console.error("Failed to create Hybrid Voting contract:", error);
+    throw error; 
+  }
+}
+
+async function makeTaskManager(taskManagerFactoryContract, tokenAddress, nftMembershipAddress, allowedRoleNames) {
+  
+  if (!taskManagerFactoryContract || !tokenAddress || !nftMembershipAddress || !allowedRoleNames.length) {
+    console.error("Invalid parameters provided to createTaskManager function");
+    return;
+  }
+
+  // Call the createTaskManager function on the factory contract
+  const tx = await taskManagerFactoryContract.createTaskManager(tokenAddress, nftMembershipAddress, allowedRoleNames);
+  await tx.wait(); 
+
+  // Fetch the transaction receipt to extract the event details
+  const receipt = await tx.wait();
+  const taskManagerCreatedEvent = receipt.events?.filter((x) => x.event === "TaskManagerCreated")[0];
+  if (taskManagerCreatedEvent) {
+    const taskManagerAddress = taskManagerCreatedEvent.args.TaskManager;
+    console.log(`Task Manager created at address: ${taskManagerAddress}`);
+    return taskManagerAddress;
+  } else {
+    console.error("Task Manager address not found from the transaction receipt");
+  }
+}
+
+async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress, nftMembershipAddress, allowedRoleNames, treasuryAddress) {
+  
+  if (!ddVotingFactoryContract || !ddTokenAddress || !nftMembershipAddress || !allowedRoleNames.length || !treasuryAddress) {
+    console.error("Invalid parameters provided to createDirectDemocracyVoting function");
+    return;
+  }
+
+  
+  const tx = await ddVotingFactoryContract.createDirectDemocracyVoting(ddTokenAddress, nftMembershipAddress, allowedRoleNames, treasuryAddress);
+  
+
+  const receipt = await tx.wait();
+
+  
+  const votingCreatedEvent = receipt.events?.filter((event) => event.event === "VotingCreated")[0];
+  if (votingCreatedEvent) {
+    
+    const votingAddress = votingCreatedEvent.args.votingAddress;
+    console.log(`Direct Democracy Voting created at address: ${votingAddress}`);
+    return votingAddress;
+  } else {
+    console.error("Direct Democracy Voting address not found from the transaction receipt");
+  }
+}
+
+
+
+
+
+
 
 
 
@@ -192,6 +365,7 @@ async function main() {
   const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY, provider);
 
   try {
+      console.log("starting deploy")
       const nftMembership = await deployNFTMembership(wallet);
       const ddToken = await deployDirectDemocracyToken(wallet);
       const ptToken = await deployParticipationToken(wallet);
@@ -208,6 +382,11 @@ async function main() {
       const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL);
       const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames);
       const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT");
+      const treasuryAddress = await makeTreasury(treasury);
+      const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress);
+      const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress);
+      const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress);
+      const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames);
 
 
 

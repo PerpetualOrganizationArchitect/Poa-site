@@ -4,13 +4,12 @@ pragma solidity ^0.8.20;
 import "./Treasury.sol";
 
 contract TreasuryFactory {
-    event TreasuryCreated(address indexed treasuryAddress, address indexed votingContract);
+    event TreasuryCreated(address indexed treasuryAddress);
 
     // Function to create a new Treasury contract
-    function createTreasury(address _votingContract) public returns (address) {
-        require(_votingContract != address(0), "Invalid voting contract address");
-        Treasury newTreasury = new Treasury(_votingContract);
-        emit TreasuryCreated(address(newTreasury), _votingContract);
+    function createTreasury() public returns (address) {
+        Treasury newTreasury = new Treasury();
+        emit TreasuryCreated(address(newTreasury));
         return address(newTreasury);
     }
 }

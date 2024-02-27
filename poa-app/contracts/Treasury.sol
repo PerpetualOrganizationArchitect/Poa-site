@@ -14,9 +14,13 @@ contract Treasury {
     event TokensReceived(address indexed token, address indexed from, uint256 amount);
     event EtherWithdrawn(address indexed to, uint256 amount);
 
-    constructor(address _votingContract) {
-        require(_votingContract != address(0), "Invalid voting contract address");
+    constructor() {
+    }
+
+    function setVotingContract(address _votingContract) external  {
+        require(votingContract == address(0), "Voting contract already set");
         votingContract = _votingContract;
+
     }
 
     modifier onlyVotingContract() {
