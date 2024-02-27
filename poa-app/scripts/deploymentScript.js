@@ -37,7 +37,7 @@ const NFTMembershipFactory = require('../abi/NFTMembershipFactory.json');
 
 
 
-async function deployDirectDemocracyToken( wallet) {
+async function deployDirectDemocracyToken(wallet) {
 
   const DirectDemocracyTokenFactoryBytecode = DirectDemocracyTokenFactory.bytecode
   const DirectDemocracyTokenFactoryAbi = DirectDemocracyTokenFactory.abi;
@@ -49,6 +49,7 @@ async function deployDirectDemocracyToken( wallet) {
   await contract.deployed();
 
   console.log(`ddtoken factory Contract deployed at address: ${contract.address}`);
+  return contract;
   
 }
 
@@ -58,22 +59,21 @@ async function deployDirectDemocracyVoting( wallet, ddtokenAddress) {
     const DirectDemocracyVotingFactoryAbi = DirectDemocracyVotingFactory.abi;
 
 
-
     const factory = new ethers.ContractFactory(DirectDemocracyVotingFactoryAbi, DirectDemocracyVotingFactoryBytecode, wallet);
     const contract = await factory.deploy();
     await contract.deployed();
     console.log(`ddvoting factory Contract deployed at address: ${contract.address}`);
+    return contract;
 
 }
 
-// Assuming the imports and the initial two deployment functions are defined above
 
 async function deployNFTMembership(wallet) {
   const factory = new ethers.ContractFactory(NFTMembershipFactory.abi, NFTMembershipFactory.bytecode, wallet);
   const contract = await factory.deploy();
   await contract.deployed();
   console.log(`NFT Membership Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
 }
 
 async function deployParticipationToken(wallet) {
@@ -81,7 +81,7 @@ async function deployParticipationToken(wallet) {
   const contract = await factory.deploy();
   await contract.deployed();
   console.log(`Participation Token Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
 }
 
 async function deployTreasury(wallet) {
@@ -89,7 +89,7 @@ async function deployTreasury(wallet) {
   const contract = await factory.deploy(); 
   await contract.deployed();
   console.log(`Treasury Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
 }
 
 async function deployParticipationVoting(wallet) {
@@ -97,7 +97,7 @@ async function deployParticipationVoting(wallet) {
   const contract = await factory.deploy(); 
   await contract.deployed();
   console.log(`Participation Voting Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
 }
 
 async function deployHybridVoting(wallet) {
@@ -105,7 +105,7 @@ async function deployHybridVoting(wallet) {
   const contract = await factory.deploy(); 
   await contract.deployed();
   console.log(`Hybrid Voting Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
 }
 
 async function deployTaskManager(wallet) {
@@ -113,7 +113,7 @@ async function deployTaskManager(wallet) {
   const contract = await factory.deploy();
   await contract.deployed();
   console.log(`Task Manager Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
 }
 
 async function deployRegistry(wallet) {
@@ -122,7 +122,19 @@ async function deployRegistry(wallet) {
   const contract = await factory.deploy(); 
   await contract.deployed();
   console.log(`Registry Contract deployed at address: ${contract.address}`);
-  return contract.address;
+  return contract;
+}
+
+async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImageURL ){
+  const tx = await nftFactoryContract.createNFTMembership(memberTypeNames, defaultImageURL);
+  await tx.wait();
+
+  const deployedContracts = await nftFactoryContract.getDeployedContracts();
+  const lastDeployedContractAddress = deployedContracts[deployedContracts.length - 1];
+
+  console.log("NFT Membership contract address: ", lastDeployedContractAddress);
+
+
 }
 
 
@@ -131,15 +143,21 @@ async function main() {
   const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY, provider);
 
   try {
-      const nftMembershipAddress = await deployNFTMembership(wallet);
-      const ddTokenAddress = await deployDirectDemocracyToken(wallet);
-      const ptTokenAddress = await deployParticipationToken(wallet);
-      const treasuryAddress = await deployTreasury(wallet);
-      const ptVotingAddress = await deployParticipationVoting(wallet);
-      const ddVotingAddress = await deployDirectDemocracyVoting(wallet);
-      const hybridVotingAddress = await deployHybridVoting(wallet);
-      const taskManagerAddress = await deployTaskManager(wallet);
-      const registryAddress = await deployRegistry(wallet);
+      const nftMembership = await deployNFTMembership(wallet);
+      const ddToken = await deployDirectDemocracyToken(wallet);
+      const ptToken = await deployParticipationToken(wallet);
+      const treasury = await deployTreasury(wallet);
+      const ptVoting = await deployParticipationVoting(wallet);
+      const ddVoting = await deployDirectDemocracyVoting(wallet);
+      const hybridVoting = await deployHybridVoting(wallet);
+      const taskManager = await deployTaskManager(wallet);
+      const registry = await deployRegistry(wallet);
+
+      const memberTypeNames = ["Gold", "Silver", "Bronze"];
+      const defaultImageURL = "http://example.com/default.jpg";
+
+      await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL);
+
 
       
       
