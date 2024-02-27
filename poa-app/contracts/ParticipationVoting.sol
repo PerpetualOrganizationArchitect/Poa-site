@@ -35,13 +35,17 @@ contract ParticipationVoting {
 
     mapping(string => bool) private allowedRoles;
 
-    constructor(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames) {
+    bool public quadraticVotingEnabled;
+
+    constructor(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled) {
         ParticipationToken = IERC20(_ParticipationToken);
         nftMembership = INFTMembership(_nftMembership);
 
         for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
             allowedRoles[_allowedRoleNames[i]] = true;
         }
+
+        quadraticVotingEnabled = _quadraticVotingEnabled;
 
     }
 
@@ -100,7 +104,7 @@ contract ParticipationVoting {
         require(!proposal.hasVoted[_voter], "Already voted");
 
 
-        uint256 voteWeight = calculateVoteWeight(balance);
+       uint256 voteWeight = quadraticVotingEnabled ? calculateQuadraticVoteWeight(balance) : balance;
 
         proposal.hasVoted[_voter] = true;
         proposal.totalVotes += voteWeight;
@@ -109,12 +113,8 @@ contract ParticipationVoting {
         emit Voted(_proposalId, _voter, _optionIndex, voteWeight);
     }
 
-    function calculateVoteWeight(uint256 _balance) internal pure returns (uint256) {
-        uint256 adjustedBalance = _balance;
-
-        uint256 voteWeight = sqrt(adjustedBalance);
-
-        return voteWeight;
+    function calculateQuadraticVoteWeight(uint256 _balance) internal pure returns (uint256) {
+        return sqrt(_balance);
     }
 
     // Helper function to approximate square root 
