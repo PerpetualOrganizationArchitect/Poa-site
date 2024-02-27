@@ -9,10 +9,15 @@ interface INFTMembership {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
 }
 
+interface ITreasury {
+    function sendTokens(address _token, address _to, uint256 _amount) external;
+}
+
 
 contract ParticipationVoting {
     IERC20 public ParticipationToken;
     INFTMembership public nftMembership;
+    ITreasury public treasury;
 
     struct PollOption {
         uint256 votes;
@@ -24,11 +29,15 @@ contract ParticipationVoting {
         uint256 timeInMinutes;
         uint256 creationTimestamp;
         PollOption[] options;
+        uint256 transferTriggerOptionIndex;
+        address payable transferRecipient;
+        uint256 transferAmount;
+        bool transferEnabled;
     }
 
     Proposal[] private proposals;
 
-    event NewProposal(uint256 indexed proposalId, string name, string description, string execution, uint256 timeInMinutes, uint256 creationTimestamp);
+    event NewProposal(uint256 indexed proposalId, string name, string description, uint256 timeInMinutes, uint256 creationTimestamp,  uint256 transferTriggerOptionIndex, address transferRecipient, uint256 transferAmount, bool transferEnabled);
     event Voted(uint256 indexed proposalId, address indexed voter, uint256 optionIndex, uint256 voteWeight);
     event PollOptionNames(uint256 indexed proposalId, uint256 indexed optionIndex, string name);
     event WinnerAnnounced(uint256 indexed proposalId, uint256 winningOptionIndex);
@@ -37,9 +46,10 @@ contract ParticipationVoting {
 
     bool public quadraticVotingEnabled;
 
-    constructor(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled) {
+    constructor(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, address _treasuryAddress) {
         ParticipationToken = IERC20(_ParticipationToken);
         nftMembership = INFTMembership(_nftMembership);
+        treasury = ITreasury(_treasuryAddress);
 
         for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
             allowedRoles[_allowedRoleNames[i]] = true;
@@ -72,18 +82,25 @@ contract ParticipationVoting {
     function createProposal(
         string memory _name,
         string memory _description,
-        string memory _execution,
         uint256 _timeInMinutes,
-        string[] memory _optionNames
+        string[] memory _optionNames,
+        uint256 _transferTriggerOptionIndex,
+        address payable _transferRecipient,
+        uint256 _transferAmount,
+        bool _transferEnabled
     ) external canCreateProposal {
 
         Proposal storage newProposal = proposals.push();
         newProposal.totalVotes = 0;
         newProposal.timeInMinutes = _timeInMinutes;
         newProposal.creationTimestamp = block.timestamp;
+        newProposal.transferTriggerOptionIndex = _transferTriggerOptionIndex;
+        newProposal.transferRecipient = _transferRecipient;
+        newProposal.transferAmount = _transferAmount;
+        newProposal.transferEnabled = _transferEnabled;
 
         uint256 proposalId = proposals.length - 1;
-        emit NewProposal(proposalId, _name, _description, _execution, _timeInMinutes, block.timestamp);
+        emit NewProposal(proposalId, _name, _description, _timeInMinutes, block.timestamp, _transferTriggerOptionIndex, _transferRecipient, _transferAmount, _transferEnabled);
 
         for (uint256 i = 0; i < _optionNames.length; i++) {
             newProposal.options.push(PollOption(0));
@@ -132,6 +149,10 @@ contract ParticipationVoting {
         require(_proposalId < proposals.length, "Invalid proposal ID");
 
         uint256 winningOptionIndex = getWinner(_proposalId);
+
+        if (proposals[_proposalId].transferEnabled && winningOptionIndex == proposals[_proposalId].transferTriggerOptionIndex) {
+            treasury.sendTokens(address(ParticipationToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+        }
 
         emit WinnerAnnounced(_proposalId, winningOptionIndex);
     }

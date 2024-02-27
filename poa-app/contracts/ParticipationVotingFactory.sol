@@ -10,8 +10,8 @@ contract ParticipationVotingFactory {
 
     event VotingContractCreated(address indexed votingContractAddress, address indexed creator);
 
-    function createParticipationVoting(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled) public {
-        ParticipationVoting newVotingContract = new ParticipationVoting( _ParticipationToken, _nftMembership, _allowedRoleNames, _quadraticVotingEnabled);
+    function createParticipationVoting(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, address _treasuryAddress) public {
+        ParticipationVoting newVotingContract = new ParticipationVoting( _ParticipationToken, _nftMembership, _allowedRoleNames, _quadraticVotingEnabled, _treasuryAddress);
         votingContracts.push(newVotingContract);
         emit VotingContractCreated(address(newVotingContract), msg.sender);
     }
