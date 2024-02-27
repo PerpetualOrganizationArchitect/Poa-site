@@ -27,8 +27,14 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
-      <Character position={characterPosition} />
-      <ConversationLog messages={messages} />
+      <Box position="relative" zIndex="2">
+        <Character position={characterPosition} />
+      </Box>
+
+      {/* ConversationLog should naturally flow below Character */}
+      <Box position="relative" zIndex="1">
+        <ConversationLog messages={messages} />
+      </Box>
 
       <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10}>
         <ArchitectInput

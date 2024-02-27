@@ -11,7 +11,7 @@ const Character = ({ position }) => {
   return (
     <div style={characterStyle}>
       <Image
-        src="/images/poa_character.png"
+        src="/images/white_poa.png"
         alt="Character"
         width={115}
         height={115}
