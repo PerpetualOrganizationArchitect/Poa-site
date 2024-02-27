@@ -351,15 +351,6 @@ async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress
 }
 
 
-
-
-
-
-
-
-
-
-
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_INFURA_URL);
   const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY, provider);
