@@ -1,4 +1,5 @@
 import { Flex, Text, Button } from "@chakra-ui/react";
+import Link from "next/link";
 
 const AboutPreview = () => {
   return (
@@ -15,9 +16,12 @@ const AboutPreview = () => {
       <Text mb={4} textAlign="center">
         Fully Yours. Forever.
       </Text>
-      <Button colorScheme="teal" variant="solid">
-        Learn More
-      </Button>
+
+      <Link href="/about" passHref>
+        <Button colorScheme="teal" variant="solid" mt={4}>
+          Learn More
+        </Button>
+      </Link>
     </Flex>
   );
 };

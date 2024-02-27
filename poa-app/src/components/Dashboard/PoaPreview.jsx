@@ -1,5 +1,6 @@
 import { Box, Text, Image, Button, Flex } from "@chakra-ui/react";
 import NextImage from "next/image";
+import Link from "next/link";
 
 const PoaPreview = () => {
   return (
@@ -20,9 +21,12 @@ const PoaPreview = () => {
         height={115}
       />
       <Text>This is Poa.</Text>
-      <Button colorScheme="teal" variant="outline" mt={4}>
-        Start Building
-      </Button>
+
+      <Link href="/architect" passHref>
+        <Button colorScheme="teal" variant="outline" mt={4}>
+          Start Building
+        </Button>
+      </Link>
     </Flex>
   );
 };
