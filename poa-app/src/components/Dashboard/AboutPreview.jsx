@@ -1,26 +1,29 @@
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Flex, Text, Button } from "@chakra-ui/react";
 
 const AboutPreview = () => {
   return (
-    <Box
-      w="full" // Takes the full width of the parent
-      h="50%" // Takes up 50% of the vertical space
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      w="full"
+      h="full"
       p={4}
       borderWidth="1px"
       borderRadius="lg"
-      overflowY="auto" // Allows scrolling if the text is too long
     >
-      <Text mb={4}>
-        {/* Add your desired text here */}
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.
-        Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies
-        sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius
-        a, semper congue, euismod non, mi.
+      <Text mb={4} textAlign="center">
+        Our mission is to simplify the creation of and participation in fully
+        community owned organizations by leveraging AI for onboarding and
+        decentralized technologies for the infrastructure. Full decentralization
+        is our priority. We want to ensure that the created Perpetual
+        Organizations can’t be stopped or changed by anyone but the community
+        members.
       </Text>
       <Button colorScheme="teal" variant="solid">
         Learn More
       </Button>
-    </Box>
+    </Flex>
   );
 };
 

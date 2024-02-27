@@ -1,4 +1,3 @@
-// pages/dashboard/index.js
 import React from "react";
 import { Box, Flex, VStack } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
@@ -9,22 +8,32 @@ import PoaPreview from "@/components/Dashboard/PoaPreview";
 const DashboardPage = () => {
   return (
     <Layout>
-      <VStack spacing={6} w="full">
-        {/* AboutPreview takes the upper half of the screen */}
-        <Box w="full" h="50%">
-          <AboutPreview />
-        </Box>
+      <Box pt="4rem" w="full" overflowY="auto">
+        <VStack spacing={6} w="full" h="full" justify="center">
+          {/* AboutPreview is centered horizontally on the upper half of the page */}
+          <Box w="full" flex="1" p={3}>
+            <AboutPreview />
+          </Box>
 
-        {/* Flex container for the lower half with two children */}
-        <Flex w="full" h="50%" direction={{ base: "column", md: "row" }}>
-          <Flex flex={1} p={3}>
-            <YourPerpetualOrganizations />
+          {/* Flex container for the lower half with two children side by side */}
+          <Flex
+            w="full"
+            flex="1"
+            direction={{ base: "column", md: "row" }}
+            p={3}
+          >
+            {/* YourPerpetualOrganizations justified to the left half of the bottom half of the screen */}
+            <Box w={{ base: "full", md: "50%" }} h="full" p={3}>
+              <YourPerpetualOrganizations />
+            </Box>
+
+            {/* PoaPreview mirrored on the right, bottom half of the screen */}
+            <Box w={{ base: "full", md: "50%" }} h="full" p={3}>
+              <PoaPreview />
+            </Box>
           </Flex>
-          <Flex flex={1} p={3}>
-            <PoaPreview />
-          </Flex>
-        </Flex>
-      </VStack>
+        </VStack>
+      </Box>
     </Layout>
   );
 };

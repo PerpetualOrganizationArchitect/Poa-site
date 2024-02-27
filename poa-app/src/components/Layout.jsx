@@ -7,7 +7,13 @@ const Layout = ({ children, isArchitectPage }) => {
   return (
     <>
       {isArchitectPage ? (
-        <Flex padding="1rem" position="fixed" top={0}>
+        <Flex
+          padding="1rem"
+          position="fixed"
+          top={0}
+          width="full"
+          zIndex="banner"
+        >
           <Link href="/dashboard" passHref>
             <IconButton
               icon={
@@ -28,9 +34,8 @@ const Layout = ({ children, isArchitectPage }) => {
           <Navigation />
         </Box>
       )}
-      <Box as="main" pt="5rem" minHeight={isArchitectPage ? "100vh" : "auto"}>
-        {children}
-      </Box>
+      {/* Ensure content is always below the navbar */}
+      <Box as="main">{children}</Box>
       {!isArchitectPage && (
         <Box p={4}>
           © {new Date().getFullYear()} Perpetuate. All rights reserved.

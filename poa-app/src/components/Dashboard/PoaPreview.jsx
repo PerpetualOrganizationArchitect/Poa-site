@@ -1,20 +1,29 @@
-import { Box, Text, Image, Button, LinkOverlay } from "@chakra-ui/react";
+import { Box, Text, Image, Button, Flex } from "@chakra-ui/react";
+import NextImage from "next/image";
 
 const PoaPreview = () => {
   return (
-    <Box
-      w="full" // Takes the full width of the parent
-      h="full" // Takes the full height of the parent
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      w="full"
+      h="full"
       p={4}
       borderWidth="1px"
       borderRadius="lg"
-      overflow="hidden"
     >
-      <Text>Poa Preview</Text>
+      <Image
+        src="/images/poa_character.png"
+        alt="Character"
+        width={115}
+        height={115}
+      />
+      <Text>This is Poa.</Text>
       <Button colorScheme="teal" variant="outline" mt={4}>
-        Try Poa
+        Start Building
       </Button>
-    </Box>
+    </Flex>
   );
 };
 
