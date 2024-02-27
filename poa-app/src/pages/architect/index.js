@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
-import { Box } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
-import PoaPreview from "@/components/Dashboard/PoaPreview";
+import Tutorial from "@/components/Architect/Tutorial";
 
 const ArchitectPage = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true }); // Controls the tutorial modal
+
+  // Open the tutorial by default when the component mounts
+  // useState with function initializer is used to only run the function once on initial render
+  useState(() => {
+    onOpen();
+  }, [onOpen]);
 
   const handleSendClick = () => {
     if (!userInput.trim()) return;
@@ -27,11 +34,13 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
+      {/* Tutorial component is conditionally rendered */}
+      {isOpen && <Tutorial onClose={onClose} />}
+
       <Box position="relative" zIndex="2">
         <Character position={characterPosition} />
       </Box>
 
-      {/* ConversationLog should naturally flow below Character */}
       <Box position="relative" zIndex="1">
         <ConversationLog messages={messages} />
       </Box>
