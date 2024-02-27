@@ -18,7 +18,8 @@ contract HybridVotingFactory {
         string[] memory _allowedRoleNames,
         bool _quadraticVotingEnabled,
         uint256 _democracyVoteWeight,
-        uint256 _participationVoteWeight
+        uint256 _participationVoteWeight,
+        address _treasuryAddress
     ) public {
         HybridVoting newHybridVoting = new HybridVoting(
             _ParticipationToken,
@@ -27,7 +28,8 @@ contract HybridVotingFactory {
             _allowedRoleNames,
             _quadraticVotingEnabled,
             _democracyVoteWeight,
-            _participationVoteWeight
+            _participationVoteWeight,
+            _treasuryAddress
         );
         allHybridVotings.push(address(newHybridVoting));
         emit HybridVotingCreated(msg.sender, address(newHybridVoting));

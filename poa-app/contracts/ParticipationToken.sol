@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-
-
 contract ParticipationToken is ERC20, Ownable {
 
     address private taskManagerAddress;
@@ -25,7 +23,6 @@ contract ParticipationToken is ERC20, Ownable {
 
     function setTaskManagerAddress(address _taskManagerAddress) external onlyOwner {
         taskManagerAddress = _taskManagerAddress;
-        // get rid of onwership
         renounceOwnership();
     }
 
