@@ -108,4 +108,19 @@ type NFTChangeTypeEvent @entity {
   newMemberType: String!
 }
 
+## treasury 
+
+type Treasury @entity {
+  id: ID!
+  POname: String!
+  treasuryAddress: Bytes!
+  votingContract: Bytes
+}
+
+type TreasuryCreated @entity {
+  id: ID!
+  POname: String!
+  treasuryAddress: Bytes!
+}
+
 

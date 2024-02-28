@@ -6,7 +6,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: mumbai
     source:
-      address: "0x2043700c84D598e326C76e274C26E183614ff010"
+      address: "0x473A5Eca5FCCC2ab28f0c7113A0f5044338C2127"
       abi: DirectDemocracyTokenFactory
       startBlock: 46430300
     mapping:
@@ -26,7 +26,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: mumbai
     source:
-      address: "0x3eF8C2a366FEb177bE1Cf818972d49BFDf819971"
+      address: "0x5Bc0D4ba69213090e049475F3Add75c7da9Cd3B2"
       abi: ParticipationTokenFactory
       startBlock: 46430300
     mapping:
@@ -46,7 +46,7 @@ dataSources:
     name: NFTMembershipFactory
     network: mumbai
     source:
-      address: "0x7d6c58190a008A56504789603e3B2a71B95055c0"
+      address: "0x74C82D72bA3cDBdDd9b2667d524DA808c7f582dC"
       abi: NFTMembershipFactory
       startBlock: 46430300
     mapping:
@@ -62,6 +62,26 @@ dataSources:
         - event: ContractCreated(address,string[],string,string)
           handler: handleContractCreated
       file: NFTMembershipFactory/NFTMembershipFactory.wasm
+  - kind: ethereum/contract
+    name: TreasuryFactory
+    network: mumbai
+    source:
+      address: "0xdc604eE6252D5f97c7AA2bDf428a932A0bAc713a"
+      abi: TreasuryFactory
+      startBlock: 46430300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TreasuryCreated
+      abis:
+        - name: TreasuryFactory
+          file: abi/TreasuryFactory.json
+      eventHandlers:
+        - event: TreasuryCreated(indexed address,string)
+          handler: handleTreasuryCreated
+      file: TreasuryFactory/TreasuryFactory.wasm
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -126,3 +146,21 @@ templates:
         - event: membershipTypeChanged(address,string)
           handler: handleMembershipTypeChanged
       file: templates/NFTMembership/NFTMembership.wasm
+  - kind: ethereum/contract
+    name: Treasury
+    network: mumbai
+    source:
+      abi: Treasury
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Treasury
+      abis:
+        - name: Treasury
+          file: abi/Treasury.json
+      eventHandlers:
+        - event: VotingContractSet(address)
+          handler: handleVotingSet
+      file: templates/Treasury/Treasury.wasm

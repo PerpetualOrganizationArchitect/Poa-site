@@ -13,6 +13,7 @@ contract Treasury {
     event TokensSent(address indexed token, address indexed to, uint256 amount);
     event TokensReceived(address indexed token, address indexed from, uint256 amount);
     event EtherWithdrawn(address indexed to, uint256 amount);
+    event VotingContractSet(address votingContract);
 
     constructor() {
     }
@@ -20,6 +21,7 @@ contract Treasury {
     function setVotingContract(address _votingContract) external  {
         require(votingContract == address(0), "Voting contract already set");
         votingContract = _votingContract;
+        emit VotingContractSet(_votingContract);
 
     }
 

@@ -1189,6 +1189,157 @@ export class NFTChangeTypeEvent extends Entity {
   }
 }
 
+export class Treasury extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Treasury entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Treasury must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Treasury", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Treasury | null {
+    return changetype<Treasury | null>(store.get_in_block("Treasury", id));
+  }
+
+  static load(id: string): Treasury | null {
+    return changetype<Treasury | null>(store.get("Treasury", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get treasuryAddress(): Bytes {
+    let value = this.get("treasuryAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set treasuryAddress(value: Bytes) {
+    this.set("treasuryAddress", Value.fromBytes(value));
+  }
+
+  get votingContract(): Bytes | null {
+    let value = this.get("votingContract");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set votingContract(value: Bytes | null) {
+    if (!value) {
+      this.unset("votingContract");
+    } else {
+      this.set("votingContract", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
+export class TreasuryCreated extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TreasuryCreated entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TreasuryCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TreasuryCreated", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TreasuryCreated | null {
+    return changetype<TreasuryCreated | null>(
+      store.get_in_block("TreasuryCreated", id)
+    );
+  }
+
+  static load(id: string): TreasuryCreated | null {
+    return changetype<TreasuryCreated | null>(store.get("TreasuryCreated", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get treasuryAddress(): Bytes {
+    let value = this.get("treasuryAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set treasuryAddress(value: Bytes) {
+    this.set("treasuryAddress", Value.fromBytes(value));
+  }
+}
+
 export class DDAllowedRoleNameLoader extends Entity {
   _entity: string;
   _field: string;

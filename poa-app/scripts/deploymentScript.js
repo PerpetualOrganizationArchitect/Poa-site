@@ -207,7 +207,7 @@ async function makePTToken(ptTokenFactoryContract, name, symbol, POname) {
 
 }
 
-async function makeTreasury(treasuryFactoryContract) {
+async function makeTreasury(treasuryFactoryContract, POname) {
 
   if (!treasuryFactoryContract) {
     console.error("Invalid parameters provided to makeTreasury function");
@@ -216,7 +216,7 @@ async function makeTreasury(treasuryFactoryContract) {
 
   try {
    
-    const txResponse = await treasuryFactoryContract.createTreasury();
+    const txResponse = await treasuryFactoryContract.createTreasury(POname);
     const txReceipt = await txResponse.wait();
 
    
@@ -375,7 +375,7 @@ async function main() {
       const nftMembership = await deployNFTMembership(wallet);
       const ddToken = await deployDirectDemocracyToken(wallet);
       const ptToken = await deployParticipationToken(wallet);
-      // const treasury = await deployTreasury(wallet);
+      const treasury = await deployTreasury(wallet);
       // const ptVoting = await deployParticipationVoting(wallet);
       // const ddVoting = await deployDirectDemocracyVoting(wallet);
       // const hybridVoting = await deployHybridVoting(wallet);
@@ -389,7 +389,7 @@ async function main() {
       const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
       const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
       const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
-      // const treasuryAddress = await makeTreasury(treasury);
+      const treasuryAddress = await makeTreasury(treasury, POname);
       // const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress);
       // const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress);
       // const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress);

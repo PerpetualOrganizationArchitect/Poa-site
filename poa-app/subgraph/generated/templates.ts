@@ -47,3 +47,17 @@ export class NFTMembership extends DataSourceTemplate {
     );
   }
 }
+
+export class Treasury extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("Treasury", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "Treasury",
+      [address.toHex()],
+      context
+    );
+  }
+}
