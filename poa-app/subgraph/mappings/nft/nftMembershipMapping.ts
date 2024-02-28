@@ -7,9 +7,12 @@ import { dataSource } from '@graphprotocol/graph-ts'
 export function handleMintedNFT(event: MintEvent): void {
   log.info("Triggered handleMintedNFT", []);
   let entity = new NFTMintEvent(event.transaction.hash.toHex() + "-" + event.logIndex.toString());
-  entity.membership = event.params.memberTypeName;
+
+
+  entity.memberTypeName = event.params.memberTypeName;
   entity.recipient = event.params.recipient;
   entity.tokenURI = event.params.tokenURI;
+  entity.membership=event.address.toHex();
   entity.save();
 }
 

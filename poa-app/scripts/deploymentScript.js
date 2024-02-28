@@ -34,6 +34,7 @@ const ParticipationTokenFactory = require('../abi/ParticipationTokenFactory.json
 const ParticipationVotingFactory = require('../abi/ParticipationVotingFactory.json');
 
 const NFTMembershipFactory = require('../abi/NFTMembershipFactory.json');
+const NFTMembership = require('../abi/NFTMembership.json')
 
 
 
@@ -129,15 +130,22 @@ async function deployRegistry(wallet) {
 }
 
 async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImageURL, POname ){
-  const tx = await nftFactoryContract.createNFTMembership(memberTypeNames, defaultImageURL, POname);
-  await tx.wait();
+    const tx = await nftFactoryContract.createNFTMembership(memberTypeNames, defaultImageURL, POname);
+    await tx.wait();
+  
+    const deployedContracts = await nftFactoryContract.getDeployedContracts();
+    const lastDeployedContractAddress = deployedContracts[deployedContracts.length - 1];
+  
+    console.log("NFT Membership contract address: ", lastDeployedContractAddress);
+  
 
-  const deployedContracts = await nftFactoryContract.getDeployedContracts();
-  const lastDeployedContractAddress = deployedContracts[deployedContracts.length - 1];
-
-  console.log("NFT Membership contract address: ", lastDeployedContractAddress);
-
-  return lastDeployedContractAddress;
+    const nftMembershipContract = new ethers.Contract(lastDeployedContractAddress, NFTMembership.abi, nftFactoryContract.signer);
+    const mintTx = await nftMembershipContract.mintDefaultNFT()
+    await mintTx.wait();
+  
+    console.log("NFT minted successfully");
+  
+    return lastDeployedContractAddress;
 
 
 }
