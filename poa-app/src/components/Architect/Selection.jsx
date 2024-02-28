@@ -1,16 +1,21 @@
-import React from 'react';
-import { Button, Stack } from '@chakra-ui/react';
+// Selection.jsx
+import React, { forwardRef } from "react";
+import { Button, VStack } from "@chakra-ui/react";
 
-const Selection = ({ options, onOptionSelected }) => {
+const Selection = forwardRef(({ options, onOptionSelected }, ref) => {
   return (
-    <Stack direction="column" spacing={4}>
+    <VStack ref={ref} spacing={4} p={15} /* Added padding here */>
       {options.map((option, index) => (
-        <Button key={index} colorScheme="teal" onClick={() => onOptionSelected(option.action)}>
+        <Button
+          key={index}
+          colorScheme="teal"
+          onClick={() => onOptionSelected(option.action)}
+        >
           {option.title}
         </Button>
       ))}
-    </Stack>
+    </VStack>
   );
-};
+});
 
 export default Selection;

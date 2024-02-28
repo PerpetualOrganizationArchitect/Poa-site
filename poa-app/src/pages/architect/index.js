@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import { Box, Flex, VStack } from "@chakra-ui/react";
@@ -11,12 +11,22 @@ const ArchitectPage = () => {
   const [messages, setMessages] = useState([]);
   const [showSelection, setShowSelection] = useState(false);
   const [options, setOptions] = useState([]);
+  const selectionRef = useRef(null);
+  const [selectionHeight, setSelectionHeight] = useState(0);
+
+  useEffect(() => {
+    // Update the selectionHeight state if the selectionRef is set and the component is visible
+    if (showSelection && selectionRef.current) {
+      const height = selectionRef.current.offsetHeight; // Get the height of the Selection component
+      setSelectionHeight(height); // Set the height state
+    }
+  }, [showSelection, options]);
 
   useEffect(() => {
     // Simulating a greeting message from "POA" on initial load
     const greetingMessage1 = {
       speaker: "POA",
-      text: "Hello!, I'm Poa, your perpetual organization architect.",
+      text: "Hello! I'm Poa, your perpetual organization architect.",
     };
 
     const greetingMessage2 = {
@@ -72,8 +82,6 @@ const ArchitectPage = () => {
     setMessages([...messages, newUserMessage, newResponseMessage]);
     setUserInput("");
   };
-  // Define the selectionHeight based on the visibility of the Selection component
-  const selectionHeight = showSelection ? "50%" : "0%"; // If Selection is shown, it takes 50% of the screen height
 
   return (
     <Layout isArchitectPage>
@@ -84,7 +92,7 @@ const ArchitectPage = () => {
       <Box
         position="fixed"
         top="115px" // This should be the height of the Character component
-        bottom="60px" // Adjust this value to the height of the ArchitectInput component
+        bottom="60px"
         overflowY="auto"
         width="full"
         pt="4"
@@ -96,10 +104,9 @@ const ArchitectPage = () => {
       {showSelection && (
         <Box
           position="fixed"
-          bottom="60px" // This should be the height of the ArchitectInput component
+          bottom="60px" // ArchitectInput component height
           left="0"
           right="0"
-          height={selectionHeight}
           p="4"
           display="flex"
           alignItems="center"
@@ -110,6 +117,7 @@ const ArchitectPage = () => {
           zIndex="sticky"
         >
           <Selection
+            ref={selectionRef}
             options={options}
             onOptionSelected={handleOptionSelected}
           />
