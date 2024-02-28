@@ -10,16 +10,6 @@
         "internalType": "string",
         "name": "symbol",
         "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_nftMembership",
-        "type": "address"
-      },
-      {
-        "internalType": "string[]",
-        "name": "_allowedRoleNames",
-        "type": "string[]"
       }
     ],
     "stateMutability": "nonpayable",
@@ -92,6 +82,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "taskManagerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "TaskManagerAddressSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "from",
@@ -141,12 +144,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "spender",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
       }
     ],
@@ -221,25 +224,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_address",
-        "type": "address"
-      }
-    ],
-    "name": "getBalance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "spender",
         "type": "address"
       },
@@ -261,20 +245,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "maxSupplyPerPerson",
-    "outputs": [
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "mint",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -288,19 +270,6 @@
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "nftMembership",
-    "outputs": [
-      {
-        "internalType": "contract INFTMembership",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -322,6 +291,19 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_taskManagerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setTaskManagerAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -356,12 +338,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "to",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
       }
     ],
@@ -380,17 +362,17 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "from",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "to",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
       }
     ],

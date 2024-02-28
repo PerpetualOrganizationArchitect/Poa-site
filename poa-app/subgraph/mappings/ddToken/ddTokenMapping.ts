@@ -9,6 +9,7 @@ export function handleTokenMint(event: MintEvent): void {
 
   let entity = new DDTokenMintEvent(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
   entity.to = event.params.to
+  entity.token = event.address.toHex()
   entity.amount = event.params.amount
   entity.save()
 }

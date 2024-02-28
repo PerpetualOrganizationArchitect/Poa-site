@@ -1,3 +1,6 @@
+
+##DDtoken
+
 type DDTokenCreated @entity {
   id: ID!
   tokenAddress: Bytes!
@@ -28,6 +31,43 @@ type DDTokenMintEvent @entity {
   to: Bytes!
   amount: BigInt!
 }
+
+##participation token 
+type PTTokenCreated @entity {
+  id: ID!
+  tokenAddress: Bytes!
+  name: String!
+  symbol: String!
+  POname: String!
+  allowedRoleNames: [PTAllowedRoleName!]! @derivedFrom(field: "tokenCreated")
+}
+
+type PTAllowedRoleName @entity {
+  id: ID!
+  roleName: String!
+  tokenCreated: PTTokenCreated! @link
+}
+
+type PTToken @entity {
+  id: ID!
+  tokenAddress: Bytes!
+  name: String!
+  symbol: String!
+  POname: String!
+  mintEvents: [PTTokenMintEvent!]! @derivedFrom(field: "token")
+  taskManagerAddress: Bytes
+}
+
+type PTTokenMintEvent @entity {
+  id: ID!
+  token: PTToken! @link
+  to: Bytes!
+  amount: BigInt!
+}
+
+
+
+##nft 
 
 type NFTMembershipCreated @entity {
   id: ID!

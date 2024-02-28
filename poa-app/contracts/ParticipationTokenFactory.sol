@@ -6,12 +6,12 @@ import "./ParticipationToken.sol";
 contract ParticipationTokenFactory {
     ParticipationToken[] public deployedTokens;
 
-    event TokenCreated(address tokenAddress, string name, string symbol);
+    event TokenCreated(address tokenAddress, string name, string symbol, string POname);
 
-    function createParticipationToken(string memory name, string memory symbol) public {
+    function createParticipationToken(string memory name, string memory symbol, string memory POname) public {
         ParticipationToken newToken = new ParticipationToken(name, symbol);
         deployedTokens.push(newToken);
-        emit TokenCreated(address(newToken), name, symbol);
+        emit TokenCreated(address(newToken), name, symbol, POname);
     }
 
     function getDeployedTokens() public view returns (ParticipationToken[] memory) {

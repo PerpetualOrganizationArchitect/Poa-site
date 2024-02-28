@@ -18,6 +18,7 @@ const ethers = require('ethers');
 
 
 const DirectDemocracyTokenFactory = require('../abi/DirectDemocracyTokenFactory.json'); 
+const DirectDemocracyToken = require('../abi/DirectDemocracyToken.json');
 
 const DirectDemocracyVotingFactory = require('../abi/DirectDemocracyVotingFactory.json');
 
@@ -161,23 +162,30 @@ async function makeDDToken(ddTokenFactoryContract, name, symbol, nftMembershipAd
   const tx = await ddTokenFactoryContract.createDirectDemocracyToken(name, symbol, nftMembershipAddress, allowedRoleNames,POname);
   await tx.wait();
 
-  
+  let ddTokenAddress;
   const receipt = await tx.wait();
   const tokenCreatedEvent = receipt.events?.filter((x) => x.event === "TokenCreated")[0];
   if (tokenCreatedEvent) {
-    const ddTokenAddress = tokenCreatedEvent.args.tokenAddress;
+    ddTokenAddress = tokenCreatedEvent.args.tokenAddress;
     console.log(`DD Token created at address: ${ddTokenAddress}`);
-    return ddTokenAddress;
+    
   } else {
     console.error("DD Token address not found from the transaction receipt");
   }
 
+  //call mint function on dd token
+  const ddTokenContract = new ethers.Contract(ddTokenAddress, DirectDemocracyToken.abi, ddTokenFactoryContract.signer);
+  const mintTx = await ddTokenContract.mint();
+  await mintTx.wait();
+  console.log("DD Token minted successfully");
+
+  return ddTokenAddress;
 }
 
 
 
 
-async function makePTToken(ptTokenFactoryContract, name, symbol) {
+async function makePTToken(ptTokenFactoryContract, name, symbol, POname) {
   
   if (!ptTokenFactoryContract || !name || !symbol) {
     console.error("Invalid parameters provided to makePTToken function");
@@ -185,7 +193,7 @@ async function makePTToken(ptTokenFactoryContract, name, symbol) {
   }
 
   
-  const tx = await ptTokenFactoryContract.createParticipationToken(name, symbol);
+  const tx = await ptTokenFactoryContract.createParticipationToken(name, symbol, POname);
   await tx.wait();
 
   // find the tokenCreated event from the transaction receipt
@@ -366,7 +374,7 @@ async function main() {
       console.log("starting deploy")
       const nftMembership = await deployNFTMembership(wallet);
       const ddToken = await deployDirectDemocracyToken(wallet);
-      // const ptToken = await deployParticipationToken(wallet);
+      const ptToken = await deployParticipationToken(wallet);
       // const treasury = await deployTreasury(wallet);
       // const ptVoting = await deployParticipationVoting(wallet);
       // const ddVoting = await deployDirectDemocracyVoting(wallet);
@@ -374,13 +382,13 @@ async function main() {
       // const taskManager = await deployTaskManager(wallet);
       // const registry = await deployRegistry(wallet);
 
-      const memberTypeNames = ["Gold", "Silver", "Bronze"];
+      const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
       const defaultImageURL = "http://example.com/default.jpg";
       const POname = "Test Org";
 
       const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
       const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
-      // const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT");
+      const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
       // const treasuryAddress = await makeTreasury(treasury);
       // const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress);
       // const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress);

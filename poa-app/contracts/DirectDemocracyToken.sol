@@ -36,10 +36,10 @@ contract DirectDemocracyToken is ERC20, Ownable {
         return 0;
     }
 
-    function mint(address _to) public canMint { 
-        require(balanceOf(_to) == 0, "This account has already claimed coins!");
-        _mint(_to, maxSupplyPerPerson);
-        emit Mint(_to, maxSupplyPerPerson);
+    function mint() public canMint { 
+        require(balanceOf(msg.sender) == 0, "This account has already claimed coins!");
+        _mint(msg.sender, maxSupplyPerPerson);
+        emit Mint(msg.sender, maxSupplyPerPerson);
     }
 
     function getBalance(address _address) public view returns (uint256) {

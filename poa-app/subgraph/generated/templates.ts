@@ -20,6 +20,20 @@ export class DirectDemocracyToken extends DataSourceTemplate {
   }
 }
 
+export class ParticipationToken extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("ParticipationToken", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "ParticipationToken",
+      [address.toHex()],
+      context
+    );
+  }
+}
+
 export class NFTMembership extends DataSourceTemplate {
   static create(address: Address): void {
     DataSourceTemplate.create("NFTMembership", [address.toHex()]);

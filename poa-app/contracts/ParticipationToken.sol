@@ -9,6 +9,10 @@ contract ParticipationToken is ERC20, Ownable {
 
     address private taskManagerAddress;
 
+    event Mint(address indexed to, uint256 amount);
+    event TaskManagerAddressSet(address taskManagerAddress);
+
+
     constructor(string memory name, string memory symbol) ERC20(name, symbol) {
     }
 
@@ -19,11 +23,13 @@ contract ParticipationToken is ERC20, Ownable {
 
     function mint(address to, uint256 amount) public onlyTaskManager {
         _mint(to, amount);
+        emit Mint(to, amount);
     }
 
     function setTaskManagerAddress(address _taskManagerAddress) external onlyOwner {
         taskManagerAddress = _taskManagerAddress;
         renounceOwnership();
+        emit TaskManagerAddressSet(_taskManagerAddress);
     }
 
     function _transfer(

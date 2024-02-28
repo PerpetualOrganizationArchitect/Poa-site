@@ -366,6 +366,378 @@ export class DDTokenMintEvent extends Entity {
   }
 }
 
+export class PTTokenCreated extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PTTokenCreated entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PTTokenCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("PTTokenCreated", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): PTTokenCreated | null {
+    return changetype<PTTokenCreated | null>(
+      store.get_in_block("PTTokenCreated", id)
+    );
+  }
+
+  static load(id: string): PTTokenCreated | null {
+    return changetype<PTTokenCreated | null>(store.get("PTTokenCreated", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tokenAddress(): Bytes {
+    let value = this.get("tokenAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set tokenAddress(value: Bytes) {
+    this.set("tokenAddress", Value.fromBytes(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get allowedRoleNames(): PTAllowedRoleNameLoader {
+    return new PTAllowedRoleNameLoader(
+      "PTTokenCreated",
+      this.get("id")!.toString(),
+      "allowedRoleNames"
+    );
+  }
+}
+
+export class PTAllowedRoleName extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PTAllowedRoleName entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PTAllowedRoleName must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("PTAllowedRoleName", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): PTAllowedRoleName | null {
+    return changetype<PTAllowedRoleName | null>(
+      store.get_in_block("PTAllowedRoleName", id)
+    );
+  }
+
+  static load(id: string): PTAllowedRoleName | null {
+    return changetype<PTAllowedRoleName | null>(
+      store.get("PTAllowedRoleName", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get roleName(): string {
+    let value = this.get("roleName");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set roleName(value: string) {
+    this.set("roleName", Value.fromString(value));
+  }
+
+  get tokenCreated(): string {
+    let value = this.get("tokenCreated");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tokenCreated(value: string) {
+    this.set("tokenCreated", Value.fromString(value));
+  }
+}
+
+export class PTToken extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PTToken entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PTToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("PTToken", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): PTToken | null {
+    return changetype<PTToken | null>(store.get_in_block("PTToken", id));
+  }
+
+  static load(id: string): PTToken | null {
+    return changetype<PTToken | null>(store.get("PTToken", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tokenAddress(): Bytes {
+    let value = this.get("tokenAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set tokenAddress(value: Bytes) {
+    this.set("tokenAddress", Value.fromBytes(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get mintEvents(): PTTokenMintEventLoader {
+    return new PTTokenMintEventLoader(
+      "PTToken",
+      this.get("id")!.toString(),
+      "mintEvents"
+    );
+  }
+
+  get taskManagerAddress(): Bytes | null {
+    let value = this.get("taskManagerAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set taskManagerAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("taskManagerAddress");
+    } else {
+      this.set("taskManagerAddress", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
+export class PTTokenMintEvent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PTTokenMintEvent entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PTTokenMintEvent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("PTTokenMintEvent", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): PTTokenMintEvent | null {
+    return changetype<PTTokenMintEvent | null>(
+      store.get_in_block("PTTokenMintEvent", id)
+    );
+  }
+
+  static load(id: string): PTTokenMintEvent | null {
+    return changetype<PTTokenMintEvent | null>(
+      store.get("PTTokenMintEvent", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
+
+  get to(): Bytes {
+    let value = this.get("to");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set to(value: Bytes) {
+    this.set("to", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+}
+
 export class NFTMembershipCreated extends Entity {
   constructor(id: string) {
     super();
@@ -850,6 +1222,42 @@ export class DDTokenMintEventLoader extends Entity {
   load(): DDTokenMintEvent[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<DDTokenMintEvent[]>(value);
+  }
+}
+
+export class PTAllowedRoleNameLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): PTAllowedRoleName[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<PTAllowedRoleName[]>(value);
+  }
+}
+
+export class PTTokenMintEventLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): PTTokenMintEvent[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<PTTokenMintEvent[]>(value);
   }
 }
 

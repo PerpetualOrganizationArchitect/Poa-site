@@ -80,6 +80,24 @@ export class OwnershipTransferred__Params {
   }
 }
 
+export class TaskManagerAddressSet extends ethereum.Event {
+  get params(): TaskManagerAddressSet__Params {
+    return new TaskManagerAddressSet__Params(this);
+  }
+}
+
+export class TaskManagerAddressSet__Params {
+  _event: TaskManagerAddressSet;
+
+  constructor(event: TaskManagerAddressSet) {
+    this._event = event;
+  }
+
+  get taskManagerAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -106,9 +124,9 @@ export class Transfer__Params {
   }
 }
 
-export class DirectDemocracyToken extends ethereum.SmartContract {
-  static bind(address: Address): DirectDemocracyToken {
-    return new DirectDemocracyToken("DirectDemocracyToken", address);
+export class ParticipationToken extends ethereum.SmartContract {
+  static bind(address: Address): ParticipationToken {
+    return new ParticipationToken("ParticipationToken", address);
   }
 
   allowance(owner: Address, spender: Address): BigInt {
@@ -134,19 +152,19 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  approve(param0: Address, param1: BigInt): boolean {
+  approve(spender: Address, amount: BigInt): boolean {
     let result = super.call("approve", "approve(address,uint256):(bool)", [
-      ethereum.Value.fromAddress(param0),
-      ethereum.Value.fromUnsignedBigInt(param1)
+      ethereum.Value.fromAddress(spender),
+      ethereum.Value.fromUnsignedBigInt(amount)
     ]);
 
     return result[0].toBoolean();
   }
 
-  try_approve(param0: Address, param1: BigInt): ethereum.CallResult<boolean> {
+  try_approve(spender: Address, amount: BigInt): ethereum.CallResult<boolean> {
     let result = super.tryCall("approve", "approve(address,uint256):(bool)", [
-      ethereum.Value.fromAddress(param0),
-      ethereum.Value.fromUnsignedBigInt(param1)
+      ethereum.Value.fromAddress(spender),
+      ethereum.Value.fromUnsignedBigInt(amount)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -221,25 +239,6 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  getBalance(_address: Address): BigInt {
-    let result = super.call("getBalance", "getBalance(address):(uint256)", [
-      ethereum.Value.fromAddress(_address)
-    ]);
-
-    return result[0].toBigInt();
-  }
-
-  try_getBalance(_address: Address): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("getBalance", "getBalance(address):(uint256)", [
-      ethereum.Value.fromAddress(_address)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
   increaseAllowance(spender: Address, addedValue: BigInt): boolean {
     let result = super.call(
       "increaseAllowance",
@@ -272,29 +271,6 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  maxSupplyPerPerson(): BigInt {
-    let result = super.call(
-      "maxSupplyPerPerson",
-      "maxSupplyPerPerson():(uint256)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_maxSupplyPerPerson(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "maxSupplyPerPerson",
-      "maxSupplyPerPerson():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
   name(): string {
     let result = super.call("name", "name():(string)", []);
 
@@ -308,25 +284,6 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  nftMembership(): Address {
-    let result = super.call("nftMembership", "nftMembership():(address)", []);
-
-    return result[0].toAddress();
-  }
-
-  try_nftMembership(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "nftMembership",
-      "nftMembership():(address)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   owner(): Address {
@@ -374,19 +331,19 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  transfer(param0: Address, param1: BigInt): boolean {
+  transfer(to: Address, amount: BigInt): boolean {
     let result = super.call("transfer", "transfer(address,uint256):(bool)", [
-      ethereum.Value.fromAddress(param0),
-      ethereum.Value.fromUnsignedBigInt(param1)
+      ethereum.Value.fromAddress(to),
+      ethereum.Value.fromUnsignedBigInt(amount)
     ]);
 
     return result[0].toBoolean();
   }
 
-  try_transfer(param0: Address, param1: BigInt): ethereum.CallResult<boolean> {
+  try_transfer(to: Address, amount: BigInt): ethereum.CallResult<boolean> {
     let result = super.tryCall("transfer", "transfer(address,uint256):(bool)", [
-      ethereum.Value.fromAddress(param0),
-      ethereum.Value.fromUnsignedBigInt(param1)
+      ethereum.Value.fromAddress(to),
+      ethereum.Value.fromUnsignedBigInt(amount)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -395,14 +352,14 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  transferFrom(param0: Address, param1: Address, param2: BigInt): boolean {
+  transferFrom(from: Address, to: Address, amount: BigInt): boolean {
     let result = super.call(
       "transferFrom",
       "transferFrom(address,address,uint256):(bool)",
       [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2)
+        ethereum.Value.fromAddress(from),
+        ethereum.Value.fromAddress(to),
+        ethereum.Value.fromUnsignedBigInt(amount)
       ]
     );
 
@@ -410,17 +367,17 @@ export class DirectDemocracyToken extends ethereum.SmartContract {
   }
 
   try_transferFrom(
-    param0: Address,
-    param1: Address,
-    param2: BigInt
+    from: Address,
+    to: Address,
+    amount: BigInt
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "transferFrom",
       "transferFrom(address,address,uint256):(bool)",
       [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2)
+        ethereum.Value.fromAddress(from),
+        ethereum.Value.fromAddress(to),
+        ethereum.Value.fromUnsignedBigInt(amount)
       ]
     );
     if (result.reverted) {
@@ -455,14 +412,6 @@ export class ConstructorCall__Inputs {
   get symbol(): string {
     return this._call.inputValues[1].value.toString();
   }
-
-  get _nftMembership(): Address {
-    return this._call.inputValues[2].value.toAddress();
-  }
-
-  get _allowedRoleNames(): Array<string> {
-    return this._call.inputValues[3].value.toStringArray();
-  }
 }
 
 export class ConstructorCall__Outputs {
@@ -490,11 +439,11 @@ export class ApproveCall__Inputs {
     this._call = call;
   }
 
-  get value0(): Address {
+  get spender(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get value1(): BigInt {
+  get amount(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 }
@@ -603,6 +552,14 @@ export class MintCall__Inputs {
   constructor(call: MintCall) {
     this._call = call;
   }
+
+  get to(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
 }
 
 export class MintCall__Outputs {
@@ -639,6 +596,36 @@ export class RenounceOwnershipCall__Outputs {
   }
 }
 
+export class SetTaskManagerAddressCall extends ethereum.Call {
+  get inputs(): SetTaskManagerAddressCall__Inputs {
+    return new SetTaskManagerAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetTaskManagerAddressCall__Outputs {
+    return new SetTaskManagerAddressCall__Outputs(this);
+  }
+}
+
+export class SetTaskManagerAddressCall__Inputs {
+  _call: SetTaskManagerAddressCall;
+
+  constructor(call: SetTaskManagerAddressCall) {
+    this._call = call;
+  }
+
+  get _taskManagerAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetTaskManagerAddressCall__Outputs {
+  _call: SetTaskManagerAddressCall;
+
+  constructor(call: SetTaskManagerAddressCall) {
+    this._call = call;
+  }
+}
+
 export class TransferCall extends ethereum.Call {
   get inputs(): TransferCall__Inputs {
     return new TransferCall__Inputs(this);
@@ -656,11 +643,11 @@ export class TransferCall__Inputs {
     this._call = call;
   }
 
-  get value0(): Address {
+  get to(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get value1(): BigInt {
+  get amount(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 }
@@ -694,15 +681,15 @@ export class TransferFromCall__Inputs {
     this._call = call;
   }
 
-  get value0(): Address {
+  get from(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get value1(): Address {
+  get to(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 
-  get value2(): BigInt {
+  get amount(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
   }
 }

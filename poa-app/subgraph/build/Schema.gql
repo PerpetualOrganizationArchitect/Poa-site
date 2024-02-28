@@ -1,0 +1,111 @@
+
+##DDtoken
+
+type DDTokenCreated @entity {
+  id: ID!
+  tokenAddress: Bytes!
+  name: String!
+  symbol: String!
+  POname: String!
+  allowedRoleNames: [DDAllowedRoleName!]! @derivedFrom(field: "tokenCreated")
+}
+
+type DDAllowedRoleName @entity {
+  id: ID!
+  roleName: String!
+  tokenCreated: DDTokenCreated! @link
+}
+
+type DDToken @entity {
+  id: ID!
+  tokenAddress: Bytes!
+  name: String!
+  symbol: String!
+  POname: String!
+  mintEvents: [DDTokenMintEvent!]! @derivedFrom(field: "token")
+}
+
+type DDTokenMintEvent @entity {
+  id: ID!
+  token: DDToken! @link
+  to: Bytes!
+  amount: BigInt!
+}
+
+##participation token 
+type PTTokenCreated @entity {
+  id: ID!
+  tokenAddress: Bytes!
+  name: String!
+  symbol: String!
+  POname: String!
+  allowedRoleNames: [PTAllowedRoleName!]! @derivedFrom(field: "tokenCreated")
+}
+
+type PTAllowedRoleName @entity {
+  id: ID!
+  roleName: String!
+  tokenCreated: PTTokenCreated! @link
+}
+
+type PTToken @entity {
+  id: ID!
+  tokenAddress: Bytes!
+  name: String!
+  symbol: String!
+  POname: String!
+  mintEvents: [PTTokenMintEvent!]! @derivedFrom(field: "token")
+  taskManagerAddress: Bytes
+}
+
+type PTTokenMintEvent @entity {
+  id: ID!
+  token: PTToken! @link
+  to: Bytes!
+  amount: BigInt!
+}
+
+
+
+##nft 
+
+type NFTMembershipCreated @entity {
+  id: ID!
+  contractAddress: Bytes!
+  memberTypeNames: [String!]!
+  defaultImageURL: String!
+  POname: String!
+}
+
+type NFTMembership @entity {
+  id: ID!
+  contract: NFTMembershipCreated! @link
+  memberTypeNames: [String!]!
+  defaultImageURL: String!
+  mintEvents: [NFTMintEvent!]! @derivedFrom(field: "membership")
+  changeTypeEvents: [NFTChangeTypeEvent!]! @derivedFrom(field: "membership")
+}
+
+type NFTMemberType @entity {
+  id: ID!
+  memberTypeName: String!
+  imageURL: String!
+  membership: NFTMembership! @link
+}
+
+type NFTMintEvent @entity {
+  id: ID!
+  membership: NFTMembership! @link
+  recipient: Bytes!
+  memberTypeName: String!
+  tokenURI: String!
+}
+
+type NFTChangeTypeEvent @entity {
+  id: ID!
+  membership: NFTMembership! @link
+  user: Bytes!
+  newMemberType: String!
+}
+
+
