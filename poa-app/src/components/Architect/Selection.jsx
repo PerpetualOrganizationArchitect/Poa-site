@@ -1,9 +1,15 @@
 import React from 'react';
-import { Button } from '@chakra-ui/react';
+import { Button, Stack } from '@chakra-ui/react';
 
-const Selection = () => {
+const Selection = ({ options, onOptionSelected }) => {
   return (
-    <Button colorScheme="teal">I'm Ready!</Button>
+    <Stack direction="column" spacing={4}>
+      {options.map((option, index) => (
+        <Button key={index} colorScheme="teal" onClick={() => onOptionSelected(option.action)}>
+          {option.title}
+        </Button>
+      ))}
+    </Stack>
   );
 };
 

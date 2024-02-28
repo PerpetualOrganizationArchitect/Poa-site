@@ -10,16 +10,35 @@ const ArchitectPage = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [showSelection, setShowSelection] = useState(false);
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    // Simulating a greeting message from "POA" on initial load
-    const greetingMessage = { speaker: 'POA', text: "Hello!, I'm POA." };
-    setMessages([greetingMessage]);
+  // Simulating a greeting message from "POA" on initial load
+  const greetingMessage = { speaker: 'POA', text: "Hello!, I'm POA." };
+setMessages([greetingMessage]);
 
-    setShowSelection(true);
+   setShowSelection(true);
   }, []);
 
+  useEffect(() => {
+    // Simulate the greeting message and show options
+    generateOptions();
+  }, []);
 
+  const generateOptions = () => {
+    // For the greeting, generate one option
+    const greetingOptions = [
+      {
+        title: "I'm Ready!",
+        action: () => setShowSelection(false), // For now, just close the selection
+      },
+    ];
+    setOptions(greetingOptions);
+    setShowSelection(true);
+  };
+  const handleOptionSelected = (action) => {
+    action(); // Perform the action associated with the option
+  };
   const handleSendClick = () => {
     if (!userInput.trim()) return;
 
@@ -50,7 +69,7 @@ return (
         bottom="0"
         left="0"
         right="0"
-        height={selectionHeight} // This is already set to take 50% of the screen height when shown
+        height={selectionHeight} 
         p="4"
         display="flex"
         alignItems="center"
@@ -59,7 +78,7 @@ return (
         borderTop="2px solid"
         borderColor="gray.200"
       >
-        <Selection />
+        <Selection options={options} onOptionSelected={handleOptionSelected}/>
       </Box>
     )}
     <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10}>
