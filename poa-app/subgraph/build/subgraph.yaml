@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./DDtokenSchema.gql
+  file: DDtokenSchema.gql
 dataSources:
   - kind: ethereum/contract
     name: DirectDemocracyTokenFactory
@@ -17,11 +17,11 @@ dataSources:
         - DDTokenCreated
       abis:
         - name: DirectDemocracyTokenFactory
-          file: ../abi/DirectDemocracyTokenFactory.json
+          file: abi/DirectDemocracyTokenFactory.json
       eventHandlers:
         - event: TokenCreated(address,string,string,string[],string)
           handler: handleTokenCreated
-      file: ./mappings/ddToken/ddTokenFactoryMapping.ts
+      file: DirectDemocracyTokenFactory/DirectDemocracyTokenFactory.wasm
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -38,8 +38,8 @@ templates:
         - DDTokenMintEvent
       abis:
         - name: DirectDemocracyToken
-          file: ../abi/DirectDemocracyToken.json
+          file: abi/DirectDemocracyToken.json
       eventHandlers:
         - event: Mint(indexed address,uint256)
           handler: handleMintDD
-      file: ./mappings/ddToken/ddTokenMapping.ts
+      file: templates/DirectDemocracyToken/DirectDemocracyToken.wasm

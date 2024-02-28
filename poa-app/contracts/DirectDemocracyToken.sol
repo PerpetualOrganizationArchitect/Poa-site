@@ -10,6 +10,8 @@ interface INFTMembership {
 
 contract DirectDemocracyToken is ERC20, Ownable { 
 
+    event Mint(address indexed to, uint256 amount);
+
     INFTMembership public nftMembership;
 
     uint256 public constant maxSupplyPerPerson = 100;
@@ -37,6 +39,7 @@ contract DirectDemocracyToken is ERC20, Ownable {
     function mint(address _to) public canMint { 
         require(balanceOf(_to) == 0, "This account has already claimed coins!");
         _mint(_to, maxSupplyPerPerson);
+        emit Mint(_to, maxSupplyPerPerson);
     }
 
     function getBalance(address _address) public view returns (uint256) {
