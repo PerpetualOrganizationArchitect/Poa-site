@@ -1,22 +1,27 @@
+// Character.jsx
 import Image from "next/image";
+import { Box } from "@chakra-ui/react";
 
-const Character = ({ position }) => {
-  // Set the character's position based on the prop
-  // const characterStyle = {
-  //   position: "fixed", // Fixed position relative to the viewport
-  //   top: "100px", // Adjust the distance from the top of the viewport
-  //   left: "20px",
-  // };
-
+const Character = () => {
   return (
-    <div >
-      <Image
-        src="/images/poa_character.png"
-        alt="Character"
-        width={115}
-        height={115}
-      />
-    </div>
+    <Box
+      position="fixed"
+      width="100%"
+      top="0"
+      left="0"
+      right="0"
+      height="115px"
+      zIndex="sticky"
+    >
+      <Box position="absolute" left="50%" transform="translateX(-50%)">
+        <Image
+          src="/images/poa_character.png"
+          alt="Character"
+          width={115}
+          height={115}
+        />
+      </Box>
+    </Box>
   );
 };
 
