@@ -1,0 +1,45 @@
+specVersion: 0.0.5
+schema:
+  file: ./DDtokenSchema.gql
+dataSources:
+  - kind: ethereum/contract
+    name: DirectDemocracyTokenFactory
+    network: mumbai
+    source:
+      address: "0xC9cEEFbCBC9c4ee0bd8dFcDB274908E2cC3401e9"
+      abi: DirectDemocracyTokenFactory
+      startBlock: 45730300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DDTokenCreated
+      abis:
+        - name: DirectDemocracyTokenFactory
+          file: ../abi/DirectDemocracyTokenFactory.json
+      eventHandlers:
+        - event: TokenCreated(address,string,string,string[],string)
+          handler: handleTokenCreated
+      file: ./ddTokenMapping.ts
+templates:
+  - kind: ethereum/contract
+    name: DirectDemocracyToken
+    network: mumbai
+    source:
+      abi: DirectDemocracyToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DDAllowedRoleName
+        - DDToken
+        - DDTokenMintEvent
+      abis:
+        - name: DirectDemocracyToken
+          file: ../abi/DirectDemocracyToken.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256)
+          handler: handleMintDD
+      file: ./ddTokenMapping.ts
