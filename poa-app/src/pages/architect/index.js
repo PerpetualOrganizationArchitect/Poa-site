@@ -16,7 +16,6 @@ const ArchitectPage = () => {
     const greetingMessage = { speaker: 'POA', text: "Hello!, I'm POA." };
     setMessages([greetingMessage]);
 
-    // After showing the greeting, we display the Selection component
     setShowSelection(true);
   }, []);
 
@@ -33,47 +32,46 @@ const ArchitectPage = () => {
     setMessages([...messages, newUserMessage, newResponseMessage]);
     setUserInput("");
   };
+// Define the selectionHeight based on the visibility of the Selection component
+const selectionHeight = showSelection ? '50%' : '0%'; // If Selection is shown, it takes 50% of the screen height
 
-  const characterPosition = messages.length % 2 === 0 ? "left" : "right";
-
-  return (
-    <Layout isArchitectPage>
-      <Character position={characterPosition} />
-      <Flex direction="column" h="100vh">
-        <Box flex="1" overflowY="auto">
-          <ConversationLog messages={messages} />
-        </Box>
-        {showSelection && (
-          <Flex
-            position="fixed"
-            bottom="0"
-            left="0"
-            right="0"
-            height="50%" // Taking up half of the screen vertically
-            alignItems="center" // Center vertically in the Flex container
-            justifyContent="center" // Center horizontally in the Flex container
-            bg="gray.100" // Example background color for visibility
-            borderTop="2px" // Example styling
-            borderColor="gray.200" // Example styling
-          >
-            <Box p="4" boxShadow="md" bg="white" borderRadius="lg">
-              <Selection />
-            </Box>
-          </Flex>
-    )}
-      </Flex>
-      <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10}>
-      
-
-        <ArchitectInput
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onSubmit={handleSendClick}
-        />
+return (
+  <Layout isArchitectPage>
+      <Character />
+    <Flex direction="column" h={`calc(100vh - ${selectionHeight})`}>
+    
+      <Box flex="1" overflowY="auto">
+        <ConversationLog messages={messages} />
       </Box>
-   
-    </Layout>
-  );
+    </Flex>
+    {showSelection && (
+      <Box
+        position="fixed"
+        bottom="0"
+        left="0"
+        right="0"
+        height={selectionHeight} // This is already set to take 50% of the screen height when shown
+        p="4"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        bg="gray.100"
+        borderTop="2px solid"
+        borderColor="gray.200"
+      >
+        <Selection />
+      </Box>
+    )}
+    <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10}>
+      <ArchitectInput
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        onSubmit={handleSendClick}
+      />
+    </Box>
+  </Layout>
+);
+
 };
 
 export default ArchitectPage;
