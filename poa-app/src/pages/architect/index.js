@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
-import { Box, Flex, VStack } from "@chakra-ui/react";
+import { Box, Button, useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
@@ -13,6 +14,25 @@ const ArchitectPage = () => {
   const [options, setOptions] = useState([]);
   const selectionRef = useRef(null);
   const [selectionHeight, setSelectionHeight] = useState(0);
+  const [orgName, setOrgName] = useState(""); // State to hold the organization name
+  const toast = useToast();
+  const router = useRouter();
+
+  const createOrgSite = () => {
+    if (!orgName.trim()) {
+      toast({
+        title: "Organization name is required.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    // You would typically call an API to create the site on the server here
+    // For the test function, we'll just navigate to a dynamic route
+    router.push(`/[userDAO]/home`, `/${orgName}/home`);
+  };
 
   useEffect(() => {
     // Update the selectionHeight state if the selectionRef is set and the component is visible
@@ -70,17 +90,25 @@ const ArchitectPage = () => {
   const handleOptionSelected = (action) => {
     action(); // Perform the action associated with the option
   };
+
   const handleSendClick = () => {
     if (!userInput.trim()) return;
 
-    const newUserMessage = { speaker: "user", text: userInput };
-    const newResponseMessage = {
-      speaker: "system",
-      text: "This is a hardcoded response.",
-    };
+    if (userInput.toLowerCase().startsWith("org:")) {
+      setOrgName(userInput.split(":")[1].trim());
+      createOrgSite();
+      setUserInput("");
+    } else {
+      // Handle other user input
+      const newUserMessage = { speaker: "user", text: userInput };
+      const newResponseMessage = {
+        speaker: "system",
+        text: "This is a hardcoded response.",
+      };
 
-    setMessages([...messages, newUserMessage, newResponseMessage]);
-    setUserInput("");
+      setMessages([...messages, newUserMessage, newResponseMessage]);
+      setUserInput("");
+    }
   };
 
   return (
@@ -100,6 +128,19 @@ const ArchitectPage = () => {
       >
         <ConversationLog messages={messages} />
       </Box>
+
+      {orgName && (
+        <Button
+          position="fixed"
+          bottom="100px" // Adjust this value so it doesn't overlap with ArchitectInput
+          width="full"
+          p={4}
+          colorScheme="teal"
+          onClick={() => router.push(`/${orgName}/home`)}
+        >
+          Go to {orgName}'s Dashboard
+        </Button>
+      )}
 
       {showSelection && (
         <Box
