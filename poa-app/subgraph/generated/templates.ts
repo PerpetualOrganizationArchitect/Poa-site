@@ -19,3 +19,17 @@ export class DirectDemocracyToken extends DataSourceTemplate {
     );
   }
 }
+
+export class NFTMembership extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("NFTMembership", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "NFTMembership",
+      [address.toHex()],
+      context
+    );
+  }
+}

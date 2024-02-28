@@ -1,34 +1,3 @@
-type DDTokenCreated @entity {
-  id: ID!
-  tokenAddress: Bytes!
-  name: String!
-  symbol: String!
-  POname: String!
-  allowedRoleNames: [DDAllowedRoleName!]! @derivedFrom(field: "tokenCreated")
-}
-
-type DDAllowedRoleName @entity {
-  id: ID!
-  roleName: String!
-  tokenCreated: DDTokenCreated! @link
-}
-
-type DDToken @entity {
-  id: ID!
-  tokenAddress: Bytes!
-  name: String!
-  symbol: String!
-  POname: String!
-  mintEvents: [DDTokenMintEvent!]! @derivedFrom(field: "token")
-}
-
-type DDTokenMintEvent @entity {
-  id: ID!
-  token: DDToken! @link
-  to: Bytes!
-  amount: BigInt!
-}
-
 type NFTMembershipCreated @entity {
   id: ID!
   contractAddress: Bytes!
@@ -67,5 +36,3 @@ type NFTChangeTypeEvent @entity {
   user: Bytes!
   newMemberType: String!
 }
-
-

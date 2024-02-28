@@ -366,6 +366,457 @@ export class DDTokenMintEvent extends Entity {
   }
 }
 
+export class NFTMembershipCreated extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save NFTMembershipCreated entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type NFTMembershipCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("NFTMembershipCreated", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): NFTMembershipCreated | null {
+    return changetype<NFTMembershipCreated | null>(
+      store.get_in_block("NFTMembershipCreated", id)
+    );
+  }
+
+  static load(id: string): NFTMembershipCreated | null {
+    return changetype<NFTMembershipCreated | null>(
+      store.get("NFTMembershipCreated", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+
+  get memberTypeNames(): Array<string> {
+    let value = this.get("memberTypeNames");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set memberTypeNames(value: Array<string>) {
+    this.set("memberTypeNames", Value.fromStringArray(value));
+  }
+
+  get defaultImageURL(): string {
+    let value = this.get("defaultImageURL");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set defaultImageURL(value: string) {
+    this.set("defaultImageURL", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+}
+
+export class NFTMembership extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save NFTMembership entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type NFTMembership must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("NFTMembership", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): NFTMembership | null {
+    return changetype<NFTMembership | null>(
+      store.get_in_block("NFTMembership", id)
+    );
+  }
+
+  static load(id: string): NFTMembership | null {
+    return changetype<NFTMembership | null>(store.get("NFTMembership", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contract(): string {
+    let value = this.get("contract");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set contract(value: string) {
+    this.set("contract", Value.fromString(value));
+  }
+
+  get memberTypeNames(): Array<string> {
+    let value = this.get("memberTypeNames");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set memberTypeNames(value: Array<string>) {
+    this.set("memberTypeNames", Value.fromStringArray(value));
+  }
+
+  get defaultImageURL(): string {
+    let value = this.get("defaultImageURL");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set defaultImageURL(value: string) {
+    this.set("defaultImageURL", Value.fromString(value));
+  }
+
+  get mintEvents(): NFTMintEventLoader {
+    return new NFTMintEventLoader(
+      "NFTMembership",
+      this.get("id")!.toString(),
+      "mintEvents"
+    );
+  }
+
+  get changeTypeEvents(): NFTChangeTypeEventLoader {
+    return new NFTChangeTypeEventLoader(
+      "NFTMembership",
+      this.get("id")!.toString(),
+      "changeTypeEvents"
+    );
+  }
+}
+
+export class NFTMemberType extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save NFTMemberType entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type NFTMemberType must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("NFTMemberType", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): NFTMemberType | null {
+    return changetype<NFTMemberType | null>(
+      store.get_in_block("NFTMemberType", id)
+    );
+  }
+
+  static load(id: string): NFTMemberType | null {
+    return changetype<NFTMemberType | null>(store.get("NFTMemberType", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get memberTypeName(): string {
+    let value = this.get("memberTypeName");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set memberTypeName(value: string) {
+    this.set("memberTypeName", Value.fromString(value));
+  }
+
+  get imageURL(): string {
+    let value = this.get("imageURL");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set imageURL(value: string) {
+    this.set("imageURL", Value.fromString(value));
+  }
+
+  get membership(): string {
+    let value = this.get("membership");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set membership(value: string) {
+    this.set("membership", Value.fromString(value));
+  }
+}
+
+export class NFTMintEvent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save NFTMintEvent entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type NFTMintEvent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("NFTMintEvent", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): NFTMintEvent | null {
+    return changetype<NFTMintEvent | null>(
+      store.get_in_block("NFTMintEvent", id)
+    );
+  }
+
+  static load(id: string): NFTMintEvent | null {
+    return changetype<NFTMintEvent | null>(store.get("NFTMintEvent", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get membership(): string {
+    let value = this.get("membership");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set membership(value: string) {
+    this.set("membership", Value.fromString(value));
+  }
+
+  get recipient(): Bytes {
+    let value = this.get("recipient");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set recipient(value: Bytes) {
+    this.set("recipient", Value.fromBytes(value));
+  }
+
+  get memberTypeName(): string {
+    let value = this.get("memberTypeName");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set memberTypeName(value: string) {
+    this.set("memberTypeName", Value.fromString(value));
+  }
+
+  get tokenURI(): string {
+    let value = this.get("tokenURI");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tokenURI(value: string) {
+    this.set("tokenURI", Value.fromString(value));
+  }
+}
+
+export class NFTChangeTypeEvent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save NFTChangeTypeEvent entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type NFTChangeTypeEvent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("NFTChangeTypeEvent", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): NFTChangeTypeEvent | null {
+    return changetype<NFTChangeTypeEvent | null>(
+      store.get_in_block("NFTChangeTypeEvent", id)
+    );
+  }
+
+  static load(id: string): NFTChangeTypeEvent | null {
+    return changetype<NFTChangeTypeEvent | null>(
+      store.get("NFTChangeTypeEvent", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get membership(): string {
+    let value = this.get("membership");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set membership(value: string) {
+    this.set("membership", Value.fromString(value));
+  }
+
+  get user(): Bytes {
+    let value = this.get("user");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get newMemberType(): string {
+    let value = this.get("newMemberType");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set newMemberType(value: string) {
+    this.set("newMemberType", Value.fromString(value));
+  }
+}
+
 export class DDAllowedRoleNameLoader extends Entity {
   _entity: string;
   _field: string;
@@ -399,5 +850,41 @@ export class DDTokenMintEventLoader extends Entity {
   load(): DDTokenMintEvent[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<DDTokenMintEvent[]>(value);
+  }
+}
+
+export class NFTMintEventLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): NFTMintEvent[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<NFTMintEvent[]>(value);
+  }
+}
+
+export class NFTChangeTypeEventLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): NFTChangeTypeEvent[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<NFTChangeTypeEvent[]>(value);
   }
 }

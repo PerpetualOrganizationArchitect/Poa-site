@@ -128,8 +128,8 @@ async function deployRegistry(wallet) {
   return contract;
 }
 
-async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImageURL ){
-  const tx = await nftFactoryContract.createNFTMembership(memberTypeNames, defaultImageURL);
+async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImageURL, POname ){
+  const tx = await nftFactoryContract.createNFTMembership(memberTypeNames, defaultImageURL, POname);
   await tx.wait();
 
   const deployedContracts = await nftFactoryContract.getDeployedContracts();
@@ -370,7 +370,7 @@ async function main() {
       const defaultImageURL = "http://example.com/default.jpg";
       const POname = "Test Org";
 
-      const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL);
+      const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
       const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
       // const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT");
       // const treasuryAddress = await makeTreasury(treasury);

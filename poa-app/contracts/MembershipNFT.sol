@@ -17,6 +17,9 @@ contract NFTMembership is ERC721URIStorage, Ownable{
     string private constant DEFAULT_MEMBER_TYPE = "Default";
     string private defaultImageURL; 
 
+    event mintedNFT(address recipient, string memberTypeName, string tokenURI);
+    event membershipTypeChanged(address user, string newMemberType);
+
     constructor(string[] memory _memberTypeNames, string memory _defaultImageURL) ERC721("MembershipNFT", "MNF") {
         defaultImageURL = _defaultImageURL; 
         for (uint256 i = 0; i < _memberTypeNames.length; i++) {
@@ -44,11 +47,13 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         _mint(recipient, tokenId);
         _setTokenURI(tokenId, tokenURI);
         memberTypeOf[recipient] = memberTypeName;
+        emit mintedNFT(recipient, memberTypeName, tokenURI);
     }
 
     function changeMembershipType(address user, string memory newMemberType) public onlyOwner {
         require(bytes(memberTypeImages[newMemberType]).length > 0, "Image for member type not set");
         memberTypeOf[user] = newMemberType;
+        emit membershipTypeChanged(user, newMemberType);
     }
 
     function mintDefaultNFT() public {
@@ -57,6 +62,7 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         _mint(msg.sender, tokenId);
         _setTokenURI(tokenId, tokenURI);
         memberTypeOf[msg.sender] = DEFAULT_MEMBER_TYPE;
+        emit mintedNFT(msg.sender, DEFAULT_MEMBER_TYPE, tokenURI);
     }
 
 

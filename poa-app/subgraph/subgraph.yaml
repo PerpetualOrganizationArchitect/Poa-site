@@ -6,7 +6,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: mumbai
     source:
-      address: "0x6A2b0A5F7b31d01484E6720d702CAB032319055D"
+      address: "0x1eFD270C97d99BbFE8E68fce59d1da4d2a7128e5"
       abi: DirectDemocracyTokenFactory
       startBlock: 46430300
     mapping:
@@ -22,6 +22,26 @@ dataSources:
         - event: TokenCreated(address,string,string,string[],string)
           handler: handleTokenCreated
       file: ./mappings/ddToken/ddTokenFactoryMapping.ts
+  - kind: ethereum/contract
+    name: NFTMembershipFactory
+    network: mumbai
+    source:
+      address: "0x2baA06cd45c7915C009c0f282aF7668E430fd936"
+      abi: NFTMembershipFactory
+      startBlock: 46430300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NFTMembershipCreated
+      abis:
+        - name: NFTMembershipFactory
+          file: ../abi/NFTMembershipFactory.json
+      eventHandlers:
+        - event: ContractCreated(address,string[],string,string)
+          handler: handleContractCreated
+      file: ./mappings/nft/nftMembershipFactoryMapping.ts
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -43,3 +63,26 @@ templates:
         - event: Mint(indexed address,uint256)
           handler: handleMintDD
       file: ./mappings/ddToken/ddTokenMapping.ts
+  - kind: ethereum/contract
+    name: NFTMembership
+    network: mumbai
+    source:
+      abi: NFTMembership
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - NFTMembership
+        - NFTMemberType
+        - NFTMintEvent
+        - NFTMembershipTypeChanged
+      abis:
+        - name: NFTMembership
+          file: ../abi/NFTMembership.json
+      eventHandlers:
+        - event: mintedNFT(address,string,string)
+          handler: handleMintedNFT
+        - event: membershipTypeChanged(address,string)
+          handler: handleMembershipTypeChanged
+      file: ./mappings/nft/nftMembershipMapping.ts
