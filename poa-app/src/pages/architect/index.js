@@ -31,7 +31,7 @@ const ArchitectPage = () => {
 
     // You would typically call an API to create the site on the server here
     // For the test function, we'll just navigate to a dynamic route
-    router.push(`/[userDAO]/taskmanager`, `/${orgName}/taskmanager`);
+    router.push(`/[userDAO]/home`, `/${orgName}/home`);
   };
 
   useEffect(() => {
@@ -136,7 +136,7 @@ const ArchitectPage = () => {
           width="full"
           p={4}
           colorScheme="teal"
-          onClick={() => router.push(`/${orgName}/tasks`)}
+          onClick={() => router.push(`/${orgName}/home`)}
         >
           Go to {orgName}'s Dashboard
         </Button>
