@@ -6,7 +6,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: mumbai
     source:
-      address: "0xA42b6012C23Ce0C51bed054ca9fCB333BF1794F6"
+      address: "0xacC38f13Fd1188b6d96A63667a1cdabD2658e8A7"
       abi: DirectDemocracyTokenFactory
       startBlock: 46430300
     mapping:
@@ -26,7 +26,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: mumbai
     source:
-      address: "0x81234546CAEad2f031ff674F068dD25912252850"
+      address: "0xCd287224B57A3D47fa450e963efBDA69eC95E9B2"
       abi: ParticipationTokenFactory
       startBlock: 46430300
     mapping:
@@ -46,7 +46,7 @@ dataSources:
     name: NFTMembershipFactory
     network: mumbai
     source:
-      address: "0x8aD803d524dc5833cf82e351B152f0f9CE5B2712"
+      address: "0x39910F464047d5459a09F7a5d29c7AFb051138B2"
       abi: NFTMembershipFactory
       startBlock: 46430300
     mapping:
@@ -66,7 +66,7 @@ dataSources:
     name: TreasuryFactory
     network: mumbai
     source:
-      address: "0x73a0c34Ed98e9f4E54da2bC447D0BE63ad3D698D"
+      address: "0x02ABeCfd915fc65853D7f00A2ecc67f2B9a6d03A"
       abi: TreasuryFactory
       startBlock: 46430300
     mapping:
@@ -86,7 +86,7 @@ dataSources:
     name: ParticipationVotingFactory
     network: mumbai
     source:
-      address: "0x25d35d916Fa2144A5fa469aF220ff893B67B6236"
+      address: "0x238d520dD35e53D013053CcA02fBEa6c3C7BD346"
       abi: ParticipationVotingFactory
       startBlock: 46430300
     mapping:
@@ -106,7 +106,7 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: mumbai
     source:
-      address: "0xD2124096fe1ed23962eeeF587661EFCBEf6719B4"
+      address: "0x0dDE010346bDCf65c378935f2949990A5a427B0C"
       abi: DirectDemocracyVotingFactory
       startBlock: 46430300
     mapping:
@@ -126,7 +126,7 @@ dataSources:
     name: HybridVotingFactory
     network: mumbai
     source:
-      address: "0xD2124096fe1ed23962eeeF587661EFCBEf6719B4"
+      address: "0xC918150fc55376E292854c6d949E0e3A7E7023b8"
       abi: HybridVotingFactory
       startBlock: 46430300
     mapping:
@@ -146,7 +146,7 @@ dataSources:
     name: TaskManagerFactory
     network: mumbai
     source:
-      address: "0xA42b6012C23Ce0C51bed054ca9fCB333BF1794F6"
+      address: "0x6b719397477EDA22490d0dC29A8AFF9a060de532"
       abi: TaskManagerFactory
       startBlock: 46430300
     mapping:
@@ -166,7 +166,7 @@ dataSources:
     name: RegistryFactory
     network: mumbai
     source:
-      address: "0xA42b6012C23Ce0C51bed054ca9fCB333BF1794F6"
+      address: "0x0511BB19663F7c2A46375263d370dd55CDE3C62A"
       abi: RegistryFactory
       startBlock: 46430300
     mapping:
@@ -180,7 +180,7 @@ dataSources:
           file: abi/RegistryFactory.json
       eventHandlers:
         - event: RegistryCreated(address,string,string)
-          handler: handleRegistryCreated
+          handler: handleRegistryContractCreated
       file: RegistryFactory/RegistryFactory.wasm
 templates:
   - kind: ethereum/contract
