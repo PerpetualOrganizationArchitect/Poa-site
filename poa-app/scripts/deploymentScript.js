@@ -282,7 +282,8 @@ async function makeHybridVoting(
   quadraticVotingEnabled,
   democracyVoteWeight,
   participationVoteWeight,
-  treasuryAddress
+  treasuryAddress,
+  POname
 ) {
   
   if (!hybridVotingFactoryContract || !ethers.utils.isAddress(participationTokenAddress) || !ethers.utils.isAddress(democracyTokenAddress)) {
@@ -300,12 +301,13 @@ async function makeHybridVoting(
       quadraticVotingEnabled,
       democracyVoteWeight,
       participationVoteWeight,
-      treasuryAddress
+      treasuryAddress,
+      POname
     );
     const txReceipt = await txResponse.wait();
 
     
-    const hybridVotingCreatedEvent = txReceipt.events?.find(event => event.event === "HybridVotingCreated");
+    const hybridVotingCreatedEvent = txReceipt.events?.find(event => event.event === "HybridVotingContractCreated");
     const newHybridVotingAddress = hybridVotingCreatedEvent.args.hybridVotingAddress;
 
     console.log(`Hybrid Voting contract created at address: ${newHybridVotingAddress}`);
@@ -318,7 +320,7 @@ async function makeHybridVoting(
   }
 }
 
-async function makeTaskManager(taskManagerFactoryContract, tokenAddress, nftMembershipAddress, allowedRoleNames) {
+async function makeTaskManager(taskManagerFactoryContract, tokenAddress, nftMembershipAddress, allowedRoleNames, POname) {
   
   if (!taskManagerFactoryContract || !tokenAddress || !nftMembershipAddress || !allowedRoleNames.length) {
     console.error("Invalid parameters provided to createTaskManager function");
@@ -326,7 +328,7 @@ async function makeTaskManager(taskManagerFactoryContract, tokenAddress, nftMemb
   }
 
   // Call the createTaskManager function on the factory contract
-  const tx = await taskManagerFactoryContract.createTaskManager(tokenAddress, nftMembershipAddress, allowedRoleNames);
+  const tx = await taskManagerFactoryContract.createTaskManager(tokenAddress, nftMembershipAddress, allowedRoleNames, POname);
   await tx.wait(); 
 
   // Fetch the transaction receipt to extract the event details
@@ -355,7 +357,7 @@ async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress
   const receipt = await tx.wait();
 
   
-  const votingCreatedEvent = receipt.events?.filter((event) => event.event === "VotingCreated")[0];
+  const votingCreatedEvent = receipt.events?.filter((event) => event.event === "VotingContractCreated")[0];
   if (votingCreatedEvent) {
     
     const votingAddress = votingCreatedEvent.args.votingAddress;
@@ -365,6 +367,29 @@ async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress
     console.error("Direct Democracy Voting address not found from the transaction receipt");
   }
 }
+
+const makeRegistry = async (votingControlAddress, registryFactoryContract, contractNames, contractAddresses, POname, logoURL) => {
+  if (!registryFactoryContract || !contractNames.length || !contractAddresses.length) {
+    console.error("Invalid parameters provided to createRegistry function");
+    return;
+  }
+
+  try {
+    const txResponse = await registryFactoryContract.createRegistry(votingControlAddress, contractNames, contractAddresses, POname, logoURL);
+    const txReceipt = await txResponse.wait();
+
+    const registryCreatedEvent = txReceipt.events?.find(event => event.event === "RegistryCreated");
+    const registryAddress = registryCreatedEvent.args.newRegistryAddress;
+
+    console.log(`Registry Contract deployed at address: ${registryAddress}`);
+
+    return registryAddress;
+  } catch (error) {
+    console.error("Failed to create Registry:", error);
+    throw error; 
+  }
+}
+
 
 
 async function main() {
@@ -379,9 +404,9 @@ async function main() {
       const treasury = await deployTreasury(wallet);
       const ptVoting = await deployParticipationVoting(wallet);
       const ddVoting = await deployDirectDemocracyVoting(wallet);
-      // const hybridVoting = await deployHybridVoting(wallet);
-      // const taskManager = await deployTaskManager(wallet);
-      // const registry = await deployRegistry(wallet);
+      const hybridVoting = await deployHybridVoting(wallet);
+      const taskManager = await deployTaskManager(wallet);
+      const registry = await deployRegistry(wallet);
 
       const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
       const defaultImageURL = "http://example.com/default.jpg";
@@ -393,9 +418,17 @@ async function main() {
       const treasuryAddress = await makeTreasury(treasury, POname);
       const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress, POname);
       const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress, POname);
-      // const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress);
-      // const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames);
+      const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress, POname);
+      const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames, POname);
 
+      // make arrary of all conract names 
+      const contractNames = ["NFTMembership", "DirectDemocracyToken", "ParticipationToken", "Treasury", "ParticipationVoting", "DirectDemocracyVoting", "HybridVoting", "TaskManager"];
+      const contractAddresses = [nftAddress, ddTokenAddress, ptTokenAddress, treasuryAddress, ptVotingAddress, ddVotingAddress, hybridVotingAddress, taskManagerAddress];
+
+      const votingControlAddress = hybridVotingAddress;
+      const logoURL = "http://example.com/logo.jpg";
+      const registryAddress = await makeRegistry(votingControlAddress, registry, contractNames, contractAddresses, POname, logoURL);
+ 
 
 
       
