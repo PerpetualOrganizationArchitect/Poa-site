@@ -3192,6 +3192,36 @@ export class Task extends Entity {
   set project(value: string) {
     this.set("project", Value.fromString(value));
   }
+
+  get claimer(): Bytes | null {
+    let value = this.get("claimer");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set claimer(value: Bytes | null) {
+    if (!value) {
+      this.unset("claimer");
+    } else {
+      this.set("claimer", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get completed(): boolean {
+    let value = this.get("completed");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set completed(value: boolean) {
+    this.set("completed", Value.fromBoolean(value));
+  }
 }
 
 export class Project extends Entity {
@@ -3261,6 +3291,19 @@ export class Project extends Entity {
 
   get tasks(): TaskLoader {
     return new TaskLoader("Project", this.get("id")!.toString(), "tasks");
+  }
+
+  get deleted(): boolean {
+    let value = this.get("deleted");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set deleted(value: boolean) {
+    this.set("deleted", Value.fromBoolean(value));
   }
 }
 

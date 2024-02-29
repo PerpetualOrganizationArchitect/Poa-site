@@ -266,6 +266,40 @@ type HybridVote @entity {
   voteWeightDD: BigInt!
 }
 
+## task manager 
+
+type TaskManagerCreated @entity {
+  id: ID!
+  contractAddress: Bytes!
+  POname: String!
+}
+
+type TaskManager @entity {
+  id: ID!
+  contract: TaskManagerCreated! @link
+  POname: String!
+  projects: [Project!] @derivedFrom(field: "taskManager")
+}
+
+type Task @entity {
+  id: ID!
+  taskManager: TaskManager! @link
+  ipfsHash: String!
+  payout: BigInt!
+  project: Project! @link
+  claimer: Bytes
+  completed: Boolean!
+}
+
+type Project @entity {
+  id: ID!
+  taskManager: TaskManager! @link
+  name: String!
+  tasks: [Task!] @derivedFrom(field: "project")
+  deleted: Boolean!
+}
+
+
 
 
 

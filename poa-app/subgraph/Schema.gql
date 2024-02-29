@@ -287,6 +287,8 @@ type Task @entity {
   ipfsHash: String!
   payout: BigInt!
   project: Project! @link
+  claimer: Bytes
+  completed: Boolean!
 }
 
 type Project @entity {
@@ -294,6 +296,7 @@ type Project @entity {
   taskManager: TaskManager! @link
   name: String!
   tasks: [Task!] @derivedFrom(field: "project")
+  deleted: Boolean!
 }
 
 
