@@ -8,14 +8,14 @@ contract TaskManagerFactory {
     address[] public taskManagers;
 
 
-    event TaskManagerCreated(address indexed admin, address TaskManager);
+    event TaskManagerCreated(address TaskManager, string POname);
 
    
-    function createTaskManager(address _token, address _nftMembership, string[] memory _allowedRoleNames) external returns (address) {
+    function createTaskManager(address _token, address _nftMembership, string[] memory _allowedRoleNames, string memory POname) external returns (address) {
         TaskManager newTaskManager = new TaskManager(_token, _nftMembership, _allowedRoleNames);
         taskManagers.push(address(newTaskManager));
 
-        emit TaskManagerCreated(msg.sender, address(newTaskManager));
+        emit TaskManagerCreated(address(newTaskManager), POname);
 
         return address(newTaskManager);
     }

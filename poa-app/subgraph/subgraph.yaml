@@ -142,6 +142,26 @@ dataSources:
         - event: HybridVotingContractCreated(indexed address,address,string)
           handler: handleVotingContractCreated
       file: ./mappings/hybridVoting/hybridVotingFactoryMapping.ts
+  - kind: ethereum/contract
+    name: TaskManagerFactory
+    network: mumbai
+    source:
+      address: "0xA42b6012C23Ce0C51bed054ca9fCB333BF1794F6"
+      abi: TaskManagerFactory
+      startBlock: 46430300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TaskManagerCreated
+      abis:
+        - name: TaskManagerFactory
+          file: ../abi/TaskManagerFactory.json
+      eventHandlers:
+        - event: TaskManagerCreated(address,string)
+          handler: handleTaskManagerCreated
+      file: ./mappings/taskManager/taskManagerFactoryMapping.ts
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -305,3 +325,31 @@ templates:
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: ./mappings/hybridVoting/hybridVotingMapping.ts
+  - kind: ethereum/contract
+    name: TaskManager
+    network: mumbai
+    source:
+      abi: TaskManager
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TaskManager
+        - Task
+        - Project
+      abis:
+        - name: TaskManager
+          file: ../abi/TaskManager.json
+      eventHandlers:
+        - event: TaskCreated(indexed uint256,uint256,string,string)
+          handler: handleTaskCreated
+        - event: ProjectCreated(string)
+          handler: handleProjectCreated
+        - event: TaskUpdated(indexed uint256,uint256,string)
+          handler: handleTaskUpdated
+        - event: TaskClaimed(indexed uint256,indexed address)
+          handler: handleTaskClaimed
+        - event: TaskCompleted(indexed uint256,indexed address)
+          handler: handleTaskCompleted
+      file: ./mappings/taskManager/taskManagerMapping.ts

@@ -30,7 +30,8 @@ contract TaskManager {
     mapping(uint256 => Task) public tasks;
     uint256 public nextTaskId;
 
-    event TaskCreated(uint256 indexed id, uint256 payout, string ipfsHash);
+    event TaskCreated(uint256 indexed id, uint256 payout, string ipfsHash, string projectName);
+    event TaskClaimed(uint256 indexed id, address indexed claimer);
     event TaskUpdated(uint256 indexed id, uint256 payout, string ipfsHash);
     event TaskCompleted(uint256 indexed id, address indexed completer);
     event ProjectCreated(string projectName);
@@ -60,10 +61,10 @@ contract TaskManager {
         _;
     }
 
-    function createTask(uint256 _payout, string calldata ipfsHash) external canTask{
+    function createTask(uint256 _payout, string calldata ipfsHash, string memory projectName) external canTask{
         uint256 taskId = nextTaskId++;
         tasks[taskId] = Task(taskId, _payout, false, address(0));
-        emit TaskCreated(taskId, _payout, ipfsHash);
+        emit TaskCreated(taskId, _payout, ipfsHash, projectName);
     }
 
     function updateTask(uint256 _taskId, uint256 _payout, string calldata ipfsHash) external canTask {
@@ -87,6 +88,7 @@ contract TaskManager {
         require(!task.isCompleted, "Task already completed");
         require(task.claimer == address(0), "Task already claimed");
         task.claimer = msg.sender;
+        
     }
 
     function createProject(string calldata projectName) external canTask {

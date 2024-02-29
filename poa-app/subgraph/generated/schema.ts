@@ -2956,6 +2956,314 @@ export class HybridVote extends Entity {
   }
 }
 
+export class TaskManagerCreated extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TaskManagerCreated entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TaskManagerCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TaskManagerCreated", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TaskManagerCreated | null {
+    return changetype<TaskManagerCreated | null>(
+      store.get_in_block("TaskManagerCreated", id)
+    );
+  }
+
+  static load(id: string): TaskManagerCreated | null {
+    return changetype<TaskManagerCreated | null>(
+      store.get("TaskManagerCreated", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+}
+
+export class TaskManager extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TaskManager entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TaskManager must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TaskManager", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TaskManager | null {
+    return changetype<TaskManager | null>(
+      store.get_in_block("TaskManager", id)
+    );
+  }
+
+  static load(id: string): TaskManager | null {
+    return changetype<TaskManager | null>(store.get("TaskManager", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contract(): string {
+    let value = this.get("contract");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set contract(value: string) {
+    this.set("contract", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get projects(): ProjectLoader {
+    return new ProjectLoader(
+      "TaskManager",
+      this.get("id")!.toString(),
+      "projects"
+    );
+  }
+}
+
+export class Task extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Task entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Task must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Task", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Task | null {
+    return changetype<Task | null>(store.get_in_block("Task", id));
+  }
+
+  static load(id: string): Task | null {
+    return changetype<Task | null>(store.get("Task", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get taskManager(): string {
+    let value = this.get("taskManager");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set taskManager(value: string) {
+    this.set("taskManager", Value.fromString(value));
+  }
+
+  get ipfsHash(): string {
+    let value = this.get("ipfsHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set ipfsHash(value: string) {
+    this.set("ipfsHash", Value.fromString(value));
+  }
+
+  get payout(): BigInt {
+    let value = this.get("payout");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set payout(value: BigInt) {
+    this.set("payout", Value.fromBigInt(value));
+  }
+
+  get project(): string {
+    let value = this.get("project");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set project(value: string) {
+    this.set("project", Value.fromString(value));
+  }
+}
+
+export class Project extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Project entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Project must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Project", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Project | null {
+    return changetype<Project | null>(store.get_in_block("Project", id));
+  }
+
+  static load(id: string): Project | null {
+    return changetype<Project | null>(store.get("Project", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get taskManager(): string {
+    let value = this.get("taskManager");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set taskManager(value: string) {
+    this.set("taskManager", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get tasks(): TaskLoader {
+    return new TaskLoader("Project", this.get("id")!.toString(), "tasks");
+  }
+}
+
 export class DDAllowedRoleNameLoader extends Entity {
   _entity: string;
   _field: string;
@@ -3223,5 +3531,41 @@ export class HybridVoteLoader extends Entity {
   load(): HybridVote[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<HybridVote[]>(value);
+  }
+}
+
+export class ProjectLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Project[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Project[]>(value);
+  }
+}
+
+export class TaskLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Task[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Task[]>(value);
   }
 }

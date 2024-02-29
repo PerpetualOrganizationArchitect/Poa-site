@@ -103,3 +103,17 @@ export class HybridVoting extends DataSourceTemplate {
     );
   }
 }
+
+export class TaskManager extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("TaskManager", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "TaskManager",
+      [address.toHex()],
+      context
+    );
+  }
+}
