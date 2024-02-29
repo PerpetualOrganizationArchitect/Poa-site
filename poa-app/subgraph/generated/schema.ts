@@ -3307,6 +3307,263 @@ export class Project extends Entity {
   }
 }
 
+export class RegistryCreated extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save RegistryCreated entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type RegistryCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("RegistryCreated", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): RegistryCreated | null {
+    return changetype<RegistryCreated | null>(
+      store.get_in_block("RegistryCreated", id)
+    );
+  }
+
+  static load(id: string): RegistryCreated | null {
+    return changetype<RegistryCreated | null>(store.get("RegistryCreated", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+}
+
+export class Registry extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Registry entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Registry must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Registry", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Registry | null {
+    return changetype<Registry | null>(store.get_in_block("Registry", id));
+  }
+
+  static load(id: string): Registry | null {
+    return changetype<Registry | null>(store.get("Registry", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contract(): string {
+    let value = this.get("contract");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set contract(value: string) {
+    this.set("contract", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get votingContract(): Bytes | null {
+    let value = this.get("votingContract");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set votingContract(value: Bytes | null) {
+    if (!value) {
+      this.unset("votingContract");
+    } else {
+      this.set("votingContract", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get validContracts(): ValidContractLoader {
+    return new ValidContractLoader(
+      "Registry",
+      this.get("id")!.toString(),
+      "validContracts"
+    );
+  }
+
+  get logoURL(): string | null {
+    let value = this.get("logoURL");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set logoURL(value: string | null) {
+    if (!value) {
+      this.unset("logoURL");
+    } else {
+      this.set("logoURL", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class ValidContract extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ValidContract entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ValidContract must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ValidContract", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): ValidContract | null {
+    return changetype<ValidContract | null>(
+      store.get_in_block("ValidContract", id)
+    );
+  }
+
+  static load(id: string): ValidContract | null {
+    return changetype<ValidContract | null>(store.get("ValidContract", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+
+  get registry(): string {
+    let value = this.get("registry");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set registry(value: string) {
+    this.set("registry", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+}
+
 export class DDAllowedRoleNameLoader extends Entity {
   _entity: string;
   _field: string;
@@ -3610,5 +3867,23 @@ export class TaskLoader extends Entity {
   load(): Task[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Task[]>(value);
+  }
+}
+
+export class ValidContractLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): ValidContract[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<ValidContract[]>(value);
   }
 }

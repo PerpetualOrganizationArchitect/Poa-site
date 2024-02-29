@@ -117,3 +117,17 @@ export class TaskManager extends DataSourceTemplate {
     );
   }
 }
+
+export class Registry extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("Registry", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "Registry",
+      [address.toHex()],
+      context
+    );
+  }
+}

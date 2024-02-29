@@ -162,6 +162,26 @@ dataSources:
         - event: TaskManagerCreated(address,string)
           handler: handleTaskManagerCreated
       file: ./mappings/taskManager/taskManagerFactoryMapping.ts
+  - kind: ethereum/contract
+    name: RegistryFactory
+    network: mumbai
+    source:
+      address: "0xA42b6012C23Ce0C51bed054ca9fCB333BF1794F6"
+      abi: RegistryFactory
+      startBlock: 46430300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - RegistryCreated
+      abis:
+        - name: RegistryFactory
+          file: ../abi/RegistryFactory.json
+      eventHandlers:
+        - event: RegistryCreated(address,string,string)
+          handler: handleRegistryCreated
+      file: ./mappings/registry/registryFactoryMapping.ts
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -353,3 +373,29 @@ templates:
         - event: TaskCompleted(indexed uint256,indexed address)
           handler: handleTaskCompleted
       file: ./mappings/taskManager/taskManagerMapping.ts
+  - kind: ethereum/contract
+    name: Registry
+    network: mumbai
+    source:
+      abi: Registry
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Registry
+        - ValidContract
+      abis:
+        - name: Registry
+          file: ../abi/Registry.json
+      eventHandlers:
+        - event: ContractAdded(string,address)
+          handler: handleContractAdded
+        - event: ContractUpgraded(string,address)
+          handler: handleContractUpgraded
+        - event: VotingControlAddressSet(address)
+          handler: handleVotingControlAddressSet
+        - event: Initialized(address,string[],address[])
+          handler: handleInitialized
+      file: ./mappings/registry/registryMapping.ts
+      

@@ -299,6 +299,29 @@ type Project @entity {
   deleted: Boolean!
 }
 
+## registry 
+
+type RegistryCreated @entity {
+  id: ID!
+  contractAddress: Bytes!
+  POname: String!
+}
+
+type Registry @entity {
+  id: ID!
+  contract: RegistryCreated! @link
+  POname: String!
+  votingContract: Bytes
+  validContracts: [ValidContract!] @derivedFrom(field: "registry")
+  logoURL: String
+}
+
+type ValidContract @entity {
+  id: ID!
+  contractAddress: Bytes!
+  registry: Registry! @link
+  name: String!
+}
 
 
 

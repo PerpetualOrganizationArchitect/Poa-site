@@ -6,6 +6,11 @@ contract Registry {
 
     mapping(string => address) public contracts;
 
+    event ContractAdded(string name, address contractAddress);
+    event ContractUpgraded(string name, address newAddress);
+    event VotingControlAddressSet(address newAddress);
+    event Initialized(address VotingControlAddress, string[] contractNames, address[] contractAddresses);
+
     // Ensures that only the ParticipationVoting contract can call the function
     modifier onlyParticipationVoting() {
         require(msg.sender == VotingControlAddress, "Not authorized");
@@ -28,6 +33,7 @@ contract Registry {
     function setVotingControlAddress(address _address) external onlyParticipationVoting{
         
         VotingControlAddress = _address;
+        emit VotingControlAddressSet(_address);
     }
 
     function getContractAddress(string memory name) public view returns (address) {
@@ -37,9 +43,11 @@ contract Registry {
     function addContract(string memory name, address contractAddress) onlyParticipationVoting external {
         
         contracts[name] = contractAddress;
+        emit ContractAdded(name, contractAddress);
     }
 
     function upgradeContract(string memory name, address newAddress) external onlyParticipationVoting {
         contracts[name] = newAddress;
+        emit ContractUpgraded(name, newAddress);
     }
 }
