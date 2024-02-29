@@ -61,3 +61,17 @@ export class Treasury extends DataSourceTemplate {
     );
   }
 }
+
+export class ParticipationVoting extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("ParticipationVoting", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "ParticipationVoting",
+      [address.toHex()],
+      context
+    );
+  }
+}

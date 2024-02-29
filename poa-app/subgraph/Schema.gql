@@ -123,4 +123,53 @@ type TreasuryCreated @entity {
   treasuryAddress: Bytes!
 }
 
+## parcitipation voting 
+
+type PTVotingCreated @entity {
+  id: ID!
+  contractAddress: Bytes!
+  POname: String!
+}
+
+type PTVoting @entity {
+  id: ID!
+  contract: PTVotingCreated! @link
+  POname: String!
+  proposals: [PTProposal!]! @derivedFrom(field: "voting")
+}
+
+type PTProposal @entity {
+  id: ID!
+  name: String!
+  voting: PTVoting! @link
+  description: String!
+  totalVotes: BigInt!
+  timeInMinutes: BigInt!
+  creationTimestamp: BigInt!
+  experationTimestamp: BigInt!
+  transferTriggerOptionIndex: BigInt
+  transferRecipient: Bytes
+  transferAmount: BigInt
+  transferEnabled: Boolean!
+  options: [PTPollOption!]! @derivedFrom(field: "proposal")
+  votes: [PTVote!]! @derivedFrom(field: "proposal")
+  winningOptionIndex: BigInt
+}
+
+type PTPollOption @entity {
+  id: ID!
+  proposal: PTProposal! @link
+  name: String!
+  votes: BigInt!
+}
+
+type PTVote @entity {
+  id: ID!
+  proposal: PTProposal! @link
+  voter: Bytes! 
+  optionIndex: BigInt!
+  voteWeight: BigInt!
+}
+
+
 

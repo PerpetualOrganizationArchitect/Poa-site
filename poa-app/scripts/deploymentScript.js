@@ -239,7 +239,7 @@ async function makeParticipationVoting(
   nftMembershipAddress, 
   allowedRoleNames, 
   quadraticVotingEnabled, 
-  treasuryAddress
+  treasuryAddress, POname
 ) {
   
   if (!participationVotingFactoryContract || !ethers.utils.isAddress(participationTokenAddress) || !ethers.utils.isAddress(nftMembershipAddress) || !ethers.utils.isAddress(treasuryAddress)) {
@@ -254,7 +254,8 @@ async function makeParticipationVoting(
       nftMembershipAddress, 
       allowedRoleNames, 
       quadraticVotingEnabled, 
-      treasuryAddress
+      treasuryAddress, 
+      POname
     );
     const txReceipt = await txResponse.wait();
 
@@ -376,7 +377,7 @@ async function main() {
       const ddToken = await deployDirectDemocracyToken(wallet);
       const ptToken = await deployParticipationToken(wallet);
       const treasury = await deployTreasury(wallet);
-      // const ptVoting = await deployParticipationVoting(wallet);
+      const ptVoting = await deployParticipationVoting(wallet);
       // const ddVoting = await deployDirectDemocracyVoting(wallet);
       // const hybridVoting = await deployHybridVoting(wallet);
       // const taskManager = await deployTaskManager(wallet);
@@ -390,7 +391,7 @@ async function main() {
       const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
       const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
       const treasuryAddress = await makeTreasury(treasury, POname);
-      // const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress);
+      const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress, POname);
       // const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress);
       // const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress);
       // const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames);
