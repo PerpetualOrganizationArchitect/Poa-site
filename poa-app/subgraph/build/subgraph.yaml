@@ -6,7 +6,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: mumbai
     source:
-      address: "0x8a91a5D136504bC8454e7Cdb6eD110cc049827aB"
+      address: "0xA42b6012C23Ce0C51bed054ca9fCB333BF1794F6"
       abi: DirectDemocracyTokenFactory
       startBlock: 46430300
     mapping:
@@ -26,7 +26,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: mumbai
     source:
-      address: "0xcE3b6AAc9a165C02c8F3AB3301e91244a29A67fA"
+      address: "0x81234546CAEad2f031ff674F068dD25912252850"
       abi: ParticipationTokenFactory
       startBlock: 46430300
     mapping:
@@ -46,7 +46,7 @@ dataSources:
     name: NFTMembershipFactory
     network: mumbai
     source:
-      address: "0x54b1F9dE9a166556894134b51d813A116535F05C"
+      address: "0x8aD803d524dc5833cf82e351B152f0f9CE5B2712"
       abi: NFTMembershipFactory
       startBlock: 46430300
     mapping:
@@ -66,7 +66,7 @@ dataSources:
     name: TreasuryFactory
     network: mumbai
     source:
-      address: "0xA8A4aB447b6bcA7B7A0d54268125089C335cCf8c"
+      address: "0x73a0c34Ed98e9f4E54da2bC447D0BE63ad3D698D"
       abi: TreasuryFactory
       startBlock: 46430300
     mapping:
@@ -86,7 +86,7 @@ dataSources:
     name: ParticipationVotingFactory
     network: mumbai
     source:
-      address: "0x9bb6F04EcAAc794b7926A342594b3dD5bD3767ea"
+      address: "0x25d35d916Fa2144A5fa469aF220ff893B67B6236"
       abi: ParticipationVotingFactory
       startBlock: 46430300
     mapping:
@@ -102,6 +102,26 @@ dataSources:
         - event: VotingContractCreated(indexed address,string)
           handler: handleVotingContractCreated
       file: ParticipationVotingFactory/ParticipationVotingFactory.wasm
+  - kind: ethereum/contract
+    name: DirectDemocracyVotingFactory
+    network: mumbai
+    source:
+      address: "0xD2124096fe1ed23962eeeF587661EFCBEf6719B4"
+      abi: DirectDemocracyVotingFactory
+      startBlock: 46430300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DDVotingCreated
+      abis:
+        - name: DirectDemocracyVotingFactory
+          file: abi/DirectDemocracyVotingFactory.json
+      eventHandlers:
+        - event: VotingContractCreated(indexed address,indexed address,string)
+          handler: handleVotingContractCreated
+      file: DirectDemocracyVotingFactory/DirectDemocracyVotingFactory.wasm
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -211,4 +231,32 @@ templates:
           handler: handleVoteCast
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
-      file: templates/Treasury/Treasury.wasm
+      file: templates/ParticipationVoting/ParticipationVoting.wasm
+  - kind: ethereum/contract
+    name: DirectDemocracyVoting
+    network: mumbai
+    source:
+      abi: DirectDemocracyVoting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DDVoting
+        - DDProposal
+        - DDPollOption
+        - DDVote
+      abis:
+        - name: DirectDemocracyVoting
+          file: abi/DirectDemocracyVoting.json
+      eventHandlers:
+        - event: NewProposal(indexed
+            uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+          handler: handlePollCreated
+        - event: PollOptionNames(indexed uint256,indexed uint256,string)
+          handler: handlePollOptionCreated
+        - event: Voted(indexed uint256,indexed address,uint256)
+          handler: handleVoteCast
+        - event: WinnerAnnounced(indexed uint256,uint256)
+          handler: handleWinnerAnnounced
+      file: templates/DirectDemocracyVoting/DirectDemocracyVoting.wasm

@@ -75,3 +75,17 @@ export class ParticipationVoting extends DataSourceTemplate {
     );
   }
 }
+
+export class DirectDemocracyVoting extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("DirectDemocracyVoting", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "DirectDemocracyVoting",
+      [address.toHex()],
+      context
+    );
+  }
+}

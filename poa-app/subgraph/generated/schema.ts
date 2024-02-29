@@ -1879,6 +1879,532 @@ export class PTVote extends Entity {
   }
 }
 
+export class DDVotingCreated extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DDVotingCreated entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DDVotingCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DDVotingCreated", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DDVotingCreated | null {
+    return changetype<DDVotingCreated | null>(
+      store.get_in_block("DDVotingCreated", id)
+    );
+  }
+
+  static load(id: string): DDVotingCreated | null {
+    return changetype<DDVotingCreated | null>(store.get("DDVotingCreated", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+}
+
+export class DDVoting extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DDVoting entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DDVoting must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DDVoting", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DDVoting | null {
+    return changetype<DDVoting | null>(store.get_in_block("DDVoting", id));
+  }
+
+  static load(id: string): DDVoting | null {
+    return changetype<DDVoting | null>(store.get("DDVoting", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contract(): string {
+    let value = this.get("contract");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set contract(value: string) {
+    this.set("contract", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
+  get proposals(): DDProposalLoader {
+    return new DDProposalLoader(
+      "DDVoting",
+      this.get("id")!.toString(),
+      "proposals"
+    );
+  }
+}
+
+export class DDProposal extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DDProposal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DDProposal must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DDProposal", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DDProposal | null {
+    return changetype<DDProposal | null>(store.get_in_block("DDProposal", id));
+  }
+
+  static load(id: string): DDProposal | null {
+    return changetype<DDProposal | null>(store.get("DDProposal", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get voting(): string {
+    let value = this.get("voting");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set voting(value: string) {
+    this.set("voting", Value.fromString(value));
+  }
+
+  get description(): string {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string) {
+    this.set("description", Value.fromString(value));
+  }
+
+  get totalVotes(): BigInt {
+    let value = this.get("totalVotes");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalVotes(value: BigInt) {
+    this.set("totalVotes", Value.fromBigInt(value));
+  }
+
+  get timeInMinutes(): BigInt {
+    let value = this.get("timeInMinutes");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set timeInMinutes(value: BigInt) {
+    this.set("timeInMinutes", Value.fromBigInt(value));
+  }
+
+  get creationTimestamp(): BigInt {
+    let value = this.get("creationTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set creationTimestamp(value: BigInt) {
+    this.set("creationTimestamp", Value.fromBigInt(value));
+  }
+
+  get transferTriggerOptionIndex(): BigInt | null {
+    let value = this.get("transferTriggerOptionIndex");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set transferTriggerOptionIndex(value: BigInt | null) {
+    if (!value) {
+      this.unset("transferTriggerOptionIndex");
+    } else {
+      this.set("transferTriggerOptionIndex", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get transferRecipient(): Bytes | null {
+    let value = this.get("transferRecipient");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferRecipient(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferRecipient");
+    } else {
+      this.set("transferRecipient", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get transferAmount(): BigInt | null {
+    let value = this.get("transferAmount");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set transferAmount(value: BigInt | null) {
+    if (!value) {
+      this.unset("transferAmount");
+    } else {
+      this.set("transferAmount", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get transferEnabled(): boolean {
+    let value = this.get("transferEnabled");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set transferEnabled(value: boolean) {
+    this.set("transferEnabled", Value.fromBoolean(value));
+  }
+
+  get options(): DDPollOptionLoader {
+    return new DDPollOptionLoader(
+      "DDProposal",
+      this.get("id")!.toString(),
+      "options"
+    );
+  }
+
+  get votes(): DDVoteLoader {
+    return new DDVoteLoader("DDProposal", this.get("id")!.toString(), "votes");
+  }
+
+  get winningOptionIndex(): BigInt | null {
+    let value = this.get("winningOptionIndex");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set winningOptionIndex(value: BigInt | null) {
+    if (!value) {
+      this.unset("winningOptionIndex");
+    } else {
+      this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
+    }
+  }
+}
+
+export class DDPollOption extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DDPollOption entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DDPollOption must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DDPollOption", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DDPollOption | null {
+    return changetype<DDPollOption | null>(
+      store.get_in_block("DDPollOption", id)
+    );
+  }
+
+  static load(id: string): DDPollOption | null {
+    return changetype<DDPollOption | null>(store.get("DDPollOption", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get proposal(): string {
+    let value = this.get("proposal");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal(value: string) {
+    this.set("proposal", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get votes(): BigInt {
+    let value = this.get("votes");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set votes(value: BigInt) {
+    this.set("votes", Value.fromBigInt(value));
+  }
+}
+
+export class DDVote extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DDVote entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DDVote must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DDVote", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DDVote | null {
+    return changetype<DDVote | null>(store.get_in_block("DDVote", id));
+  }
+
+  static load(id: string): DDVote | null {
+    return changetype<DDVote | null>(store.get("DDVote", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get proposal(): string {
+    let value = this.get("proposal");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set proposal(value: string) {
+    this.set("proposal", Value.fromString(value));
+  }
+
+  get voter(): Bytes {
+    let value = this.get("voter");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set voter(value: Bytes) {
+    this.set("voter", Value.fromBytes(value));
+  }
+
+  get optionIndex(): BigInt {
+    let value = this.get("optionIndex");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set optionIndex(value: BigInt) {
+    this.set("optionIndex", Value.fromBigInt(value));
+  }
+
+  get voteWeight(): BigInt {
+    let value = this.get("voteWeight");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set voteWeight(value: BigInt) {
+    this.set("voteWeight", Value.fromBigInt(value));
+  }
+}
+
 export class DDAllowedRoleNameLoader extends Entity {
   _entity: string;
   _field: string;
@@ -2038,5 +2564,59 @@ export class PTVoteLoader extends Entity {
   load(): PTVote[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<PTVote[]>(value);
+  }
+}
+
+export class DDProposalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): DDProposal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<DDProposal[]>(value);
+  }
+}
+
+export class DDPollOptionLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): DDPollOption[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<DDPollOption[]>(value);
+  }
+}
+
+export class DDVoteLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): DDVote[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<DDVote[]>(value);
   }
 }

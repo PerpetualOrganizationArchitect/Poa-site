@@ -341,7 +341,7 @@ async function makeTaskManager(taskManagerFactoryContract, tokenAddress, nftMemb
   }
 }
 
-async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress, nftMembershipAddress, allowedRoleNames, treasuryAddress) {
+async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress, nftMembershipAddress, allowedRoleNames, treasuryAddress, POname) {
   
   if (!ddVotingFactoryContract || !ddTokenAddress || !nftMembershipAddress || !allowedRoleNames.length || !treasuryAddress) {
     console.error("Invalid parameters provided to createDirectDemocracyVoting function");
@@ -349,7 +349,7 @@ async function makeDirectDemocracyVoting(ddVotingFactoryContract, ddTokenAddress
   }
 
   
-  const tx = await ddVotingFactoryContract.createDirectDemocracyVoting(ddTokenAddress, nftMembershipAddress, allowedRoleNames, treasuryAddress);
+  const tx = await ddVotingFactoryContract.createDirectDemocracyVoting(ddTokenAddress, nftMembershipAddress, allowedRoleNames, treasuryAddress, POname);
   
 
   const receipt = await tx.wait();
@@ -378,7 +378,7 @@ async function main() {
       const ptToken = await deployParticipationToken(wallet);
       const treasury = await deployTreasury(wallet);
       const ptVoting = await deployParticipationVoting(wallet);
-      // const ddVoting = await deployDirectDemocracyVoting(wallet);
+      const ddVoting = await deployDirectDemocracyVoting(wallet);
       // const hybridVoting = await deployHybridVoting(wallet);
       // const taskManager = await deployTaskManager(wallet);
       // const registry = await deployRegistry(wallet);
@@ -392,7 +392,7 @@ async function main() {
       const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
       const treasuryAddress = await makeTreasury(treasury, POname);
       const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress, POname);
-      // const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress);
+      const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress, POname);
       // const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress);
       // const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames);
 

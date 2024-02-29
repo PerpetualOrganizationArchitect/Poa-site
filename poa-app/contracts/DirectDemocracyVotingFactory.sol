@@ -7,12 +7,12 @@ import "./DirectDemocracyVoting.sol";
 contract DirectDemocracyVotingFactory {
     address[] public deployedVotings;
 
-    event VotingCreated(address indexed votingAddress, address indexed treasuryAddress);
+    event VotingContractCreated(address indexed votingAddress, address indexed treasuryAddress, string POname);
 
-    function createDirectDemocracyVoting(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames, address _treasuryAddress ) public {
+    function createDirectDemocracyVoting(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames, address _treasuryAddress, string memory POname ) public {
         DirectDemocracyVoting newVoting = new DirectDemocracyVoting(_ddToken, _nftMembership, _allowedRoleNames, _treasuryAddress);
         deployedVotings.push(address(newVoting));
-        emit VotingCreated(address(newVoting), _treasuryAddress);
+        emit VotingContractCreated(address(newVoting), _treasuryAddress, POname);
     }
 
     function getDeployedVotings() external view returns (address[] memory) {

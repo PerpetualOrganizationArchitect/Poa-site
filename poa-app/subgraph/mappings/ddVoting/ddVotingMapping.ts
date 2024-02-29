@@ -1,12 +1,12 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
-import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/ParticipationVoting/ParticipationVoting"
-import { PTProposal, PTPollOption,PTVote } from "../../generated/schema"
+import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/DirectDemocracyVoting/DirectDemocracyVoting"
+import { DDProposal, DDPollOption,DDVote } from "../../generated/schema"
 
 export function handleNewProposal(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
 
-    let newProposal = new PTProposal(event.params.proposalId.toHex());
+    let newProposal = new DDProposal(event.params.proposalId.toHex());
     newProposal.name = event.params.name;
     newProposal.description = event.params.description;
     newProposal.creationTimestamp = event.params.creationTimestamp;
@@ -28,18 +28,18 @@ export function handleVoted(event: Voted): void {
     log.info("Triggered handleVoted for proposalId {}", [event.params.proposalId.toString()]);
   
     let proposalId = event.params.proposalId.toHex();
-    let proposal = PTProposal.load(proposalId);
+    let proposal = DDProposal.load(proposalId);
     if (!proposal) {
       log.error("Proposal not found: {}", [proposalId]);
       return;
     }
   
     let voteId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
-    let vote = new PTVote(voteId);
+    let vote = new DDVote(voteId);
     vote.proposal = proposalId;
     vote.voter = event.params.voter;
     vote.optionIndex = event.params.optionIndex;
-    vote.voteWeight = event.params.voteWeight;
+    vote.voteWeight = BigInt.fromI32(100);
     vote.save();
   
     proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(100));
@@ -51,7 +51,7 @@ export function handleVoted(event: Voted): void {
   
     let proposalId = event.params.proposalId.toHex();
     let optionId = proposalId + "-" + event.params.optionIndex.toString();
-    let option = new PTPollOption(optionId);
+    let option = new DDPollOption(optionId);
     option.proposal = proposalId;
     option.name = event.params.name;
     option.votes = BigInt.fromI32(0);
@@ -62,7 +62,7 @@ export function handleVoted(event: Voted): void {
     log.info("Triggered handleWinnerAnnounced for proposalId {}", [event.params.proposalId.toString()]);
   
     let proposalId = event.params.proposalId.toHex();
-    let proposal = PTProposal.load(proposalId);
+    let proposal = DDProposal.load(proposalId);
     if (!proposal) {
       log.error("Proposal not found: {}", [proposalId]);
       return;

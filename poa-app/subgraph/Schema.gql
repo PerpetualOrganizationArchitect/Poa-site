@@ -151,8 +151,8 @@ type PTProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
-  options: [PTPollOption!]! @derivedFrom(field: "proposal")
-  votes: [PTVote!]! @derivedFrom(field: "proposal")
+  options: [PTPollOption!] @derivedFrom(field: "proposal")
+  votes: [PTVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
 }
 
@@ -166,6 +166,53 @@ type PTPollOption @entity {
 type PTVote @entity {
   id: ID!
   proposal: PTProposal! @link
+  voter: Bytes! 
+  optionIndex: BigInt!
+  voteWeight: BigInt!
+}
+
+## dd voting
+
+type DDVotingCreated @entity {
+  id: ID!
+  contractAddress: Bytes!
+  POname: String!
+}
+
+type DDVoting @entity {
+  id: ID!
+  contract: DDVotingCreated! @link
+  POname: String!
+  proposals: [DDProposal!]! @derivedFrom(field: "voting")
+}
+
+type DDProposal @entity {
+  id: ID!
+  name: String!
+  voting: DDVoting! @link
+  description: String!
+  totalVotes: BigInt!
+  timeInMinutes: BigInt!
+  creationTimestamp: BigInt!
+  transferTriggerOptionIndex: BigInt
+  transferRecipient: Bytes
+  transferAmount: BigInt
+  transferEnabled: Boolean!
+  options: [DDPollOption!] @derivedFrom(field: "proposal")
+  votes: [DDVote!] @derivedFrom(field: "proposal")
+  winningOptionIndex: BigInt
+}
+
+type DDPollOption @entity {
+  id: ID!
+  proposal: DDProposal! @link
+  name: String!
+  votes: BigInt!
+}
+
+type DDVote @entity {
+  id: ID!
+  proposal: DDProposal! @link
   voter: Bytes! 
   optionIndex: BigInt!
   voteWeight: BigInt!
