@@ -11,6 +11,7 @@ const steps = {
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
   ASK_MEMBERSHIP: "ASK_MEMBERSHIP",
+  ASK_VOTING: "ASK_VOTING",
   // ... add other steps as needed
 };
 
@@ -36,6 +37,7 @@ const ArchitectPage = () => {
     name: "",
     description: "",
     membershipType: "",
+    votingType: "",
     // ... add other details as needed
   });
   // Refs and hooks for UI effects and navigation.
@@ -68,6 +70,12 @@ const ArchitectPage = () => {
       case steps.ASK_DESCRIPTION:
         setCurrentStep(steps.ASK_MEMBERSHIP);
         break;
+      case steps.ASK_MEMBERSHIP:
+        setCurrentStep(steps.ASK_VOTING);
+        break;
+      case steps.ASK_VOTING:
+        setCurrentStep(steps.ASK_CONFIRMATION);
+        break;
       // ... handle other transitions
     }
   };
@@ -97,23 +105,37 @@ const ArchitectPage = () => {
     generateOptions();
   }, []);
 
-  const generateOptions = (optionsArray, message) => {
-    // Ensure that the optionsArray is an array before setting it to state.
-    // If optionsArray is possibly undefined, default to an empty array.
-    setOptions(optionsArray || []);
+  const generateOptions = (optionsArray = [], message) => {
+    const optionsWithActions = optionsArray.map((option) => ({
+      ...option,
+      action: () =>
+        setOrgDetails((prevDetails) => ({
+          ...prevDetails,
+          [currentStep]: option.value, // Make sure this aligns with your state structure
+        })),
+    }));
 
-    // Add a message from the system to the conversation log.
+    setOptions(optionsWithActions);
+
     setMessages((prevMessages) => [
       ...prevMessages,
       { speaker: "system", text: message },
     ]);
 
-    // Show the selection component.
     setShowSelection(true);
   };
 
-  const handleOptionSelected = (action) => {
-    action(); // Perform the action associated with the option
+  const handleOptionSelected = (selectedOptionValue) => {
+    // Find the option by value and call its action
+    const selectedOption = options.find(
+      (option) => option.value === selectedOptionValue
+    );
+    if (selectedOption && selectedOption.action) {
+      selectedOption.action();
+    }
+
+    setShowSelection(false);
+    nextStep(); // Move to the next step after the selection
   };
 
   const handleSendClick = () => {
@@ -125,6 +147,14 @@ const ArchitectPage = () => {
         nextStep();
         break;
       case steps.ASK_DESCRIPTION:
+        setOrgDetails({ ...orgDetails, description: userInput });
+        nextStep();
+        break;
+      case steps.ASK_MEMBERSHIP:
+        setOrgDetails({ ...orgDetails, description: userInput });
+        nextStep();
+        break;
+      case steps.ASK_VOTING:
         setOrgDetails({ ...orgDetails, description: userInput });
         nextStep();
         break;
@@ -150,7 +180,18 @@ const ArchitectPage = () => {
         break;
       case steps.ASK_MEMBERSHIP:
         message = "Please select a membership type.";
-        generateOptions(membershipOptions, message);
+        if (currentStep === steps.ASK_MEMBERSHIP) {
+          generateOptions(
+            membershipOptions,
+            "Please select a membership type."
+          );
+        }
+      case steps.ASK_VOTING:
+        message = "Please select a voting type.";
+        if (currentStep === steps.ASK_VOTING) {
+          generateOptions(votingOptions, "Please select a voting type.");
+        }
+
         return; // Prevent adding another system message after options are shown
       // ... add messages for other steps
     }
@@ -175,7 +216,10 @@ const ArchitectPage = () => {
         pt="4"
         px="4"
       >
-        <ConversationLog messages={messages} />
+        <ConversationLog
+          messages={messages}
+          selectionHeight={selectionHeight}
+        />
       </Box>
 
       {orgName && (
