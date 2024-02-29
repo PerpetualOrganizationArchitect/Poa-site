@@ -218,5 +218,55 @@ type DDVote @entity {
   voteWeight: BigInt!
 }
 
+## hybrid voting 
+
+type HybridVotingCreated @entity {
+  id: ID!
+  contractAddress: Bytes!
+  POname: String!
+}
+
+type HybridVoting @entity {
+  id: ID!
+  contract: HybridVotingCreated! @link
+  POname: String!
+  proposals: [HybridProposal!]! @derivedFrom(field: "voting")
+}
+
+type HybridProposal @entity {
+  id: ID!
+  name: String!
+  voting: HybridVoting! @link
+  description: String!
+  totalVotes: BigInt!
+  timeInMinutes: BigInt!
+  creationTimestamp: BigInt!
+  transferTriggerOptionIndex: BigInt
+  transferRecipient: Bytes
+  transferAmount: BigInt
+  transferEnabled: Boolean!
+  options: [HybridPollOption!] @derivedFrom(field: "proposal")
+  votes: [HybridVote!] @derivedFrom(field: "proposal")
+  winningOptionIndex: BigInt
+}
+
+type HybridPollOption @entity {
+  id: ID!
+  proposal: HybridProposal! @link
+  name: String!
+  votes: BigInt!
+}
+
+type HybridVote @entity {
+  id: ID!
+  proposal: HybridProposal! @link
+  voter: Bytes! 
+  optionIndex: BigInt!
+  voteWeightPT: BigInt!
+  voteWeightDD: BigInt!
+}
+
+
+
 
 

@@ -89,3 +89,17 @@ export class DirectDemocracyVoting extends DataSourceTemplate {
     );
   }
 }
+
+export class HybridVoting extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("HybridVoting", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "HybridVoting",
+      [address.toHex()],
+      context
+    );
+  }
+}
