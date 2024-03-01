@@ -224,7 +224,7 @@ templates:
           handler: handleTokenMint
         - event: TaskManagerAddressSet(address)
           handler: handleTaskManagerAddressSet
-      file: ./mappings/ddToken/ddTokenMapping.ts
+      file: ./mappings/ptToken/ptTokenMapping.ts
   - kind: ethereum/contract
     name: NFTMembership
     network: mumbai

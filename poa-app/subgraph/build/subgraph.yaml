@@ -224,7 +224,7 @@ templates:
           handler: handleTokenMint
         - event: TaskManagerAddressSet(address)
           handler: handleTaskManagerAddressSet
-      file: templates/DirectDemocracyToken/DirectDemocracyToken.wasm
+      file: templates/ParticipationToken/ParticipationToken.wasm
   - kind: ethereum/contract
     name: NFTMembership
     network: mumbai

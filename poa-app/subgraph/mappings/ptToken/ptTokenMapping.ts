@@ -21,8 +21,10 @@ export function handleTokenMint(event: MintEvent): void {
 export function handleTaskManagerAddressSet(event: TaskManagerAddressSet): void {
 
     let token = PTToken.load(event.address.toHex());
-    token.taskManagerAddress = event.params.taskManagerAddress;
-
-    token.save();
+    if (token != null) {
+      token.taskManagerAddress = event.params.taskManagerAddress;
+      token.save();
+    }
+    
 
 }
