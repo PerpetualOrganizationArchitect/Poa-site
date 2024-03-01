@@ -71,6 +71,7 @@ type NFTMembershipCreated @entity {
   id: ID!
   contractAddress: Bytes!
   memberTypeNames: [String!]!
+  executiveRoles: [String!]!
   defaultImageURL: String!
   POname: String!
 }
@@ -80,6 +81,7 @@ type NFTMembership @entity {
   contractAddress: Bytes!
   POname: String!
   memberTypeNames: [String!]!
+  executiveRoles: [String!]!
   defaultImageURL: String!
   mintEvents: [NFTMintEvent!]! @derivedFrom(field: "membership")
   changeTypeEvents: [NFTChangeTypeEvent!]! @derivedFrom(field: "membership")

@@ -16,6 +16,12 @@
       },
       {
         "indexed": false,
+        "internalType": "string[]",
+        "name": "executiveRoleNames",
+        "type": "string[]"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "defaultImageURL",
         "type": "string"
@@ -35,6 +41,11 @@
       {
         "internalType": "string[]",
         "name": "memberTypeNames",
+        "type": "string[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_executiveRoleNames",
         "type": "string[]"
       },
       {

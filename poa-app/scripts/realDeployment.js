@@ -31,6 +31,7 @@ const RegistryFactory = require('../abi/RegistryFactory.json');
 const TreasuryFactory = require('../abi/TreasuryFactory.json');
 
 const ParticipationTokenFactory = require('../abi/ParticipationTokenFactory.json');
+const ParticipationToken = require('../abi/ParticipationToken.json');
 
 const ParticipationVotingFactory = require('../abi/ParticipationVotingFactory.json');
 
@@ -411,17 +412,18 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
     //   const taskManager = await deployTaskManager(wallet);
     //   const registry = await deployRegistry(wallet);
 
-    const nftMEmbershipFactoryAddress = "0x9c78a435a9AE0ba056066E1CFb7B60929310F498";
-    const ddTokenFactoryAddress = "0x8b4E34a1093034b71De7AcC896b7dA080ba5d38A";
-    const ptTokenFactoryAddress = "0x8dCe12121e3744F2B6F64bc7c78015F1D4161a93";
-    const treasuryFactoryAddress = "0x1c1822aa31e4B7e2b37DCcd1356CbDa595102FB6";
-    const ptVotingFactoryAddress = "0xfa0A7eE9Bb624290Dd78DF55B28973810774EAEC";
-    const ddVotingFactoryAddress = "0x142e54B36F8BFC5556eBf40F5F5bA2700e5fb45b";
-    const hybridVotingFactoryAddress = "0x373Ec4248EB4e5C56658f431056532055ed568d9";
-    const taskManagerFactoryAddress = "0xeA02f50Cf9a810c2c36dFfa9171a3e39563dD10A";
-    const registryFactoryAddress = "0xAAD535703FA3F949C3726eE0315f7AEa43c21182";
+    const nftMembershipFactoryAddress = "0x1C1ABf2c3824daa95BDf2E979e3addA570283Cf1";
+    const ddTokenFactoryAddress = "0xdF674Fd4b6fD809069Ffbd9deA727CE8A7e8C9f8";
+    const ptTokenFactoryAddress = "0xc82ca58505FB8B14d57aAf250d97A76aC1354f90";
+    const treasuryFactoryAddress = "0x52ED44aB1cBD8323e15CB40b457e4E1eBf14408c";
+    const ptVotingFactoryAddress = "0x68bfACC747b5C98Df33476417d91EAD0F9A8f204";
+    const ddVotingFactoryAddress = "0xa80927965487CA1bC9e4cf6b90a40B0954E8830A";
+    const hybridVotingFactoryAddress = "0x4bC864D2EFD9e10B64ffd94982bb76Ef41030A46";
+    const taskManagerFactoryAddress = "0x6b41151F1547386cB810A6c0ffbB304d192729ca";
+    const registryFactoryAddress = "0x70EfBb9557196e09D33F430c3bD0E52338c86a5E";
 
-    const nftMembership = new ethers.Contract(nftMEmbershipFactoryAddress, NFTMembershipFactory.abi, wallet);
+
+    const nftMembership = new ethers.Contract(nftMembershipFactoryAddress, NFTMembershipFactory.abi, wallet);
     const ddToken = new ethers.Contract(ddTokenFactoryAddress, DirectDemocracyTokenFactory.abi, wallet);
     const ptToken = new ethers.Contract(ptTokenFactoryAddress, ParticipationTokenFactory.abi, wallet);
     const treasury = new ethers.Contract(treasuryFactoryAddress, TreasuryFactory.abi, wallet);
@@ -440,7 +442,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
 
 
       const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
-      const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, executivePermissionNames, POname);
+      const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
       const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
       const treasuryAddress = await makeTreasury(treasury, POname);
 
@@ -457,6 +459,17 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
       
       const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, executivePermissionNames, treasuryAddress, POname);
       const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, executivePermissionNames, POname);
+
+      //interact with newly deployed pt token contract to set the task manager address in the pt token contract
+        const ptTokenContract = new ethers.Contract(ptTokenAddress, ParticipationToken.abi, wallet);
+        const setTaskManagerTx = await ptTokenContract.setTaskManagerAddress(taskManagerAddress);
+        await setTaskManagerTx.wait();
+        console.log("Task Manager address set in PT Token contract");
+
+        //interact with newly deployed treasury contract to set the voting contract address in the treasury contract
+        const treasuryContract = new ethers.Contract(treasuryAddress, TreasuryFactory.abi, wallet);
+
+
 
         let contractNames = [];
         let contractAddresses = [];
@@ -476,11 +489,20 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
 
       if(votingControlType === "Hybrid"){
             votingControlAddress = hybridVotingAddress;
+            const setVotingContractTx = await treasuryContract.setVotingContract(hybridVotingAddress);
+            await setVotingContractTx.wait();
+            console.log("Voting contract address set in Treasury contract");
         } else if (votingControlType === "Participation"){
             votingControlAddress = ptVotingAddress;
+            const setVotingContractTx = await treasuryContract.setVotingContract(ptVotingAddress);
+            await setVotingContractTx.wait();
+            console.log("Voting contract address set in Treasury contract");
         }
         else if (votingControlType === "DirectDemocracy"){
             votingControlAddress = ddVotingAddress;
+            const setVotingContractTx = await treasuryContract.setVotingContract(ddVotingAddress);
+            await setVotingContractTx.wait();
+            console.log("Voting contract address set in Treasury contract");
         }
         else {
             console.error("Invalid voting control type provided");
@@ -501,7 +523,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
   }
 }
 
-main(["Gold", "Silver", "Bronze", "Default"],["Gold", "Silver", "Bronze"], "KUBI3", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
+main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "KUBI7", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
   .then(() => process.exit(0))
   .catch((error) => {
       console.error(error);

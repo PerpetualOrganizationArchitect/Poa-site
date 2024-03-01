@@ -408,26 +408,26 @@ async function main() {
       const taskManager = await deployTaskManager(wallet);
       const registry = await deployRegistry(wallet);
 
-      const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
-      const defaultImageURL = "http://example.com/default.jpg";
-      const POname = "Test Org";
+      // const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
+      // const defaultImageURL = "http://example.com/default.jpg";
+      // const POname = "Test Org";
 
-      const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
-      const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
-      const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
-      const treasuryAddress = await makeTreasury(treasury, POname);
-      const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress, POname);
-      const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress, POname);
-      const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress, POname);
-      const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames, POname);
+      // const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
+      // const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
+      // const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
+      // const treasuryAddress = await makeTreasury(treasury, POname);
+      // const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress, POname);
+      // const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress, POname);
+      // const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress, POname);
+      // const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames, POname);
 
-      // make arrary of all conract names 
-      const contractNames = ["NFTMembership", "DirectDemocracyToken", "ParticipationToken", "Treasury", "ParticipationVoting", "DirectDemocracyVoting", "HybridVoting", "TaskManager"];
-      const contractAddresses = [nftAddress, ddTokenAddress, ptTokenAddress, treasuryAddress, ptVotingAddress, ddVotingAddress, hybridVotingAddress, taskManagerAddress];
+      // // make arrary of all conract names 
+      // const contractNames = ["NFTMembership", "DirectDemocracyToken", "ParticipationToken", "Treasury", "ParticipationVoting", "DirectDemocracyVoting", "HybridVoting", "TaskManager"];
+      // const contractAddresses = [nftAddress, ddTokenAddress, ptTokenAddress, treasuryAddress, ptVotingAddress, ddVotingAddress, hybridVotingAddress, taskManagerAddress];
 
-      const votingControlAddress = hybridVotingAddress;
-      const logoURL = "http://example.com/logo.jpg";
-      const registryAddress = await makeRegistry(votingControlAddress, registry, contractNames, contractAddresses, POname, logoURL);
+      // const votingControlAddress = hybridVotingAddress;
+      // const logoURL = "http://example.com/logo.jpg";
+      // const registryAddress = await makeRegistry(votingControlAddress, registry, contractNames, contractAddresses, POname, logoURL);
  
 
 
