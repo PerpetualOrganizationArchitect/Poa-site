@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 
-const ArchitectInput = ({ value, onChange, onSubmit }) => {
+const ArchitectInput = ({ value, onChange, onSubmit, isDisabled }) => {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       onSubmit(); // Execute the onSubmit function if Enter key is pressed
@@ -22,13 +22,14 @@ const ArchitectInput = ({ value, onChange, onSubmit }) => {
         placeholder="Type here..."
         borderColor="blue.900"
         onKeyDown={handleKeyDown}
+        disabled={!isDisabled}
       />
       <InputRightElement>
         <IconButton
           icon={<ArrowUpIcon color="teal" />}
           variant="ghost"
           aria-label="Send"
-          onClick={onSubmit} // Use the onSubmit callback when the button is clicked
+          onClick={onSubmit}
         />
       </InputRightElement>
     </InputGroup>

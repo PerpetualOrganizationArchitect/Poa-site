@@ -25,7 +25,8 @@ import Selection from "@/components/Architect/Selection";
 const steps = {
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
-  ASK_MEMBERSHIP: "ASK_MEMBERSHIP",
+  ASK_MEMBERSHIP_DEFAULT: "ASK_MEMBERSHIP_DEFAULT",
+  ASK_MEMBERSHIP_CUSTOMIZE: "ASK_MEMBERSHIP_CUSTOMIZE",
   ASK_VOTING: "ASK_VOTING",
   // ... add other steps as needed
 };
@@ -38,6 +39,10 @@ const votingOptions = [
 const membershipOptions = [
   { label: "Executives", value: "executives" },
   { label: "Uniform Membership", value: "uniform_membership" },
+];
+const defaultMembershipOptions = [
+  { label: "Yes", value: "true" },
+  { label: "I'd like more customization", value: "false" },
 ];
 
 const ArchitectPage = () => {
@@ -90,9 +95,12 @@ const ArchitectPage = () => {
         setCurrentStep(steps.ASK_DESCRIPTION);
         break;
       case steps.ASK_DESCRIPTION:
-        setCurrentStep(steps.ASK_MEMBERSHIP);
+        setCurrentStep(steps.ASK_MEMBERSHIP_DEFAULT);
         break;
-      case steps.ASK_MEMBERSHIP:
+      case steps.ASK_MEMBERSHIP_DEFAULT:
+        setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
+        break;
+      case steps.ASK_MEMBERSHIP_CUSTOMIZE:
         setCurrentStep(steps.ASK_VOTING);
         break;
       case steps.ASK_VOTING:
@@ -135,6 +143,9 @@ const ArchitectPage = () => {
       setSelectionHeight(height); // Set the height state
     }
   }, [showSelection, options]);
+  useEffect(() => {
+    setShowSelection(false);
+  }, []);
 
   useEffect(() => {
     // Simulating a greeting message from "POA" on initial load
@@ -144,8 +155,6 @@ const ArchitectPage = () => {
     };
 
     setMessages([...messages, greetingMessage]);
-
-    setShowSelection(true);
   }, []);
 
   useEffect(() => {
@@ -154,6 +163,7 @@ const ArchitectPage = () => {
   }, []);
 
   const generateOptions = (optionsArray = [], message) => {
+    setShowSelection(true);
     const optionsWithActions = optionsArray.map((option) => ({
       ...option,
       action: () =>
@@ -170,11 +180,10 @@ const ArchitectPage = () => {
         { speaker: "system", text: message },
       ]);
     }
-
-    setShowSelection(true);
   };
 
   const handleOptionSelected = (selectedOptionValue) => {
+    setShowSelection(false);
     // Find the option by value and call its action
     const selectedOption = options.find(
       (option) => option.value === selectedOptionValue
@@ -215,7 +224,7 @@ const ArchitectPage = () => {
         setOrgDetails({ ...orgDetails, description: userInput });
         nextStep();
         break;
-      case steps.ASK_MEMBERSHIP:
+      case steps.ASK_MEMBERSHIP_DEFAULT:
         setOrgDetails({ ...orgDetails, description: userInput });
         nextStep();
         break;
@@ -243,8 +252,14 @@ const ArchitectPage = () => {
       case steps.ASK_DESCRIPTION:
         message = "Please describe your organization.";
         break;
-      case steps.ASK_MEMBERSHIP:
-        message = "Please select a membership type.";
+      case steps.ASK_MEMBERSHIP_DEFAULT:
+        message =
+          "The default membership structure has two tiers: executives and members. Would you like to add more tiers?";
+        generateOptions(defaultMembershipOptions, message);
+        return;
+      case steps.ASK_MEMBERSHIP_CUSTOMIZE:
+        message =
+          "Please enter the names of specific membership tiers you want to add.";
         generateOptions(membershipOptions, message);
         return;
       case steps.ASK_VOTING:
@@ -349,11 +364,21 @@ const ArchitectPage = () => {
             Access site
           </Button>
         )}
-        <ArchitectInput
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onSubmit={handleSendClick}
-        />
+        <Box
+          position="fixed"
+          bottom="0"
+          width="full"
+          p={4}
+          paddingRight={10}
+          zIndex="sticky"
+        >
+          <ArchitectInput
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onSubmit={handleSendClick}
+            isDisabled={showSelection} // Pass showSelection as the isDisabled prop
+          />
+        </Box>
       </Box>
     </Layout>
   );
