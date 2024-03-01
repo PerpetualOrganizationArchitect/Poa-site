@@ -1,4 +1,5 @@
 import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
+import { IPFSprovider } from "@/context/ipfsContext";
 
 
 const theme = extendTheme({
@@ -17,9 +18,11 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <IPFSprovider>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </IPFSprovider>
   );
 }
 

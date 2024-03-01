@@ -9,11 +9,16 @@ import HybridVoting from "../../abi/HybridVoting.json";
 import TaskManager from "../../abi/TaskManager.json";
 import NFTMembership from "../../abi/NFTMembership.json";
 import Treasury from "../../abi/Treasury.json";
-import DirectDemocracyToken from '.../abi/DirectDemocracyToken.json';
+import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
+
+import { useIPFScontext } from '@/context/ipfsContext';
+
 
 
 
 const web3test = () => {
+
+    const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
     const [account, setAccount] = useState("");
     
@@ -158,6 +163,32 @@ const web3test = () => {
         await tx.wait();
         console.log("Tokens minted");
     }
+
+    async function ipfsAddTest() {
+        const data = "Hello World";
+        const ipfsHash = await addToIpfs(data);
+        console.log("IPFS hash:", ipfsHash);
+    }
+
+    async function ipfsAddTask() {
+        const data = {
+            name: "Task 1",
+            description: "This is a task",
+            location:"in Progress"
+        };
+        const json = JSON.stringify(data);
+        const ipfsHash = await addToIpfs(json);
+        console.log("IPFS hash:", ipfsHash);
+    }
+
+    return (
+        <div>
+            <Button onClick={ipfsAddTest}>IPFS add test</Button>
+            <Button onClick={ipfsAddTask}>IPFS add task</Button>
+        </div>
+    )
+
+
 
 }
 
