@@ -33,6 +33,7 @@ const ArchitectPage = () => {
   const [options, setOptions] = useState([]);
   const [orgName, setOrgName] = useState(""); // Holds the organization name input by the user.
   const [currentStep, setCurrentStep] = useState(steps.ASK_NAME);
+  const [siteCreated, setSiteCreated] = useState(false);
   const [orgDetails, setOrgDetails] = useState({
     name: "",
     description: "",
@@ -59,7 +60,10 @@ const ArchitectPage = () => {
       return;
     }
     // Navigate to the new DAO route after creation.
-    router.push(`/[userDAO]/home`, `/${orgName}/home`);
+    const formattedOrgName = encodeURIComponent(
+      orgName.trim().toLowerCase().replace(/\s+/g, "-")
+    );
+    router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
   const nextStep = () => {
@@ -143,6 +147,8 @@ const ArchitectPage = () => {
 
     switch (currentStep) {
       case steps.ASK_NAME:
+        setOrgName(userInput.trim());
+        setSiteCreated(true);
         setOrgDetails({ ...orgDetails, name: userInput });
         nextStep();
         break;
@@ -222,19 +228,6 @@ const ArchitectPage = () => {
         />
       </Box>
 
-      {orgName && (
-        <Button
-          position="fixed"
-          bottom="100px" // Adjust this value so it doesn't overlap with ArchitectInput
-          width="full"
-          p={4}
-          colorScheme="teal"
-          onClick={() => router.push(`/${orgName}/home`)}
-        >
-          Go to {orgName}'s Dashboard
-        </Button>
-      )}
-
       {showSelection && options.length > 0 && (
         <Box
           position="fixed"
@@ -266,6 +259,17 @@ const ArchitectPage = () => {
         paddingRight={10}
         zIndex="sticky"
       >
+        {orgName && (
+          <Button
+            position="absolute"
+            top="4"
+            right="4"
+            colorScheme="teal"
+            onClick={() => router.push(`/${orgName}/home`)}
+          >
+            Access site
+          </Button>
+        )}
         <ArchitectInput
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}

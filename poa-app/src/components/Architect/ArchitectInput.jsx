@@ -9,6 +9,11 @@ import {
 import { ArrowUpIcon } from "@chakra-ui/icons";
 
 const ArchitectInput = ({ value, onChange, onSubmit }) => {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      onSubmit(); // Execute the onSubmit function if Enter key is pressed
+    }
+  };
   return (
     <InputGroup>
       <Input
@@ -16,6 +21,7 @@ const ArchitectInput = ({ value, onChange, onSubmit }) => {
         onChange={onChange}
         placeholder="Type here..."
         borderColor="blue.900"
+        onKeyDown={handleKeyDown}
       />
       <InputRightElement>
         <IconButton
