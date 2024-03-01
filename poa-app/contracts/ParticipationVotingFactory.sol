@@ -8,12 +8,12 @@ contract ParticipationVotingFactory {
     ParticipationVoting[] public votingContracts;
 
 
-    event VotingContractCreated(address indexed votingContractAddress, address indexed creator);
+    event VotingContractCreated(address indexed votingContractAddress, string POname);
 
-    function createParticipationVoting(address _ParticipationToken, address _dao) public {
-        ParticipationVoting newVotingContract = new ParticipationVoting(_ParticipationToken, _dao);
+    function createParticipationVoting(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, address _treasuryAddress, string memory POname) public {
+        ParticipationVoting newVotingContract = new ParticipationVoting( _ParticipationToken, _nftMembership, _allowedRoleNames, _quadraticVotingEnabled, _treasuryAddress);
         votingContracts.push(newVotingContract);
-        emit VotingContractCreated(address(newVotingContract), msg.sender);
+        emit VotingContractCreated(address(newVotingContract), POname);
     }
 
     function getVotingContractsCount() public view returns (uint256) {

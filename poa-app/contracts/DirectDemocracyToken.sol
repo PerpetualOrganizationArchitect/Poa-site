@@ -1,23 +1,45 @@
+// SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";  
 
+interface INFTMembership {
+    function checkMemberTypeByAddress(address user) external view returns (string memory);
+}
+
 contract DirectDemocracyToken is ERC20, Ownable { 
+
+    event Mint(address indexed to, uint256 amount);
+
+    INFTMembership public nftMembership;
+
     uint256 public constant maxSupplyPerPerson = 100;
 
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
+    mapping(string => bool) private allowedRoles;
+
+    constructor(string memory name, string memory symbol, address _nftMembership, string[] memory _allowedRoleNames) ERC20(name, symbol) {
+        nftMembership = INFTMembership(_nftMembership);
+
+        for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
+            allowedRoles[_allowedRoleNames[i]] = true;
+        }
+    }
+
+    modifier canMint() {
+        string memory memberType = nftMembership.checkMemberTypeByAddress(msg.sender);
+        require(allowedRoles[memberType], "Not authorized to mint coins");
+        _;
     }
 
     function decimals() public view virtual override returns (uint8) {
         return 0;
     }
 
-    // Allow minting to a specific address
-    function mint(address _to) public { 
-        require(balanceOf(_to) == 0, "This account has already claimed coins!");
-        _mint(_to, maxSupplyPerPerson);
-        require(balanceOf(_to) == maxSupplyPerPerson, "Coins failed to mint");
+    function mint() public canMint { 
+        require(balanceOf(msg.sender) == 0, "This account has already claimed coins!");
+        _mint(msg.sender, maxSupplyPerPerson);
+        emit Mint(msg.sender, maxSupplyPerPerson);
     }
 
     function getBalance(address _address) public view returns (uint256) {
