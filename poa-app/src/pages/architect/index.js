@@ -7,17 +7,47 @@ import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
 
+const steps = {
+  ASK_NAME: "ASK_NAME",
+  ASK_DESCRIPTION: "ASK_DESCRIPTION",
+  ASK_MEMBERSHIP: "ASK_MEMBERSHIP",
+  ASK_VOTING: "ASK_VOTING",
+  // ... add other steps as needed
+};
+
+const votingOptions = [
+  { label: "Direct Democracy", value: "direct_democracy" },
+  { label: "Quadratic Voting", value: "quadratic" },
+];
+
+const membershipOptions = [
+  { label: "Executives", value: "executives" },
+  { label: "Uniform Membership", value: "uniform_membership" },
+];
+
 const ArchitectPage = () => {
+  // State hooks for managing user input and app state.
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [showSelection, setShowSelection] = useState(false);
   const [options, setOptions] = useState([]);
+  const [orgName, setOrgName] = useState(""); // Holds the organization name input by the user.
+  const [currentStep, setCurrentStep] = useState(steps.ASK_NAME);
+  const [orgDetails, setOrgDetails] = useState({
+    name: "",
+    description: "",
+    membershipType: "",
+    votingType: "",
+    // ... add other details as needed
+  });
+  // Refs and hooks for UI effects and navigation.
   const selectionRef = useRef(null);
-  const [selectionHeight, setSelectionHeight] = useState(0);
-  const [orgName, setOrgName] = useState(""); // State to hold the organization name
-  const toast = useToast();
-  const router = useRouter();
+  const [selectionHeight, setSelectionHeight] = useState(0); // State for managing the dynamic height of the selection component.
+  const toast = useToast(); // Toast is used for showing alerts and messages to the user.
+  const router = useRouter(); // useRouter hook from Next.js for handling client-side navigation.
 
+  // Function for creating the organization site. This is where you would
+  // include the logic for creating a new organization based on user input.
   const createOrgSite = () => {
     if (!orgName.trim()) {
       toast({
@@ -28,10 +58,26 @@ const ArchitectPage = () => {
       });
       return;
     }
-
-    // You would typically call an API to create the site on the server here
-    // For the test function, we'll just navigate to a dynamic route
+    // Navigate to the new DAO route after creation.
     router.push(`/[userDAO]/home`, `/${orgName}/home`);
+  };
+
+  const nextStep = () => {
+    switch (currentStep) {
+      case steps.ASK_NAME:
+        setCurrentStep(steps.ASK_DESCRIPTION);
+        break;
+      case steps.ASK_DESCRIPTION:
+        setCurrentStep(steps.ASK_MEMBERSHIP);
+        break;
+      case steps.ASK_MEMBERSHIP:
+        setCurrentStep(steps.ASK_VOTING);
+        break;
+      case steps.ASK_VOTING:
+        setCurrentStep(steps.ASK_CONFIRMATION);
+        break;
+      // ... handle other transitions
+    }
   };
 
   useEffect(() => {
@@ -44,16 +90,12 @@ const ArchitectPage = () => {
 
   useEffect(() => {
     // Simulating a greeting message from "POA" on initial load
-    const greetingMessage1 = {
+    const greetingMessage = {
       speaker: "POA",
       text: "Hello! I'm Poa, your perpetual organization architect.",
     };
 
-    const greetingMessage2 = {
-      speaker: "POA",
-      text: "Click the button below when you're ready to get started.",
-    };
-    setMessages([...messages, greetingMessage1, greetingMessage2]);
+    setMessages([...messages, greetingMessage]);
 
     setShowSelection(true);
   }, []);
@@ -63,53 +105,101 @@ const ArchitectPage = () => {
     generateOptions();
   }, []);
 
-  const generateOptions = () => {
-    // For the greeting, generate one option
-    const greetingOptions = [
-      {
-        title: "I'm Ready!",
-        action: () => {
-          // Close the selection
-          setShowSelection(false);
-          // Add new system messages
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { speaker: "system", text: "Let's start building!" },
-            {
-              speaker: "system",
-              text: "What type of community are you looking to build?",
-            },
-          ]);
-        },
-      },
-    ];
-    setOptions(greetingOptions);
+  const generateOptions = (optionsArray = [], message) => {
+    const optionsWithActions = optionsArray.map((option) => ({
+      ...option,
+      action: () =>
+        setOrgDetails((prevDetails) => ({
+          ...prevDetails,
+          [currentStep]: option.value, // Make sure this aligns with your state structure
+        })),
+    }));
+
+    setOptions(optionsWithActions);
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { speaker: "system", text: message },
+    ]);
+
     setShowSelection(true);
   };
 
-  const handleOptionSelected = (action) => {
-    action(); // Perform the action associated with the option
+  const handleOptionSelected = (selectedOptionValue) => {
+    // Find the option by value and call its action
+    const selectedOption = options.find(
+      (option) => option.value === selectedOptionValue
+    );
+    if (selectedOption && selectedOption.action) {
+      selectedOption.action();
+    }
+
+    setShowSelection(false);
+    nextStep(); // Move to the next step after the selection
   };
 
   const handleSendClick = () => {
     if (!userInput.trim()) return;
 
-    if (userInput.toLowerCase().startsWith("org:")) {
-      setOrgName(userInput.split(":")[1].trim());
-      createOrgSite();
-      setUserInput("");
-    } else {
-      // Handle other user input
-      const newUserMessage = { speaker: "user", text: userInput };
-      const newResponseMessage = {
-        speaker: "system",
-        text: "This is a hardcoded response.",
-      };
-
-      setMessages([...messages, newUserMessage, newResponseMessage]);
-      setUserInput("");
+    switch (currentStep) {
+      case steps.ASK_NAME:
+        setOrgDetails({ ...orgDetails, name: userInput });
+        nextStep();
+        break;
+      case steps.ASK_DESCRIPTION:
+        setOrgDetails({ ...orgDetails, description: userInput });
+        nextStep();
+        break;
+      case steps.ASK_MEMBERSHIP:
+        setOrgDetails({ ...orgDetails, description: userInput });
+        nextStep();
+        break;
+      case steps.ASK_VOTING:
+        setOrgDetails({ ...orgDetails, description: userInput });
+        nextStep();
+        break;
+      // ... handle other cases
     }
+
+    // Clear the input field and add the user's message to the conversation log
+    setUserInput("");
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { speaker: "user", text: userInput },
+    ]);
   };
+
+  useEffect(() => {
+    let message = "";
+    switch (currentStep) {
+      case steps.ASK_NAME:
+        message = "Please give your organization's name.";
+        break;
+      case steps.ASK_DESCRIPTION:
+        message = "Please describe your organization.";
+        break;
+      case steps.ASK_MEMBERSHIP:
+        message = "Please select a membership type.";
+        if (currentStep === steps.ASK_MEMBERSHIP) {
+          generateOptions(
+            membershipOptions,
+            "Please select a membership type."
+          );
+        }
+      case steps.ASK_VOTING:
+        message = "Please select a voting type.";
+        if (currentStep === steps.ASK_VOTING) {
+          generateOptions(votingOptions, "Please select a voting type.");
+        }
+
+        return; // Prevent adding another system message after options are shown
+      // ... add messages for other steps
+    }
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { speaker: "system", text: message },
+    ]);
+  }, [currentStep]);
 
   return (
     <Layout isArchitectPage>
@@ -126,7 +216,10 @@ const ArchitectPage = () => {
         pt="4"
         px="4"
       >
-        <ConversationLog messages={messages} />
+        <ConversationLog
+          messages={messages}
+          selectionHeight={selectionHeight}
+        />
       </Box>
 
       {orgName && (
@@ -142,7 +235,7 @@ const ArchitectPage = () => {
         </Button>
       )}
 
-      {showSelection && (
+      {showSelection && options.length > 0 && (
         <Box
           position="fixed"
           bottom="60px" // ArchitectInput component height
