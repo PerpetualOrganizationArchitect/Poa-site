@@ -7,16 +7,17 @@ import Image from "next/image";
 const Navigation = () => {
   return (
     <Flex
-      as="nav"
       align="center"
       justify="space-between"
       wrap="wrap"
       padding="1rem"
       bg="pink.100"
-      opacity="0.5"
+      position="fixed"
+      top={0}
+      w="100%"
     >
       {/* Wrap each Link in a Button component */}
-      <Link href="/" passHref>
+      <Link href="/dashboard" passHref>
         <IconButton
           icon={
             <Image
