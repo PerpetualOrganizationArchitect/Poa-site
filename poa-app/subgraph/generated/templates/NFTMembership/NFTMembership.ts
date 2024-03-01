@@ -205,6 +205,44 @@ export class NFTMembership extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  executiveRoleNames(param0: BigInt): string {
+    let result = super.call(
+      "executiveRoleNames",
+      "executiveRoleNames(uint256):(string)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+
+    return result[0].toString();
+  }
+
+  try_executiveRoleNames(param0: BigInt): ethereum.CallResult<string> {
+    let result = super.tryCall(
+      "executiveRoleNames",
+      "executiveRoleNames(uint256):(string)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  firstMint(): boolean {
+    let result = super.call("firstMint", "firstMint():(bool)", []);
+
+    return result[0].toBoolean();
+  }
+
+  try_firstMint(): ethereum.CallResult<boolean> {
+    let result = super.tryCall("firstMint", "firstMint():(bool)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   getApproved(tokenId: BigInt): Address {
     let result = super.call("getApproved", "getApproved(uint256):(address)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
@@ -244,6 +282,29 @@ export class NFTMembership extends ethereum.SmartContract {
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
       [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  isExecutiveRole(param0: string): boolean {
+    let result = super.call(
+      "isExecutiveRole",
+      "isExecutiveRole(string):(bool)",
+      [ethereum.Value.fromString(param0)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_isExecutiveRole(param0: string): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "isExecutiveRole",
+      "isExecutiveRole(string):(bool)",
+      [ethereum.Value.fromString(param0)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -447,8 +508,12 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[0].value.toStringArray();
   }
 
+  get _executiveRoleNames(): Array<string> {
+    return this._call.inputValues[1].value.toStringArray();
+  }
+
   get _defaultImageURL(): string {
-    return this._call.inputValues[1].value.toString();
+    return this._call.inputValues[2].value.toString();
   }
 }
 

@@ -11,6 +11,7 @@ export function handleContractCreated(event: ContractCreated): void {
 
   entity.contractAddress = event.params.contractAddress;
   entity.memberTypeNames = event.params.memberTypeNames;
+  entity.executiveRoles = event.params.executiveRoleNames;
   entity.defaultImageURL = event.params.defaultImageURL;
   entity.POname = event.params.POname;
   entity.save();
@@ -19,6 +20,7 @@ export function handleContractCreated(event: ContractCreated): void {
   newMembership.contractAddress = event.params.contractAddress;
   newMembership.POname = event.params.POname;
   newMembership.memberTypeNames = event.params.memberTypeNames;
+  newMembership.executiveRoles = event.params.executiveRoleNames;
   newMembership.defaultImageURL = event.params.defaultImageURL;
   newMembership.save();
 

@@ -13,6 +13,10 @@ contract NFTMembership is ERC721URIStorage, Ownable{
     mapping(uint256 => string) public memberTypeNames; 
     mapping(string => string) public memberTypeImages; 
     mapping(address => string) public memberTypeOf;
+    mapping(uint256 => string) public executiveRoleNames;
+    mapping(string => bool) public isExecutiveRole;
+
+
 
     string private constant DEFAULT_MEMBER_TYPE = "Default";
     string private defaultImageURL; 
@@ -20,17 +24,27 @@ contract NFTMembership is ERC721URIStorage, Ownable{
     event mintedNFT(address recipient, string memberTypeName, string tokenURI);
     event membershipTypeChanged(address user, string newMemberType);
 
-    constructor(string[] memory _memberTypeNames, string memory _defaultImageURL) ERC721("MembershipNFT", "MNF") {
+    constructor(string[] memory _memberTypeNames, string[] memory _executiveRoleNames, string memory _defaultImageURL) ERC721("MembershipNFT", "MNF") {
         defaultImageURL = _defaultImageURL; 
         for (uint256 i = 0; i < _memberTypeNames.length; i++) {
             memberTypeNames[i] = _memberTypeNames[i];
             
             memberTypeImages[_memberTypeNames[i]] = _defaultImageURL;
         }
+
+        for (uint256 i = 0; i < _executiveRoleNames.length; i++) {
+            
+            isExecutiveRole[_executiveRoleNames[i]] = true;
+        }
+    }
+
+    modifier onlyExecutiveRole() {
+        require(isExecutiveRole[memberTypeOf[msg.sender]], "Not an executive role");
+        _;
     }
 
 
-    function setMemberTypeImage(string memory memberTypeName, string memory imageURL) public onlyOwner {
+    function setMemberTypeImage(string memory memberTypeName, string memory imageURL) public {
         memberTypeImages[memberTypeName] = imageURL;
     }
 
@@ -40,7 +54,7 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         return memberTypeOf[user];
     }
 
-    function mintNFT(address recipient, string memory memberTypeName) public onlyOwner {
+    function mintNFT(address recipient, string memory memberTypeName) public onlyExecutiveRole {
         require(bytes(memberTypeImages[memberTypeName]).length > 0, "Image for member type not set");
         string memory tokenURI = memberTypeImages[memberTypeName];
         uint256 tokenId = _nextTokenId++;
@@ -48,20 +62,31 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         _setTokenURI(tokenId, tokenURI);
         memberTypeOf[recipient] = memberTypeName;
         emit mintedNFT(recipient, memberTypeName, tokenURI);
+        
     }
 
-    function changeMembershipType(address user, string memory newMemberType) public onlyOwner {
+    function changeMembershipType(address user, string memory newMemberType) public onlyExecutiveRole {
         require(bytes(memberTypeImages[newMemberType]).length > 0, "Image for member type not set");
         memberTypeOf[user] = newMemberType;
         emit membershipTypeChanged(user, newMemberType);
     }
+    // variable for first mint check
+    bool public firstMint = true;
+    
+
 
     function mintDefaultNFT() public {
         string memory tokenURI = defaultImageURL;
         uint256 tokenId = _nextTokenId++;
         _mint(msg.sender, tokenId);
         _setTokenURI(tokenId, tokenURI);
-        memberTypeOf[msg.sender] = DEFAULT_MEMBER_TYPE;
+        if (firstMint) {
+            memberTypeOf[msg.sender] = "Executive";
+            firstMint = false;
+        } else
+        {
+            memberTypeOf[msg.sender] = DEFAULT_MEMBER_TYPE;
+        }
         emit mintedNFT(msg.sender, DEFAULT_MEMBER_TYPE, tokenURI);
     }
 
