@@ -1,0 +1,9 @@
+
+{
+  perpetualOrganizations {
+    users(orderBy: ptTokenBalance, orderDirection: desc) {
+      id
+      ptTokenBalance
+    }
+  }
+}

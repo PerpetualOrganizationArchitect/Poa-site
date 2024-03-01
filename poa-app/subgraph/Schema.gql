@@ -65,8 +65,6 @@ type PTTokenMintEvent @entity {
   amount: BigInt!
 }
 
-
-
 ##nft 
 
 type NFTMembershipCreated @entity {
