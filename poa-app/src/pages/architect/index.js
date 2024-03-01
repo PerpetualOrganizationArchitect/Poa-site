@@ -56,7 +56,6 @@ const ArchitectPage = () => {
     description: "",
     membershipType: "",
     votingType: "",
-    // ... add other details as needed
   });
   // Refs and hooks for UI effects and navigation.
   const selectionRef = useRef(null);
@@ -99,7 +98,6 @@ const ArchitectPage = () => {
       case steps.ASK_VOTING:
         setCurrentStep(steps.ASK_CONFIRMATION);
         break;
-      // ... handle other transitions
     }
   };
 
@@ -166,11 +164,12 @@ const ArchitectPage = () => {
     }));
 
     setOptions(optionsWithActions);
-
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { speaker: "system", text: message },
-    ]);
+    if (message) {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { speaker: "system", text: message },
+      ]);
+    }
 
     setShowSelection(true);
   };
@@ -246,25 +245,20 @@ const ArchitectPage = () => {
         break;
       case steps.ASK_MEMBERSHIP:
         message = "Please select a membership type.";
-        if (currentStep === steps.ASK_MEMBERSHIP) {
-          generateOptions(
-            membershipOptions,
-            "Please select a membership type."
-          );
-        }
+        generateOptions(membershipOptions, message);
+        return;
       case steps.ASK_VOTING:
         message = "Please select a voting type.";
-        if (currentStep === steps.ASK_VOTING) {
-          generateOptions(votingOptions, "Please select a voting type.");
-        }
-
-        return; // Prevent adding another system message after options are shown
-      // ... add messages for other steps
+        generateOptions(votingOptions, message);
+        return;
     }
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { speaker: "system", text: message },
-    ]);
+
+    if (message) {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { speaker: "system", text: message },
+      ]);
+    }
   }, [currentStep]);
 
   return (
