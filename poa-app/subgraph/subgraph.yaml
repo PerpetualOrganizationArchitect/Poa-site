@@ -146,7 +146,7 @@ dataSources:
     name: TaskManagerFactory
     network: mumbai
     source:
-      address: "0x6b41151F1547386cB810A6c0ffbB304d192729ca"
+      address: "0x8cc551b39e97F92Ea3c122Ab14FbeeAc2e53Fb53"
       abi: TaskManagerFactory
       startBlock: 46430300
     mapping:
@@ -285,11 +285,11 @@ templates:
           file: ../abi/ParticipationVoting.json
       eventHandlers:
         - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
-          handler: handlePollCreated
+          handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
-          handler: handlePollOptionCreated
+          handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256,uint256)
-          handler: handleVoteCast
+          handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: ./mappings/ptVoting/ptVotingMapping.ts
@@ -316,7 +316,7 @@ templates:
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256)
-          handler: handleVoteCast
+          handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: ./mappings/ddVoting/ddVotingMapping.ts
@@ -339,11 +339,11 @@ templates:
           file: ../abi/HybridVoting.json
       eventHandlers:
         - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
-          handler: handlePollCreated
+          handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
-          handler: handlePollOptionCreated
+          handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256,uint256,uint256)
-          handler: handleVoteCast
+          handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: ./mappings/hybridVoting/hybridVotingMapping.ts

@@ -88,6 +88,7 @@ contract TaskManager {
         require(!task.isCompleted, "Task already completed");
         require(task.claimer == address(0), "Task already claimed");
         task.claimer = msg.sender;
+        emit TaskClaimed(_taskId, msg.sender);
         
     }
 

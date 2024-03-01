@@ -11,6 +11,8 @@ export function handleTaskCreated(event: TaskCreatedEvent): void {
   task.ipfsHash = event.params.ipfsHash
   task.project = event.params.projectName
   task.completed = false
+  task.taskManager = event.address.toHex()
+
 
     task.save()
 
