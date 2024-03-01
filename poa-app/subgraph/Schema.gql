@@ -79,7 +79,8 @@ type NFTMembershipCreated @entity {
 
 type NFTMembership @entity {
   id: ID!
-  contract: NFTMembershipCreated! @link
+  contractAddress: Bytes!
+  POname: String!
   memberTypeNames: [String!]!
   defaultImageURL: String!
   mintEvents: [NFTMintEvent!]! @derivedFrom(field: "membership")
@@ -341,7 +342,19 @@ type PerpetualOrganization @entity {
   ParticipationVoting: PTVoting @link
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
+  Users: [User!] @derivedFrom(field: "organization")
 }
+
+type User @entity {
+  id: ID!
+  organization: PerpetualOrganization! @link
+  address: Bytes!
+  ddTokenBalance: BigInt!
+  ptTokenBalance: BigInt!
+  memberType: NFTMemberType @link
+}
+
+
 
 
 

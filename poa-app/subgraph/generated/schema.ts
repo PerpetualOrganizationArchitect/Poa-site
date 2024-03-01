@@ -875,8 +875,21 @@ export class NFTMembership extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get contract(): string {
-    let value = this.get("contract");
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -884,8 +897,8 @@ export class NFTMembership extends Entity {
     }
   }
 
-  set contract(value: string) {
-    this.set("contract", Value.fromString(value));
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
   }
 
   get memberTypeNames(): Array<string> {
@@ -3771,6 +3784,123 @@ export class PerpetualOrganization extends Entity {
       this.set("HybridVoting", Value.fromString(<string>value));
     }
   }
+
+  get Users(): UserLoader {
+    return new UserLoader(
+      "PerpetualOrganization",
+      this.get("id")!.toString(),
+      "Users"
+    );
+  }
+}
+
+export class User extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save User entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type User must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("User", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): User | null {
+    return changetype<User | null>(store.get_in_block("User", id));
+  }
+
+  static load(id: string): User | null {
+    return changetype<User | null>(store.get("User", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get organization(): string {
+    let value = this.get("organization");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set organization(value: string) {
+    this.set("organization", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get ddTokenBalance(): BigInt {
+    let value = this.get("ddTokenBalance");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set ddTokenBalance(value: BigInt) {
+    this.set("ddTokenBalance", Value.fromBigInt(value));
+  }
+
+  get ptTokenBalance(): BigInt {
+    let value = this.get("ptTokenBalance");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set ptTokenBalance(value: BigInt) {
+    this.set("ptTokenBalance", Value.fromBigInt(value));
+  }
+
+  get memberType(): string | null {
+    let value = this.get("memberType");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set memberType(value: string | null) {
+    if (!value) {
+      this.unset("memberType");
+    } else {
+      this.set("memberType", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class DDAllowedRoleNameLoader extends Entity {
@@ -4094,5 +4224,23 @@ export class ValidContractLoader extends Entity {
   load(): ValidContract[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<ValidContract[]>(value);
+  }
+}
+
+export class UserLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): User[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<User[]>(value);
   }
 }

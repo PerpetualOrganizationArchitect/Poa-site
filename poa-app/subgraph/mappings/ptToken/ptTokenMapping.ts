@@ -1,6 +1,6 @@
 import { log } from "@graphprotocol/graph-ts"
 import { Mint as MintEvent, TaskManagerAddressSet } from "../../generated/templates/ParticipationToken/ParticipationToken"
-import { PTTokenMintEvent, PTToken } from "../../generated/schema"
+import { PTTokenMintEvent, PTToken, User } from "../../generated/schema"
 
 export function handleTokenMint(event: MintEvent): void {
   log.info("Triggered handleTokenMint", [])
@@ -10,8 +10,14 @@ export function handleTokenMint(event: MintEvent): void {
   entity.token = event.address.toHex()
   entity.amount = event.params.amount
   entity.save()
+
+  let user = User.load(event.params.to.toHex())
+  if (user != null) {
+    user.ptTokenBalance = user.ptTokenBalance.plus(event.params.amount)
+    user.save()
+  }
 }
-// still needs testing
+
 export function handleTaskManagerSet(event: TaskManagerAddressSet): void {
 
     let token = PTToken.load(event.address.toHex());

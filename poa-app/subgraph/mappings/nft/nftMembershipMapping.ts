@@ -1,6 +1,6 @@
-import { log } from "@graphprotocol/graph-ts"
+import { BigInt, log } from "@graphprotocol/graph-ts"
 import { mintedNFT as MintEvent, membershipTypeChanged } from "../../generated/templates/NFTMembership/NFTMembership"
-import {NFTMintEvent,NFTChangeTypeEvent } from "../../generated/schema"
+import {NFTMintEvent,NFTChangeTypeEvent, User, NFTMembership } from "../../generated/schema"
 import { dataSource } from '@graphprotocol/graph-ts'
 
 
@@ -14,6 +14,18 @@ export function handleMintedNFT(event: MintEvent): void {
   entity.tokenURI = event.params.tokenURI;
   entity.membership=event.address.toHex();
   entity.save();
+
+  let nft = NFTMembership.load(event.address.toHex());
+
+  let user = new User(event.params.recipient.toHex());
+  if (user != null && nft != null) {
+    user.address = event.params.recipient;
+    user.organization= nft.POname
+    user.ddTokenBalance = BigInt.fromI32(0);
+    user.ptTokenBalance = BigInt.fromI32(0);
+    user.memberType = nft.contractAddress.toHex() + "-" + event.params.memberTypeName
+    user.save();
+  }
 }
 
 export function handleMembershipTypeChanged(event: membershipTypeChanged): void {
@@ -22,5 +34,14 @@ export function handleMembershipTypeChanged(event: membershipTypeChanged): void 
   entity.membership = event.params.newMemberType;
   entity.user = event.params.user;
   entity.save();
+
+  let user = User.load(event.params.user.toHex());
+
+  let nft = NFTMembership.load(event.address.toHex());
+
+  if (user != null && nft != null) {
+    user.memberType = nft.contractAddress.toHex() + "-" + event.params.newMemberType;
+    user.save();
+  }
 }
 

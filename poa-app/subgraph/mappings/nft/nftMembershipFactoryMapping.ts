@@ -16,7 +16,8 @@ export function handleContractCreated(event: ContractCreated): void {
   entity.save();
 
   let newMembership = new NFTMembership(event.params.contractAddress.toHex());
-  newMembership.contract = entity.id;
+  newMembership.contractAddress = event.params.contractAddress;
+  newMembership.POname = event.params.POname;
   newMembership.memberTypeNames = event.params.memberTypeNames;
   newMembership.defaultImageURL = event.params.defaultImageURL;
   newMembership.save();
@@ -27,6 +28,7 @@ export function handleContractCreated(event: ContractCreated): void {
     po.NFTMembership = newMembership.id;
     po.save();
   }
+
 
   for (let i = 0; i < event.params.memberTypeNames.length; i++) {
     let memberType = new NFTMemberType(event.params.contractAddress.toHex() + "-" + event.params.memberTypeNames[i]);
