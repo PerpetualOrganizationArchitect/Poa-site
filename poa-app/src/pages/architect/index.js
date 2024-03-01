@@ -1,7 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
-import { Box, Button, useToast } from "@chakra-ui/react";
+
+import {
+  Box,
+  useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+  Text,
+} from "@chakra-ui/react";
+
 import { useRouter } from "next/router";
 import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
@@ -27,8 +42,10 @@ const membershipOptions = [
 
 const ArchitectPage = () => {
   // State hooks for managing user input and app state.
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [showSelection, setShowSelection] = useState(false);
   const [options, setOptions] = useState([]);
   const [orgName, setOrgName] = useState(""); // Holds the organization name input by the user.
@@ -57,12 +74,14 @@ const ArchitectPage = () => {
         duration: 3000,
         isClosable: true,
       });
+
       return;
     }
     // Navigate to the new DAO route after creation.
     const formattedOrgName = encodeURIComponent(
       orgName.trim().toLowerCase().replace(/\s+/g, "-")
     );
+    setIsConfirmationModalOpen(false);
     router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
@@ -82,6 +101,33 @@ const ArchitectPage = () => {
         break;
       // ... handle other transitions
     }
+  };
+
+  const handleConfirmation = () => {
+    // This is where you would handle the API call to create the site
+    // For now, we'll navigate to the new route
+    const formattedOrgName = encodeURIComponent(
+      orgName.trim().toLowerCase().replace(/\s+/g, "-")
+    );
+    router.push(`/${formattedOrgName}/home`);
+  };
+
+  const startOver = () => {
+    // Reset all state to initial values
+    setUserInput("");
+    setMessages([]);
+    setShowSelection(false);
+    setOptions([]);
+    setOrgName("");
+    setOrgDetails({
+      name: "",
+      description: "",
+      membershipType: "",
+      votingType: "",
+      // ... reset other details as needed
+    });
+    setCurrentStep(steps.ASK_NAME);
+    onClose(); // Close the confirmation modal
   };
 
   useEffect(() => {
@@ -137,9 +183,23 @@ const ArchitectPage = () => {
     if (selectedOption && selectedOption.action) {
       selectedOption.action();
     }
+    if (currentStep === steps.ASK_VOTING) {
+      setIsConfirmationModalOpen(true);
+    }
 
     setShowSelection(false);
     nextStep(); // Move to the next step after the selection
+  };
+
+  const handleStartOver = () => {
+    setOrgDetails({
+      name: "",
+      description: "",
+      membershipType: "",
+      votingType: "",
+    });
+    setIsConfirmationModalOpen(false);
+    setCurrentStep(steps.ASK_NAME);
   };
 
   const handleSendClick = () => {
@@ -226,6 +286,31 @@ const ArchitectPage = () => {
           messages={messages}
           selectionHeight={selectionHeight}
         />
+        <Modal
+          isOpen={isConfirmationModalOpen}
+          onClose={() => setIsConfirmationModalOpen(false)}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Confirm Your Selections</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {/* Display the user's selections here */}
+              <p>Name: {orgDetails.name}</p>
+              <p>Description: {orgDetails.description}</p>
+              <p>Membership Type: {orgDetails.membershipType}</p>
+              <p>Voting Type: {orgDetails.votingType}</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={handleStartOver}>
+                Start Over
+              </Button>
+              <Button variant="ghost" onClick={createOrgSite}>
+                Yes, show me my site!
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
 
       {showSelection && options.length > 0 && (
