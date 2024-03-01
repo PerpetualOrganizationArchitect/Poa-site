@@ -1,9 +1,16 @@
 import {useState, useEffect } from 'react';
 import { providers, JsonRpcBatchProvider, ethers } from 'ethers';
+import {Button, tokenToCSSVar} from "@chakra-ui/react";
 
 import DirectDemocracyVoting from "../../abi/DirectDemocracyVoting.json";
-import PaticipationVoting from "../../abi/ParticipationVoting.json";
+import ParticipationVoting from "../../abi/ParticipationVoting.json";
+import HybridVoting from "../../abi/HybridVoting.json";
+
 import TaskManager from "../../abi/TaskManager.json";
+import NFTMembership from "../../abi/NFTMembership.json";
+import Treasury from "../../abi/Treasury.json";
+import DirectDemocracyToken from '.../abi/DirectDemocracyToken.json';
+
 
 
 const web3test = () => {
@@ -14,85 +21,144 @@ const web3test = () => {
     const [providerUniversal, setProviderUniversal] = useState(new providers.StaticJsonRpcProvider(process.env.NEXT_PUBLIC_INFURA_URL));
     const [signer, setSigner] = useState(new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY, providerUniversal));
 
-    async function createProposalDDVoting() {
-        const contract = new ethers.Contract("0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9", DirectDemocracyVoting.abi, signer);
+    const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
+    const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
+    const taskManagerAddress = "0xf02852b08c594507A3255d7504FFC4928865ef2b";
+    const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
 
-        // option names
-        const options = ["Option 1", "Option 2", "Option 3"];
-        const tx = await contract.createProposal("Test Proposal", "Test Description", 10, options, 1, "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9", 10, true);
+
+    const getContractInstance = (contractAddress, contractABI) => {
+        return new ethers.Contract(contractAddress, contractABI, signer);
+    };
+
+    // Hybrid Voting
+
+    async function createProposalHybridVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend) {
+        const contract = getContractInstance(contractAddress, HybridVoting.abi);
+        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend);
         await tx.wait();
-
-        console.log("Proposal created");
-
-    }
-
-    async function createProposalPtVoting() {
-        const contract = new ethers.Contract("0xf88514674946a2a8a970d957708fef4b9be3e410", PaticipationVoting.abi, signer);
-
-        const options = ["Option 1", "Option 2", "Option 3"];
-        const tx = await contract.createProposal("Test Proposal", "Test Description", 10, options, 1, "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9", 10, true);
-        await tx.wait();
-
         console.log("Proposal created");
     }
-    async function createProject(){
-        const contract = new ethers.Contract("0xf02852b08c594507A3255d7504FFC4928865ef2b", TaskManager.abi, signer);
 
-        const tx = await contract.createProject("Project1");
+    async function hybridVote(contractAddress, proposalID, voterAddress, optionIndex) {
+        const contract = getContractInstance(contractAddress, HybridVoting.abi);
+        const tx = await contract.vote(proposalID, voterAddress, optionIndex);
         await tx.wait();
+        console.log("Voted");
+    }
 
+
+    // DD Voting
+    async function createProposalDDVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend) {
+        const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
+        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend);
+        await tx.wait();
+        console.log("Proposal created");
+    }
+
+    async function ddVote(contractAddress,proposalID, voterAddress, optionIndex) {
+        const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
+        const tx = await contract.vote(proposalID, voterAddress, optionIndex);
+        await tx.wait();
+        console.log("Voted");
+    }
+
+    // PT Voting
+    async function createProposalPtVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, triggerSpend, recieverAddress, amount, canSend) {
+        const contract = getContractInstance(contractAddress, ParticipationVoting.abi);
+        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpend, recieverAddress, amount, canSend);
+        await tx.wait();
+        console.log("Proposal created");
+    }
+
+    async function PtVote(contractAddress, proposalID, voterAddress, optionIndex) {
+        const contract = getContractInstance(contractAddress, ParticipationVoting.abi);
+        const tx = await contract.vote(proposalID, voterAddress, optionIndex);
+        await tx.wait();
+        console.log("Voted");
+    }
+
+    // Task Manager
+    async function createProject(contractAddress, projectName) {
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const tx = await contract.createProject(projectName);
+        await tx.wait();
         console.log("Project created");
     }
 
-    async function createTask(){
-        const contract = new ethers.Contract("0xf02852b08c594507A3255d7504FFC4928865ef2b", TaskManager.abi, signer);
-
-        const tx = await contract.createTask(10, "ipfshash", "Project1");
+    async function createTask(contractAddress,payout, ipfsHash, projectName) {
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const tx = await contract.createTask(payout, ipfsHash, projectName);
         await tx.wait();
-
         console.log("Task created");
     }
 
-    async function claimTask(){
-        const contract = new ethers.Contract("0xf02852b08c594507A3255d7504FFC4928865ef2b", TaskManager.abi, signer);
-
-        const tx = await contract.claimTask(1);
+    async function claimTask(contractAddress, taskID) {
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const tx = await contract.claimTask(taskID);
         await tx.wait();
-
         console.log("Task claimed");
     }
 
-    async function completeTask(){
-        const contract = new ethers.Contract("0xf02852b08c594507A3255d7504FFC4928865ef2b", TaskManager.abi, signer);
-
-        const tx = await contract.completeTask(0);
+    async function completeTask(contractAddress, taskID) {
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const tx = await contract.completeTask(taskID);
         await tx.wait();
-
         console.log("Task completed");
     }
 
-    async function updateTask(){
-        const contract = new ethers.Contract("0xf02852b08c594507A3255d7504FFC4928865ef2b", TaskManager.abi, signer);
-
-        const tx = await contract.updateTask(2, 20, "ipfshash");
+    async function updateTask(contractAddress, taskID, payout, ipfsHash) {
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const tx = await contract.updateTask(taskID, payout, ipfsHash);
         await tx.wait();
-
         console.log("Task updated");
     }
-    
 
-    return (
-        <div>
-            <button onClick={createProposalDDVoting}>Create Proposal demcoracy</button>
-            <button onClick={createProposalPtVoting}>Create Proposal Participatin</button>
-            <button onClick={createProject}>Create Project</button>
-            <button onClick={createTask}>Create Task</button>
-            <button onClick={claimTask}>Claim Task</button>
-            <button onClick={completeTask}>Complete Task</button>
-            <button onClick={updateTask}>Update Task</button>
-        </div>
+    // NFT Membership
+    async function mintNFT(contractAddress, toAddress, membershipType) {
+        const contract = getContractInstance(contractAddress, NFTMembership.abi);
+        const tx = await contract.mintNFT(toAddress, membershipType);
+        await tx.wait();
+        console.log("NFT minted");
+    }
 
-    )
+    async function mintDefaultNFT(contractAddress,) {
+        const contract = getContractInstance(contractAddress, NFTMembership.abi);
+        const tx = await contract.mintDefaultNFT();
+        await tx.wait();
+        console.log("Default NFT minted");
+    }
+
+    async function updateNFT(contractAddress, userAddress, membershipType) {
+        const contract = getContractInstance(contractAddress, NFTMembership.abi);
+        const tx = await contract.changeMembershipType(userAddress, membershipType);
+        await tx.wait();
+        console.log("NFT updated");
+    }
+
+    async function setImageURL(contractAddress,memberTypeName, imageURL) {
+        const contract = getContractInstance(contractAddress, NFTMembership.abi);
+        const tx = await contract.setMemberTypeImage(memberTypeName, imageURL);
+        await tx.wait();
+        console.log("Image URL updated");
+    }
+
+    // Treasury 
+    async function transferFunds(contractAddress, tokenAddress, amount) {
+        const contract = getContractInstance(contractAddress, Treasury.abi);
+        const tx = await contract.recieveTokens(tokenAddress, amount);
+        await tx.wait();
+        console.log("Funds transferred");
+    }
+
+    // dd token 
+    async function mintDDtokens(contractAddress) {
+        const contract = getContractInstance(contractAddress, DirectDemocracyToken.abi);
+        const tx = await contract.mint();
+        await tx.wait();
+        console.log("Tokens minted");
+    }
+
 }
 
 export default web3test;
