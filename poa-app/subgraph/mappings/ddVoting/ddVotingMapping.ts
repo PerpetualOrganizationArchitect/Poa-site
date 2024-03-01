@@ -15,11 +15,10 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.transferAmount = event.params.transferAmount;
     newProposal.transferRecipient = event.params.transferRecipient;
     newProposal.transferEnabled = event.params.transferEnabled;
-    
-
-
-  newProposal.totalVotes = BigInt.fromI32(0);
-  newProposal.voting = event.address.toHex();
+    newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes);
+    newProposal.totalVotes = BigInt.fromI32(0);
+    newProposal.voting = event.address.toHex();
+    newProposal.save();
   
 }
 

@@ -2151,6 +2151,19 @@ export class DDProposal extends Entity {
     this.set("creationTimestamp", Value.fromBigInt(value));
   }
 
+  get experationTimestamp(): BigInt {
+    let value = this.get("experationTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set experationTimestamp(value: BigInt) {
+    this.set("experationTimestamp", Value.fromBigInt(value));
+  }
+
   get transferTriggerOptionIndex(): BigInt | null {
     let value = this.get("transferTriggerOptionIndex");
     if (!value || value.kind == ValueKind.NULL) {
@@ -2681,6 +2694,19 @@ export class HybridProposal extends Entity {
 
   set creationTimestamp(value: BigInt) {
     this.set("creationTimestamp", Value.fromBigInt(value));
+  }
+
+  get experationTimestamp(): BigInt {
+    let value = this.get("experationTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set experationTimestamp(value: BigInt) {
+    this.set("experationTimestamp", Value.fromBigInt(value));
   }
 
   get transferTriggerOptionIndex(): BigInt | null {

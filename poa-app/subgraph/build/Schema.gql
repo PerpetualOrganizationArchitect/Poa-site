@@ -65,8 +65,6 @@ type PTTokenMintEvent @entity {
   amount: BigInt!
 }
 
-
-
 ##nft 
 
 type NFTMembershipCreated @entity {
@@ -195,6 +193,7 @@ type DDProposal @entity {
   totalVotes: BigInt!
   timeInMinutes: BigInt!
   creationTimestamp: BigInt!
+  experationTimestamp: BigInt!
   transferTriggerOptionIndex: BigInt
   transferRecipient: Bytes
   transferAmount: BigInt
@@ -242,6 +241,7 @@ type HybridProposal @entity {
   totalVotes: BigInt!
   timeInMinutes: BigInt!
   creationTimestamp: BigInt!
+  experationTimestamp: BigInt!
   transferTriggerOptionIndex: BigInt
   transferRecipient: Bytes
   transferAmount: BigInt
