@@ -1,5 +1,6 @@
 import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
 
+
 const theme = extendTheme({
   fonts: {
     heading: "'Roboto Mono', monospace", // Use Roboto Mono for headings
