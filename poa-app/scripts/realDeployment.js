@@ -29,6 +29,7 @@ const TaskManagerFactory = require('../abi/TaskManagerFactory.json');
 const RegistryFactory = require('../abi/RegistryFactory.json');
 
 const TreasuryFactory = require('../abi/TreasuryFactory.json');
+const Treasury = require('../abi/Treasury.json');
 
 const ParticipationTokenFactory = require('../abi/ParticipationTokenFactory.json');
 const ParticipationToken = require('../abi/ParticipationToken.json');
@@ -131,8 +132,8 @@ async function deployRegistry(wallet) {
   return contract;
 }
 
-async function makeNFTMembership(nftFactoryContract,memberTypeNames, defaultImageURL, POname ){
-    const tx = await nftFactoryContract.createNFTMembership(memberTypeNames, defaultImageURL, POname);
+async function makeNFTMembership(nftFactoryContract,memberTypeNames, executivePermissionNames,defaultImageURL, POname ){
+    const tx = await nftFactoryContract.createNFTMembership(memberTypeNames,executivePermissionNames, defaultImageURL, POname);
     await tx.wait();
   
     const deployedContracts = await nftFactoryContract.getDeployedContracts();
@@ -414,7 +415,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
 
     const nftMembershipFactoryAddress = "0x1C1ABf2c3824daa95BDf2E979e3addA570283Cf1";
     const ddTokenFactoryAddress = "0xdF674Fd4b6fD809069Ffbd9deA727CE8A7e8C9f8";
-    const ptTokenFactoryAddress = "0xc82ca58505FB8B14d57aAf250d97A76aC1354f90";
+    const ptTokenFactoryAddress = "0xb37C09ecc05F6031f987FD9baC34575D43249e6d";
     const treasuryFactoryAddress = "0x52ED44aB1cBD8323e15CB40b457e4E1eBf14408c";
     const ptVotingFactoryAddress = "0x68bfACC747b5C98Df33476417d91EAD0F9A8f204";
     const ddVotingFactoryAddress = "0xa80927965487CA1bC9e4cf6b90a40B0954E8830A";
@@ -441,7 +442,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
 
 
 
-      const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
+      const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, executivePermissionNames, defaultImageURL, POname);
       const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
       const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
       const treasuryAddress = await makeTreasury(treasury, POname);
@@ -467,7 +468,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
         console.log("Task Manager address set in PT Token contract");
 
         //interact with newly deployed treasury contract to set the voting contract address in the treasury contract
-        const treasuryContract = new ethers.Contract(treasuryAddress, TreasuryFactory.abi, wallet);
+        const treasuryContract = new ethers.Contract(treasuryAddress, Treasury.abi, wallet);
 
 
 
@@ -523,7 +524,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
   }
 }
 
-main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "KUBI7", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
+main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "Test", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
   .then(() => process.exit(0))
   .catch((error) => {
       console.error(error);

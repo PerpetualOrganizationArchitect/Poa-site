@@ -398,15 +398,15 @@ async function main() {
 
   try {
       console.log("starting deploy")
-      const nftMembership = await deployNFTMembership(wallet);
-      const ddToken = await deployDirectDemocracyToken(wallet);
+      // const nftMembership = await deployNFTMembership(wallet);
+      // const ddToken = await deployDirectDemocracyToken(wallet);
       const ptToken = await deployParticipationToken(wallet);
-      const treasury = await deployTreasury(wallet);
-      const ptVoting = await deployParticipationVoting(wallet);
-      const ddVoting = await deployDirectDemocracyVoting(wallet);
-      const hybridVoting = await deployHybridVoting(wallet);
-      const taskManager = await deployTaskManager(wallet);
-      const registry = await deployRegistry(wallet);
+      // const treasury = await deployTreasury(wallet);
+      // const ptVoting = await deployParticipationVoting(wallet);
+      // const ddVoting = await deployDirectDemocracyVoting(wallet);
+      // const hybridVoting = await deployHybridVoting(wallet);
+      // const taskManager = await deployTaskManager(wallet);
+      // const registry = await deployRegistry(wallet);
 
       // const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
       // const defaultImageURL = "http://example.com/default.jpg";

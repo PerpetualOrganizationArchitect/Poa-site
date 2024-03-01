@@ -26,7 +26,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: mumbai
     source:
-      address: "0xc82ca58505FB8B14d57aAf250d97A76aC1354f90"
+      address: "0xb37C09ecc05F6031f987FD9baC34575D43249e6d"
       abi:  ParticipationTokenFactory
       startBlock: 46430300
     mapping:
@@ -222,6 +222,8 @@ templates:
       eventHandlers:
         - event: Mint(indexed address,uint256)
           handler: handleTokenMint
+        - event: TaskManagerAddressSet(address)
+          handler: handleTaskManagerAddressSet
       file: ./mappings/ddToken/ddTokenMapping.ts
   - kind: ethereum/contract
     name: NFTMembership

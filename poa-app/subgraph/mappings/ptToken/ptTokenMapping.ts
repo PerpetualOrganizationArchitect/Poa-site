@@ -18,7 +18,7 @@ export function handleTokenMint(event: MintEvent): void {
   }
 }
 
-export function handleTaskManagerSet(event: TaskManagerAddressSet): void {
+export function handleTaskManagerAddressSet(event: TaskManagerAddressSet): void {
 
     let token = PTToken.load(event.address.toHex());
     token.taskManagerAddress = event.params.taskManagerAddress;

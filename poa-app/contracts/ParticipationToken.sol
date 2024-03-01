@@ -28,7 +28,7 @@ contract ParticipationToken is ERC20, Ownable {
     }
 
     function setTaskManagerAddress(address _taskManagerAddress) external  {
-        require(_taskManagerAddress == address(0), "Task manager address already set.");
+        require(taskManagerAddress == address(0), "Task manager address already set.");
         taskManagerAddress = _taskManagerAddress;
         emit TaskManagerAddressSet(_taskManagerAddress);
     }
