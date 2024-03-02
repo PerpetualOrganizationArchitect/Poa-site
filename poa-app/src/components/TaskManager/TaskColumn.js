@@ -189,7 +189,7 @@ const TaskColumn = ({ title, tasks, columnId }) => {
                 estHours={task.estHours}
                 submission={task.submission}
                 claimedBy={task.claimedBy}
-                kubixPayout={task.kubixPayout}
+                Payout={task.Payout}
                 claimerUsername={task.claimerUsername}
                 columnId={columnId}
                 projectId={task.projectId}

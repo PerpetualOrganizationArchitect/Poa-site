@@ -47,6 +47,7 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
   const { getUsernameByAddress,setSelectedProjectId } = useDataBaseContext();
 
   const router = useRouter();
+  const {userDAO} = router.query;
   
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -67,7 +68,7 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
   
   const handleCloseModal = () => {
     onClose();
-      router.push({ pathname: '/tasks' }, undefined, { shallow: true });
+      router.push({ pathname: `/${userDAO}/tasks`, }, undefined, { shallow: true });
   };
 
 
@@ -233,15 +234,15 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
           <ModalFooter borderTop="1.5px solid" borderColor="gray.200" py={2}>
             <Box flexGrow={1}>
               <Text fontWeight="bold" fontSize="m">
-                KUBIX: {task.kubixPayout}
+                Reward: {task.Payout}
               </Text>
             </Box>
             <Box>
-              <Button variant="outline" onClick={copyLinkToClipboard} mr={2}>
+              <Button textColor={"white"} variant="outline" onClick={copyLinkToClipboard} mr={2}>
                 Share
               </Button>
               {columnId === 'open' && (
-                <Button variant="outline" onClick={handleOpenEditTaskModal} mr={2}>
+                <Button textColor={"white"} variant="outline" onClick={handleOpenEditTaskModal} mr={2}>
                   Edit
                 </Button>
               )}
