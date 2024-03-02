@@ -3,7 +3,7 @@ import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/DirectDemocracyVoting/DirectDemocracyVoting"
 import { DDProposal, DDPollOption,DDVote } from "../../generated/schema"
 
-export function handleNewProposal(event: NewProposal): void {
+export function handlePollCreated(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
 
     let newProposal = new DDProposal(event.params.proposalId.toHex());
