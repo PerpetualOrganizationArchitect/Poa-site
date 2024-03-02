@@ -48,13 +48,16 @@ async function deployDirectDemocracyToken(wallet) {
     DirectDemocracyTokenFactoryBytecode,
     wallet
   );
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `ddtoken factory Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
 
-  const contract = await factory.deploy();
-  await contract.deployed();
-
-  console.log(
-    `ddtoken factory Contract deployed at address: ${contract.address}`
-  );
   return contract;
 }
 
@@ -68,11 +71,16 @@ async function deployDirectDemocracyVoting(wallet, ddtokenAddress) {
     DirectDemocracyVotingFactoryBytecode,
     wallet
   );
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(
-    `ddvoting factory Contract deployed at address: ${contract.address}`
-  );
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `ddvoting factory Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
+
   return contract;
 }
 
@@ -83,11 +91,16 @@ async function deployNFTMembership(wallet) {
     wallet
   );
 
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(
-    `NFT Membership Contract deployed at address: ${contract.address}`
-  );
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `NFT Membership Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
+
   return contract;
 }
 
@@ -97,11 +110,16 @@ async function deployParticipationToken(wallet) {
     ParticipationTokenFactory.bytecode,
     wallet
   );
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(
-    `Participation Token Contract deployed at address: ${contract.address}`
-  );
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `Participation Token Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
+
   return contract;
 }
 
@@ -111,10 +129,14 @@ async function deployTreasury(wallet) {
     TreasuryFactory.bytecode,
     wallet
   );
-  const contract = await factory.deploy();
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(`Treasury Contract deployed at address: ${contract.address}`);
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
 
-  await contract.deployed();
-  console.log(`Treasury Contract deployed at address: ${contract.address}`);
   return contract;
 }
 
@@ -124,11 +146,16 @@ async function deployParticipationVoting(wallet) {
     ParticipationVotingFactory.bytecode,
     wallet
   );
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(
-    `Participation Voting Contract deployed at address: ${contract.address}`
-  );
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `Participation Voting Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
+
   return contract;
 }
 
@@ -138,11 +165,16 @@ async function deployHybridVoting(wallet) {
     HybridVotingFactory.bytecode,
     wallet
   );
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(
-    `Hybrid Voting Contract deployed at address: ${contract.address}`
-  );
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `Hybrid Voting Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
+
   return contract;
 }
 
@@ -152,9 +184,15 @@ async function deployTaskManager(wallet) {
     TaskManagerFactory.bytecode,
     wallet
   );
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(`Task Manager Contract deployed at address: ${contract.address}`);
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(
+      `Task Manager Contract deployed at address: ${contract.address}`
+    );
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
   return contract;
 }
 
@@ -164,10 +202,13 @@ async function deployRegistry(wallet) {
     RegistryFactory.bytecode,
     wallet
   );
-
-  const contract = await factory.deploy();
-  await contract.deployed();
-  console.log(`Registry Contract deployed at address: ${contract.address}`);
+  try {
+    const contract = await factory.deploy();
+    await contract.deployed();
+    console.log(`Registry Contract deployed at address: ${contract.address}`);
+  } catch (error) {
+    handleError(error, "Contract deployment");
+  }
   return contract;
 }
 
