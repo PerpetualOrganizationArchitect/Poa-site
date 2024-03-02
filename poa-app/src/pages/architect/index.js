@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
-import { main as deployContracts } from "../../../scripts/realDeployment";
+import { deploy as deployContracts } from "../../../scripts/realDeployment";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
@@ -270,12 +270,24 @@ const ArchitectPage = () => {
     setCurrentStep("ASK_QUAD_VOTING");
   };
 
+  function appendRandomNumsToPOname() {
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000); // Generates a number between 1000 and 9999
+    setOrgDetails((prevDetails) => ({
+      ...prevDetails,
+      POname: POname + "_" + randomSuffix,
+    }));
+    console.log("POname: ", orgDetails.POname);
+    return;
+  }
+
   const handleSaveAllSelections = async () => {
+    appendRandomNumsToPOname();
     setIsConfirmationModalOpen(false);
     console.log("saving : ", orgDetails);
 
     // Call the deployment function with the user's selections
     try {
+      console.log("deploying now i guess");
       // Show a loading state to the user
       setIsDeploying(true);
       toast({

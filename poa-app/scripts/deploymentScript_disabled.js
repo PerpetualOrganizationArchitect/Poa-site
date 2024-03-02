@@ -28,10 +28,8 @@ const TaskManagerFactory = require("../abi/TaskManagerFactory.json");
 const RegistryFactory = require("../abi/RegistryFactory.json");
 
 const TreasuryFactory = require("../abi/TreasuryFactory.json");
-const Treasury = require("../abi/Treasury.json");
 
 const ParticipationTokenFactory = require("../abi/ParticipationTokenFactory.json");
-const ParticipationToken = require("../abi/ParticipationToken.json");
 
 const ParticipationVotingFactory = require("../abi/ParticipationVotingFactory.json");
 
@@ -48,16 +46,13 @@ async function deployDirectDemocracyToken(wallet) {
     DirectDemocracyTokenFactoryBytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `ddtoken factory Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
 
+  const contract = await factory.deploy();
+  await contract.deployed();
+
+  console.log(
+    `ddtoken factory Contract deployed at address: ${contract.address}`
+  );
   return contract;
 }
 
@@ -71,16 +66,11 @@ async function deployDirectDemocracyVoting(wallet, ddtokenAddress) {
     DirectDemocracyVotingFactoryBytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `ddvoting factory Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
-
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(
+    `ddvoting factory Contract deployed at address: ${contract.address}`
+  );
   return contract;
 }
 
@@ -91,16 +81,11 @@ async function deployNFTMembership(wallet) {
     wallet
   );
 
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `NFT Membership Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
-
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(
+    `NFT Membership Contract deployed at address: ${contract.address}`
+  );
   return contract;
 }
 
@@ -110,16 +95,11 @@ async function deployParticipationToken(wallet) {
     ParticipationTokenFactory.bytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `Participation Token Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
-
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(
+    `Participation Token Contract deployed at address: ${contract.address}`
+  );
   return contract;
 }
 
@@ -129,14 +109,10 @@ async function deployTreasury(wallet) {
     TreasuryFactory.bytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(`Treasury Contract deployed at address: ${contract.address}`);
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
+  const contract = await factory.deploy();
 
+  await contract.deployed();
+  console.log(`Treasury Contract deployed at address: ${contract.address}`);
   return contract;
 }
 
@@ -146,16 +122,11 @@ async function deployParticipationVoting(wallet) {
     ParticipationVotingFactory.bytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `Participation Voting Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
-
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(
+    `Participation Voting Contract deployed at address: ${contract.address}`
+  );
   return contract;
 }
 
@@ -165,16 +136,11 @@ async function deployHybridVoting(wallet) {
     HybridVotingFactory.bytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `Hybrid Voting Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
-
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(
+    `Hybrid Voting Contract deployed at address: ${contract.address}`
+  );
   return contract;
 }
 
@@ -184,15 +150,9 @@ async function deployTaskManager(wallet) {
     TaskManagerFactory.bytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(
-      `Task Manager Contract deployed at address: ${contract.address}`
-    );
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(`Task Manager Contract deployed at address: ${contract.address}`);
   return contract;
 }
 
@@ -202,26 +162,21 @@ async function deployRegistry(wallet) {
     RegistryFactory.bytecode,
     wallet
   );
-  try {
-    const contract = await factory.deploy();
-    await contract.deployed();
-    console.log(`Registry Contract deployed at address: ${contract.address}`);
-  } catch (error) {
-    handleError(error, "Contract deployment");
-  }
+
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(`Registry Contract deployed at address: ${contract.address}`);
   return contract;
 }
 
 async function makeNFTMembership(
   nftFactoryContract,
   memberTypeNames,
-  executivePermissionNames,
   defaultImageURL,
   POname
 ) {
   const tx = await nftFactoryContract.createNFTMembership(
     memberTypeNames,
-    executivePermissionNames,
     defaultImageURL,
     POname
   );
@@ -578,18 +533,7 @@ const makeRegistry = async (
   }
 };
 
-async function deploy(
-  memberTypeNames,
-  executivePermissionNames,
-  POname,
-  quadraticVotingEnabled,
-  democracyVoteWeight,
-  participationVoteWeight,
-  hybridVotingEnabled,
-  participationVotingEnabled,
-  logoURL,
-  votingControlType
-) {
+async function main() {
   const provider = new ethers.providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_INFURA_URL
   );
@@ -598,272 +542,49 @@ async function deploy(
     provider
   );
 
-  // make sure POname is unique
-
   try {
-    console.log("starting deploy");
-    //   const nftMembership = await deployNFTMembership(wallet);
-    //   const ddToken = await deployDirectDemocracyToken(wallet);
-    //   const ptToken = await deployParticipationToken(wallet);
-    //   const treasury = await deployTreasury(wallet);
-    //   const ptVoting = await deployParticipationVoting(wallet);
-    //   const ddVoting = await deployDirectDemocracyVoting(wallet);
-    //   const hybridVoting = await deployHybridVoting(wallet);
-    //   const taskManager = await deployTaskManager(wallet);
-    //   const registry = await deployRegistry(wallet);
+    console.log("starting deploy from disabled script");
+    const nftMembership = await deployNFTMembership(wallet);
+    // const ddToken = await deployDirectDemocracyToken(wallet);
+    //const ptToken = await deployParticipationToken(wallet);
+    // const treasury = await deployTreasury(wallet);
+    // const ptVoting = await deployParticipationVoting(wallet);
+    // const ddVoting = await deployDirectDemocracyVoting(wallet);
+    // const hybridVoting = await deployHybridVoting(wallet);
+    // const taskManager = await deployTaskManager(wallet);
+    // const registry = await deployRegistry(wallet);
 
-    const nftMembershipFactoryAddress =
-      "0xC565CACD8CC57bF598E22aB47a063136fa9E984c";
-    const ddTokenFactoryAddress = "0xdF674Fd4b6fD809069Ffbd9deA727CE8A7e8C9f8";
-    const ptTokenFactoryAddress = "0xb37C09ecc05F6031f987FD9baC34575D43249e6d";
-    const treasuryFactoryAddress = "0x52ED44aB1cBD8323e15CB40b457e4E1eBf14408c";
-    const ptVotingFactoryAddress = "0x68bfACC747b5C98Df33476417d91EAD0F9A8f204";
-    const ddVotingFactoryAddress = "0xa80927965487CA1bC9e4cf6b90a40B0954E8830A";
-    const hybridVotingFactoryAddress =
-      "0x4bC864D2EFD9e10B64ffd94982bb76Ef41030A46";
-    const taskManagerFactoryAddress =
-      "0x8cc551b39e97F92Ea3c122Ab14FbeeAc2e53Fb53";
-    const registryFactoryAddress = "0x70EfBb9557196e09D33F430c3bD0E52338c86a5E";
+    // const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
+    // const defaultImageURL = "http://example.com/default.jpg";
+    // const POname = "Test Org";
 
-    const nftMembership = new ethers.Contract(
-      nftMembershipFactoryAddress,
-      NFTMembershipFactory.abi,
-      wallet
-    );
-    const ddToken = new ethers.Contract(
-      ddTokenFactoryAddress,
-      DirectDemocracyTokenFactory.abi,
-      wallet
-    );
-    const ptToken = new ethers.Contract(
-      ptTokenFactoryAddress,
-      ParticipationTokenFactory.abi,
-      wallet
-    );
-    const treasury = new ethers.Contract(
-      treasuryFactoryAddress,
-      TreasuryFactory.abi,
-      wallet
-    );
-    const ptVoting = new ethers.Contract(
-      ptVotingFactoryAddress,
-      ParticipationVotingFactory.abi,
-      wallet
-    );
-    const ddVoting = new ethers.Contract(
-      ddVotingFactoryAddress,
-      DirectDemocracyVotingFactory.abi,
-      wallet
-    );
-    const hybridVoting = new ethers.Contract(
-      hybridVotingFactoryAddress,
-      HybridVotingFactory.abi,
-      wallet
-    );
-    const taskManager = new ethers.Contract(
-      taskManagerFactoryAddress,
-      TaskManagerFactory.abi,
-      wallet
-    );
-    const registry = new ethers.Contract(
-      registryFactoryAddress,
-      RegistryFactory.abi,
-      wallet
-    );
+    // const nftAddress = await makeNFTMembership(nftMembership, memberTypeNames, defaultImageURL, POname);
+    // const ddTokenAddress = await makeDDToken(ddToken, "DirectDemocracyToken", "DDT", nftAddress, memberTypeNames, POname);
+    // const ptTokenAddress = await makePTToken(ptToken, "ParticipationToken", "PT", POname);
+    // const treasuryAddress = await makeTreasury(treasury, POname);
+    // const ptVotingAddress = await makeParticipationVoting(ptVoting, ptTokenAddress, nftAddress, memberTypeNames, false, treasuryAddress, POname);
+    // const ddVotingAddress = await makeDirectDemocracyVoting(ddVoting, ddTokenAddress, nftAddress, memberTypeNames, treasuryAddress, POname);
+    // const hybridVotingAddress = await makeHybridVoting(hybridVoting, ptTokenAddress, ddTokenAddress, nftAddress, memberTypeNames, true, 1,1, treasuryAddress, POname);
+    // const taskManagerAddress = await makeTaskManager(taskManager, ptTokenAddress, nftAddress, memberTypeNames, POname);
 
-    //const memberTypeNames = ["Gold", "Silver", "Bronze", "Default"];
-    const defaultImageURL = "http://example.com/default.jpg";
-    //const POname = "Test Org2";
+    // // make arrary of all conract names
+    // const contractNames = ["NFTMembership", "DirectDemocracyToken", "ParticipationToken", "Treasury", "ParticipationVoting", "DirectDemocracyVoting", "HybridVoting", "TaskManager"];
+    // const contractAddresses = [nftAddress, ddTokenAddress, ptTokenAddress, treasuryAddress, ptVotingAddress, ddVotingAddress, hybridVotingAddress, taskManagerAddress];
 
-    const nftAddress = await makeNFTMembership(
-      nftMembership,
-      memberTypeNames,
-      executivePermissionNames,
-      defaultImageURL,
-      POname
-    );
-    const ddTokenAddress = await makeDDToken(
-      ddToken,
-      "DirectDemocracyToken",
-      "DDT",
-      nftAddress,
-      memberTypeNames,
-      POname
-    );
-    const ptTokenAddress = await makePTToken(
-      ptToken,
-      "ParticipationToken",
-      "PT",
-      POname
-    );
-    const treasuryAddress = await makeTreasury(treasury, POname);
-
-    let ptVotingAddress = null;
-    if (participationVotingEnabled) {
-      ptVotingAddress = await makeParticipationVoting(
-        ptVoting,
-        ptTokenAddress,
-        nftAddress,
-        executivePermissionNames,
-        quadraticVotingEnabled,
-        treasuryAddress,
-        POname
-      );
-    }
-
-    let hybridVotingAddress = null;
-    if (hybridVotingEnabled) {
-      hybridVotingAddress = await makeHybridVoting(
-        hybridVoting,
-        ptTokenAddress,
-        ddTokenAddress,
-        nftAddress,
-        executivePermissionNames,
-        quadraticVotingEnabled,
-        democracyVoteWeight,
-        participationVoteWeight,
-        treasuryAddress,
-        POname
-      );
-    }
-
-    const ddVotingAddress = await makeDirectDemocracyVoting(
-      ddVoting,
-      ddTokenAddress,
-      nftAddress,
-      executivePermissionNames,
-      treasuryAddress,
-      POname
-    );
-    const taskManagerAddress = await makeTaskManager(
-      taskManager,
-      ptTokenAddress,
-      nftAddress,
-      executivePermissionNames,
-      POname
-    );
-
-    //interact with newly deployed pt token contract to set the task manager address in the pt token contract
-    const ptTokenContract = new ethers.Contract(
-      ptTokenAddress,
-      ParticipationToken.abi,
-      wallet
-    );
-    const setTaskManagerTx = await ptTokenContract.setTaskManagerAddress(
-      taskManagerAddress
-    );
-    await setTaskManagerTx.wait();
-    console.log("Task Manager address set in PT Token contract");
-
-    //interact with newly deployed treasury contract to set the voting contract address in the treasury contract
-    const treasuryContract = new ethers.Contract(
-      treasuryAddress,
-      Treasury.abi,
-      wallet
-    );
-
-    let contractNames = [];
-    let contractAddresses = [];
-    // populate names and address proporely depedning on if hybrid or participation voting is enabled
-    if (hybridVotingEnabled) {
-      contractNames = [
-        "NFTMembership",
-        "DirectDemocracyToken",
-        "ParticipationToken",
-        "Treasury",
-        "DirectDemocracyVoting",
-        "HybridVoting",
-        "TaskManager",
-      ];
-      contractAddresses = [
-        nftAddress,
-        ddTokenAddress,
-        ptTokenAddress,
-        treasuryAddress,
-        ddVotingAddress,
-        hybridVotingAddress,
-        taskManagerAddress,
-      ];
-    } else if (participationVotingEnabled) {
-      contractNames = [
-        "NFTMembership",
-        "DirectDemocracyToken",
-        "ParticipationToken",
-        "Treasury",
-        "DirectDemocracyVoting",
-        "ParticipationVoting",
-        "TaskManager",
-      ];
-      contractAddresses = [
-        nftAddress,
-        ddTokenAddress,
-        ptTokenAddress,
-        treasuryAddress,
-        ddVotingAddress,
-        ptVotingAddress,
-        taskManagerAddress,
-      ];
-    }
-
-    let votingControlAddress = null;
-
-    if (votingControlType === "Hybrid") {
-      votingControlAddress = hybridVotingAddress;
-      const setVotingContractTx = await treasuryContract.setVotingContract(
-        hybridVotingAddress
-      );
-      await setVotingContractTx.wait();
-      console.log("Voting contract address set in Treasury contract");
-    } else if (votingControlType === "Participation") {
-      votingControlAddress = ptVotingAddress;
-      const setVotingContractTx = await treasuryContract.setVotingContract(
-        ptVotingAddress
-      );
-      await setVotingContractTx.wait();
-      console.log("Voting contract address set in Treasury contract");
-    } else if (votingControlType === "DirectDemocracy") {
-      votingControlAddress = ddVotingAddress;
-      const setVotingContractTx = await treasuryContract.setVotingContract(
-        ddVotingAddress
-      );
-      await setVotingContractTx.wait();
-      console.log("Voting contract address set in Treasury contract");
-    } else {
-      console.error("Invalid voting control type provided");
-    }
-
+    // const votingControlAddress = hybridVotingAddress;
     // const logoURL = "http://example.com/logo.jpg";
-    const registryAddress = await makeRegistry(
-      votingControlAddress,
-      registry,
-      contractNames,
-      contractAddresses,
-      POname,
-      logoURL
-    );
+    // const registryAddress = await makeRegistry(votingControlAddress, registry, contractNames, contractAddresses, POname, logoURL);
 
     console.log("All contracts deployed and configured successfully.");
   } catch (error) {
     console.error("Deployment error:", error);
-    //process.exit(1);
+    process.exit(1);
   }
 }
 
-deploy(
-  ["Gold", "Silver", "Bronze", "Default", "Executive"],
-  ["Gold", "Silver", "Bronze", "Executive"],
-  "dhsdfsd",
-  true,
-  50,
-  50,
-  false,
-  true,
-  "http://example.com/logo.jpg",
-  "Participation"
-)
-  .then(() => {
-    console.log("Deployment successful!");
-  })
+main()
+  .then(() => process.exit(0))
   .catch((error) => {
     console.error(error);
+    process.exit(1);
   });
