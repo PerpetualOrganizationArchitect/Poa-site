@@ -30,7 +30,7 @@ const steps = {
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
   ASK_MEMBERSHIP_DEFAULT: "ASK_MEMBERSHIP_DEFAULT",
   ASK_MEMBERSHIP_CUSTOMIZE: "ASK_MEMBERSHIP_CUSTOMIZE",
-  ASK_ADD_ANOTHER_TIER: "ASK_ADD_ANOTHER_TIER",
+  ASK_ADD_ANOTHER_ROLE: "ASK_ADD_ANOTHER_ROLE",
   ASK_VOTING: "ASK_VOTING",
   ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
@@ -135,37 +135,6 @@ const ArchitectPage = () => {
     router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
-  //   const nextStep = () => {
-  //     switch (currentStep) {
-  //       case steps.ASK_NAME:
-  //         setCurrentStep(steps.ASK_DESCRIPTION);
-  //         break;
-  //       case steps.ASK_DESCRIPTION:
-  //         setCurrentStep(steps.ASK_MEMBERSHIP_DEFAULT);
-  //         break;
-
-  //       case steps.ASK_MEMBERSHIP_DEFAULT:
-  //         setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
-  //         break;
-  //       case steps.ASK_MEMBERSHIP_CUSTOMIZE:
-  //         console.log("adding another tier");
-  //         setCurrentStep(steps.ASK_ADD_ANOTHER_TIER);
-  //         break;
-  //       case steps.ASK_ADD_ANOTHER_TIER:
-  //         setCurrentStep(steps.ASK_VOTING);
-  //         break;
-  //       case steps.ASK_VOTING:
-  //         setCurrentStep(steps.ASK_VOTING_WEIGHT);
-  //         break;
-  //       case steps.ASK_VOTING_WEIGHT:
-  //         setCurrentStep(steps.ASK_LOGO_UPLOAD);
-  //         break;
-  //       case steps.ASK_LOGO_UPLOAD:
-  //         setCurrentStep(steps.ASK_CONFIRMATION);
-  //         break;
-  //     }
-  //   };
-
   const handleConfirmation = () => {
     // This is where you would handle the API call to create the site
     // For now, we'll navigate to the new route
@@ -219,18 +188,18 @@ const ArchitectPage = () => {
 
   // ------ membership customization handlers
 
-  const handleSaveMemberTier = (tierName) => {
+  const handleSaveMemberTier = (roleName) => {
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
-      membershipTypeNames: [...prevDetails.membershipTypeNames, tierName],
+      membershipTypeNames: [...prevDetails.membershipTypeNames, roleName],
     }));
 
-    addMessage(`I just added the ${tierName} tier to your organization.`);
-    askToAddAnotherTier(tierName);
-    setCurrentStep("ASK_ADD_ANOTHER_TIER");
+    addMessage(`I just added the ${roleName} role to your organization.`);
+    askToAddAnotherTier(roleName);
+    setCurrentStep("ASK_ADD_ANOTHER_ROLE");
   };
   const askToAddAnotherTier = () => {
-    addMessage(`Would you like to add another tier?`);
+    addMessage(`Would you like to add another role?`);
     setOptions([
       { label: "Yes", value: "yes" },
       { label: "No", value: "no" },
@@ -303,8 +272,8 @@ const ArchitectPage = () => {
       case "ASK_MEMBERSHIP_DEFAULT":
         break;
       case "ASK_MEMBERSHIP_CUSTOMIZE":
-        console.log("Adding antoehr tier");
-        setCurrentStep("ASK_ADD_ANOTHER_TIER");
+        console.log("Adding antoehr role");
+        setCurrentStep("ASK_ADD_ANOTHER_ROLE");
         break;
 
       // Handle other cases as needed
@@ -324,19 +293,19 @@ const ArchitectPage = () => {
         break;
       case "ASK_MEMBERSHIP_DEFAULT":
         addMessage(
-          "The default membership structure has two tiers: executives and members. Would you like to add more tiers?"
+          "The default membership structure has two roles: executives and members. Would you like to add more roles?"
         );
         setOptions([
           { label: "Keep default", value: "default" },
-          { label: "Customize tiers", value: "customize" },
+          { label: "Customize roles", value: "customize" },
         ]);
         setShowSelection(true);
         break;
       case "ASK_MEMBERSHIP_CUSTOMIZE":
         console.log("at customize");
         break;
-      case "ASK_ADD_ANOTHER_TIER":
-        console.log("at add tier");
+      case "ASK_ADD_ANOTHER_ROLE":
+        console.log("at add role");
 
         askToAddAnotherTier();
         setShowSelection(true);
@@ -391,7 +360,7 @@ const ArchitectPage = () => {
     }
 
     if (
-      currentStep === "ASK_ADD_ANOTHER_TIER" ||
+      currentStep === "ASK_ADD_ANOTHER_ROLE" ||
       currentStep === "ASK_MEMBERSHIP_CUSTOMIZE"
     ) {
       console.log("proceed to vote");

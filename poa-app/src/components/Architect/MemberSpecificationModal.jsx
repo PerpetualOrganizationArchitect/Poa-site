@@ -17,14 +17,14 @@ import {
 const MemberSpecificationModal = ({ isOpen, onSave, onClose }) => {
   // Accept onSave prop
 
-  const [memberTierName, setMemberTierName] = useState("");
+  const [memberRoleName, setMemberRoleName] = useState("");
 
-  const handleInputChange = (e) => setMemberTierName(e.target.value);
+  const handleInputChange = (e) => setMemberRoleName(e.target.value);
 
   const handleSave = () => {
-    onSave(memberTierName); // Call onSave with the memberTierName
+    onSave(memberRoleName); // Call onSave with the memberRoleName
     onClose(); // Close the modal after saving
-    setMemberTierName(""); // Reset the input field
+    setMemberRoleName(""); // Reset the input field
   };
 
   return (
@@ -33,12 +33,12 @@ const MemberSpecificationModal = ({ isOpen, onSave, onClose }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Member Tier Specification</ModalHeader>
+          <ModalHeader>Create New Role</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel>Name of new tier</FormLabel>
-              <Input value={memberTierName} onChange={handleInputChange} />
+              <FormLabel>Name of new role</FormLabel>
+              <Input value={memberRoleName} onChange={handleInputChange} />
             </FormControl>
           </ModalBody>
 
@@ -47,7 +47,7 @@ const MemberSpecificationModal = ({ isOpen, onSave, onClose }) => {
               Close
             </Button>
             <Button variant="ghost" onClick={handleSave}>
-              Add Tier
+              Add Role
             </Button>{" "}
             {/* Use handleSave when clicking Save */}
           </ModalFooter>
