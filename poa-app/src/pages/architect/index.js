@@ -186,13 +186,22 @@ const ArchitectPage = () => {
   }, []);
 
   const handleSaveMemberTier = (tierName) => {
-    // setMemberTypeNames((prev) => [...prev, tierName]);
-    // console.log("members: ", membershipTypeNames);
+    //  console.log("members: ", membershipTypeNames);
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
       membershipTypeNames: [...prevDetails.membershipTypeNames, tierName],
     }));
+    console.log("tier name", tierName);
+    console.log("mem: ", orgDetails.membershipTypeNames);
   };
+
+  useEffect(() => {
+    console.log(
+      "Updated membershipTypeNames: ",
+      orgDetails.membershipTypeNames
+    );
+  }, [orgDetails.membershipTypeNames]);
+
   const handleSendClick = () => {
     // Handle user input based on the current step
     if (!userInput.trim()) return;
