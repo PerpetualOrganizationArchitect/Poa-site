@@ -22,7 +22,7 @@ const ArchitectInput = ({ value, onChange, onSubmit, isDisabled }) => {
         placeholder="Type here..."
         borderColor="blue.900"
         onKeyDown={handleKeyDown}
-        disabled={!isDisabled}
+        //disabled={!isDisabled}
       />
       <InputRightElement>
         <IconButton

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from "react";
 import { Input, VStack, Button } from "@chakra-ui/react";
 
-const SpecificInput = forwardRef(
+const MemberSpecificationModal = forwardRef(
   (
     { inputFields = [], onInputsChanged = () => {}, showAddTierButton },
     ref
@@ -49,4 +49,4 @@ const SpecificInput = forwardRef(
   }
 );
 
-export default SpecificInput;
+export default MemberSpecificationModal;
