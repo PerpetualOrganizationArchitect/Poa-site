@@ -4,6 +4,7 @@ import { useWeb3Context } from './Web3Context';
 import { useIPFScontext } from './ipfsContext';
 import { set } from 'lodash';
 import { id } from 'ethers/lib/utils';
+import { useGraphContext } from './graphContext';
 
 
 
@@ -16,14 +17,21 @@ export const useDataBaseContext = () => {
 export const DataBaseProvider = ({ children }) => {
     // usestate for projects initalized with mock data with 3 projects and each has an id 
 
+    const {projectsData}= useGraphContext();
+
+    useEffect(()=>{
+        if (typeof projectsData === 'object' && projectsData !== null && Object.keys(projectsData).length !== 0) {
+            console.log("projectsData", projectsData);
+            setProjects(projectsData);
+        }
+    },[projectsData])
+
+
     const [projects, setProjects] = useState([
         {
           id: 'project-1',
           name: 'Project One',
           description: 'This is a description of Project One.',
-          startDate: '2024-01-01',
-          endDate: '2024-12-31',
-          status: 'Active',
           columns: [
             {
               id: 'open',
@@ -47,7 +55,9 @@ export const DataBaseProvider = ({ children }) => {
                   difficulty: 'Medium',
                   estHours: 10,
                   submission: '',
-                  claimedBy: ''
+                  claimedBy: '',
+                    Payout: 2,
+                    projectId: 'project-1'
                 }
               ],
             },
@@ -85,6 +95,34 @@ export const DataBaseProvider = ({ children }) => {
           status: 'Planned'
         }
       ]);
+
+      const emptyProjectTemplate = {
+        id: '', 
+        name: '', 
+        description: '', 
+        columns: [
+          {
+            id: '', 
+            title: '', 
+            tasks: [
+              {
+                id: '', 
+                name: '',
+                description: '', 
+                difficulty: '', 
+                estHours: 0, 
+                submission: '', 
+                claimedBy: '', 
+                Payout: 0, 
+                projectId: '' 
+              },
+              
+            ],
+          },
+          
+        ],
+      };
+      
       
       
       
@@ -99,7 +137,7 @@ export const DataBaseProvider = ({ children }) => {
     
     return (
         <DataBaseContext.Provider
-        value={{projects, setProjects, selectedProjectId, setSelectedProjectId, selectedProject, setSelectedProject
+        value={{projects, selectedProjectId, setSelectedProjectId, selectedProject, setSelectedProject
         }}
         >
         {children}

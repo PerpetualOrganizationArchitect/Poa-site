@@ -29,7 +29,9 @@ const glassLayerStyle = {
 const TaskColumn = ({ title, tasks, columnId }) => {
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
-  const { hasExecNFT,hasMemberNFT,account, mintKUBIX } = useWeb3Context();
+  const {account, mintKUBIX, createTask, taskManagerAddress } = useWeb3Context();
+  let hasExecNFT= true;
+  let hasMemberNFT= true;
   const { getUsernameByAddress } = useDataBaseContext();
   const hasMemberNFTRef = useRef(hasMemberNFT);
   const hasExecNFTRef = useRef(hasExecNFT);
@@ -61,17 +63,26 @@ const TaskColumn = ({ title, tasks, columnId }) => {
     };
   
     const handleAddTask = (updatedTask) => {
-      if (title === 'Open') {
-        updatedTask = {
-          ...updatedTask,
-          id: `task-${Date.now()}`,
-          difficulty: updatedTask.difficulty,
-          estHours: updatedTask.estHours,
-          claimedBy: "",
-          claimerUsername: "",
-          projectId: updatedTask.projectId, 
+      console.log("updatedTask: ", updatedTask)
+
+      const calculatePayout = (difficulty, estimatedHours) => {
+    
+        const difficulties = {
+          easy: { base: 1, multiplier: 16.5 },
+          medium: { base: 4, multiplier: 24 },
+          hard: { base: 10, multiplier: 30 },
+          veryHard: { base: 25, multiplier: 37.5 },
         };
-        addTask(updatedTask, columnId);
+        
+        const { base, multiplier } = difficulties[difficulty];
+        const total = Math.round(base + (multiplier * estimatedHours));
+        return total;
+    
+      };
+      if (title === 'Open') {
+        let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
+
+        createTask(taskManagerAddress,Payout,  updatedTask.description, "Project1", updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
       }
     };
     
@@ -146,7 +157,7 @@ const TaskColumn = ({ title, tasks, columnId }) => {
       ref={drop}
       w="100%"
       h="100%"
-      bg="transparent" // Set the background to transparent
+      bg="transparent" 
       borderRadius="md"
       boxShadow="lg"
       style={{ ...columnStyle, position: 'relative' }} // Add position: 'relative'

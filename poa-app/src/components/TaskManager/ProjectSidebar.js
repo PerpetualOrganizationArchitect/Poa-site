@@ -38,6 +38,8 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
   const { hasExecNFT} = useWeb3Context();
   const { handleDeleteProject } = useDataBaseContext();
 
+  console.log('projects', projects);
+
 
   
   const handleCreateProject = () => {
