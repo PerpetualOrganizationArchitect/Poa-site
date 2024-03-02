@@ -23,7 +23,7 @@ const PoaPreview = () => {
       <Text>This is Poa.</Text>
 
       <Link href="/architect" passHref>
-        <Button colorScheme="teal" variant="outline" mt={4}>
+        <Button colorScheme="blue" variant="outline" mt={4}>
           Start Building
         </Button>
       </Link>

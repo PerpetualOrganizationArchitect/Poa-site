@@ -14,45 +14,30 @@ import {
 } from "@chakra-ui/react";
 
 const WeightModal = ({ isOpen, onSave, onClose }) => {
-  const [participationWeight, setParticipationWeight] = useState("");
+  const [participationWeight, setParticipationWeight] = useState(0);
   const [democracyWeight, setDemocracyWeight] = useState(100);
 
   const handleSave = () => {
-    const weight =
-      participationWeight === "" ? 0 : parseInt(participationWeight, 10);
-    onSave({ participationWeight: weight, democracyWeight: 100 - weight }); // Pass both weights back to the parent component
+    // Ensure weights are integers and sum to 100
+    const weight = parseInt(participationWeight, 10) || 0;
+    onSave({ participationWeight: weight, democracyWeight: 100 - weight });
     onClose(); // Close the modal after saving
   };
 
-  // When participationWeight changes and is not an empty string, adjust democracyWeight
+  // Adjusted for direct control over democracyWeight based on participationWeight changes
   useEffect(() => {
-    if (participationWeight !== "") {
-      const weight = Math.max(
-        0,
-        Math.min(100, parseInt(participationWeight, 10))
-      );
-      setDemocracyWeight(100 - weight);
-    }
+    const weight = parseInt(participationWeight, 10) || 0;
+    setDemocracyWeight(100 - weight);
   }, [participationWeight]);
 
   const handleParticipationChange = (e) => {
-    setParticipationWeight(e.target.value);
-  };
-
-  const handleParticipationBlur = () => {
-    if (participationWeight === "") {
-      setParticipationWeight(100 - democracyWeight);
-    } else {
-      const weight = Math.max(
-        0,
-        Math.min(100, parseInt(participationWeight, 10))
-      );
-      setParticipationWeight(weight); // Correct the value if out of bounds
-    }
+    // Prevent weights from exceeding 100 or going below 0
+    const newWeight = Math.max(0, Math.min(100, parseInt(e.target.value, 10)));
+    setParticipationWeight(newWeight);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} isClosable={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Weight Specification</ModalHeader>
@@ -64,7 +49,9 @@ const WeightModal = ({ isOpen, onSave, onClose }) => {
               type="number"
               value={participationWeight}
               onChange={handleParticipationChange}
-              onBlur={handleParticipationBlur}
+              // Removed onBlur as we now directly control input
+              max={100}
+              min={0}
             />
           </FormControl>
           <FormControl mt={4}>
