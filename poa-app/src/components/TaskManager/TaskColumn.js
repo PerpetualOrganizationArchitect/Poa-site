@@ -5,7 +5,7 @@ import { useDrop } from 'react-dnd';
 import TaskCard from './TaskCard';
 import { useTaskBoard } from '../../context/TaskBoardContext';
 import AddTaskModal from './AddTaskModal';
-import { useWeb3Context } from '../../context/Web3Context';
+import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '../../context/dataBaseContext';
 // ... other imports
 

@@ -37,7 +37,7 @@ export const Web3Provider = ({ children }) => {
 
     const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
     const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
-    const taskManagerAddress = "0xedf1100e4e594abe432f129bce96e8a5598568dc";
+    const taskManagerAddress = "0xa9eF1fC3Bc63944867F398C40A3E0b3Bf00115CB";
     const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
 
 
@@ -195,7 +195,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{account, ipfsAddTask, createTask, taskManagerAddress, createProject}}>
+        <Web3Context.Provider value={{completeTask, account, ipfsAddTask, createTask, taskManagerAddress, createProject, claimTask, ipfsAddTask, updateTask}}>
         {children}
         </Web3Context.Provider>
     );
