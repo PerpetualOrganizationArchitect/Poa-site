@@ -25,7 +25,7 @@ import {
 import { CheckIcon } from '@chakra-ui/icons';
 import EditTaskModal from './EditTaskModal';
 import { useTaskBoard } from '../../context/TaskBoardContext';
-import { useWeb3Context } from '../../context/Web3Context';
+import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '@/context/dataBaseContext';
 import { useRouter } from 'next/router';
 
@@ -43,7 +43,7 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
   const [submission, setSubmission] = useState('');
   const { moveTask, deleteTask} = useTaskBoard();
   const { hasExecNFT,hasMemberNFT, account, mintKUBIX} = useWeb3Context();
-  
+
 
   const { getUsernameByAddress,setSelectedProjectId } = useDataBaseContext();
 

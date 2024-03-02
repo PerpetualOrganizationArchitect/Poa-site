@@ -4,7 +4,7 @@ import ProjectSidebar from './ProjectSidebar';
 import TaskBoard from './TaskBoard';
 import { TaskBoardProvider } from '../../context/TaskBoardContext';
 import { useDataBaseContext} from '../../context/dataBaseContext';
-import { useWeb3Context } from '../../context/Web3Context';
+import { useWeb3Context } from '../../context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
 
 

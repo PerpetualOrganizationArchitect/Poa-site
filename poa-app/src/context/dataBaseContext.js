@@ -1,6 +1,6 @@
 import {ethers } from 'ethers';
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useWeb3Context } from './Web3Context';
+import { useWeb3Context } from './web3Context';
 import { useIPFScontext } from './ipfsContext';
 import { set } from 'lodash';
 import { id } from 'ethers/lib/utils';
