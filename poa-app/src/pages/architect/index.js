@@ -16,7 +16,7 @@ import {
   useDisclosure,
   Text,
 } from "@chakra-ui/react";
-import Deployer from "@/components/Architect/Deployer";
+import Deployer from "@/components/Architect/TempDeployer";
 
 import { useRouter } from "next/router";
 import ConversationLog from "@/components/Architect/ConversationLog";
