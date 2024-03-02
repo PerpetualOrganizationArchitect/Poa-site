@@ -2,13 +2,13 @@
 import React from "react";
 import Layout from "../../components/Layout"; // If you have a Layout component
 import { Text, Box, Flex, Button } from "@chakra-ui/react";
-import{ useMetaMask } from "../../components/Metamask";
+import { useMetaMask } from "../../components/Metamask";
 const AboutPage = () => {
   const { connectWallet, accounts } = useMetaMask();
 
   return (
     <Layout>
-        {/* {accounts.length > 0 ? (
+      {/* {accounts.length > 0 ? (
           <Text>Connected as {accounts[0]}</Text>
         ) : (
           <Button onClick={connectWallet}>Connect Wallet</Button>
@@ -31,8 +31,8 @@ const AboutPage = () => {
 
         <Text>
           The Perpetual Organization Architect also known as Poa will be a
-          friendly AI chat bot that guides you through the process of building a
-          no code perpetual organization. It will explain what a perpetual
+          friendly chat bot that guides you through the process of building a no
+          code perpetual organization. It will explain what a perpetual
           organization is, give a few examples, and expand on that info if you
           request. Next, Poa will ask you what your idea for your organization
           is and based off your response will walk you through and give specific
