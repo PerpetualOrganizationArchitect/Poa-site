@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
+import SpecificInput from "@/components/Architect/SpecificInput";
 
 import {
   Box,
@@ -41,8 +42,29 @@ const membershipOptions = [
   { label: "Uniform Membership", value: "uniform_membership" },
 ];
 const defaultMembershipOptions = [
-  { label: "Yes", value: "true" },
-  { label: "I'd like more customization", value: "false" },
+  {
+    label: "Keep default",
+    value: "default",
+    action: () => {
+      setOrgDetails({
+        ...orgDetails,
+        membershipTypeNames: ["member", "executive"],
+      });
+      setCurrentStep(steps.ASK_VOTING);
+      console.log("got he");
+      setShowSelection(false);
+      console.log("hiding selection");
+    },
+  },
+  {
+    label: "I'd like more customization",
+    value: "customize",
+    action: () => {
+      setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
+      setShowSelection(false);
+      console.log("hiding selection");
+    },
+  },
 ];
 
 const ArchitectPage = () => {
@@ -61,9 +83,12 @@ const ArchitectPage = () => {
     description: "",
     membershipType: "",
     votingType: "",
+    membershipTypeNames: ["member", "executive"], // Default membership types
   });
+
   // Refs and hooks for UI effects and navigation.
   const selectionRef = useRef(null);
+  const [showSpecificInput, setShowSpecificInput] = useState(false);
   const [selectionHeight, setSelectionHeight] = useState(0); // State for managing the dynamic height of the selection component.
   const toast = useToast(); // Toast is used for showing alerts and messages to the user.
   const router = useRouter(); // useRouter hook from Next.js for handling client-side navigation.
@@ -102,6 +127,7 @@ const ArchitectPage = () => {
         break;
       case steps.ASK_MEMBERSHIP_CUSTOMIZE:
         setCurrentStep(steps.ASK_VOTING);
+
         break;
       case steps.ASK_VOTING:
         setCurrentStep(steps.ASK_CONFIRMATION);
@@ -123,6 +149,7 @@ const ArchitectPage = () => {
     setUserInput("");
     setMessages([]);
     setShowSelection(false);
+    console.log("hiding selection");
     setOptions([]);
     setOrgName("");
     setOrgDetails({
@@ -163,6 +190,7 @@ const ArchitectPage = () => {
   }, []);
 
   const generateOptions = (optionsArray = [], message) => {
+    console.log("showng selection");
     setShowSelection(true);
     const optionsWithActions = optionsArray.map((option) => ({
       ...option,
@@ -183,6 +211,7 @@ const ArchitectPage = () => {
   };
 
   const handleOptionSelected = (selectedOptionValue) => {
+    console.log("hiding selection");
     setShowSelection(false);
     // Find the option by value and call its action
     const selectedOption = options.find(
@@ -190,13 +219,27 @@ const ArchitectPage = () => {
     );
     if (selectedOption && selectedOption.action) {
       selectedOption.action();
+      console.log("Current step: ", currentStep);
+      if (currentStep !== steps.ASK_MEMBERSHIP_DEFAULT) {
+        // This check ensures we only auto-advance for steps that don't have special logic
+        console.log("here");
+        nextStep();
+      }
+    } else {
+      // If no specific action, just move to the next step
+      nextStep();
+    }
+    if (currentStep === steps.ASK_MEMBERSHIP_CUSTOMIZE) {
+      setShowSpecificInput(true);
+      return;
     }
     if (currentStep === steps.ASK_VOTING) {
       setIsConfirmationModalOpen(true);
     }
 
-    setShowSelection(false);
-    nextStep(); // Move to the next step after the selection
+    // setShowSelection(false);
+    // console.log("hiding selection");
+    // nextStep(); // Move to the next step after the selection
   };
 
   const handleStartOver = () => {
@@ -208,6 +251,15 @@ const ArchitectPage = () => {
     });
     setIsConfirmationModalOpen(false);
     setCurrentStep(steps.ASK_NAME);
+  };
+
+  const handleSpecificInputSubmit = (inputValue) => {
+    setOrgDetails((prevDetails) => ({
+      ...prevDetails,
+      membershipTypeNames: [...prevDetails.membershipTypeNames, inputValue],
+    }));
+    setShowSpecificInput(false); // Hide SpecificInput after submission
+    nextStep(); // Proceed to the next step
   };
 
   const handleSendClick = () => {
@@ -228,6 +280,9 @@ const ArchitectPage = () => {
         setOrgDetails({ ...orgDetails, description: userInput });
         nextStep();
         break;
+      case steps.ASK_MEMBERSHIP_CUSTOMIZE:
+        break;
+
       case steps.ASK_VOTING:
         setOrgDetails({ ...orgDetails, description: userInput });
         nextStep();
@@ -258,9 +313,13 @@ const ArchitectPage = () => {
         generateOptions(defaultMembershipOptions, message);
         return;
       case steps.ASK_MEMBERSHIP_CUSTOMIZE:
+        console.log("on customize step");
+        console.log("hiding selection");
+        setShowSelection(false);
+        setShowSpecificInput(true);
         message =
           "Please enter the names of specific membership tiers you want to add.";
-        generateOptions(membershipOptions, message);
+
         return;
       case steps.ASK_VOTING:
         message = "Please select a voting type.";
@@ -321,6 +380,13 @@ const ArchitectPage = () => {
           </ModalContent>
         </Modal>
       </Box>
+      {showSpecificInput && (
+        <SpecificInput
+          inputFields={[{ label: "New Tier Name:" }]} // This prop structure assumes SpecificInput expects an array
+          onInputsChanged={handleSpecificInputSubmit} // Adjust according to how SpecificInput is designed to return data
+          showAddTierButton={true}
+        />
+      )}
 
       {showSelection && options.length > 0 && (
         <Box
@@ -330,7 +396,7 @@ const ArchitectPage = () => {
           right="0"
           p="4"
           display="flex"
-          alignItems="center"
+          alignItems="centerx"
           justifyContent="center"
           bg="purple.50"
           borderTop="2px solid"
@@ -343,6 +409,12 @@ const ArchitectPage = () => {
             onOptionSelected={handleOptionSelected}
           />
         </Box>
+      )}
+      {showSpecificInput && (
+        <SpecificInput
+          // Adjust props according to your SpecificInput's expected props
+          onSubmit={handleSpecificInputSubmit}
+        />
       )}
 
       <Box
