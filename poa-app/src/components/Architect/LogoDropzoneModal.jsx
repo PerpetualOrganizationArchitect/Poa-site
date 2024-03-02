@@ -1,5 +1,4 @@
-// LogoDropzoneModal.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Box,
@@ -12,9 +11,15 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 
-const LogoDropzoneModal = ({ isOpen, onClose }) => {
+const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
+  const [uploadStatus, setUploadStatus] = useState(null); // null, 'success', or 'error'
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [],
@@ -24,12 +29,26 @@ const LogoDropzoneModal = ({ isOpen, onClose }) => {
     },
     onDrop: (acceptedFiles) => {
       console.log(acceptedFiles);
-      // Here you might handle the file, e.g., by uploading to a server or processing it
+      // Simulate file upload process
+      const file = acceptedFiles[0]; // Assuming single file upload
+      if (file) {
+        // Simulate a successful upload
+        setUploadStatus("success");
+        // If there was an error during the upload process, you might set it to 'error' instead
+        // setUploadStatus('error');
+      }
     },
   });
 
+  const resetUploadStatus = () => {
+    setUploadStatus(null);
+    if (typeof onClose === "function") {
+      onClose(); // Close the modal
+    } // Close the modal
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={resetUploadStatus}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Upload Image</ModalHeader>
@@ -52,10 +71,26 @@ const LogoDropzoneModal = ({ isOpen, onClose }) => {
               </Text>
             </VStack>
           </Box>
+          {uploadStatus === "success" && (
+            <Alert status="success" mt={4}>
+              <AlertIcon />
+              <AlertTitle>Success!</AlertTitle>
+              <AlertDescription>Your file has been uploaded.</AlertDescription>
+            </Alert>
+          )}
+          {uploadStatus === "error" && (
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              <AlertTitle>Error!</AlertTitle>
+              <AlertDescription>
+                There was an issue with the file upload.
+              </AlertDescription>
+            </Alert>
+          )}
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
+          <Button variant="ghost" onClick={resetUploadStatus}>
+            {uploadStatus ? "Close" : "Cancel"}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -5,6 +5,7 @@ import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
+import ConfirmationModal from "@/components/Architect/ConfirmationModal";
 
 import {
   Box,
@@ -33,6 +34,7 @@ const steps = {
   ASK_ADD_ANOTHER_ROLE: "ASK_ADD_ANOTHER_ROLE",
   ASK_VOTING: "ASK_VOTING",
   ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
+  ASK_QUAD_VOTING: "ASK_QUAD_VOTING",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
 };
@@ -188,17 +190,17 @@ const ArchitectPage = () => {
 
   // ------ membership customization handlers
 
-  const handleSaveMemberTier = (roleName) => {
+  const handleSaveMemberRole = (roleName) => {
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
       membershipTypeNames: [...prevDetails.membershipTypeNames, roleName],
     }));
 
     addMessage(`I just added the ${roleName} role to your organization.`);
-    askToAddAnotherTier(roleName);
+    askToAddAnotherRole(roleName);
     setCurrentStep("ASK_ADD_ANOTHER_ROLE");
   };
-  const askToAddAnotherTier = () => {
+  const askToAddAnotherRole = () => {
     addMessage(`Would you like to add another role?`);
     setOptions([
       { label: "Yes", value: "yes" },
@@ -208,10 +210,10 @@ const ArchitectPage = () => {
   };
 
   useEffect(() => {
-    // console.log(
-    //   "Updated membershipTypeNames: ",
-    //   orgDetails.membershipTypeNames
-    // );
+    console.log(
+      "Updated membershipTypeNames: ",
+      orgDetails.membershipTypeNames
+    );
   }, [orgDetails.membershipTypeNames]);
 
   // ------- participation voting handler
@@ -223,26 +225,18 @@ const ArchitectPage = () => {
     }));
   };
 
-  useEffect(() => {
-    console
-      .log
-      //   "Updated participation weight: ",
-      //   //orgDetails.participationVoteWeight,
-      //   "\nupdated p enabled: ",
-      //   orgDetails.participationVotingEnabled
-      ();
-  }, [orgDetails.participationVoteWeight]);
-
   // ------ hybrid voting handlers
 
   const handleWeight = ({ participationWeight, democracyWeight }) => {
-    console.log("p weight: ", participationWeight);
-    console.log("dem weight: ", democracyWeight);
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
+      hybridVotingEnabled: true,
       democracyVoteWeight: democracyWeight,
       participationVoteWeight: participationWeight,
     }));
+    console.log("p weight: ", participationWeight);
+    console.log("dem weight: ", democracyWeight);
+    setCurrentStep("ASK_IF_LOGO_UPLOAD");
   };
 
   useEffect(() => {
@@ -256,6 +250,9 @@ const ArchitectPage = () => {
     //console.log("Updated democracy weight: ", orgDetails.democracyVoteWeight);
   }, [orgDetails.democracyVoteWeight]);
 
+  const handleSaveAllSelections = () => {
+    console.log("saving : ", orgDetails);
+  };
   const handleSendClick = () => {
     // Handle user input based on the current step
     if (!userInput.trim()) return;
@@ -305,25 +302,37 @@ const ArchitectPage = () => {
         console.log("at customize");
         break;
       case "ASK_ADD_ANOTHER_ROLE":
-        console.log("at add role");
-
-        askToAddAnotherTier();
+        askToAddAnotherRole();
         setShowSelection(true);
         break;
       case "ASK_VOTING":
         addMessage("Please select a voting type.");
+        setShowSelection(true);
         setOptions([
           { label: "Participation only", value: "participation" },
           { label: "Hybrid", value: "hybrid" },
         ]);
-        setShowSelection(true);
+
         break;
       case "ASK_HYBRID_WEIGHT":
         break;
       case "ASK_IF_LOGO_UPLOAD":
+        addMessage("Would you like to upload a logo?");
+        setShowSelection(true);
+        setOptions([
+          { label: "Yes", value: "yes" },
+          { label: "Later", value: "no" },
+        ]);
+
+      case "ASK_CONFIRMATION":
         break;
     }
   }, [currentStep]);
+
+  const handleCloseWeightModal = () => {
+    setIsWeightModalOpen(false); // This will close the WeightModal
+    setCurrentStep("ASK_IF_LOGO_UPLOAD");
+  };
 
   const generateOptions = (optionsArray = [], message) => {
     console.log("showng selection");
@@ -344,6 +353,9 @@ const ArchitectPage = () => {
         { speaker: "system", text: message },
       ]);
     }
+  };
+  const pinLogoFile = () => {
+    console.log("pinning incoming");
   };
 
   const handleOptionSelected = (value) => {
@@ -386,13 +398,13 @@ const ArchitectPage = () => {
         setCurrentStep("ASK_IF_LOGO_UPLOAD");
       }
     }
-
     if (currentStep === "ASK_IF_LOGO_UPLOAD") {
       if (value === "yes") {
         setIsLogoModalOpen(true);
-        setCurrentStep("ASK_LOGO_UPLOAD");
+        setCurrentStep("ACCEPT_LOGO");
       } else if (value === "no") {
         console.log("confirmation should appear");
+        setIsConfirmationModalOpen(true);
         setCurrentStep("ASK_CONFIRMATION");
       }
     }
@@ -420,50 +432,27 @@ const ArchitectPage = () => {
           messages={messages}
           selectionHeight={selectionHeight}
         />
-        <Modal
-          isOpen={isConfirmationModalOpen}
-          onClose={() => setIsConfirmationModalOpen(false)}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Confirm Your Selections</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {/* Display the user's selections here */}
-              <p>Name: {orgDetails.name}</p>
-              <p>Description: {orgDetails.description}</p>
-              <p>Membership Type: {orgDetails.membershipType}</p>
-              <p>Voting Type: {orgDetails.votingType}</p>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleStartOver}>
-                Start Over
-              </Button>
-              <Button variant="ghost" onClick={createOrgSite}>
-                Yes, show me my site!
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+
         <MemberSpecificationModal
           isOpen={isMemberSpecificationModalOpen}
-          onSave={handleSaveMemberTier}
+          onSave={handleSaveMemberRole}
           onClose={() => setIsMemberSpecificationModalOpen(false)}
         />
         <WeightModal
           isOpen={isWeightModalOpen}
           onSave={handleWeight}
-          onClose={() => setIsWeightModalOpen(false)}
+          onClose={handleCloseWeightModal}
         />
-        {/* <WeightModal
-          type="democracy"
-          isOpen={isDemocracyModalOpen}
-          onSave={handleDemocracyWeight}
-          onClose={() => setIsDemocracyModalOpen(false)}
-        /> */}
-        <LogoDropzoneModal
-          isOpen={isLogoModalOpen} //onClose={closeModal}
-        />
+        {
+          <ConfirmationModal
+            isOpen={isConfirmationModalOpen}
+            orgDetails={orgDetails}
+            onClose={() => setIsConfirmationModalOpen(false)}
+            onStartOver={handleStartOver}
+            onSave={handleSaveAllSelections}
+          />
+        }
+        <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
       </Box>
 
       {showSelection && options.length > 0 && (
