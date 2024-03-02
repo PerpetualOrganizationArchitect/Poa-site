@@ -23,7 +23,10 @@ export const useWeb3Context = () => {
 
 
 export const Web3Provider = ({ children }) => {
-    const account ="0x06e6620C67255d308A466293070206176288A67B"
+    const account ="0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase();
+    
+
+
 
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 

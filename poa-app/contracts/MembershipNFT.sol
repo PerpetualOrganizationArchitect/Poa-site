@@ -83,11 +83,13 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         if (firstMint) {
             memberTypeOf[msg.sender] = "Executive";
             firstMint = false;
+            emit mintedNFT(msg.sender, "Executive", tokenURI);
         } else
         {
             memberTypeOf[msg.sender] = DEFAULT_MEMBER_TYPE;
+            emit mintedNFT(msg.sender, DEFAULT_MEMBER_TYPE, tokenURI);
         }
-        emit mintedNFT(msg.sender, DEFAULT_MEMBER_TYPE, tokenURI);
+
     }
 
 

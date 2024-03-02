@@ -413,7 +413,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
     //   const taskManager = await deployTaskManager(wallet);
     //   const registry = await deployRegistry(wallet);
 
-    const nftMembershipFactoryAddress = "0x1C1ABf2c3824daa95BDf2E979e3addA570283Cf1";
+    const nftMembershipFactoryAddress = "0xC565CACD8CC57bF598E22aB47a063136fa9E984c";
     const ddTokenFactoryAddress = "0xdF674Fd4b6fD809069Ffbd9deA727CE8A7e8C9f8";
     const ptTokenFactoryAddress = "0xb37C09ecc05F6031f987FD9baC34575D43249e6d";
     const treasuryFactoryAddress = "0x52ED44aB1cBD8323e15CB40b457e4E1eBf14408c";
@@ -524,7 +524,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
   }
 }
 
-main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "TestOrg2", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
+main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "New", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
   .then(() => process.exit(0))
   .catch((error) => {
       console.error(error);

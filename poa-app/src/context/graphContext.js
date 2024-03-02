@@ -14,6 +14,8 @@ export const GraphProvider = ({ children }) => {
 
     const[loaded, setLoaded] = useState('');
     const[poName, setPoName] = useState('');
+    const [hasExecNFT, setHasExecNFT] = useState(false);
+    const [hasMemberNFT, setHasMemberNFT] = useState(false);
 
     const[userData, setUserData] = useState({});
     const[participationVotingOngoing, setParticipationVotingOngoing] = useState({});
@@ -26,6 +28,8 @@ export const GraphProvider = ({ children }) => {
     const[leaderboardData, setLeaderboardData] = useState({});
 
     const { fetchFromIpfs } = useIPFScontext();
+
+    
 
 
 
@@ -69,10 +73,10 @@ export const GraphProvider = ({ children }) => {
         return data.data;
     }
 
-    async function fetchUserData(id) {
+    async function fetchUserData(id, org) {
         const query = `
         {
-        users(where: {organization: "Test Org", id: "${id}"}) {
+        users(where: {organization: "${org}", id: "${id}"}) {
             ptTokenBalance
             ddTokenBalance
             memberType {
@@ -85,7 +89,11 @@ export const GraphProvider = ({ children }) => {
         const data = await querySubgraph(query);
 
         return data.users[0];
+
+
     }
+    
+
 
     async function fetchParticpationVotingOngoing(id) {
         const query = `{
@@ -207,6 +215,37 @@ export const GraphProvider = ({ children }) => {
 
         return data
     }
+    async function execNFTcheck(poName,id){
+        const query = `{
+            perpetualOrganization(id: "New") {
+              NFTMembership {
+                executiveRoles
+              }
+              Users(where: {id: "0x06e6620c67255d308a466293070206176288a67b"}){
+                      memberType{
+                  memberTypeName
+                }
+                    }
+            }
+      }`;
+
+        const data = await querySubgraph(query);
+        console.log("pls",data.perpetualOrganization);
+
+        // see if memberTypeName is in executiveRoles
+        //loop through executive roles 
+        for (let i = 0; i < data.perpetualOrganization.NFTMembership.executiveRoles.length; i++){
+            if (data.perpetualOrganization.Users[0].memberType.memberTypeName === data.perpetualOrganization.NFTMembership.executiveRoles[i]){
+                setHasExecNFT(true);
+                return true;
+            }
+        }
+        setHasExecNFT(false);
+        return false;
+ 
+        }
+
+    
 
     async function fetchLeaderboardData(id) {
         const query =
@@ -337,6 +376,7 @@ export const GraphProvider = ({ children }) => {
         setLeaderboardData(leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
+        console.log(await execNFTcheck(poName,"0x06e6620c67255d308a466293070206176288a67b"));
 
     }
 
