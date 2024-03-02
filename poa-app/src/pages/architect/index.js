@@ -8,7 +8,6 @@ import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 import ConfirmationModal from "@/components/Architect/ConfirmationModal";
 
-
 import {
   Box,
   useToast,
@@ -81,14 +80,12 @@ const defaultMembershipOptions = [
 ];
 
 const ArchitectPage = () => {
-
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
     useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
 
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
-
 
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -140,14 +137,14 @@ const ArchitectPage = () => {
     router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
-  const handleConfirmation = () => {
-    // This is where you would handle the API call to create the site
-    // For now, we'll navigate to the new route
-    const formattedOrgName = encodeURIComponent(
-      orgName.trim().toLowerCase().replace(/\s+/g, "-")
-    );
-    router.push(`/${formattedOrgName}/home`);
-  };
+  //   const handleConfirmation = () => {
+  //     // This is where you would handle the API call to create the site
+  //     // For now, we'll navigate to the new route
+  //     const formattedOrgName = encodeURIComponent(
+  //       orgName.trim().toLowerCase().replace(/\s+/g, "-")
+  //     );
+  //     router.push(`/${formattedOrgName}/home`);
+  //   };
 
   const handleStartOver = () => {
     // Reset all state to initial values
@@ -239,9 +236,7 @@ const ArchitectPage = () => {
     setShowSelection(true);
   };
 
-
   // ------- participation voting handler
-
 
   const enableParticipation = () => {
     setOrgDetails((prevDetails) => ({
@@ -256,7 +251,6 @@ const ArchitectPage = () => {
       quadraticVotingEnabled: true,
     }));
   };
-
 
   // ------ hybrid voting handlers
 
@@ -439,7 +433,6 @@ const ArchitectPage = () => {
           selectionHeight={selectionHeight}
         />
 
-
         <MemberSpecificationModal
           isOpen={isMemberSpecificationModalOpen}
           onSave={handleSaveMemberRole}
@@ -460,7 +453,6 @@ const ArchitectPage = () => {
           />
         }
         <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
-
       </Box>
 
       {showSelection && options.length > 0 && (
