@@ -420,7 +420,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
     const ptVotingFactoryAddress = "0x68bfACC747b5C98Df33476417d91EAD0F9A8f204";
     const ddVotingFactoryAddress = "0xa80927965487CA1bC9e4cf6b90a40B0954E8830A";
     const hybridVotingFactoryAddress = "0x4bC864D2EFD9e10B64ffd94982bb76Ef41030A46";
-    const taskManagerFactoryAddress = "0x8cc551b39e97F92Ea3c122Ab14FbeeAc2e53Fb53";
+    const taskManagerFactoryAddress = "0xa8029FbDA0f31D35806db542b8c5307A09475Fdc";
     const registryFactoryAddress = "0x70EfBb9557196e09D33F430c3bD0E52338c86a5E";
 
 
@@ -524,7 +524,7 @@ async function main(memberTypeNames, executivePermissionNames, POname, quadratic
   }
 }
 
-main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "New", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
+main(["Gold", "Silver", "Bronze", "Default", "Executive"],["Gold", "Silver", "Bronze", "Executive"], "Actual", true, 50, 50, false, true, "http://example.com/logo.jpg", "Participation")
   .then(() => process.exit(0))
   .catch((error) => {
       console.error(error);

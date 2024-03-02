@@ -10,7 +10,7 @@ import {
   Flex,
   Text,
 } from '@chakra-ui/react';
-import { useWeb3Context } from '../../context/Web3Context';
+import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '@/context/dataBaseContext';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';

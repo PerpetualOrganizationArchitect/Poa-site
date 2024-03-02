@@ -70,7 +70,6 @@ contract TaskManager {
     function updateTask(uint256 _taskId, uint256 _payout, string calldata ipfsHash) external canTask {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
-        require(task.claimer == address(0), "Task already claimed");
         task.payout = _payout;
         emit TaskUpdated(_taskId, _payout, ipfsHash);
     }

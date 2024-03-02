@@ -16,6 +16,7 @@ export const GraphProvider = ({ children }) => {
     const[poName, setPoName] = useState('');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
+    const[account, setAccount] = useState("0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase());
 
     const[userData, setUserData] = useState({});
     const[participationVotingOngoing, setParticipationVotingOngoing] = useState({});
@@ -319,7 +320,7 @@ export const GraphProvider = ({ children }) => {
 
         console.log(perpetualOrganization.perpetualOrganization);
 
-        const projects = perpetualOrganization.perpetualOrganization?.TaskManager?.projects;
+        const projects = perpetualOrganization?.perpetualOrganization?.TaskManager?.projects;
         
         if (!Array.isArray(projects) || projects.length === 0) {
             const defaultProject = {
@@ -366,19 +367,41 @@ export const GraphProvider = ({ children }) => {
                     claimedBy: task.claimer || '',
                     Payout: parseInt(task.payout, 10),
                     projectId: project.id,
-                    location: ipfsData.location
+                    location: ipfsData.location,
+                    completed: task.completed
                 };
             });
     
             const tasks = await Promise.all(taskPromises);
             tasks.forEach((task) => {
-                const column = transformedProject.columns.find(c => c.title === task.location);
+                console.log("pposcfvrvrgfvfrvrftask", task);
+                // Determine the appropriate column for the task
+                let columnTitle = task.location;
+                // Check if the task has a claimer and its location is 'Open', then move it to 'In Progress'
+                console.log("claimedBy", task.claimedBy);
+                console.log("columnTitle", columnTitle);
+                if (task.claimedBy && columnTitle === 'Open') {
+                    console.log("claimedBy", task.claimedBy);
+                    columnTitle = 'In Progress';
+                }
+
+                console.log("ssssssscompleted", task.completed);
+
+                if(task.completed){
+                    columnTitle = 'Completed';
+                    console.log("completed", task.completed);
+                }
+
+                
+                // Find the column by title
+                const column = transformedProject.columns.find(c => c.title === columnTitle);
                 if (column) {
                     column.tasks.push(task);
                 } else {
                     console.error(`Task location '${task.location}' does not match any column title`);
                 }
             });
+            
     
             return transformedProject;
         }));
@@ -416,7 +439,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData}}>
+        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account}}>
         {children}
         </GraphContext.Provider>
     );

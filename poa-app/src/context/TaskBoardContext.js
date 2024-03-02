@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {useDataBaseContext} from './dataBaseContext';
+import { useWeb3Context } from './web3Context';
 
 import { useToast } from '@chakra-ui/react';
 
@@ -17,6 +18,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   const toast=useToast();
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
+  const{claimTask, taskManagerAddress, updateTask, ipfsAddTask, completeTask} = useWeb3Context();
 
   useEffect(() => {
     setTaskColumns(initialColumns);
@@ -58,8 +60,27 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
       estHours: draggedTask.estHours,
       submission: destColumnId === 'inReview' ? submissionData : draggedTask.submission,
       claimedBy: destColumnId === 'inProgress' ? claimedBy : (destColumnId === 'open' ? '' : draggedTask.claimedBy),
-      claimerUsername: destColumnId === 'inProgress' ? await getUsernameByAddress(claimedBy) : (destColumnId === 'open' ? '' : draggedTask.claimerUsername),
     };
+
+    if (destColumnId === 'inProgress') {
+        claimTask(taskManagerAddress, draggedTask.id);
+    }
+    if (destColumnId === 'inReview') {
+        const ipfsHash = await ipfsAddTask(draggedTask.name, draggedTask.description,"In Review", draggedTask.difficulty, draggedTask.estHours, submissionData);
+        let ipfsHashString = ipfsHash.path;
+        console.log("ipfsHashString: ", ipfsHashString);
+        console.log("draggedTask.id: ", draggedTask.id);
+        console.log("draggedTask.kubixPayout: ", draggedTask.kubixPayout);
+      updateTask(taskManagerAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
+    }
+
+    if (destColumnId === 'completed') {
+        completeTask(taskManagerAddress, draggedTask.id);
+
+    }
+
+
+
 
     
 

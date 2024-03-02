@@ -8,7 +8,7 @@ const web3 = new Web3('');
 
 // Replace with your account address
 const accountAddress = '0x06e6620C67255d308A466293070206176288A67B';
-const privateKey = '';
+const privateKey = '2b33392279e320006460bb30e91245bba6a7aa7462dbc307ad93067db291f9bc';
 
 
 
