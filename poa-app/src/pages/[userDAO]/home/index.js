@@ -141,7 +141,7 @@ const Home = () => {
               fontSize="lg"
               textAlign="left"
             >
-              Some more text will go here
+              Description text will go here
             </Text>
 
             {/* <Text

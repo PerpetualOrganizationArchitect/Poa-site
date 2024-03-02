@@ -436,14 +436,15 @@ const User = () => {
         ? (console.log("displaying"),
           (
             <VStack mt="8" spacing="6">
-              <Text fontWeight="extrabold" fontSize="3xl" textColor="white">
+              <Text fontWeight="extrabold" fontSize="3xl" textColor="black">
                 Join to become a member and Access the Dashboard Below
               </Text>
               <Button
                 onClick={setDisplayHandle}
                 size="lg"
                 mt={4}
-                bg="green.300"
+                bg="teal.300"
+                textColor="white"
                 _hover={{
                   bg: "green.400",
                   boxShadow: "md",
@@ -452,7 +453,6 @@ const User = () => {
               >
                 Join Now
               </Button>
-              <Image w="60%" src="/images/poa_logo.png" />
             </VStack>
           ))
         : render()}

@@ -28,7 +28,7 @@ export default function Home() {
         <Text fontSize="55" color="black.900">
           Welcome to Poa.
         </Text>
-        <MissionStatement />
+
         <Link href="/dashboard" passHref>
           {" "}
           {/* Use Link to navigate */}
