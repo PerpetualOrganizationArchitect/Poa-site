@@ -1,23 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
-
-//import SpecificInput from "@/components/Architect/SpecificInput";
+import { main as deployContracts } from "../../../scripts/realDeployment";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 import ConfirmationModal from "@/components/Architect/ConfirmationModal";
-
+import DeployProgressLoader from "@/components/Architect/DeployProgressLoader";
 import {
+  Spinner,
+  Center,
   Box,
   useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   Button,
   useDisclosure,
   Text,
@@ -91,6 +85,7 @@ const ArchitectPage = () => {
   const [messages, setMessages] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showSelection, setShowSelection] = useState(false);
+  const [isDeploying, setIsDeploying] = useState(false);
 
   const [options, setOptions] = useState([]);
   const [orgName, setOrgName] = useState(""); // Holds the organization name input by the user.
@@ -266,9 +261,70 @@ const ArchitectPage = () => {
     setCurrentStep("ASK_QUAD_VOTING");
   };
 
-  const handleSaveAllSelections = () => {
+  const handleSaveAllSelections = async () => {
     setIsConfirmationModalOpen(false);
     console.log("saving : ", orgDetails);
+
+    // Call the deployment function with the user's selections
+    try {
+      // Show a loading state to the user
+      setIsDeploying(true);
+      toast({
+        title: "Deployment in progress...",
+        status: "info",
+        duration: null, // Keeps the toast open indefinitely
+        isClosable: false,
+      });
+
+      // The parameters should match the expected structure in your deployment script
+      const memberTypeNames = orgDetails.membershipTypeNames;
+      const executivePermissionNames = ["Executive"]; // Example, adjust as needed
+      const POname = orgDetails.POname;
+      const quadraticVotingEnabled = orgDetails.quadraticVotingEnabled;
+      const democracyVoteWeight = orgDetails.democracyVoteWeight;
+      const participationVoteWeight = orgDetails.participationVoteWeight;
+      const hybridVotingEnabled = orgDetails.hybridVotingEnabled;
+      const participationVotingEnabled = orgDetails.participationVotingEnabled;
+      const logoURL = orgDetails.logoURL;
+      const votingControlType = orgDetails.votingControlType;
+
+      // This is a placeholder for calling your deployment script
+      await deployContracts(
+        memberTypeNames,
+        executivePermissionNames,
+        POname,
+        quadraticVotingEnabled,
+        democracyVoteWeight,
+        participationVoteWeight,
+        hybridVotingEnabled,
+        participationVotingEnabled,
+        logoURL,
+        votingControlType
+      );
+
+      // Update the user on success
+      toast({
+        title: "Deployment successful!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      // Redirect the user to their new site, or show the result
+      setIsDeploying(false);
+    } catch (error) {
+      console.error("Deployment error:", error);
+
+      // Inform the user of the failure
+      toast({
+        title: "Deployment failed.",
+        description: "There was an error deploying your organization.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      setIsDeploying(false);
+    }
   };
 
   const handleSendClick = () => {
@@ -414,6 +470,7 @@ const ArchitectPage = () => {
   const addMessage = (text, speaker = "system") => {
     setMessages((prevMessages) => [...prevMessages, { speaker, text }]);
   };
+
   return (
     <Layout isArchitectPage>
       <Box position="fixed" top="0" left="0" right="0" zIndex="sticky">
@@ -454,6 +511,11 @@ const ArchitectPage = () => {
           />
         }
         <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
+        {isDeploying && (
+          <Center>
+            <Spinner size="xl" />
+          </Center>
+        )}
       </Box>
 
       {showSelection && options.length > 0 && (

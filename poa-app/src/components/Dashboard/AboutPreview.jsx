@@ -18,8 +18,8 @@ const AboutPreview = () => {
       </Text>
 
       <Link href="/about" passHref>
-        <Button colorScheme="teal" variant="solid" mt={4}>
-          Learn More
+        <Button colorScheme="blue" variant="outline" mt={4}>
+          learn more
         </Button>
       </Link>
     </Flex>
