@@ -578,7 +578,7 @@ const makeRegistry = async (
   }
 };
 
-async function deploy(
+export async function main(
   memberTypeNames,
   executivePermissionNames,
   POname,
@@ -849,7 +849,7 @@ async function deploy(
   }
 }
 
-deploy(
+main(
   ["Gold", "Silver", "Bronze", "Default", "Executive"],
   ["Gold", "Silver", "Bronze", "Executive"],
   "dhsdfsd",

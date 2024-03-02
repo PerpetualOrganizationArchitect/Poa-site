@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
-import { deploy as deployContracts } from "../../../scripts/realDeployment";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
@@ -17,6 +16,7 @@ import {
   useDisclosure,
   Text,
 } from "@chakra-ui/react";
+import Deployer from "@/components/Architect/Deployer";
 
 import { useRouter } from "next/router";
 import ConversationLog from "@/components/Architect/ConversationLog";
@@ -100,6 +100,7 @@ const ArchitectPage = () => {
   const [orgName, setOrgName] = useState(""); // Holds the organization name input by the user.
   const [currentStep, setCurrentStep] = useState(steps.ASK_NAME);
   const [siteCreated, setSiteCreated] = useState(false);
+  const [showDeployer, setShowDeployer] = useState(false);
 
   // Refs and hooks for UI effects and navigation.
   const selectionRef = useRef(null);
@@ -108,7 +109,7 @@ const ArchitectPage = () => {
   const router = useRouter(); // useRouter hook from Next.js for handling client-side navigation.
 
   const [orgDetails, setOrgDetails] = useState({
-    membershipTypeNames: ["member", "executive"], // Default membership types
+    membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"], // Default membership types
     POname: "",
     quadraticVotingEnabled: false,
     democracyVoteWeight: 100,
@@ -116,8 +117,8 @@ const ArchitectPage = () => {
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
     logoURL: "",
-    description: "",
-    votingControlType: "",
+    // description: "",
+    votingControlType: "DirectDemocracy",
   });
 
   // Function for creating the organization site. This is where you would
@@ -160,7 +161,7 @@ const ArchitectPage = () => {
     setOptions([]);
     setOrgName("");
     setOrgDetails({
-      membershipTypeNames: ["member", "executive"], // Default membership types
+      membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"], // Default membership types
       POname: "",
       quadraticVotingEnabled: false,
       democracyVoteWeight: 100,
@@ -168,8 +169,8 @@ const ArchitectPage = () => {
       hybridVotingEnabled: false,
       participationVotingEnabled: false,
       logoURL: "",
-      description: "",
-      votingControlType: "",
+      // description: "",
+      votingControlType: "DirectDemocracy",
     });
     setCurrentStep(steps.ASK_NAME);
     onClose(); // Close the confirmation modal
@@ -281,73 +282,25 @@ const ArchitectPage = () => {
   }
 
   const handleSaveAllSelections = async () => {
-    appendRandomNumsToPOname();
+    // Append a random number to POname
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000); // Generates a number between 1000 and 9999
+    const updatedPOname = `${orgDetails.POname}_${randomSuffix}`;
+
+    // Update orgDetails with the new POname
+    const updatedOrgDetails = {
+      ...orgDetails,
+      POname: updatedPOname,
+    };
+
+    // Update state to reflect changes
+    setOrgDetails(updatedOrgDetails);
+
+    // Close any open modal and show deployment progress
     setIsConfirmationModalOpen(false);
-    console.log("saving : ", orgDetails);
+    console.log("Saving: ", updatedOrgDetails);
 
-    // Call the deployment function with the user's selections
-    try {
-      console.log("deploying now i guess");
-      // Show a loading state to the user
-      setIsDeploying(true);
-      toast({
-        title: "Deployment in progress...",
-        status: "info",
-        duration: null, // Keeps the toast open indefinitely
-        isClosable: false,
-      });
-      console.log("Name of PO being deployed: ", POname);
-
-      // The parameters should match the expected structure in your deployment script
-      const memberTypeNames = orgDetails.membershipTypeNames;
-      const executivePermissionNames = ["Executive"]; // Example, adjust as needed
-      const POname = orgDetails.POname;
-      const quadraticVotingEnabled = orgDetails.quadraticVotingEnabled;
-      const democracyVoteWeight = orgDetails.democracyVoteWeight;
-      const participationVoteWeight = orgDetails.participationVoteWeight;
-      const hybridVotingEnabled = orgDetails.hybridVotingEnabled;
-      const participationVotingEnabled = orgDetails.participationVotingEnabled;
-      const logoURL = orgDetails.logoURL;
-      const votingControlType = orgDetails.votingControlType;
-
-      // This is a placeholder for calling your deployment script
-      await deployContracts(
-        memberTypeNames,
-        executivePermissionNames,
-        POname,
-        quadraticVotingEnabled,
-        democracyVoteWeight,
-        participationVoteWeight,
-        hybridVotingEnabled,
-        participationVotingEnabled,
-        logoURL,
-        votingControlType
-      );
-
-      // Update the user on success
-      toast({
-        title: "Deployment successful!",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-
-      // Redirect the user to their new site, or show the result
-      setIsDeploying(false);
-    } catch (error) {
-      setIsDeploying(false);
-      console.error("Deployment error:", error);
-
-      // Inform the user of the failure
-      toast({
-        title: "Deployment failed.",
-        description: "There was an error deploying your organization.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      setIsDeploying(false);
-    }
+    // Prepare to show the deployment modal
+    setShowDeployer(true);
   };
 
   const handleSendClick = () => {
@@ -359,7 +312,7 @@ const ArchitectPage = () => {
         setCurrentStep("ASK_DESCRIPTION");
         break;
       case "ASK_DESCRIPTION":
-        setOrgDetails({ ...orgDetails, description: userInput.trim() });
+        // setOrgDetails({ ...orgDetails, description: userInput.trim() });
         setCurrentStep("ASK_MEMBERSHIP_DEFAULT");
         break;
     }
@@ -540,6 +493,12 @@ const ArchitectPage = () => {
               onSave={handleSaveAllSelections}
             />
           }
+          <Deployer
+            isOpen={showDeployer}
+            onClose={() => setShowDeployer(false)}
+            deploymentDetails={orgDetails}
+          />
+
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
           {isDeploying && (
             <Center>
