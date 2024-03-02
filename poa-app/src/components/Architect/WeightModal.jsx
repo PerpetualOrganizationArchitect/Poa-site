@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -11,49 +11,82 @@ import {
   Input,
   FormControl,
   FormLabel,
-  useDisclosure,
 } from "@chakra-ui/react";
 
-const WeightModal = ({ isOpen, onSave, onClose, type }) => {
-  // Accept onSave prop
+const WeightModal = ({ isOpen, onClose }) => {
+  const [participationWeight, setParticipationWeight] = useState("");
+  const [democracyWeight, setDemocracyWeight] = useState(100);
 
-  const [weight, setWeight] = useState("");
+  // When participationWeight changes and is not an empty string, adjust democracyWeight
+  useEffect(() => {
+    if (participationWeight !== "") {
+      const weight = Math.max(
+        0,
+        Math.min(100, parseInt(participationWeight, 10))
+      );
+      setDemocracyWeight(100 - weight);
+    }
+  }, [participationWeight]);
 
-  const handleInputChange = (e) => setWeight(e.target.value);
+  const handleParticipationChange = (e) => {
+    setParticipationWeight(e.target.value);
+  };
+
+  const handleParticipationBlur = () => {
+    if (participationWeight === "") {
+      setParticipationWeight(100 - democracyWeight);
+    } else {
+      const weight = Math.max(
+        0,
+        Math.min(100, parseInt(participationWeight, 10))
+      );
+      setParticipationWeight(weight); // Correct the value if out of bounds
+    }
+  };
 
   const handleSave = () => {
-    onSave(weight); // Call onSave with the memberTierName
+    const weight =
+      participationWeight === "" ? 0 : parseInt(participationWeight, 10);
+    // onSave logic here, if needed
     onClose(); // Close the modal after saving
-    setWeight(""); // Reset the input field
   };
 
   return (
-    <>
-      {/* Adjusted the button text */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>${type} Weight Specification</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel>How much should ($type) be weighted?</FormLabel>
-              <Input value={weight} onChange={handleInputChange} />
-            </FormControl>
-          </ModalBody>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Weight Specification</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <FormControl>
+            <FormLabel>Participation Vote Weight</FormLabel>
+            <Input
+              type="number"
+              value={participationWeight}
+              onChange={handleParticipationChange}
+              onBlur={handleParticipationBlur}
+            />
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Democracy Vote Weight</FormLabel>
+            <Input
+              type="number"
+              value={democracyWeight}
+              isReadOnly // This field is always disabled
+            />
+          </FormControl>
+        </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost" onClick={handleSave}>
-              Save
-            </Button>{" "}
-            {/* Use handleSave when clicking Save */}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

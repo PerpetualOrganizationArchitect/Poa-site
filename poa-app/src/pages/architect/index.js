@@ -4,6 +4,7 @@ import ArchitectInput from "@/components/Architect/ArchitectInput";
 //import SpecificInput from "@/components/Architect/SpecificInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
+import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 
 import {
   Box,
@@ -30,6 +31,9 @@ const steps = {
   ASK_MEMBERSHIP_DEFAULT: "ASK_MEMBERSHIP_DEFAULT",
   ASK_MEMBERSHIP_CUSTOMIZE: "ASK_MEMBERSHIP_CUSTOMIZE",
   ASK_VOTING: "ASK_VOTING",
+  ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
+  ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
+  ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
 };
 
 const votingOptions = [
@@ -40,6 +44,11 @@ const votingOptions = [
 const membershipOptions = [
   { label: "Executives", value: "executives" },
   { label: "Uniform Membership", value: "uniform_membership" },
+];
+
+const logoUploadOptions = [
+  { label: "Use Default Logo", value: "no" },
+  { label: "Upload My Own", value: "yes" },
 ];
 const defaultMembershipOptions = [
   {
@@ -71,12 +80,10 @@ const ArchitectPage = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
     useState(false);
-  const [isQuadraticModalOpen, setIsQuadraticModalOpen] = useState(false);
-  const [isParticipationModalOpen, setIsParticipationModalOpen] =
-    useState(false);
+  const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
 
-  const [isDemocracyModalOpen, setIsDemocracyModalOpen] = useState(false);
-  const [isHybridModalOpen, setIsHybridModalOpen] = useState(false);
+  const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
+
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -146,6 +153,9 @@ const ArchitectPage = () => {
         setCurrentStep(steps.ASK_VOTING_WEIGHT);
         break;
       case steps.ASK_VOTING_WEIGHT:
+        setCurrentStep(steps.ASK_LOGO_UPLOAD);
+        break;
+      case steps.ASK_LOGO_UPLOAD:
         setCurrentStep(steps.ASK_CONFIRMATION);
         break;
     }
@@ -213,14 +223,11 @@ const ArchitectPage = () => {
     );
   }, [orgDetails.membershipTypeNames]);
 
-  // ------- participation voting handlers
+  // ------- participation voting handler
 
-  const handleParticipationWeight = (voteWeight) => {
-    const floatVoteWeight = parseFloat(voteWeight); // Convert to float
-
+  const enableParticipation = () => {
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
-      participationVoteWeight: floatVoteWeight,
       participationVotingEnabled: true,
     }));
   };
@@ -228,25 +235,34 @@ const ArchitectPage = () => {
   useEffect(() => {
     console.log(
       "Updated participation weight: ",
-      orgDetails.participationVoteWeight,
+      //orgDetails.participationVoteWeight,
       "\nupdated p enabled: ",
       orgDetails.participationVotingEnabled
     );
   }, [orgDetails.participationVoteWeight]);
 
-  // ------ democracy voting handlers
+  // ------ hybrid voting handlers
 
-  const handleDemocracyWeight = (voteWeight) => {
-    const floatVoteWeight = parseFloat(voteWeight); // Convert to float
+  const handleWeight = (participationVoteWeight, democracyVoteWeight) => {
+    const floatParticipationVoteWeight = parseFloat(participationVoteWeight); // Convert to float
+    const floatDemocracyVoteWeight = parseFloat(democracyVoteWeight); // Convert to float
 
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
-      democracyVoteWeight: floatVoteWeight,
+      democracyVoteWeight: floatDemocracyVoteWeight,
+      participationVoteWeight: floatParticipationVoteWeight,
     }));
   };
 
   useEffect(() => {
-    console.log("Updated democracy weight: ", orgDetails.qua);
+    console.log(
+      "Updated participation weight: ",
+      orgDetails.participationVoteWeight
+    );
+  }, [orgDetails.participationVoteWeight]);
+
+  useEffect(() => {
+    console.log("Updated democracy weight: ", orgDetails.democracyVoteWeight);
   }, [orgDetails.democracyVoteWeight]);
 
   const handleSendClick = () => {
@@ -296,17 +312,14 @@ const ArchitectPage = () => {
       case "ASK_VOTING":
         addMessage("Please select a voting type.");
         setOptions([
-          { label: "Quadratic only", value: "quadratic" },
           { label: "Participation only", value: "participation" },
           { label: "Hybrid", value: "hybrid" },
         ]);
         setShowSelection(true);
         break;
-      case "ASK_QUAD_WEIGHT":
-        break;
-      case "ASK_PARTICIPATION_WEIGHT":
-        break;
       case "ASK_HYBRID_WEIGHT":
+        break;
+      case "ASK_IF_LOGO_UPLOAD":
         break;
     }
   }, [currentStep]);
@@ -346,18 +359,29 @@ const ArchitectPage = () => {
       }
     }
     if (currentStep === "ASK_VOTING") {
-      if (value === "quadratic") {
-        setIsQuadraticModalOpen(true);
-        setCurrentStep("ASK_QUAD_WEIGHT");
-      } else if (value === "participation") {
-        setIsParticipationModalOpen(true);
-        setCurrentStep("ASK_PARTICIPATION_WEIGHT");
+      if (value === "participation") {
+        //setIsParticipationModalOpen(true);
+        enableParticipation();
+        setCurrentStep("ASK_IF_LOGO_UPLOAD");
       } else if (value === "hybrid") {
-        setIsHybridModalOpen(true);
+        //hybrid should be part direct democracy, part participation
+        setIsWeightModalOpen(true);
         setCurrentStep("ASK_HYBRID_WEIGHT");
       }
+      if (currentStep === "ASK_HYBRID_WEIGHT") {
+        setCurrentStep("ASK_IF_LOGO_UPLOAD");
+      }
     }
-    // Handle other selections as needed
+
+    if (currentStep === "ASK_IF_LOGO_UPLOAD") {
+      if (value === "yes") {
+        setIsLogoModalOpen(true);
+        setCurrentStep("ASK_LOGO_UPLOAD");
+      } else if (value === "no") {
+        console.log("confirmation should appear");
+        setCurrentStep("ASK_CONFIRMATION");
+      }
+    }
   };
 
   const addMessage = (text, speaker = "system") => {
@@ -413,16 +437,18 @@ const ArchitectPage = () => {
           onClose={() => setIsMemberSpecificationModalOpen(false)}
         />
         <WeightModal
-          type="participation"
-          isOpen={isParticipationModalOpen}
-          onSave={handleParticipationWeight}
-          onClose={() => setIsParticipationModalOpen(false)}
+          isOpen={isWeightModalOpen}
+          onSave={handleWeight}
+          onClose={() => setIsWeightModalOpen(false)}
         />
-        <WeightModal
+        {/* <WeightModal
           type="democracy"
           isOpen={isDemocracyModalOpen}
           onSave={handleDemocracyWeight}
           onClose={() => setIsDemocracyModalOpen(false)}
+        /> */}
+        <LogoDropzoneModal
+          isOpen={isLogoModalOpen} //onClose={closeModal}
         />
       </Box>
 
