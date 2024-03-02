@@ -51,8 +51,6 @@ const MainLayout = () => {
             key={selectedProject.id}
             projectId={selectedProject.id}
             initialColumns={selectedProject.columns}
-            onColumnChange={(newColumns) => handleUpdateColumns(newColumns)}
-            onUpdateColumns={(newColumns) => handleUpdateColumns(newColumns)}
             account={account}
           >
             <TaskBoard 

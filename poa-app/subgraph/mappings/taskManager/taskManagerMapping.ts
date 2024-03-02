@@ -22,10 +22,12 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
     log.info("Triggered handleTaskClaimed", [])
   
     let task = Task.load(event.params.id.toHex())
+
     if (!task) {
       log.error("Task not found: {}", [event.params.id.toHex()])
       return
     }
+    task.claimer = event.params.claimer
     task.save()
   }
 

@@ -27,6 +27,7 @@ import EditTaskModal from './EditTaskModal';
 import { useTaskBoard } from '../../context/TaskBoardContext';
 import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '@/context/dataBaseContext';
+import { useGraphContext } from '@/context/graphContext';
 import { useRouter } from 'next/router';
 
 const glassLayerStyle = {
@@ -42,7 +43,8 @@ const glassLayerStyle = {
 const TaskCardModal = ({task, columnId, onEditTask }) => {
   const [submission, setSubmission] = useState('');
   const { moveTask, deleteTask} = useTaskBoard();
-  const { hasExecNFT,hasMemberNFT, account, mintKUBIX} = useWeb3Context();
+  const { hasExecNFT,hasMemberNFT, account} = useGraphContext();
+
 
 
   const { getUsernameByAddress,setSelectedProjectId } = useDataBaseContext();
@@ -111,7 +113,6 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
           onClose();
           await moveTask(task, columnId, 'completed', 0)
           console.log(task.claimedBy)
-          setTimeout(async() => {await mintKUBIX(task.claimedBy, task.kubixPayout, true)}, 2100);
           
         } catch (error) {
           console.error("Error moving task:", error);
