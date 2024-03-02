@@ -12,6 +12,7 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 
 import { useIPFScontext } from '@/context/ipfsContext';
+import { task } from 'hardhat/config';
 
 
 
@@ -170,11 +171,11 @@ const web3test = () => {
         console.log("IPFS hash:", ipfsHash);
     }
 
-    async function ipfsAddTask() {
+    async function ipfsAddTask(taskName, taskDescription, taskLocation) {
         const data = {
-            name: "Task 1",
-            description: "This is a task",
-            location:"in Progress"
+            name: taskName,
+            description: taskDescription,
+            location: taskLocation
         };
         const json = JSON.stringify(data);
         const ipfsHash = await addToIpfs(json);
