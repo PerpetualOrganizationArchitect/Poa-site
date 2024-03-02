@@ -30,6 +30,7 @@ const steps = {
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
   ASK_MEMBERSHIP_DEFAULT: "ASK_MEMBERSHIP_DEFAULT",
   ASK_MEMBERSHIP_CUSTOMIZE: "ASK_MEMBERSHIP_CUSTOMIZE",
+  ASK_ADD_ANOTHER_TIER: "ASK_ADD_ANOTHER_TIER",
   ASK_VOTING: "ASK_VOTING",
   ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
@@ -134,32 +135,36 @@ const ArchitectPage = () => {
     router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
-  const nextStep = () => {
-    switch (currentStep) {
-      case steps.ASK_NAME:
-        setCurrentStep(steps.ASK_DESCRIPTION);
-        break;
-      case steps.ASK_DESCRIPTION:
-        setCurrentStep(steps.ASK_MEMBERSHIP_DEFAULT);
-        break;
+  //   const nextStep = () => {
+  //     switch (currentStep) {
+  //       case steps.ASK_NAME:
+  //         setCurrentStep(steps.ASK_DESCRIPTION);
+  //         break;
+  //       case steps.ASK_DESCRIPTION:
+  //         setCurrentStep(steps.ASK_MEMBERSHIP_DEFAULT);
+  //         break;
 
-      case steps.ASK_MEMBERSHIP_DEFAULT:
-        setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
-        break;
-      case steps.ASK_MEMBERSHIP_CUSTOMIZE:
-        setCurrentStep(steps.ASK_VOTING);
-        break;
-      case steps.ASK_VOTING:
-        setCurrentStep(steps.ASK_VOTING_WEIGHT);
-        break;
-      case steps.ASK_VOTING_WEIGHT:
-        setCurrentStep(steps.ASK_LOGO_UPLOAD);
-        break;
-      case steps.ASK_LOGO_UPLOAD:
-        setCurrentStep(steps.ASK_CONFIRMATION);
-        break;
-    }
-  };
+  //       case steps.ASK_MEMBERSHIP_DEFAULT:
+  //         setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
+  //         break;
+  //       case steps.ASK_MEMBERSHIP_CUSTOMIZE:
+  //         console.log("adding another tier");
+  //         setCurrentStep(steps.ASK_ADD_ANOTHER_TIER);
+  //         break;
+  //       case steps.ASK_ADD_ANOTHER_TIER:
+  //         setCurrentStep(steps.ASK_VOTING);
+  //         break;
+  //       case steps.ASK_VOTING:
+  //         setCurrentStep(steps.ASK_VOTING_WEIGHT);
+  //         break;
+  //       case steps.ASK_VOTING_WEIGHT:
+  //         setCurrentStep(steps.ASK_LOGO_UPLOAD);
+  //         break;
+  //       case steps.ASK_LOGO_UPLOAD:
+  //         setCurrentStep(steps.ASK_CONFIRMATION);
+  //         break;
+  //     }
+  //   };
 
   const handleConfirmation = () => {
     // This is where you would handle the API call to create the site
@@ -195,6 +200,14 @@ const ArchitectPage = () => {
   };
 
   useEffect(() => {
+    // Update the selectionHeight state if the selectionRef is set and the component is visible
+    if (showSelection && selectionRef.current) {
+      const height = selectionRef.current.offsetHeight + 20; // Get the height of the Selection component
+      setSelectionHeight(height); // Set the height state
+    }
+  }, [showSelection, options]);
+
+  useEffect(() => {
     // Simulating a greeting message from "POA" on initial load
     const greetingMessage = {
       speaker: "POA",
@@ -207,20 +220,29 @@ const ArchitectPage = () => {
   // ------ membership customization handlers
 
   const handleSaveMemberTier = (tierName) => {
-    //  console.log("members: ", membershipTypeNames);
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
       membershipTypeNames: [...prevDetails.membershipTypeNames, tierName],
     }));
-    console.log("tier name", tierName);
-    console.log("mem: ", orgDetails.membershipTypeNames);
+
+    addMessage(`I just added the ${tierName} tier to your organization.`);
+    askToAddAnotherTier(tierName);
+    setCurrentStep("ASK_ADD_ANOTHER_TIER");
+  };
+  const askToAddAnotherTier = () => {
+    addMessage(`Would you like to add another tier?`);
+    setOptions([
+      { label: "Yes", value: "yes" },
+      { label: "No", value: "no" },
+    ]);
+    setShowSelection(true);
   };
 
   useEffect(() => {
-    console.log(
-      "Updated membershipTypeNames: ",
-      orgDetails.membershipTypeNames
-    );
+    // console.log(
+    //   "Updated membershipTypeNames: ",
+    //   orgDetails.membershipTypeNames
+    // );
   }, [orgDetails.membershipTypeNames]);
 
   // ------- participation voting handler
@@ -233,12 +255,13 @@ const ArchitectPage = () => {
   };
 
   useEffect(() => {
-    console.log(
-      "Updated participation weight: ",
-      //orgDetails.participationVoteWeight,
-      "\nupdated p enabled: ",
-      orgDetails.participationVotingEnabled
-    );
+    console
+      .log
+      //   "Updated participation weight: ",
+      //   //orgDetails.participationVoteWeight,
+      //   "\nupdated p enabled: ",
+      //   orgDetails.participationVotingEnabled
+      ();
   }, [orgDetails.participationVoteWeight]);
 
   // ------ hybrid voting handlers
@@ -254,14 +277,14 @@ const ArchitectPage = () => {
   };
 
   useEffect(() => {
-    console.log(
-      "Updated participation weight: ",
-      orgDetails.participationVoteWeight
-    );
+    // console.log(
+    //   "Updated participation weight: ",
+    //   orgDetails.participationVoteWeight
+    // );
   }, [orgDetails.participationVoteWeight]);
 
   useEffect(() => {
-    console.log("Updated democracy weight: ", orgDetails.democracyVoteWeight);
+    //console.log("Updated democracy weight: ", orgDetails.democracyVoteWeight);
   }, [orgDetails.democracyVoteWeight]);
 
   const handleSendClick = () => {
@@ -277,9 +300,13 @@ const ArchitectPage = () => {
         setOrgDetails({ ...orgDetails, description: userInput.trim() });
         setCurrentStep("ASK_MEMBERSHIP_DEFAULT");
         break;
-      case "ASK_MEMBERSHIP_CUSTOMIZE":
-        // This step is handled by the modal
+      case "ASK_MEMBERSHIP_DEFAULT":
         break;
+      case "ASK_MEMBERSHIP_CUSTOMIZE":
+        console.log("Adding antoehr tier");
+        setCurrentStep("ASK_ADD_ANOTHER_TIER");
+        break;
+
       // Handle other cases as needed
     }
 
@@ -301,12 +328,18 @@ const ArchitectPage = () => {
         );
         setOptions([
           { label: "Keep default", value: "default" },
-          { label: "I'd like more customization", value: "customize" },
+          { label: "Customize tiers", value: "customize" },
         ]);
         setShowSelection(true);
         break;
       case "ASK_MEMBERSHIP_CUSTOMIZE":
-        // Open the modal for customization
+        console.log("at customize");
+        break;
+      case "ASK_ADD_ANOTHER_TIER":
+        console.log("at add tier");
+
+        askToAddAnotherTier();
+        setShowSelection(true);
         break;
       case "ASK_VOTING":
         addMessage("Please select a voting type.");
@@ -349,7 +382,6 @@ const ArchitectPage = () => {
     setShowSelection(false); // Hide selection options after choosing
     if (currentStep === "ASK_MEMBERSHIP_DEFAULT") {
       if (value === "default") {
-        // Keep default setup and proceed to voting
         setCurrentStep("ASK_VOTING");
       } else if (value === "customize") {
         // Open modal for custom membership setup
@@ -357,6 +389,20 @@ const ArchitectPage = () => {
         setIsMemberSpecificationModalOpen(true);
       }
     }
+
+    if (
+      currentStep === "ASK_ADD_ANOTHER_TIER" ||
+      currentStep === "ASK_MEMBERSHIP_CUSTOMIZE"
+    ) {
+      console.log("proceed to vote");
+      console.log("current step = ", currentStep);
+      if (value === "yes") {
+        setIsMemberSpecificationModalOpen(true);
+      } else if (value === "no") {
+        setCurrentStep("ASK_VOTING");
+      }
+    }
+
     if (currentStep === "ASK_VOTING") {
       if (value === "participation") {
         //setIsParticipationModalOpen(true);

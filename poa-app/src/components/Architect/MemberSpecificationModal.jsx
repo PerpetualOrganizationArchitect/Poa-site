@@ -37,7 +37,7 @@ const MemberSpecificationModal = ({ isOpen, onSave, onClose }) => {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel>Member Tier Name</FormLabel>
+              <FormLabel>Name of new tier</FormLabel>
               <Input value={memberTierName} onChange={handleInputChange} />
             </FormControl>
           </ModalBody>
@@ -47,7 +47,7 @@ const MemberSpecificationModal = ({ isOpen, onSave, onClose }) => {
               Close
             </Button>
             <Button variant="ghost" onClick={handleSave}>
-              Save
+              Add Tier
             </Button>{" "}
             {/* Use handleSave when clicking Save */}
           </ModalFooter>
