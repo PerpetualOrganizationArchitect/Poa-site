@@ -1,6 +1,6 @@
 import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
 import { IPFSprovider } from "@/context/ipfsContext";
-import { Web3Provider } from "@/context/Web3Context";
+import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
 
