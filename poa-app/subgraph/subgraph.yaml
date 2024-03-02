@@ -46,7 +46,7 @@ dataSources:
     name: NFTMembershipFactory
     network: mumbai
     source:
-      address: "0x1C1ABf2c3824daa95BDf2E979e3addA570283Cf1"
+      address: "0xC565CACD8CC57bF598E22aB47a063136fa9E984c"
       abi: NFTMembershipFactory
       startBlock: 46430300
     mapping:

@@ -26,7 +26,6 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
       log.error("Task not found: {}", [event.params.id.toHex()])
       return
     }
-    task.claimer = event.params.claimer
     task.save()
   }
 

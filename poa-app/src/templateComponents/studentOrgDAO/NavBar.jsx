@@ -1,9 +1,13 @@
 import React from "react";
 import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
+import {useRouter} from "next/router";
+
 //import { useWeb3Context } from '../contexts/Web3Context';
 
 const Navbar = () => {
+  const router = useRouter();
+  const { userDAO } = router.query;
   // const { isConnected } = useWeb3Context();
   return (
     <Box bg="black" p={4}>
@@ -15,7 +19,7 @@ const Navbar = () => {
         justifyContent="space-between"
       >
         <Box h="100%" w="12%" mr={{ base: "4", md: "8" }}>
-          <Link as={NextLink} href="/${orgName}/home" passHref>
+          <Link as={NextLink} href={`/${userDAO}/home`} passHref>
             <Image
               src="/images/poa_character.png"
               alt="Your Logo"
@@ -33,7 +37,7 @@ const Navbar = () => {
         >
           <Link
             as={NextLink}
-            href="/${orgName}/tasks"
+            href={`/${userDAO}/tasks`}
             color="white"
             fontWeight="extrabold"
             fontSize="xl"
@@ -46,7 +50,7 @@ const Navbar = () => {
           </Link> */}
           <Link
             as={NextLink}
-            href="/${orgName}/voting"
+            href={`/${userDAO}/voting`}
             color="white"
             fontWeight="extrabold"
             fontSize="xl"
@@ -66,7 +70,7 @@ const Navbar = () => {
             </Text>
             <Link
               as={NextLink}
-              href="/${orgName}/user"
+              href={`/${userDAO}/user`}
               color="white"
               fontWeight="extrabold"
               fontSize="xl"

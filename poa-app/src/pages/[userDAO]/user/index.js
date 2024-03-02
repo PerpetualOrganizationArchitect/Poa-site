@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import NextLink from "next/link";
 
 import { useRouter } from "next/router";
+import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 import {
   Box,
@@ -34,7 +35,7 @@ const glassLayerStyle = {
 
 const User = () => {
   const router = useRouter();
-  const { userDAO } = router.query; // Get the dynamic part of the URL
+  const { userDAO } = router.query;
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -432,9 +433,12 @@ const User = () => {
 
   return (
     <>
+      <Navbar />
+
       {display
         ? (console.log("displaying"),
           (
+            <>
             <VStack mt="8" spacing="6">
               <Text fontWeight="extrabold" fontSize="3xl" textColor="black">
                 Join to become a member and Access the Dashboard Below
@@ -454,6 +458,7 @@ const User = () => {
                 Join Now
               </Button>
             </VStack>
+            </>
           ))
         : render()}
     </>

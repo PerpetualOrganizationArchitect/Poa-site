@@ -129,12 +129,13 @@ const ArchitectPage = () => {
 
       return;
     }
+
     // Navigate to the new DAO route after creation.
-    const formattedOrgName = encodeURIComponent(
-      orgName.trim().toLowerCase().replace(/\s+/g, "-")
-    );
-    setIsConfirmationModalOpen(false);
-    router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
+    // const formattedOrgName = encodeURIComponent(
+    //   orgName.trim().toLowerCase().replace(/\s+/g, "-")
+    // );
+    // setIsConfirmationModalOpen(false);
+    // router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
   //   const handleConfirmation = () => {

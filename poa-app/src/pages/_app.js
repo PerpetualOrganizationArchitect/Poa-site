@@ -1,5 +1,8 @@
 import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
 import { IPFSprovider } from "@/context/ipfsContext";
+import { Web3Provider } from "@/context/Web3Context";
+import { DataBaseProvider } from "@/context/dataBaseContext";
+import { GraphProvider } from "@/context/graphContext";
 
 
 const theme = extendTheme({
@@ -19,9 +22,15 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }) {
   return (
     <IPFSprovider>
-      <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
+      <GraphProvider>
+          <Web3Provider>
+            <DataBaseProvider>
+                <ChakraProvider theme={theme}>
+                  <Component {...pageProps} />
+                </ChakraProvider>
+            </DataBaseProvider>
+          </Web3Provider>
+      </GraphProvider>
     </IPFSprovider>
   );
 }
