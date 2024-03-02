@@ -13,9 +13,16 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 
-const WeightModal = ({ isOpen, onClose }) => {
+const WeightModal = ({ isOpen, onSave, onClose }) => {
   const [participationWeight, setParticipationWeight] = useState("");
   const [democracyWeight, setDemocracyWeight] = useState(100);
+
+  const handleSave = () => {
+    const weight =
+      participationWeight === "" ? 0 : parseInt(participationWeight, 10);
+    onSave({ participationWeight: weight, democracyWeight: 100 - weight }); // Pass both weights back to the parent component
+    onClose(); // Close the modal after saving
+  };
 
   // When participationWeight changes and is not an empty string, adjust democracyWeight
   useEffect(() => {
@@ -42,13 +49,6 @@ const WeightModal = ({ isOpen, onClose }) => {
       );
       setParticipationWeight(weight); // Correct the value if out of bounds
     }
-  };
-
-  const handleSave = () => {
-    const weight =
-      participationWeight === "" ? 0 : parseInt(participationWeight, 10);
-    // onSave logic here, if needed
-    onClose(); // Close the modal after saving
   };
 
   return (

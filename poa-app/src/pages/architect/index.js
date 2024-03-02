@@ -243,14 +243,13 @@ const ArchitectPage = () => {
 
   // ------ hybrid voting handlers
 
-  const handleWeight = (participationVoteWeight, democracyVoteWeight) => {
-    const floatParticipationVoteWeight = parseFloat(participationVoteWeight); // Convert to float
-    const floatDemocracyVoteWeight = parseFloat(democracyVoteWeight); // Convert to float
-
+  const handleWeight = ({ participationWeight, democracyWeight }) => {
+    console.log("p weight: ", participationWeight);
+    console.log("dem weight: ", democracyWeight);
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
-      democracyVoteWeight: floatDemocracyVoteWeight,
-      participationVoteWeight: floatParticipationVoteWeight,
+      democracyVoteWeight: democracyWeight,
+      participationVoteWeight: participationWeight,
     }));
   };
 
