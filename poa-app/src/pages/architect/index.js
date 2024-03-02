@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 //import SpecificInput from "@/components/Architect/SpecificInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
+import WeightModal from "@/components/Architect/WeightModal";
 
 import {
   Box,
@@ -70,6 +71,12 @@ const ArchitectPage = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
     useState(false);
+  const [isQuadraticModalOpen, setIsQuadraticModalOpen] = useState(false);
+  const [isParticipationModalOpen, setIsParticipationModalOpen] =
+    useState(false);
+
+  const [isDemocracyModalOpen, setIsDemocracyModalOpen] = useState(false);
+  const [isHybridModalOpen, setIsHybridModalOpen] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -128,15 +135,17 @@ const ArchitectPage = () => {
       case steps.ASK_DESCRIPTION:
         setCurrentStep(steps.ASK_MEMBERSHIP_DEFAULT);
         break;
-      //only if the user selects the customize button should it go to customize
-      //otherwise it should go to voting
+
       case steps.ASK_MEMBERSHIP_DEFAULT:
         setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
         break;
       case steps.ASK_MEMBERSHIP_CUSTOMIZE:
         setCurrentStep(steps.ASK_VOTING);
         break;
-      case steps.ASK_ENABLE_QUAD_VOTING:
+      case steps.ASK_VOTING:
+        setCurrentStep(steps.ASK_VOTING_WEIGHT);
+        break;
+      case steps.ASK_VOTING_WEIGHT:
         setCurrentStep(steps.ASK_CONFIRMATION);
         break;
     }
@@ -185,6 +194,8 @@ const ArchitectPage = () => {
     setMessages([...messages, greetingMessage]);
   }, []);
 
+  // ------ membership customization handlers
+
   const handleSaveMemberTier = (tierName) => {
     //  console.log("members: ", membershipTypeNames);
     setOrgDetails((prevDetails) => ({
@@ -201,6 +212,42 @@ const ArchitectPage = () => {
       orgDetails.membershipTypeNames
     );
   }, [orgDetails.membershipTypeNames]);
+
+  // ------- participation voting handlers
+
+  const handleParticipationWeight = (voteWeight) => {
+    const floatVoteWeight = parseFloat(voteWeight); // Convert to float
+
+    setOrgDetails((prevDetails) => ({
+      ...prevDetails,
+      participationVoteWeight: floatVoteWeight,
+      participationVotingEnabled: true,
+    }));
+  };
+
+  useEffect(() => {
+    console.log(
+      "Updated participation weight: ",
+      orgDetails.participationVoteWeight,
+      "\nupdated p enabled: ",
+      orgDetails.participationVotingEnabled
+    );
+  }, [orgDetails.participationVoteWeight]);
+
+  // ------ democracy voting handlers
+
+  const handleDemocracyWeight = (voteWeight) => {
+    const floatVoteWeight = parseFloat(voteWeight); // Convert to float
+
+    setOrgDetails((prevDetails) => ({
+      ...prevDetails,
+      democracyVoteWeight: floatVoteWeight,
+    }));
+  };
+
+  useEffect(() => {
+    console.log("Updated democracy weight: ", orgDetails.qua);
+  }, [orgDetails.democracyVoteWeight]);
 
   const handleSendClick = () => {
     // Handle user input based on the current step
@@ -248,10 +295,22 @@ const ArchitectPage = () => {
         break;
       case "ASK_VOTING":
         addMessage("Please select a voting type.");
-        // Setup voting options here
+        setOptions([
+          { label: "Quadratic only", value: "quadratic" },
+          { label: "Participation only", value: "participation" },
+          { label: "Hybrid", value: "hybrid" },
+        ]);
+        setShowSelection(true);
+        break;
+      case "ASK_QUAD_WEIGHT":
+        break;
+      case "ASK_PARTICIPATION_WEIGHT":
+        break;
+      case "ASK_HYBRID_WEIGHT":
         break;
     }
   }, [currentStep]);
+
   const generateOptions = (optionsArray = [], message) => {
     console.log("showng selection");
     setShowSelection(true);
@@ -284,6 +343,18 @@ const ArchitectPage = () => {
         // Open modal for custom membership setup
         // Assume setIsMemberSpecificationModalOpen exists to control the modal
         setIsMemberSpecificationModalOpen(true);
+      }
+    }
+    if (currentStep === "ASK_VOTING") {
+      if (value === "quadratic") {
+        setIsQuadraticModalOpen(true);
+        setCurrentStep("ASK_QUAD_WEIGHT");
+      } else if (value === "participation") {
+        setIsParticipationModalOpen(true);
+        setCurrentStep("ASK_PARTICIPATION_WEIGHT");
+      } else if (value === "hybrid") {
+        setIsHybridModalOpen(true);
+        setCurrentStep("ASK_HYBRID_WEIGHT");
       }
     }
     // Handle other selections as needed
@@ -340,6 +411,18 @@ const ArchitectPage = () => {
           isOpen={isMemberSpecificationModalOpen}
           onSave={handleSaveMemberTier}
           onClose={() => setIsMemberSpecificationModalOpen(false)}
+        />
+        <WeightModal
+          type="participation"
+          isOpen={isParticipationModalOpen}
+          onSave={handleParticipationWeight}
+          onClose={() => setIsParticipationModalOpen(false)}
+        />
+        <WeightModal
+          type="democracy"
+          isOpen={isDemocracyModalOpen}
+          onSave={handleDemocracyWeight}
+          onClose={() => setIsDemocracyModalOpen(false)}
         />
       </Box>
 
