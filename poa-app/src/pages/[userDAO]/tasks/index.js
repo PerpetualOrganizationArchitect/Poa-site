@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import MainLayout from '../../../components/TaskManager/MainLayout';
 //import FloatingBalls from '../components/TaskManager/floatingBalls';
 import { useDataBaseContext } from '@/context/dataBaseContext';
@@ -13,6 +13,7 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 const Tasks = () => {
   const router = useRouter();
+  const { userDAO } = router.query;
   
   const {setTaskLoaded, setSelectedProjectId, projects} = useDataBaseContext();
   const containerRef = useRef();
@@ -39,6 +40,7 @@ const Tasks = () => {
   return (
     <>
       <Navbar />
+      <Text>{userDAO}</Text>
 
     <Box p={0} minH="80vh" position="relative" bg="blackAlpha.600" ref={containerRef}>
       

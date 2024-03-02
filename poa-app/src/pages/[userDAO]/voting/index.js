@@ -50,6 +50,8 @@ import PollModal from "@/templateComponents/studentOrgDAO/voting/pollModal";
 
 import { useRouter } from "next/router";
 
+import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+
 const glassLayerStyle = {
   position: "absolute",
   height: "100%",
@@ -214,6 +216,7 @@ const Voting = () => {
 
   return (
     <>
+      <Navbar />
       <Container maxW="container.2xl" py={6} px={10}>
         <HeadingVote selectedTab={selectedTab} />
 
