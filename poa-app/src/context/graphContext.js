@@ -216,18 +216,25 @@ export const GraphProvider = ({ children }) => {
         return data
     }
     async function execNFTcheck(poName,id){
+        if (poName === undefined){
+            return false;
+        }
+
+
         const query = `{
-            perpetualOrganization(id: "New") {
+            perpetualOrganization(id: "${poName}") {
               NFTMembership {
                 executiveRoles
               }
-              Users(where: {id: "0x06e6620c67255d308a466293070206176288a67b"}){
+              Users(where: {id: "${id}"}){
                       memberType{
                   memberTypeName
                 }
                     }
             }
       }`;
+
+      console.log("execNFTcheck",query);
 
         const data = await querySubgraph(query);
         console.log("pls",data.perpetualOrganization);
@@ -244,6 +251,33 @@ export const GraphProvider = ({ children }) => {
         return false;
  
         }
+
+        async function memberNFTcheck(poName,id){   
+            if (poName === undefined){
+                return false;
+            }
+            const query = `{
+                perpetualOrganization(id: "${poName}") {
+
+                  Users(where: {id: "${id}"}){
+                    id
+                    }
+                      
+                }
+            }`;
+            const data = await querySubgraph(query);
+            //check if user id returns a value
+            console.log("memberNFTcheck",data);
+
+            if (data.perpetualOrganization.Users.length > 0){
+                setHasMemberNFT(true);
+                return true;
+            }
+            setHasMemberNFT(false);
+            return false;
+        }
+
+
 
     
 
@@ -377,6 +411,7 @@ export const GraphProvider = ({ children }) => {
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
         console.log(await execNFTcheck(poName,"0x06e6620c67255d308a466293070206176288a67b"));
+        console.log(await memberNFTcheck(poName,"0x06e6620c67255d308a466293070206176288a67b"));
 
     }
 
