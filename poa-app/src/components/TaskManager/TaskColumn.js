@@ -26,7 +26,7 @@ const glassLayerStyle = {
 
 
 
-const TaskColumn = ({ title, tasks, columnId }) => {
+const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask, taskManagerAddress } = useWeb3Context();
@@ -35,6 +35,7 @@ const TaskColumn = ({ title, tasks, columnId }) => {
   const { getUsernameByAddress } = useDataBaseContext();
   const hasMemberNFTRef = useRef(hasMemberNFT);
   const hasExecNFTRef = useRef(hasExecNFT);
+
 
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const TaskColumn = ({ title, tasks, columnId }) => {
       if (title === 'Open') {
         let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
-        createTask(taskManagerAddress,Payout,  updatedTask.description, "Project1", updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+        createTask(taskManagerAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
       }
     };
     

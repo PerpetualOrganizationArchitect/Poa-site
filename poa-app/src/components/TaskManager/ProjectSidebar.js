@@ -35,7 +35,7 @@ const glassLayerStyle = {
 const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreateProject }) => {
   const [newProjectName, setNewProjectName] = useState('');
   const [showInput, setShowInput] = useState(false);
-  const { hasExecNFT} = useWeb3Context();
+  let hasExecNFT= true;
   const { handleDeleteProject } = useDataBaseContext();
 
   console.log('projects', projects);

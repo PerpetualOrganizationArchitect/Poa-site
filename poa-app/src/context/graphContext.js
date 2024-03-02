@@ -1,6 +1,7 @@
 //graphContext
 
 import React, { createContext, useReducer, useContext, useState, useEffect } from 'react';
+import { useIPFScontext } from './ipfsContext';
 
 const GraphContext = createContext();
 
@@ -23,6 +24,8 @@ export const GraphProvider = ({ children }) => {
     const[democracyVotingCompleted, setDemocracyVotingCompleted] = useState({});
     const[projectsData, setProjectsData] = useState({});
     const[leaderboardData, setLeaderboardData] = useState({});
+
+    const { fetchFromIpfs } = useIPFScontext();
 
 
 
@@ -238,67 +241,76 @@ export const GraphProvider = ({ children }) => {
 
     }
 
-    const transformProjects = async (projects) => {
-        console.log("transform")
-        if (!projects || !Array.isArray(projects.projects)) {
+    const transformProjects = async (perpetualOrganization) => {
+        console.log("transform");
+
+        console.log(perpetualOrganization.perpetualOrganization);
+
+        const projects = perpetualOrganization.perpetualOrganization?.TaskManager?.projects;
+        
+        if (!Array.isArray(projects) || projects.length === 0) {
             const defaultProject = {
                 id: "Make A Project",
-                name:"Make A Project",
+                name: "Make A Project",
                 description: '', 
                 columns: [
-                  { id: 'open', title: 'Open', tasks: [] },
-                  { id: 'inProgress', title: 'In Progress', tasks: [] },
-                  { id: 'inReview', title: 'In Review', tasks: [] },
-                  { id: 'completed', title: 'Completed', tasks: [] }
+                    { id: 'open', title: 'Open', tasks: [] },
+                    { id: 'inProgress', title: 'In Progress', tasks: [] },
+                    { id: 'inReview', title: 'In Review', tasks: [] },
+                    { id: 'completed', title: 'Completed', tasks: [] }
                 ],
-              };
-
-            return [defaultProject];
-          }
-
-        return Promise.all(projects.map(async (project) => {
-          const transformedProject = {
-            id: project.id,
-            name: project.name,
-            description: '', 
-            columns: [
-              { id: 'open', title: 'Open', tasks: [] },
-              { id: 'inProgress', title: 'In Progress', tasks: [] },
-              { id: 'inReview', title: 'In Review', tasks: [] },
-              { id: 'completed', title: 'Completed', tasks: [] }
-            ],
-          };
-      
-          const taskPromises = project.tasks.map(async (task) => {
-            const ipfsData = await fetchFromIpfs(task.ipfsHash); 
-            return {
-              id: ipfsData.id,
-              name: ipfsData.name,
-              description: ipfsData.description,
-              difficulty: ipfsData.difficulty,
-              estHours: ipfsData.estHours,
-              submission: ipfsData.submission,
-              claimedBy: task.claimer || '',
-              Payout: parseInt(task.payout, 10),
-              projectId: project.id,
-              location: ipfsData.location
             };
-          });
-      
-          const tasks = await Promise.all(taskPromises);
-          tasks.forEach((task) => {
-            const column = transformedProject.columns.find(c => c.title === task.location);
-            if (column) {
-              column.tasks.push(task);
-            } else {
-             
-              console.error(`Task location '${task.location}' does not match any column title`);
-            }
-          });
-      
-          return transformedProject;
+    
+            return [defaultProject];
+        }
+    
+
+        return Promise.all(perpetualOrganization.perpetualOrganization.TaskManager.projects.map(async (project) => {
+            const transformedProject = {
+                id: project.id,
+                name: project.name,
+                description: project.description || '', 
+                columns: [
+                    { id: 'open', title: 'Open', tasks: [] },
+                    { id: 'inProgress', title: 'In Progress', tasks: [] },
+                    { id: 'inReview', title: 'In Review', tasks: [] },
+                    { id: 'completed', title: 'Completed', tasks: [] }
+                ],
+            };
+    
+            const tasksData = project.tasks || [];
+    
+            const taskPromises = tasksData.map(async (task) => {
+                const ipfsData = await fetchFromIpfs(task.ipfsHash); 
+                console.log("task", task);
+                return {
+                    id: task.id,
+                    name: ipfsData.name,
+                    description: ipfsData.description,
+                    difficulty: ipfsData.difficulty,
+                    estHours: ipfsData.estHours,
+                    submission: ipfsData.submission,
+                    claimedBy: task.claimer || '',
+                    Payout: parseInt(task.payout, 10),
+                    projectId: project.id,
+                    location: ipfsData.location
+                };
+            });
+    
+            const tasks = await Promise.all(taskPromises);
+            tasks.forEach((task) => {
+                const column = transformedProject.columns.find(c => c.title === task.location);
+                if (column) {
+                    column.tasks.push(task);
+                } else {
+                    console.error(`Task location '${task.location}' does not match any column title`);
+                }
+            });
+    
+            return transformedProject;
         }));
-      };
+    };
+    
       
 
       

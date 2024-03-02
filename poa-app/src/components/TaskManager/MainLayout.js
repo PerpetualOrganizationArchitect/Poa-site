@@ -14,17 +14,18 @@ const MainLayout = () => {
     selectedProject,
     setSelectedProject,
     handleUpdateColumns,
-    handleCreateProject,
 
   } = useDataBaseContext();
 
-  const {account}= useWeb3Context()
+  
+
+  const {account, createProject, taskManagerAddress}= useWeb3Context()
 
   const {projectData} = useGraphContext();
   
 
   const handleSelectProject = (projectId) => {
-    console.log('projects', projects);
+    console.log("selecting project",projectId);
     const selected = projects.find((project) => project.id === projectId);
     setSelectedProject(selected);
     console.log('selected', selected);
@@ -43,7 +44,7 @@ const MainLayout = () => {
           projects={projects}
           selectedProject={selectedProject}
           onSelectProject={handleSelectProject}
-          onCreateProject={handleCreateProject}
+          onCreateProject={(projectName) => createProject(taskManagerAddress, projectName)}
         />
         {selectedProject ? (
           <TaskBoardProvider 
@@ -54,7 +55,11 @@ const MainLayout = () => {
             onUpdateColumns={(newColumns) => handleUpdateColumns(newColumns)}
             account={account}
           >
-            <TaskBoard />
+            <TaskBoard 
+              columns={selectedProject.columns} 
+              projectName={selectedProject.name}
+            >
+            </TaskBoard>
           </TaskBoardProvider>
         ) : (
           <Flex flexGrow={1} justifyContent="center" alignItems="center">

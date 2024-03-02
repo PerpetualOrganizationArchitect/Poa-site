@@ -51,20 +51,22 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
   
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  useEffect(()=>{
-    if(router.query.task === task.id){
-      onOpen();
-      console.log("project id",router.query.task.projectId)
-      if(router.query.task.projectId){
-        
-        setSelectedProjectId(router.query.task.projectId)
+  useEffect(() => {
+    console.log("this", router.query);
+    // Using optional chaining to safely access nested properties
+    const taskId = router.query.task;
+    const projectId = taskId?.projectId;
 
-      }
-      
+    if (taskId === task.id) {
+        onOpen();
+        if (projectId) {
+            setSelectedProjectId(projectId);
+        }
     } else {
-      onClose();
+        onClose();
     }
-  },[router.query.task, task.id]);
+}, [router.query, task.id, onOpen]);
+
   
   const handleCloseModal = () => {
     onClose();

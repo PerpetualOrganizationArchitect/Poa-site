@@ -13,7 +13,7 @@ const glassLayerStyle = {
   backgroundColor: 'rgba(0, 0, 0, .3)',
 };
 
-const TaskBoard = ({ columns }) => {
+const TaskBoard = ({ columns, projectName }) => {
   const { taskColumns, setTaskColumns } = useTaskBoard();
   useEffect(() => {
     setTaskColumns(columns);
@@ -46,6 +46,7 @@ const TaskBoard = ({ columns }) => {
                 title={column.title}
                 tasks={column.tasks}
                 columnId={column.id}
+                projectName={projectName}
                 zIndex={1}
               />
             </Box>

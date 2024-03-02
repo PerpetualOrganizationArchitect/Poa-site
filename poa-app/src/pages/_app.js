@@ -21,17 +21,17 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }) {
   return (
-    <GraphProvider>
-      <IPFSprovider>
-        <Web3Provider>
-          <DataBaseProvider>
-              <ChakraProvider theme={theme}>
-                <Component {...pageProps} />
-              </ChakraProvider>
-          </DataBaseProvider>
-        </Web3Provider>
-      </IPFSprovider>
-    </GraphProvider>
+    <IPFSprovider>
+      <GraphProvider>
+          <Web3Provider>
+            <DataBaseProvider>
+                <ChakraProvider theme={theme}>
+                  <Component {...pageProps} />
+                </ChakraProvider>
+            </DataBaseProvider>
+          </Web3Provider>
+      </GraphProvider>
+    </IPFSprovider>
   );
 }
 
