@@ -18,10 +18,13 @@
     "dotenv": "^16.4.5",
     "ethers": "5.7.2",
     "framer-motion": "^11.0.6",
+    "fs": "^0.0.1-security",
     "hardhat": "^2.20.1",
     "ipfs-http-client": "^60.0.1",
     "next": "14.1.0",
     "react": "^18",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
     "react-typist": "^2.0.5",
     "web3": "^1.9.0"
