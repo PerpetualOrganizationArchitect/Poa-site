@@ -107,8 +107,8 @@ const ArchitectPage = () => {
     membershipTypeNames: ["member", "executive"], // Default membership types
     POname: "",
     quadraticVotingEnabled: false,
-    democracyVoteWeight: "",
-    participationVoteWeight: "",
+    democracyVoteWeight: 100,
+    participationVoteWeight: 0,
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
     logoURL: "",
@@ -159,8 +159,8 @@ const ArchitectPage = () => {
       membershipTypeNames: ["member", "executive"], // Default membership types
       POname: "",
       quadraticVotingEnabled: false,
-      democracyVoteWeight: "",
-      participationVoteWeight: "",
+      democracyVoteWeight: 100,
+      participationVoteWeight: 0,
       hybridVotingEnabled: false,
       participationVotingEnabled: false,
       logoURL: "",
@@ -510,7 +510,7 @@ const ArchitectPage = () => {
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onSubmit={handleSendClick}
-            //isDisabled={showSelection} // Pass showSelection as the isDisabled prop
+            isDisabled={showSelection} // Pass showSelection as the isDisabled prop
           />
         </Box>
       </Box>
