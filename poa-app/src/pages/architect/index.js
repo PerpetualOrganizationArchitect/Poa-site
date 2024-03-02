@@ -225,6 +225,13 @@ const ArchitectPage = () => {
     }));
   };
 
+  const enableQuadraticVoting = () => {
+    setOrgDetails((prevDetails) => ({
+      ...prevDetails,
+      quadraticVotingEnabled: true,
+    }));
+  };
+
   // ------ hybrid voting handlers
 
   const handleWeight = ({ participationWeight, democracyWeight }) => {
@@ -236,7 +243,7 @@ const ArchitectPage = () => {
     }));
     console.log("p weight: ", participationWeight);
     console.log("dem weight: ", democracyWeight);
-    setCurrentStep("ASK_IF_LOGO_UPLOAD");
+    setCurrentStep("ASK_QUAD_VOTING");
   };
 
   useEffect(() => {
@@ -254,6 +261,7 @@ const ArchitectPage = () => {
     console.log("saving : ", orgDetails);
   };
   const handleSendClick = () => {
+    console.log("This is hapening");
     // Handle user input based on the current step
     if (!userInput.trim()) return;
 
@@ -266,12 +274,16 @@ const ArchitectPage = () => {
         setOrgDetails({ ...orgDetails, description: userInput.trim() });
         setCurrentStep("ASK_MEMBERSHIP_DEFAULT");
         break;
-      case "ASK_MEMBERSHIP_DEFAULT":
-        break;
-      case "ASK_MEMBERSHIP_CUSTOMIZE":
-        console.log("Adding antoehr role");
-        setCurrentStep("ASK_ADD_ANOTHER_ROLE");
-        break;
+      //   case "ASK_MEMBERSHIP_DEFAULT":
+      //     break;
+      //   case "ASK_MEMBERSHIP_CUSTOMIZE":
+      //     console.log("Adding antoehr role");
+      //     setCurrentStep("ASK_ADD_ANOTHER_ROLE");
+      //     break;
+
+      //   case "ASK_QUAD_VOTING":
+      //     console.log("Adding quad vote");
+      //     setCurrentStep(ASK_IF_LOGO_UPLOAD);
 
       // Handle other cases as needed
     }
@@ -312,9 +324,18 @@ const ArchitectPage = () => {
           { label: "Participation only", value: "participation" },
           { label: "Hybrid", value: "hybrid" },
         ]);
-
         break;
+
       case "ASK_HYBRID_WEIGHT":
+        break;
+      case "ASK_QUAD_VOTING":
+        addMessage("Would you like to enable quadratic voting?");
+        setShowSelection(true);
+        setOptions([
+          { label: "Yes", value: "yes" },
+          { label: "No", value: "no" },
+        ]);
+
         break;
       case "ASK_IF_LOGO_UPLOAD":
         addMessage("Would you like to upload a logo?");
@@ -388,20 +409,29 @@ const ArchitectPage = () => {
       if (value === "participation") {
         //setIsParticipationModalOpen(true);
         enableParticipation();
-        setCurrentStep("ASK_IF_LOGO_UPLOAD");
+        setCurrentStep("ASK_QUAD_VOTING");
       } else if (value === "hybrid") {
         //hybrid should be part direct democracy, part participation
         setIsWeightModalOpen(true);
         setCurrentStep("ASK_HYBRID_WEIGHT");
       }
       if (currentStep === "ASK_HYBRID_WEIGHT") {
-        setCurrentStep("ASK_IF_LOGO_UPLOAD");
+        setCurrentStep("ASK_QUAD_VOTING");
       }
+    }
+    if (currentStep === "ASK_QUAD_VOTING") {
+      console.log("current step: ", currentStep);
+      if (value === "yes") {
+        enableQuadraticVoting();
+      }
+      setShowSelection(false);
+      setCurrentStep("ASK_IF_LOGO_UPLOAD");
+      console.log("current step: ", currentStep);
     }
     if (currentStep === "ASK_IF_LOGO_UPLOAD") {
       if (value === "yes") {
         setIsLogoModalOpen(true);
-        setCurrentStep("ACCEPT_LOGO");
+        setCurrentStep("ASK_LOGO_UPLOAD");
       } else if (value === "no") {
         console.log("confirmation should appear");
         setIsConfirmationModalOpen(true);
