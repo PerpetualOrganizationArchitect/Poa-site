@@ -811,7 +811,7 @@ async function main(
 main(
   ["Gold", "Silver", "Bronze", "Default", "Executive"],
   ["Gold", "Silver", "Bronze", "Executive"],
-  "New",
+  "dhsdfsd",
   true,
   50,
   50,

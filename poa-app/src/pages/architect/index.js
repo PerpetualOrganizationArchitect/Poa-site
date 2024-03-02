@@ -7,6 +7,7 @@ import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 import ConfirmationModal from "@/components/Architect/ConfirmationModal";
 import DeployProgressLoader from "@/components/Architect/DeployProgressLoader";
+import { motion } from "framer-motion";
 import {
   Spinner,
   Center,
@@ -33,6 +34,15 @@ const steps = {
   ASK_QUAD_VOTING: "ASK_QUAD_VOTING",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
+};
+const containerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
 };
 
 const votingOptions = [
@@ -80,7 +90,6 @@ const ArchitectPage = () => {
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
 
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
-
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -275,6 +284,7 @@ const ArchitectPage = () => {
         duration: null, // Keeps the toast open indefinitely
         isClosable: false,
       });
+      console.log("Name of PO being deployed: ", POname);
 
       // The parameters should match the expected structure in your deployment script
       const memberTypeNames = orgDetails.membershipTypeNames;
@@ -313,6 +323,7 @@ const ArchitectPage = () => {
       // Redirect the user to their new site, or show the result
       setIsDeploying(false);
     } catch (error) {
+      setIsDeploying(false);
       console.error("Deployment error:", error);
 
       // Inform the user of the failure
@@ -473,93 +484,81 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
-      <Box position="fixed" top="0" left="0" right="0" zIndex="sticky">
-        <Character />
-      </Box>
-
-      <Box
-        position="fixed"
-        top="115px" // This should be the height of the Character component
-        bottom="60px"
-        overflowY="auto"
-        width="full"
-        pt="4"
-        px="4"
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <ConversationLog
-          messages={messages}
-          selectionHeight={selectionHeight}
-        />
+        <Box position="fixed" top="0" left="0" right="0" zIndex="sticky">
+          <motion.div variants={itemVariants}>
+            <Character />
+          </motion.div>
+        </Box>
 
-        <MemberSpecificationModal
-          isOpen={isMemberSpecificationModalOpen}
-          onSave={handleSaveMemberRole}
-          onClose={() => setIsMemberSpecificationModalOpen(false)}
-        />
-        <WeightModal
-          isOpen={isWeightModalOpen}
-          onSave={handleWeight}
-          onClose={handleCloseWeightModal}
-        />
-        {
-          <ConfirmationModal
-            isOpen={isConfirmationModalOpen}
-            orgDetails={orgDetails}
-            onClose={() => setIsConfirmationModalOpen(false)}
-            onStartOver={handleStartOver}
-            onSave={handleSaveAllSelections}
-          />
-        }
-        <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
-        {isDeploying && (
-          <Center>
-            <Spinner size="xl" />
-          </Center>
-        )}
-      </Box>
-
-      {showSelection && options.length > 0 && (
         <Box
           position="fixed"
-          bottom="60px" // ArchitectInput component height
-          left="0"
-          right="0"
-          p="4"
-          display="flex"
-          alignItems="centerx"
-          justifyContent="center"
-          bg="purple.50"
-          borderTop="2px solid"
-          borderColor="gray.200"
-          zIndex="sticky"
+          top="115px" // This should be the height of the Character component
+          bottom="60px"
+          overflowY="auto"
+          width="full"
+          pt="4"
+          px="4"
         >
-          <Selection
-            ref={selectionRef}
-            options={options}
-            onOptionSelected={handleOptionSelected}
+          <ConversationLog
+            messages={messages}
+            selectionHeight={selectionHeight}
           />
-        </Box>
-      )}
 
-      <Box
-        position="fixed"
-        bottom="0"
-        width="full"
-        p={4}
-        paddingRight={10}
-        zIndex="sticky"
-      >
-        {orgName && (
-          <Button
-            position="absolute"
-            top="4"
-            right="4"
-            colorScheme="teal"
-            onClick={() => router.push(`/${orgName}/home`)}
+          <MemberSpecificationModal
+            isOpen={isMemberSpecificationModalOpen}
+            onSave={handleSaveMemberRole}
+            onClose={() => setIsMemberSpecificationModalOpen(false)}
+          />
+          <WeightModal
+            isOpen={isWeightModalOpen}
+            onSave={handleWeight}
+            onClose={handleCloseWeightModal}
+          />
+          {
+            <ConfirmationModal
+              isOpen={isConfirmationModalOpen}
+              orgDetails={orgDetails}
+              onClose={() => setIsConfirmationModalOpen(false)}
+              onStartOver={handleStartOver}
+              onSave={handleSaveAllSelections}
+            />
+          }
+          <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
+          {isDeploying && (
+            <Center>
+              <Spinner size="xl" />
+            </Center>
+          )}
+        </Box>
+
+        {showSelection && options.length > 0 && (
+          <Box
+            position="fixed"
+            bottom="60px" // ArchitectInput component height
+            left="0"
+            right="0"
+            p="4"
+            display="flex"
+            alignItems="centerx"
+            justifyContent="center"
+            bg="purple.50"
+            borderTop="2px solid"
+            borderColor="gray.200"
+            zIndex="sticky"
           >
-            Access site
-          </Button>
+            <Selection
+              ref={selectionRef}
+              options={options}
+              onOptionSelected={handleOptionSelected}
+            />
+          </Box>
         )}
+
         <Box
           position="fixed"
           bottom="0"
@@ -568,14 +567,34 @@ const ArchitectPage = () => {
           paddingRight={10}
           zIndex="sticky"
         >
-          <ArchitectInput
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onSubmit={handleSendClick}
-            isDisabled={showSelection} // Pass showSelection as the isDisabled prop
-          />
+          {orgName && (
+            <Button
+              position="absolute"
+              top="4"
+              right="4"
+              colorScheme="teal"
+              onClick={() => router.push(`/${orgName}/home`)}
+            >
+              Access site
+            </Button>
+          )}
+          <Box
+            position="fixed"
+            bottom="0"
+            width="full"
+            p={4}
+            paddingRight={10}
+            zIndex="sticky"
+          >
+            <ArchitectInput
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              onSubmit={handleSendClick}
+              isDisabled={showSelection} // Pass showSelection as the isDisabled prop
+            />
+          </Box>
         </Box>
-      </Box>
+      </motion.div>
     </Layout>
   );
 };
