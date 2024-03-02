@@ -31,12 +31,16 @@ export class ContractCreated__Params {
     return this._event.parameters[1].value.toStringArray();
   }
 
+  get executiveRoleNames(): Array<string> {
+    return this._event.parameters[2].value.toStringArray();
+  }
+
   get defaultImageURL(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[3].value.toString();
   }
 
   get POname(): string {
-    return this._event.parameters[3].value.toString();
+    return this._event.parameters[4].value.toString();
   }
 }
 
@@ -113,12 +117,16 @@ export class CreateNFTMembershipCall__Inputs {
     return this._call.inputValues[0].value.toStringArray();
   }
 
+  get _executiveRoleNames(): Array<string> {
+    return this._call.inputValues[1].value.toStringArray();
+  }
+
   get _defaultImageURL(): string {
-    return this._call.inputValues[1].value.toString();
+    return this._call.inputValues[2].value.toString();
   }
 
   get POname(): string {
-    return this._call.inputValues[2].value.toString();
+    return this._call.inputValues[3].value.toString();
   }
 }
 

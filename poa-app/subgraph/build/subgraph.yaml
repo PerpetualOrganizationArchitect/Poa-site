@@ -6,7 +6,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: mumbai
     source:
-      address: "0x8b4E34a1093034b71De7AcC896b7dA080ba5d38A"
+      address: "0xdF674Fd4b6fD809069Ffbd9deA727CE8A7e8C9f8"
       abi: DirectDemocracyTokenFactory
       startBlock: 46430300
     mapping:
@@ -26,7 +26,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: mumbai
     source:
-      address: "0x8dCe12121e3744F2B6F64bc7c78015F1D4161a93"
+      address: "0xb37C09ecc05F6031f987FD9baC34575D43249e6d"
       abi: ParticipationTokenFactory
       startBlock: 46430300
     mapping:
@@ -46,7 +46,7 @@ dataSources:
     name: NFTMembershipFactory
     network: mumbai
     source:
-      address: "0x9c78a435a9AE0ba056066E1CFb7B60929310F498"
+      address: "0x1C1ABf2c3824daa95BDf2E979e3addA570283Cf1"
       abi: NFTMembershipFactory
       startBlock: 46430300
     mapping:
@@ -59,14 +59,14 @@ dataSources:
         - name: NFTMembershipFactory
           file: abi/NFTMembershipFactory.json
       eventHandlers:
-        - event: ContractCreated(address,string[],string,string)
+        - event: ContractCreated(address,string[],string[],string,string)
           handler: handleContractCreated
       file: NFTMembershipFactory/NFTMembershipFactory.wasm
   - kind: ethereum/contract
     name: TreasuryFactory
     network: mumbai
     source:
-      address: "0x1c1822aa31e4B7e2b37DCcd1356CbDa595102FB6"
+      address: "0x52ED44aB1cBD8323e15CB40b457e4E1eBf14408c"
       abi: TreasuryFactory
       startBlock: 46430300
     mapping:
@@ -86,7 +86,7 @@ dataSources:
     name: ParticipationVotingFactory
     network: mumbai
     source:
-      address: "0xfa0A7eE9Bb624290Dd78DF55B28973810774EAEC"
+      address: "0x68bfACC747b5C98Df33476417d91EAD0F9A8f204"
       abi: ParticipationVotingFactory
       startBlock: 46430300
     mapping:
@@ -106,7 +106,7 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: mumbai
     source:
-      address: "0x142e54B36F8BFC5556eBf40F5F5bA2700e5fb45b"
+      address: "0xa80927965487CA1bC9e4cf6b90a40B0954E8830A"
       abi: DirectDemocracyVotingFactory
       startBlock: 46430300
     mapping:
@@ -126,7 +126,7 @@ dataSources:
     name: HybridVotingFactory
     network: mumbai
     source:
-      address: "0x373Ec4248EB4e5C56658f431056532055ed568d9"
+      address: "0x4bC864D2EFD9e10B64ffd94982bb76Ef41030A46"
       abi: HybridVotingFactory
       startBlock: 46430300
     mapping:
@@ -146,7 +146,7 @@ dataSources:
     name: TaskManagerFactory
     network: mumbai
     source:
-      address: "0xeA02f50Cf9a810c2c36dFfa9171a3e39563dD10A"
+      address: "0x8cc551b39e97F92Ea3c122Ab14FbeeAc2e53Fb53"
       abi: TaskManagerFactory
       startBlock: 46430300
     mapping:
@@ -166,7 +166,7 @@ dataSources:
     name: RegistryFactory
     network: mumbai
     source:
-      address: "0xAAD535703FA3F949C3726eE0315f7AEa43c21182"
+      address: "0x70EfBb9557196e09D33F430c3bD0E52338c86a5E"
       abi: RegistryFactory
       startBlock: 46430300
     mapping:
@@ -222,7 +222,9 @@ templates:
       eventHandlers:
         - event: Mint(indexed address,uint256)
           handler: handleTokenMint
-      file: templates/DirectDemocracyToken/DirectDemocracyToken.wasm
+        - event: TaskManagerAddressSet(address)
+          handler: handleTaskManagerAddressSet
+      file: templates/ParticipationToken/ParticipationToken.wasm
   - kind: ethereum/contract
     name: NFTMembership
     network: mumbai
@@ -284,11 +286,11 @@ templates:
       eventHandlers:
         - event: NewProposal(indexed
             uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
-          handler: handlePollCreated
+          handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
-          handler: handlePollOptionCreated
+          handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256,uint256)
-          handler: handleVoteCast
+          handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: templates/ParticipationVoting/ParticipationVoting.wasm
@@ -314,9 +316,9 @@ templates:
             uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
           handler: handlePollCreated
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
-          handler: handlePollOptionCreated
+          handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256)
-          handler: handleVoteCast
+          handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: templates/DirectDemocracyVoting/DirectDemocracyVoting.wasm
@@ -340,11 +342,11 @@ templates:
       eventHandlers:
         - event: NewProposal(indexed
             uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
-          handler: handlePollCreated
+          handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
-          handler: handlePollOptionCreated
+          handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256,uint256,uint256)
-          handler: handleVoteCast
+          handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256)
           handler: handleWinnerAnnounced
       file: templates/HybridVoting/HybridVoting.wasm

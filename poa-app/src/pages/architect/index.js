@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
+
 //import SpecificInput from "@/components/Architect/SpecificInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 import ConfirmationModal from "@/components/Architect/ConfirmationModal";
+
 
 import {
   Box,
@@ -19,6 +21,7 @@ import {
   ModalCloseButton,
   Button,
   useDisclosure,
+  Text,
 } from "@chakra-ui/react";
 
 import { useRouter } from "next/router";
@@ -78,12 +81,14 @@ const defaultMembershipOptions = [
 ];
 
 const ArchitectPage = () => {
+
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
     useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
 
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
+
 
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -168,6 +173,33 @@ const ArchitectPage = () => {
     onClose(); // Close the confirmation modal
   };
 
+  const handleConfirmation = () => {
+    // This is where you would handle the API call to create the site
+    // For now, we'll navigate to the new route
+    const formattedOrgName = encodeURIComponent(
+      orgName.trim().toLowerCase().replace(/\s+/g, "-")
+    );
+    router.push(`/${formattedOrgName}/home`);
+  };
+
+  const startOver = () => {
+    // Reset all state to initial values
+    setUserInput("");
+    setMessages([]);
+    setShowSelection(false);
+    setOptions([]);
+    setOrgName("");
+    setOrgDetails({
+      name: "",
+      description: "",
+      membershipType: "",
+      votingType: "",
+      // ... reset other details as needed
+    });
+    setCurrentStep(steps.ASK_NAME);
+    onClose(); // Close the confirmation modal
+  };
+
   useEffect(() => {
     // Update the selectionHeight state if the selectionRef is set and the component is visible
     if (showSelection && selectionRef.current) {
@@ -207,7 +239,9 @@ const ArchitectPage = () => {
     setShowSelection(true);
   };
 
+
   // ------- participation voting handler
+
 
   const enableParticipation = () => {
     setOrgDetails((prevDetails) => ({
@@ -222,6 +256,7 @@ const ArchitectPage = () => {
       quadraticVotingEnabled: true,
     }));
   };
+
 
   // ------ hybrid voting handlers
 
@@ -240,6 +275,7 @@ const ArchitectPage = () => {
     setIsConfirmationModalOpen(false);
     console.log("saving : ", orgDetails);
   };
+
   const handleSendClick = () => {
     if (!userInput.trim()) return;
 
@@ -403,6 +439,7 @@ const ArchitectPage = () => {
           selectionHeight={selectionHeight}
         />
 
+
         <MemberSpecificationModal
           isOpen={isMemberSpecificationModalOpen}
           onSave={handleSaveMemberRole}
@@ -423,6 +460,7 @@ const ArchitectPage = () => {
           />
         }
         <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
+
       </Box>
 
       {showSelection && options.length > 0 && (

@@ -1,10 +1,18 @@
 // src/pages/about/index.js
 import React from "react";
 import Layout from "../../components/Layout"; // If you have a Layout component
-import { Text, Box, Flex } from "@chakra-ui/react";
+import { Text, Box, Flex, Button } from "@chakra-ui/react";
+import{ useMetaMask } from "../../components/Metamask";
 const AboutPage = () => {
+  const { connectWallet, accounts } = useMetaMask();
+
   return (
     <Layout>
+        {/* {accounts.length > 0 ? (
+          <Text>Connected as {accounts[0]}</Text>
+        ) : (
+          <Button onClick={connectWallet}>Connect Wallet</Button>
+        )} */}
       <Box pt="4.5rem" w="full" overflowY="auto" pr="1.5rem" pl="1.5rem">
         <Text fontSize="2xl" fontWeight="bold" color="grey.600">
           Perpetual Organization Architect Mission:

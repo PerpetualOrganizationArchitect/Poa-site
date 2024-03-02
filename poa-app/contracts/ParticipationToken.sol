@@ -14,6 +14,7 @@ contract ParticipationToken is ERC20, Ownable {
 
 
     constructor(string memory name, string memory symbol) ERC20(name, symbol) {
+        taskManagerAddress= address(0);
     }
 
     modifier onlyTaskManager() {
@@ -26,9 +27,9 @@ contract ParticipationToken is ERC20, Ownable {
         emit Mint(to, amount);
     }
 
-    function setTaskManagerAddress(address _taskManagerAddress) external onlyOwner {
+    function setTaskManagerAddress(address _taskManagerAddress) external  {
+        require(taskManagerAddress == address(0), "Task manager address already set.");
         taskManagerAddress = _taskManagerAddress;
-        renounceOwnership();
         emit TaskManagerAddressSet(_taskManagerAddress);
     }
 

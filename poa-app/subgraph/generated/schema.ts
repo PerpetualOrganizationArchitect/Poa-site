@@ -807,6 +807,19 @@ export class NFTMembershipCreated extends Entity {
     this.set("memberTypeNames", Value.fromStringArray(value));
   }
 
+  get executiveRoles(): Array<string> {
+    let value = this.get("executiveRoles");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set executiveRoles(value: Array<string>) {
+    this.set("executiveRoles", Value.fromStringArray(value));
+  }
+
   get defaultImageURL(): string {
     let value = this.get("defaultImageURL");
     if (!value || value.kind == ValueKind.NULL) {
@@ -912,6 +925,19 @@ export class NFTMembership extends Entity {
 
   set memberTypeNames(value: Array<string>) {
     this.set("memberTypeNames", Value.fromStringArray(value));
+  }
+
+  get executiveRoles(): Array<string> {
+    let value = this.get("executiveRoles");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set executiveRoles(value: Array<string>) {
+    this.set("executiveRoles", Value.fromStringArray(value));
   }
 
   get defaultImageURL(): string {
