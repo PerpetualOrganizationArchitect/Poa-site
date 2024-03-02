@@ -63,16 +63,14 @@ const defaultMembershipOptions = [
         membershipTypeNames: ["member", "executive"],
       });
       setCurrentStep(steps.ASK_VOTING);
-      console.log("got he");
+
       setShowSelection(false);
-      console.log("hiding selection");
     },
   },
   {
     label: "I'd like more customization",
     value: "customize",
     action: () => {
-      console.log("hopening modal");
       setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
       setShowSelection(false);
     },
@@ -151,7 +149,7 @@ const ArchitectPage = () => {
     setUserInput("");
     setMessages([]);
     setShowSelection(false);
-    console.log("hiding selection");
+
     setOptions([]);
     setOrgName("");
     setOrgDetails({
@@ -209,13 +207,6 @@ const ArchitectPage = () => {
     setShowSelection(true);
   };
 
-  useEffect(() => {
-    console.log(
-      "Updated membershipTypeNames: ",
-      orgDetails.membershipTypeNames
-    );
-  }, [orgDetails.membershipTypeNames]);
-
   // ------- participation voting handler
 
   const enableParticipation = () => {
@@ -241,28 +232,15 @@ const ArchitectPage = () => {
       democracyVoteWeight: democracyWeight,
       participationVoteWeight: participationWeight,
     }));
-    console.log("p weight: ", participationWeight);
-    console.log("dem weight: ", democracyWeight);
+
     setCurrentStep("ASK_QUAD_VOTING");
   };
 
-  useEffect(() => {
-    // console.log(
-    //   "Updated participation weight: ",
-    //   orgDetails.participationVoteWeight
-    // );
-  }, [orgDetails.participationVoteWeight]);
-
-  useEffect(() => {
-    //console.log("Updated democracy weight: ", orgDetails.democracyVoteWeight);
-  }, [orgDetails.democracyVoteWeight]);
-
   const handleSaveAllSelections = () => {
+    setIsConfirmationModalOpen(false);
     console.log("saving : ", orgDetails);
   };
   const handleSendClick = () => {
-    console.log("This is hapening");
-    // Handle user input based on the current step
     if (!userInput.trim()) return;
 
     switch (currentStep) {
@@ -274,18 +252,6 @@ const ArchitectPage = () => {
         setOrgDetails({ ...orgDetails, description: userInput.trim() });
         setCurrentStep("ASK_MEMBERSHIP_DEFAULT");
         break;
-      //   case "ASK_MEMBERSHIP_DEFAULT":
-      //     break;
-      //   case "ASK_MEMBERSHIP_CUSTOMIZE":
-      //     console.log("Adding antoehr role");
-      //     setCurrentStep("ASK_ADD_ANOTHER_ROLE");
-      //     break;
-
-      //   case "ASK_QUAD_VOTING":
-      //     console.log("Adding quad vote");
-      //     setCurrentStep(ASK_IF_LOGO_UPLOAD);
-
-      // Handle other cases as needed
     }
 
     setUserInput(""); // Clear the input after handling
@@ -311,7 +277,6 @@ const ArchitectPage = () => {
         setShowSelection(true);
         break;
       case "ASK_MEMBERSHIP_CUSTOMIZE":
-        console.log("at customize");
         break;
       case "ASK_ADD_ANOTHER_ROLE":
         askToAddAnotherRole();
@@ -355,26 +320,6 @@ const ArchitectPage = () => {
     setCurrentStep("ASK_IF_LOGO_UPLOAD");
   };
 
-  const generateOptions = (optionsArray = [], message) => {
-    console.log("showng selection");
-    setShowSelection(true);
-    const optionsWithActions = optionsArray.map((option) => ({
-      ...option,
-      action: () =>
-        setOrgDetails((prevDetails) => ({
-          ...prevDetails,
-          [currentStep]: option.value, // Make sure this aligns with your state structure
-        })),
-    }));
-
-    setOptions(optionsWithActions);
-    if (message) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { speaker: "system", text: message },
-      ]);
-    }
-  };
   const pinLogoFile = () => {
     console.log("pinning incoming");
   };
@@ -396,8 +341,6 @@ const ArchitectPage = () => {
       currentStep === "ASK_ADD_ANOTHER_ROLE" ||
       currentStep === "ASK_MEMBERSHIP_CUSTOMIZE"
     ) {
-      console.log("proceed to vote");
-      console.log("current step = ", currentStep);
       if (value === "yes") {
         setIsMemberSpecificationModalOpen(true);
       } else if (value === "no") {
@@ -420,20 +363,17 @@ const ArchitectPage = () => {
       }
     }
     if (currentStep === "ASK_QUAD_VOTING") {
-      console.log("current step: ", currentStep);
       if (value === "yes") {
         enableQuadraticVoting();
       }
       setShowSelection(false);
       setCurrentStep("ASK_IF_LOGO_UPLOAD");
-      console.log("current step: ", currentStep);
     }
     if (currentStep === "ASK_IF_LOGO_UPLOAD") {
       if (value === "yes") {
         setIsLogoModalOpen(true);
         setCurrentStep("ASK_LOGO_UPLOAD");
       } else if (value === "no") {
-        console.log("confirmation should appear");
         setIsConfirmationModalOpen(true);
         setCurrentStep("ASK_CONFIRMATION");
       }
