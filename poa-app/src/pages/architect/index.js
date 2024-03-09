@@ -23,6 +23,10 @@ import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
 
+import {main} from "../../../scripts/realDeployment"
+
+
+
 const steps = {
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
@@ -299,8 +303,40 @@ const ArchitectPage = () => {
     setIsConfirmationModalOpen(false);
     console.log("Saving: ", updatedOrgDetails);
 
+    deploy(orgDetails);
+
     // Prepare to show the deployment modal
     setShowDeployer(true);
+  };
+
+  const deploy = async (orgDetails) => {
+    console.log("Deploying...");
+    console.log(orgDetails);
+    try {
+      main(
+        orgDetails.membershipTypeNames,
+        orgDetails.membershipTypeNames,
+        orgDetails.POname,
+        orgDetails.quadraticVotingEnabled,
+        orgDetails.democracyVoteWeight,
+        orgDetails.participationVoteWeight,
+        orgDetails.hybridVotingEnabled,
+        orgDetails.participationVotingEnabled,
+        orgDetails.logoURL,
+        orgDetails.votingControlType
+       );
+      setTimeout(() => {
+        setIsDeploying(true); // set deployment to true for demonstration
+      }, 3000); // Simulates a deployment time of 3 seconds
+    } catch (error) {
+      toast({
+        title: "Deployment failed.",
+        description: "There was an error during the deployment process.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleSendClick = () => {

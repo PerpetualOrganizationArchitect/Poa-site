@@ -12,6 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
+
 function Deployer({ isOpen, onClose, deploymentDetails }) {
   const [isDeployed, setIsDeployed] = useState(false);
   const toast = useToast();
@@ -20,12 +21,9 @@ function Deployer({ isOpen, onClose, deploymentDetails }) {
   useEffect(() => {
     // Simulate deployment progress
     const deploy = async () => {
+      console.log("Deploying...");
       try {
-        // Replace this with your actual deployment function call
-        // await deployContracts(...deploymentDetails);
-        setTimeout(() => {
-          setIsDeployed(true); // set deployment to true for demonstration
-        }, 3000); // Simulates a deployment time of 3 seconds
+    
       } catch (error) {
         toast({
           title: "Deployment failed.",

@@ -12,9 +12,6 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 
 import { useIPFScontext } from '@/context/ipfsContext';
-import { task } from 'hardhat/config';
-
-
 
 
 const web3test = () => {

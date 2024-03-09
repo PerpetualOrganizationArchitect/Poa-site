@@ -849,21 +849,21 @@ export async function main(
   }
 }
 
-main(
-  ["Gold", "Silver", "Bronze", "Default", "Executive"],
-  ["Gold", "Silver", "Bronze", "Executive"],
-  "dhsdfsd",
-  true,
-  50,
-  50,
-  false,
-  true,
-  "http://example.com/logo.jpg",
-  "Participation"
-)
-  .then(() => {
-    console.log("Deployment successful!");
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+// main(
+//   ["Gold", "Silver", "Bronze", "Default", "Executive"],
+//   ["Gold", "Silver", "Bronze", "Executive"],
+//   "dhsdfsd",
+//   true,
+//   50,
+//   50,
+//   false,
+//   true,
+//   "http://example.com/logo.jpg",
+//   "Participation"
+// )
+//   .then(() => {
+//     console.log("Deployment successful!");
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });
