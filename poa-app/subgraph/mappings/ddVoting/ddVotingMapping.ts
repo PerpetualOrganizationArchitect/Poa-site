@@ -15,7 +15,8 @@ export function handlePollCreated(event: NewProposal): void {
     newProposal.transferAmount = event.params.transferAmount;
     newProposal.transferRecipient = event.params.transferRecipient;
     newProposal.transferEnabled = event.params.transferEnabled;
-    newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes);
+    newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes.times(BigInt.fromI32(60)));
+
     newProposal.totalVotes = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
     newProposal.save();
