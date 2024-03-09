@@ -48,11 +48,14 @@ import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
 // import { useGraphVotingContext } from "@/contexts/graphVotingContext";
 
-import { useGraphContext } from "@/context/graphContext";
 
 import { useRouter } from "next/router";
 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+
+import { useGraphContext } from "@/context/graphContext";
+import { useWeb3Context } from "@/context/web3Context";
+
 
 const glassLayerStyle = {
   position: "absolute",
@@ -77,6 +80,13 @@ const glassLayerStyle2 = {
 const Voting = () => {
   const router = useRouter();
   const { userDAO } = router.query;
+
+  const {createProposalDDVoting} = useWeb3Context();
+  const {directDemocracyVotingContractAddress, setLoaded} = useGraphContext();
+
+  useEffect(() => {
+    setLoaded(userDAO);
+  }, [userDAO]);
 
 
 
@@ -122,6 +132,34 @@ const Voting = () => {
   //     .slice(historyStartIndexKubix, historyStartIndexKubix + 3);
   //   const [loaded, setLoaded] = useState(false);
 
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const handlePollCreated = () => {
+    function run() {
+        return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, "0x06e6620C67255d308A466293070206176288A67B", 0, false);
+    }
+    setLoadingSubmit(true);
+    console.log("Poll Created");
+    console.log("address", directDemocracyVotingContractAddress);
+    console.log("proposal", proposal);
+    
+    run().then(() => {
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+        
+    }).catch((error) => {
+        // Handle any errors that occur during the run
+        console.error("Error creating poll:", error);
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+    });
+};
+
+
+
+
   const handlePollClick = (poll) => {
     console.log(poll);
     setSelectedPoll(poll);
@@ -137,25 +175,29 @@ const Voting = () => {
   //     };
   //     fetchPolls();
   //   }, []);
+
+  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 }
+  const [proposal, setProposal] = useState(defaultProposal)
   const handleInputChange = (e) => {
-    // const { name, value } = e.target;
-    // setProposal({ ...proposal, [name]: value });
+    const { name, value } = e.target;
+    setProposal({ ...proposal, [name]: value });
     console.log("input change");
   };
+
+  const [voteType, setVoteType] = useState("Democracy");
 
   const handleTabsChange = (index) => {
     setSelectedTab(index);
     if (index == 0) {
-      setContract(contractD);
+      setVoteType("Democracy");
     } else {
-      setContract(contractX);
+      setVoteType("Participation");
     }
   };
 
   const handleOptionsChange = (e) => {
-    // Split the input string by comma to get an array of options
-    //   const options = e.target.value.split(", ");
-    //   setProposal({ ...proposal, options });
+     const options = e.target.value.split(", ");
+    setProposal({ ...proposal, options });
     console.log("handing option");
   };
 
@@ -839,12 +881,12 @@ const Voting = () => {
             <Modal isOpen={showCreatePoll} onClose={handleCreatePollClick}>
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Create a Poll</ModalHeader>
+                <ModalHeader>Create a Vote</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                   <VStack
                     as="form"
-                    // onSubmit={handleSubmit}
+                    onSubmit={handlePollCreated}
                     spacing={4}
                     mt={8}
                     w="100%"
@@ -854,7 +896,7 @@ const Voting = () => {
                       <Input
                         type="text"
                         name="name"
-                        // value={proposal.name}
+                        value={proposal.name}
                         onChange={handleInputChange}
                         required
                       />
@@ -863,7 +905,7 @@ const Voting = () => {
                       <FormLabel>Description</FormLabel>
                       <Textarea
                         name="description"
-                        // value={proposal.description}
+                        value={proposal.description}
                         onChange={handleInputChange}
                         required
                       />
@@ -872,7 +914,7 @@ const Voting = () => {
                       <FormLabel>Execution</FormLabel>
                       <Textarea
                         name="execution"
-                        //    value={proposal.execution}
+                        value={proposal.execution}
                         onChange={handleInputChange}
                         required
                       />
@@ -882,7 +924,7 @@ const Voting = () => {
                       <Input
                         type="number"
                         name="time"
-                        //    value={proposal.time}
+                        value={proposal.time}
                         onChange={handleInputChange}
                         required
                       />
@@ -892,7 +934,7 @@ const Voting = () => {
                         <FormLabel>Options</FormLabel>
                         <Textarea
                           name="options"
-                          //  value={proposal.options.join(", ")}
+                          value={proposal.options.join(", ")}
                           onChange={handleOptionsChange}
                           placeholder="Option 1, Option 2, Option 3"
                           required
@@ -905,8 +947,8 @@ const Voting = () => {
                   <Button
                     type="submit"
                     colorScheme="teal"
-                    //  onClick={handleSubmit}
-                    //  isLoading={loadingSubmit}
+                    onClick={handlePollCreated}
+                    isLoading={loadingSubmit}
                     loadingText="Handling Process"
                   >
                     Submit Poll

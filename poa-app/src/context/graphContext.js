@@ -13,7 +13,7 @@ export const useGraphContext = () => {
 export const GraphProvider = ({ children }) => {
 
     const[loaded, setLoaded] = useState('');
-    const[poName, setPoName] = useState('');
+    const[poName, setPoName] = useState('1');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
     const[account, setAccount] = useState("0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase());
@@ -46,11 +46,10 @@ export const GraphProvider = ({ children }) => {
 
     useEffect(() => {
         async function init() {
-            console.log("triggered")
             await loadContractAddress(loaded);
             await loadGraphData(loaded);
         }
-        if (loaded !== undefined) {
+        if (loaded !== undefined && loaded !== '') {
             if (loaded === poName) {
                 console.log('loaded')
             }
@@ -449,8 +448,6 @@ export const GraphProvider = ({ children }) => {
           }`;
         const data = await querySubgraph(query);
 
-        console.log("contract address", data.perpetualOrganization.DirectDemocracyToken.id);
-
         // set the data reuslts to contract address
         if (data.perpetualOrganization.TaskManager?.id) {
             setTaskManagerContractAddress(data.perpetualOrganization.TaskManager.id);
@@ -463,6 +460,7 @@ export const GraphProvider = ({ children }) => {
         }
         if (data.perpetualOrganization.DirectDemocracyVoting?.id) {
             setDirectDemocracyVotingContractAddress(data.perpetualOrganization.DirectDemocracyVoting.id);
+            console.log("direct democracy voting", data.perpetualOrganization.DirectDemocracyVoting.id);
         }
         if (data.perpetualOrganization.DirectDemocracyToken?.id) {
             setDDTokenContractAddress(data.perpetualOrganization.DirectDemocracyToken.id);
@@ -510,7 +508,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress}}>
+        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress}}>
         {children}
         </GraphContext.Provider>
     );

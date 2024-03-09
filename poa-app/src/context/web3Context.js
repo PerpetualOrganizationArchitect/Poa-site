@@ -204,7 +204,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{completeTask, account, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask}}>
+        <Web3Context.Provider value={{completeTask, account, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
         {children}
         </Web3Context.Provider>
     );
