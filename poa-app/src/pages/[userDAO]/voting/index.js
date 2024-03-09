@@ -96,6 +96,7 @@ const Voting = () => {
   const [selectedPoll, setSelectedPoll] = useState(null);
 
   const [showCreatePoll, setShowCreatePoll] = useState(false);
+  const [showCreateVote, setShowCreateVote]= useState(false);
 
   //   const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
   //   const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
@@ -257,14 +258,13 @@ const Voting = () => {
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
-                        temporary text
-                        {/* {selectedTab === 0
+                        {selectedTab === 0
                           ? showCreateVote
                             ? "Hide Create Vote Form"
                             : "Create Vote"
                           : showCreatePoll
                           ? "Hide Create Poll Form"
-                          : "Create Poll"} */}
+                          : "Create Poll"} 
                       </Button>
                     </HStack>
 
@@ -499,14 +499,13 @@ const Voting = () => {
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
-                        temporary text
-                        {/* {selectedTab === 0
+                     {selectedTab === 0
                           ? showCreateVote
                             ? "Hide Create Vote Form"
-                            : "Create Vote"
+                            : "Create Democracy Vote"
                           : showCreatePoll
                           ? "Hide Create Poll Form"
-                          : "Create Poll"} */}
+                          : "Create Poll"}
                       </Button>
                     </HStack>
 
