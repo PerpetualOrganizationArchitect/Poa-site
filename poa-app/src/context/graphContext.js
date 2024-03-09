@@ -369,7 +369,7 @@ export const GraphProvider = ({ children }) => {
     
             const taskPromises = tasksData.map(async (task) => {
                 const ipfsData = await fetchFromIpfs(task.ipfsHash); 
-                console.log("task", task);
+                console.log("task", ipfsData);
                 return {
                     id: task.id,
                     name: ipfsData.name,

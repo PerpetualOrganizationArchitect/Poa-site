@@ -15,6 +15,8 @@ import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 
 
 
+
+
 const Web3Context = createContext();
 
 export const useWeb3Context = () => {
@@ -27,7 +29,6 @@ export const Web3Provider = ({ children }) => {
     
 
 
-
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
     
@@ -37,7 +38,6 @@ export const Web3Provider = ({ children }) => {
 
     const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
     const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
-    const taskManagerAddress = "0xa9eF1fC3Bc63944867F398C40A3E0b3Bf00115CB";
     const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
 
 
@@ -114,21 +114,30 @@ export const Web3Provider = ({ children }) => {
 
     async function claimTask(contractAddress, taskID) {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
-        const tx = await contract.claimTask(taskID);
+        //taskid in formar of 0x0-0xaddress need to get before dash id
+        const newTaskID = taskID.split("-")[0];
+        console.log("newTaskID: ", newTaskID);
+
+
+
+        const tx = await contract.claimTask(newTaskID);
         await tx.wait();
         console.log("Task claimed");
     }
 
     async function completeTask(contractAddress, taskID) {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
-        const tx = await contract.completeTask(taskID);
+        const newTaskID = taskID.split("-")[0];
+        const tx = await contract.completeTask(newTaskID);
         await tx.wait();
         console.log("Task completed");
     }
 
     async function updateTask(contractAddress, taskID, payout, ipfsHash) {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
-        const tx = await contract.updateTask(taskID, payout, ipfsHash);
+
+        const newTaskID = taskID.split("-")[0];
+        const tx = await contract.updateTask(newTaskID, payout, ipfsHash);
         await tx.wait();
         console.log("Task updated");
     }
@@ -195,7 +204,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{completeTask, account, ipfsAddTask, createTask, taskManagerAddress, createProject, claimTask, ipfsAddTask, updateTask}}>
+        <Web3Context.Provider value={{completeTask, account, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask}}>
         {children}
         </Web3Context.Provider>
     );

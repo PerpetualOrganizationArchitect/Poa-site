@@ -40,9 +40,7 @@ const Tasks = () => {
 
   },[router.query.projectId,projects]);
 
-  // useEffect(() => {
-  //   setTaskLoaded(true);
-  // }, []);
+
 
   return (
     <>
