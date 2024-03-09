@@ -36,17 +36,19 @@ import {
 
 import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
 
-// import { ethers } from "ethers";
 
-// import { useVoting } from "@/contexts/votingContext";
 
-// import { BarChart, Bar, XAxis, YAxis } from "recharts";
+
+
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import Countdown from "@/templateComponents/studentOrgDAO/voting/countDown";
-// import { IconButton } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import PollModal from "@/templateComponents/studentOrgDAO/voting/pollModal";
-// import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
 // import { useGraphVotingContext } from "@/contexts/graphVotingContext";
+
+import { useGraphContext } from "@/context/graphContext";
 
 import { useRouter } from "next/router";
 
@@ -76,50 +78,7 @@ const Voting = () => {
   const router = useRouter();
   const { userDAO } = router.query;
 
-  //   const {
-  //     setVotingLoaded,
-  //     hashLoaded,
-  //     fetchPollsIPFS,
-  //     fetchDataIPFS,
-  //     setContract,
-  //     contractX,
-  //     contractD,
-  //     contract,
-  //     loadingVote,
-  //     setLoadingVote,
-  //     selectedPoll,
-  //     setSelectedPoll,
-  //     selectedOption,
-  //     setSelectedOption,
-  //     ongoingPollsKubix,
-  //     setOngoingPollsKubix,
-  //     completedPollsKubix,
-  //     setCompletedPollsKubix,
-  //     ongoingPollsKubid,
-  //     setOngoingPollsKubid,
-  //     completedPollsKubid,
-  //     setCompletedPollsKubid,
-  //     completedEnd,
-  //     setCompletedEnd,
-  //     totalCompletedCount,
-  //     setTotalCompletedCount,
-  //     proposal,
-  //     setProposal,
-  //     showCreateVote,
-  //     setShowCreateVote,
-  //     blockTimestamp,
-  //     setBlockTimestamp,
-  //     loadingSubmit,
-  //     setLoadingSubmit,
-  //     handleVote,
-  //     createPoll,
-  //     fetchPolls,
-  //     fetchPollsData,
-  //     loadMoreCompleted,
-  //     handleSubmit,
-  //     showCreatePoll,
-  //     setShowCreatePoll,
-  //   } = useVoting();
+
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -133,6 +92,10 @@ const Voting = () => {
   //   } = useGraphVotingContext();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [selectedPoll, setSelectedPoll] = useState(null);
+
+  const [showCreatePoll, setShowCreatePoll] = useState(false);
 
   //   const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
   //   const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
@@ -197,6 +160,7 @@ const Voting = () => {
 
   const handleCreatePollClick = () => {
     setShowCreatePoll(!showCreatePoll);
+   
   };
 
   //   useEffect(() => {
@@ -873,7 +837,7 @@ const Voting = () => {
               </Flex>
             </TabPanel>
             {/* Create Poll Form edited this*/}
-            <Modal isOpen={true} onClose={handleCreatePollClick}>
+            <Modal isOpen={showCreatePoll} onClose={handleCreatePollClick}>
               <ModalOverlay />
               <ModalContent>
                 <ModalHeader>Create a Poll</ModalHeader>
