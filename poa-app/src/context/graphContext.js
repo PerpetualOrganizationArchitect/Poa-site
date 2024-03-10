@@ -175,17 +175,27 @@ export const GraphProvider = ({ children }) => {
     async function fetchDemocracyVotingOngoing(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            DirectDemocracyVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+              id
+              DirectDemocracyVoting{
                 id
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}){
+                  id
+                  name
+                  experationTimestamp
+                  creationTimestamp
+                  options{
+                    id
+                    name
+                    votes
+                  }
                 }
+              }
             }
-            }
-        }`;
+          }`;
 
         const data = await querySubgraph(query);
 
-        return data
+        return data.perpetualOrganization.DirectDemocracyVoting.proposals;
     }
 
     async function fetchDemocracyVotingCompleted(id) {
@@ -508,7 +518,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress}}>
+        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing}}>
         {children}
         </GraphContext.Provider>
     );
