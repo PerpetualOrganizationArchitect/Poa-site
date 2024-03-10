@@ -41,7 +41,7 @@ import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
 
 
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
-import Countdown from "@/templateComponents/studentOrgDAO/voting/countDown";
+import CountDown from "@/templateComponents/studentOrgDAO/voting/countDown";
 import { IconButton } from "@chakra-ui/react";
 import PollModal from "@/templateComponents/studentOrgDAO/voting/pollModal";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
@@ -82,7 +82,7 @@ const Voting = () => {
   const { userDAO } = router.query;
 
   const {createProposalDDVoting} = useWeb3Context();
-  const {directDemocracyVotingContractAddress, setLoaded} = useGraphContext();
+  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing} = useGraphContext();
 
   useEffect(() => {
     setLoaded(userDAO);
@@ -309,6 +309,117 @@ const Voting = () => {
                           : "Create Poll"} 
                       </Button>
                     </HStack>
+                    <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
+              {democracyVotingOngoing.length > 0 ? (
+                democracyVotingOngoing.map((proposal, index) => (
+                  <Box key={index} flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius="3xl"
+                  boxShadow="lg"
+                  display="flex"
+                  w="30%"
+                  minW="30%"
+                  maxWidth="30%"
+                  bg="transparent"
+                  position="relative"
+                  color="rgba(333, 333, 333, 1)"
+                  p={2}
+                  zIndex={1} 
+                    _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)"}}
+                    onClick={() => handlePollClick(proposal)}>
+                    <div className="glass" style={glassLayerStyle} />
+                    <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
+                    <CountDown duration={proposal?.experationTimestamp- Math.floor(Date.now() / 1000)} />
+                    <Text mt="2"> Voting Options:</Text>
+                    <HStack mb={2} spacing={6}>
+                      {proposal.options.map((option, index) => (
+                        <Text fontSize= "sm" fontWeight="extrabold" key={index}>{option.name}</Text>
+                      ))}
+                    </HStack>            
+                  </Box>
+                ))
+              ) : (
+                  <Box flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius="3xl"
+                    boxShadow="lg"
+                    display="flex"
+                    w="100%"
+                    maxWidth="100%"
+                    bg="transparent"
+                    position="relative"
+                    p={4}
+                    zIndex={1}
+                    color="rgba(333, 333, 333, 1)">
+                    <div className="glass" style={glassLayerStyle} />
+                    <Flex
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center">
+                      <Text
+                        mb="2"
+                        fontSize="2xl"
+                        fontWeight="extrabold"
+                        pl={12}
+                        pr={12}
+                        pt={14}
+                        pb={14}
+                      >
+                        No Ongoing Votes
+                      </Text>
+                    </Flex>
+                  </Box>
+
+              )}
+              {democracyVotingOngoing.length > 0 ? (
+              <>
+              <Spacer />
+              <HStack justifyContent="bottom" spacing={4}>
+              <IconButton
+                  aria-label="Previous polls"
+                  background="transparent"
+                  border="none" 
+                  _hover={{ bg: 'transparent' }} 
+                  _active={{ bg: 'transparent' }} 
+                  icon={
+                    <ArrowBackIcon 
+                    boxSize="6" // smaller size
+                    color="black"
+                    />
+                  }
+                  onClick={() => {
+                    if (ongoingStartIndexKubid - 3 >= 0) {
+
+                      setOngoingStartIndexKubid(ongoingStartIndexKubid - 3);
+                    }
+                  }}
+                />
+                <IconButton
+                  aria-label="Next polls"
+                  background="transparent"
+                  border="none" 
+                  _hover={{ bg: 'transparent' }} 
+                  _active={{ bg: 'transparent' }} 
+                  icon={
+                    <ArrowForwardIcon 
+                    boxSize="6" // smaller size
+                    color="black"
+                    />
+                  }
+                  onClick={() => {
+                    if (ongoingStartIndexKubid + 3 < kubidOngoingProposals.length) {
+                      loadMoreKubidOngoing();
+                      setOngoingStartIndexKubid(ongoingStartIndexKubid + 3);
+                    }
+                  }}
+                />
+                
+              </HStack>
+            </>
+              ) : null}
+            </HStack>
 
                     {/*HStack needs to go here*/}
 
