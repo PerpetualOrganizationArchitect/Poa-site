@@ -41,10 +41,8 @@ const DashboardPage = () => {
         initial="hidden"
         animate="visible"
       >
-        <VStack spacing={6} w="full" h="full" justify="center">
-          <MotionBox w="full" flex="1" p={3} variants={itemVariants}>
-            <AboutPreview />
-          </MotionBox>
+        <VStack mt= "6" spacing={6} w="full" h="full" justify="center" >
+
 
           <MotionFlex
             w="full"
@@ -59,19 +57,22 @@ const DashboardPage = () => {
               p={3}
               variants={itemVariants}
             >
-              <YourPerpetualOrganizations />
+              <PoaPreview />
             </MotionBox>
-
             <MotionBox
               w={{ base: "full", md: "50%" }}
               h="full"
               p={3}
               variants={itemVariants}
             >
-              <PoaPreview />
+              <YourPerpetualOrganizations />
             </MotionBox>
+            
           </MotionFlex>
         </VStack>
+        <MotionBox w="full" flex="1" p={3} variants={itemVariants}>
+            <AboutPreview />
+          </MotionBox>
       </MotionBox>
     </Layout>
   );

@@ -7,7 +7,6 @@ const YourPerpetualOrganizations = () => {
     <>
       <Box textAlign="center" mb={4}>
         {" "}
-        {/* Center text and add margin below */}
         <Text fontSize="2xl" fontWeight="bold" color="grey.600">
           Your Perpetual Organizations
         </Text>
@@ -17,8 +16,6 @@ const YourPerpetualOrganizations = () => {
         w="full"
         h="full"
         p={4}
-        borderWidth="1px"
-        borderRadius="lg"
         overflowX="auto"
         gap={4}
         align="stretch"

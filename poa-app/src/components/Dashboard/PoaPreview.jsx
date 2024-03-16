@@ -10,9 +10,8 @@ const PoaPreview = () => {
       justify="center"
       w="full"
       h="full"
-      p={4}
-      borderWidth="1px"
-      borderRadius="lg"
+      p={2}
+      mt="4"
     >
       <Image
         src="/images/poa_character.png"
@@ -20,7 +19,8 @@ const PoaPreview = () => {
         width={115}
         height={115}
       />
-      <Text>This is Poa.</Text>
+      <Text fontSize="lg">This is Poa</Text>
+      <Text fontSize="xl" mt="4">Build your Own Perpetual Organization</Text>
 
       <Link href="/architect" passHref>
         <Button colorScheme="blue" variant="outline" mt={4}>
