@@ -11,7 +11,7 @@ const AboutPreview = () => {
       h="full"
       p={4}
     >
-      <Text  fontSize="2xl" fontWeight="bold" mb={2} textAlign="center">
+      <Text  fontSize="2xl" fontWeight="bold" mb={4} textAlign="center">
         Fully Yours. Forever.
       </Text>
       <Text fontSize="lg" mb={4} ml="25%" mr="25%" textAlign={"left"}>

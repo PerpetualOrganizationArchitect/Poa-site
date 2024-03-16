@@ -50,7 +50,7 @@ export default function Home() {
           {" "}
           {/* Use Link to navigate */}
           <Button size="lg" colorScheme="blue" variant="outline" mt={4}>
-            explore Poa
+            Explore Poa
           </Button>
         </Link>
       </Flex>

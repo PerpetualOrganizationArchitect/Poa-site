@@ -23,7 +23,7 @@ const PoaPreview = () => {
       <Text fontSize="xl" mt="4">Build your Own Perpetual Organization</Text>
 
       <Link href="/architect" passHref>
-        <Button colorScheme="blue" variant="outline" mt={4}>
+        <Button textColor="black" backgroundColor="lightblue" size="lg" colorScheme="blue" variant="outline" mt={4}>
           Start Building
         </Button>
       </Link>
