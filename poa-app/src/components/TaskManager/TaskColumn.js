@@ -7,6 +7,7 @@ import { useTaskBoard } from '../../context/TaskBoardContext';
 import AddTaskModal from './AddTaskModal';
 import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '../../context/dataBaseContext';
+import { useGraphContext } from '@/context/graphContext';
 // ... other imports
 
 // ... inside TaskColumn component, before return statement
@@ -29,7 +30,9 @@ const glassLayerStyle = {
 const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
-  const {account, mintKUBIX, createTask, taskManagerAddress } = useWeb3Context();
+  const {account, mintKUBIX, createTask } = useWeb3Context();
+  const { taskManagerContractAddress } = useGraphContext();
+
   let hasExecNFT= true;
   let hasMemberNFT= true;
   const { getUsernameByAddress } = useDataBaseContext();
@@ -83,7 +86,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       if (title === 'Open') {
         let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
-        createTask(taskManagerAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+        createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
       }
     };
     

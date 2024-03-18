@@ -36,21 +36,26 @@ import {
 
 import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
 
-// import { ethers } from "ethers";
 
-// import { useVoting } from "@/contexts/votingContext";
 
-// import { BarChart, Bar, XAxis, YAxis } from "recharts";
-import Countdown from "@/templateComponents/studentOrgDAO/voting/countDown";
-// import { IconButton } from "@chakra-ui/react";
+
+
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import CountDown from "@/templateComponents/studentOrgDAO/voting/countDown";
+import { IconButton } from "@chakra-ui/react";
 import PollModal from "@/templateComponents/studentOrgDAO/voting/pollModal";
-// import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
 // import { useGraphVotingContext } from "@/contexts/graphVotingContext";
+
 
 import { useRouter } from "next/router";
 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+
+import { useGraphContext } from "@/context/graphContext";
+import { useWeb3Context } from "@/context/web3Context";
+
 
 const glassLayerStyle = {
   position: "absolute",
@@ -76,50 +81,14 @@ const Voting = () => {
   const router = useRouter();
   const { userDAO } = router.query;
 
-  //   const {
-  //     setVotingLoaded,
-  //     hashLoaded,
-  //     fetchPollsIPFS,
-  //     fetchDataIPFS,
-  //     setContract,
-  //     contractX,
-  //     contractD,
-  //     contract,
-  //     loadingVote,
-  //     setLoadingVote,
-  //     selectedPoll,
-  //     setSelectedPoll,
-  //     selectedOption,
-  //     setSelectedOption,
-  //     ongoingPollsKubix,
-  //     setOngoingPollsKubix,
-  //     completedPollsKubix,
-  //     setCompletedPollsKubix,
-  //     ongoingPollsKubid,
-  //     setOngoingPollsKubid,
-  //     completedPollsKubid,
-  //     setCompletedPollsKubid,
-  //     completedEnd,
-  //     setCompletedEnd,
-  //     totalCompletedCount,
-  //     setTotalCompletedCount,
-  //     proposal,
-  //     setProposal,
-  //     showCreateVote,
-  //     setShowCreateVote,
-  //     blockTimestamp,
-  //     setBlockTimestamp,
-  //     loadingSubmit,
-  //     setLoadingSubmit,
-  //     handleVote,
-  //     createPoll,
-  //     fetchPolls,
-  //     fetchPollsData,
-  //     loadMoreCompleted,
-  //     handleSubmit,
-  //     showCreatePoll,
-  //     setShowCreatePoll,
-  //   } = useVoting();
+  const {createProposalDDVoting} = useWeb3Context();
+  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing} = useGraphContext();
+
+  useEffect(() => {
+    setLoaded(userDAO);
+  }, [userDAO]);
+
+
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -133,6 +102,11 @@ const Voting = () => {
   //   } = useGraphVotingContext();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [selectedPoll, setSelectedPoll] = useState(null);
+
+  const [showCreatePoll, setShowCreatePoll] = useState(false);
+  const [showCreateVote, setShowCreateVote]= useState(false);
 
   //   const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
   //   const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
@@ -158,6 +132,34 @@ const Voting = () => {
   //     .slice(historyStartIndexKubix, historyStartIndexKubix + 3);
   //   const [loaded, setLoaded] = useState(false);
 
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const handlePollCreated = () => {
+    function run() {
+        return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, "0x06e6620C67255d308A466293070206176288A67B", 0, false);
+    }
+    setLoadingSubmit(true);
+    console.log("Poll Created");
+    console.log("address", directDemocracyVotingContractAddress);
+    console.log("proposal", proposal);
+    
+    run().then(() => {
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+        
+    }).catch((error) => {
+        // Handle any errors that occur during the run
+        console.error("Error creating poll:", error);
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+    });
+};
+
+
+
+
   const handlePollClick = (poll) => {
     console.log(poll);
     setSelectedPoll(poll);
@@ -173,30 +175,35 @@ const Voting = () => {
   //     };
   //     fetchPolls();
   //   }, []);
+
+  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 }
+  const [proposal, setProposal] = useState(defaultProposal)
   const handleInputChange = (e) => {
-    // const { name, value } = e.target;
-    // setProposal({ ...proposal, [name]: value });
+    const { name, value } = e.target;
+    setProposal({ ...proposal, [name]: value });
     console.log("input change");
   };
+
+  const [voteType, setVoteType] = useState("Democracy");
 
   const handleTabsChange = (index) => {
     setSelectedTab(index);
     if (index == 0) {
-      setContract(contractD);
+      setVoteType("Democracy");
     } else {
-      setContract(contractX);
+      setVoteType("Participation");
     }
   };
 
   const handleOptionsChange = (e) => {
-    // Split the input string by comma to get an array of options
-    //   const options = e.target.value.split(", ");
-    //   setProposal({ ...proposal, options });
+     const options = e.target.value.split(", ");
+    setProposal({ ...proposal, options });
     console.log("handing option");
   };
 
   const handleCreatePollClick = () => {
     setShowCreatePoll(!showCreatePoll);
+   
   };
 
   //   useEffect(() => {
@@ -293,16 +300,126 @@ const Voting = () => {
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
-                        temporary text
-                        {/* {selectedTab === 0
+                        {selectedTab === 0
                           ? showCreateVote
                             ? "Hide Create Vote Form"
                             : "Create Vote"
                           : showCreatePoll
                           ? "Hide Create Poll Form"
-                          : "Create Poll"} */}
+                          : "Create Poll"} 
                       </Button>
                     </HStack>
+                    <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
+              {democracyVotingOngoing.length > 0 ? (
+                democracyVotingOngoing.map((proposal, index) => (
+                  <Box key={index} flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius="3xl"
+                  boxShadow="lg"
+                  display="flex"
+                  w="30%"
+                  minW="30%"
+                  maxWidth="30%"
+                  bg="transparent"
+                  position="relative"
+                  color="rgba(333, 333, 333, 1)"
+                  p={2}
+                  zIndex={1} 
+                    _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)"}}
+                    onClick={() => handlePollClick(proposal)}>
+                    <div className="glass" style={glassLayerStyle} />
+                    <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
+                    <CountDown duration={proposal?.experationTimestamp- Math.floor(Date.now() / 1000)} />
+                    <Text mt="2"> Voting Options:</Text>
+                    <HStack mb={2} spacing={6}>
+                      {proposal.options.map((option, index) => (
+                        <Text fontSize= "sm" fontWeight="extrabold" key={index}>{option.name}</Text>
+                      ))}
+                    </HStack>            
+                  </Box>
+                ))
+              ) : (
+                  <Box flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius="3xl"
+                    boxShadow="lg"
+                    display="flex"
+                    w="100%"
+                    maxWidth="100%"
+                    bg="transparent"
+                    position="relative"
+                    p={4}
+                    zIndex={1}
+                    color="rgba(333, 333, 333, 1)">
+                    <div className="glass" style={glassLayerStyle} />
+                    <Flex
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center">
+                      <Text
+                        mb="2"
+                        fontSize="2xl"
+                        fontWeight="extrabold"
+                        pl={12}
+                        pr={12}
+                        pt={14}
+                        pb={14}
+                      >
+                        No Ongoing Votes
+                      </Text>
+                    </Flex>
+                  </Box>
+
+              )}
+              {democracyVotingOngoing.length > 0 ? (
+              <>
+              <Spacer />
+              <HStack justifyContent="bottom" spacing={4}>
+              <IconButton
+                  aria-label="Previous polls"
+                  background="transparent"
+                  border="none" 
+                  _hover={{ bg: 'transparent' }} 
+                  _active={{ bg: 'transparent' }} 
+                  icon={
+                    <ArrowBackIcon 
+                    boxSize="6" // smaller size
+                    color="black"
+                    />
+                  }
+                  onClick={() => {
+                    if (ongoingStartIndexKubid - 3 >= 0) {
+
+                      setOngoingStartIndexKubid(ongoingStartIndexKubid - 3);
+                    }
+                  }}
+                />
+                <IconButton
+                  aria-label="Next polls"
+                  background="transparent"
+                  border="none" 
+                  _hover={{ bg: 'transparent' }} 
+                  _active={{ bg: 'transparent' }} 
+                  icon={
+                    <ArrowForwardIcon 
+                    boxSize="6" // smaller size
+                    color="black"
+                    />
+                  }
+                  onClick={() => {
+                    if (ongoingStartIndexKubid + 3 < kubidOngoingProposals.length) {
+                      loadMoreKubidOngoing();
+                      setOngoingStartIndexKubid(ongoingStartIndexKubid + 3);
+                    }
+                  }}
+                />
+                
+              </HStack>
+            </>
+              ) : null}
+            </HStack>
 
                     {/*HStack needs to go here*/}
 
@@ -535,14 +652,13 @@ const Voting = () => {
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
-                        temporary text
-                        {/* {selectedTab === 0
+                     {selectedTab === 0
                           ? showCreateVote
                             ? "Hide Create Vote Form"
-                            : "Create Vote"
+                            : "Create Democracy Vote"
                           : showCreatePoll
                           ? "Hide Create Poll Form"
-                          : "Create Poll"} */}
+                          : "Create Poll"}
                       </Button>
                     </HStack>
 
@@ -873,15 +989,15 @@ const Voting = () => {
               </Flex>
             </TabPanel>
             {/* Create Poll Form edited this*/}
-            <Modal isOpen={true} onClose={handleCreatePollClick}>
+            <Modal isOpen={showCreatePoll} onClose={handleCreatePollClick}>
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Create a Poll</ModalHeader>
+                <ModalHeader>Create a Vote</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                   <VStack
                     as="form"
-                    // onSubmit={handleSubmit}
+                    onSubmit={handlePollCreated}
                     spacing={4}
                     mt={8}
                     w="100%"
@@ -891,7 +1007,7 @@ const Voting = () => {
                       <Input
                         type="text"
                         name="name"
-                        // value={proposal.name}
+                        value={proposal.name}
                         onChange={handleInputChange}
                         required
                       />
@@ -900,7 +1016,7 @@ const Voting = () => {
                       <FormLabel>Description</FormLabel>
                       <Textarea
                         name="description"
-                        // value={proposal.description}
+                        value={proposal.description}
                         onChange={handleInputChange}
                         required
                       />
@@ -909,7 +1025,7 @@ const Voting = () => {
                       <FormLabel>Execution</FormLabel>
                       <Textarea
                         name="execution"
-                        //    value={proposal.execution}
+                        value={proposal.execution}
                         onChange={handleInputChange}
                         required
                       />
@@ -919,7 +1035,7 @@ const Voting = () => {
                       <Input
                         type="number"
                         name="time"
-                        //    value={proposal.time}
+                        value={proposal.time}
                         onChange={handleInputChange}
                         required
                       />
@@ -929,7 +1045,7 @@ const Voting = () => {
                         <FormLabel>Options</FormLabel>
                         <Textarea
                           name="options"
-                          //  value={proposal.options.join(", ")}
+                          value={proposal.options.join(", ")}
                           onChange={handleOptionsChange}
                           placeholder="Option 1, Option 2, Option 3"
                           required
@@ -942,8 +1058,8 @@ const Voting = () => {
                   <Button
                     type="submit"
                     colorScheme="teal"
-                    //  onClick={handleSubmit}
-                    //  isLoading={loadingSubmit}
+                    onClick={handlePollCreated}
+                    isLoading={loadingSubmit}
                     loadingText="Handling Process"
                   >
                     Submit Poll

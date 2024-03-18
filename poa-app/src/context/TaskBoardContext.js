@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {useDataBaseContext} from './dataBaseContext';
 import { useWeb3Context } from './web3Context';
+import { useGraphContext } from './graphContext';
 
 import { useToast } from '@chakra-ui/react';
 
@@ -18,7 +19,8 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   const toast=useToast();
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
-  const{claimTask, taskManagerAddress, updateTask, ipfsAddTask, completeTask} = useWeb3Context();
+  const{claimTask, updateTask, ipfsAddTask, completeTask} = useWeb3Context();
+  const {taskManagerContractAddress} = useGraphContext();
 
   useEffect(() => {
     setTaskColumns(initialColumns);
@@ -63,19 +65,20 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
     };
 
     if (destColumnId === 'inProgress') {
-        claimTask(taskManagerAddress, draggedTask.id);
+        claimTask(taskManagerContractAddress, draggedTask.id);
     }
     if (destColumnId === 'inReview') {
+      console.log("in review triggger")
         const ipfsHash = await ipfsAddTask(draggedTask.name, draggedTask.description,"In Review", draggedTask.difficulty, draggedTask.estHours, submissionData);
         let ipfsHashString = ipfsHash.path;
         console.log("ipfsHashString: ", ipfsHashString);
         console.log("draggedTask.id: ", draggedTask.id);
-        console.log("draggedTask.kubixPayout: ", draggedTask.kubixPayout);
-      updateTask(taskManagerAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
+        console.log("draggedTask.Payout: ", draggedTask.Payout);
+      updateTask(taskManagerContractAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
     }
 
     if (destColumnId === 'completed') {
-        completeTask(taskManagerAddress, draggedTask.id);
+        completeTask(taskManagerContractAddress, draggedTask.id);
 
     }
 

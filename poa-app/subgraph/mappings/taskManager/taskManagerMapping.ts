@@ -6,7 +6,7 @@ import { dataSource } from '@graphprotocol/graph-ts'
 export function handleTaskCreated(event: TaskCreatedEvent): void {
   log.info("Triggered handleTaskCreated", [])
 
-  let task = new Task(event.params.id.toHex())
+  let task = new Task(event.params.id.toHex()+"-"+event.address.toHex())
   task.payout = event.params.payout
   task.ipfsHash = event.params.ipfsHash
   task.project = event.params.projectName
@@ -21,7 +21,7 @@ export function handleTaskCreated(event: TaskCreatedEvent): void {
 export function handleTaskClaimed(event: TaskClaimedEvent): void {
     log.info("Triggered handleTaskClaimed", [])
   
-    let task = Task.load(event.params.id.toHex())
+    let task = Task.load(event.params.id.toHex()+"-"+event.address.toHex())
 
     if (!task) {
       log.error("Task not found: {}", [event.params.id.toHex()])
@@ -34,7 +34,7 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
 export function handleTaskUpdated(event: TaskUpdatedEvent): void {
     log.info("Triggered handleTaskUpdated", [])
   
-    let task = Task.load(event.params.id.toHex())
+    let task = Task.load(event.params.id.toHex()+ "-"+event.address.toHex())
     if (!task) {
       log.error("Task not found: {}", [event.params.id.toHex()])
       return
@@ -47,7 +47,7 @@ export function handleTaskUpdated(event: TaskUpdatedEvent): void {
 export function handleTaskCompleted(event: TaskCompletedEvent): void {
     log.info("Triggered handleTaskCompleted", [])
   
-    let task = Task.load(event.params.id.toHex())
+    let task = Task.load(event.params.id.toHex() + "-"+event.address.toHex())
     if (!task) {
       log.error("Task not found: {}", [event.params.id.toHex()])
       return

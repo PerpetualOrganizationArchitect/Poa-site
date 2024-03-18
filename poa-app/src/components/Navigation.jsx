@@ -11,10 +11,11 @@ const Navigation = () => {
       justify="space-between"
       wrap="wrap"
       padding="1rem"
-      bg="pink.100"
+      bg="transparent"
       position="fixed"
       top={0}
       w="100%"
+      shadow={"md"}
     >
       {/* Wrap each Link in a Button component */}
       <Link href="/dashboard" passHref>
@@ -31,11 +32,7 @@ const Navigation = () => {
           aria-label="Home"
         />
       </Link>
-      <Link href="/about" passHref>
-        <Button variant="ghost" p={4}>
-          About
-        </Button>
-      </Link>
+      
       <Link href="/architect" passHref>
         <Button variant="ghost" p={4}>
           Architect
@@ -45,6 +42,11 @@ const Navigation = () => {
       <Link href="/browser" passHref>
         <Button variant="ghost" p={4}>
           Browser
+        </Button>
+      </Link>
+      <Link href="/about" passHref>
+        <Button variant="ghost" p={4}>
+          About
         </Button>
       </Link>
     </Flex>

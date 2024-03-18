@@ -622,7 +622,7 @@ export async function main(
     const hybridVotingFactoryAddress =
       "0x4bC864D2EFD9e10B64ffd94982bb76Ef41030A46";
     const taskManagerFactoryAddress =
-      "0x8cc551b39e97F92Ea3c122Ab14FbeeAc2e53Fb53";
+      "0xa8029FbDA0f31D35806db542b8c5307A09475Fdc";
     const registryFactoryAddress = "0x70EfBb9557196e09D33F430c3bD0E52338c86a5E";
 
     const nftMembership = new ethers.Contract(
@@ -849,21 +849,21 @@ export async function main(
   }
 }
 
-main(
-  ["Gold", "Silver", "Bronze", "Default", "Executive"],
-  ["Gold", "Silver", "Bronze", "Executive"],
-  "dhsdfsd",
-  true,
-  50,
-  50,
-  false,
-  true,
-  "http://example.com/logo.jpg",
-  "Participation"
-)
-  .then(() => {
-    console.log("Deployment successful!");
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+// main(
+//   ["Gold", "Silver", "Bronze", "Default", "Executive"],
+//   ["Gold", "Silver", "Bronze", "Executive"],
+//   "dhsdfsd",
+//   true,
+//   50,
+//   50,
+//   false,
+//   true,
+//   "http://example.com/logo.jpg",
+//   "Participation"
+// )
+//   .then(() => {
+//     console.log("Deployment successful!");
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });

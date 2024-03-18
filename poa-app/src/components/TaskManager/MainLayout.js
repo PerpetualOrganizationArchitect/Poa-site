@@ -19,9 +19,9 @@ const MainLayout = () => {
 
   
 
-  const {account, createProject, taskManagerAddress}= useWeb3Context()
+  const {account, createProject}= useWeb3Context()
 
-  const {projectData} = useGraphContext();
+  const {projectData, taskManagerContractAddress} = useGraphContext();
   
 
   const handleSelectProject = (projectId) => {
@@ -44,7 +44,7 @@ const MainLayout = () => {
           projects={projects}
           selectedProject={selectedProject}
           onSelectProject={handleSelectProject}
-          onCreateProject={(projectName) => createProject(taskManagerAddress, projectName)}
+          onCreateProject={(projectName) => createProject(taskManagerContractAddress, projectName)}
         />
         {selectedProject ? (
           <TaskBoardProvider 
