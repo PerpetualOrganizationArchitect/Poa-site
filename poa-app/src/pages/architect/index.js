@@ -490,7 +490,7 @@ const ArchitectPage = () => {
         initial="hidden"
         animate="visible"
       >
-        <Box position="fixed" top="0" left="0" right="0" zIndex="sticky">
+        <Box mt ="10" position="fixed" top="0" left="0" right="0" zIndex="sticky">
           <motion.div variants={itemVariants}>
             <Character />
           </motion.div>
@@ -498,7 +498,7 @@ const ArchitectPage = () => {
 
         <Box
           position="fixed"
-          top="115px" // This should be the height of the Character component
+          top="115px" 
           bottom="60px"
           overflowY="auto"
           width="full"
