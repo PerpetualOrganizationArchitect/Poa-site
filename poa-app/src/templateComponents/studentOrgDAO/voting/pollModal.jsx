@@ -14,7 +14,7 @@ import {
   Radio,
   RadioGroup,
 } from "@chakra-ui/react";
-//import { ethers } from "ethers";
+import { ethers } from "ethers";
 import CountDown from "./countDown";
 import { useRouter } from "next/router";
 
@@ -28,22 +28,41 @@ const glassLayerStyle = {
   backgroundColor: "rgba(33, 33, 33, 0.97)",
 };
 
+
 const PollModal = ({
   onOpen,
   isOpen,
   onClose,
   selectedPoll,
   handleVote,
+  contractAddress,
   loadingVote,
   selectedOption,
   setSelectedOption,
 }) => {
+
+
   const router = useRouter();
+  const { userDAO } = router.query;
+
 
   const handleModalClose = () => {
     onClose();
-    router.push("/voting");
+    router.push(`/${userDAO}/voting`);
   };
+
+  const vote = () => {
+
+    console.log("selectedOption", selectedOption);
+    console.log("selectedPoll", selectedPoll.id);
+    console.log(handleVote)
+
+    // make selected option id as selectedpollid+ - + selectedoptionid
+    
+    handleVote(contractAddress, selectedPoll.id, selectedOption);
+  };
+
+
 
   return (
     <Modal onOpen={onOpen} isOpen={isOpen} onClose={handleModalClose}>
@@ -107,7 +126,7 @@ const PollModal = ({
         <ModalFooter>
           <Button
             colorScheme="blue"
-            onClick={() => handleVote(onClose)}
+            onClick={vote}
             mr={3}
             isLoading={loadingVote}
             loadingText="Handling Vote"

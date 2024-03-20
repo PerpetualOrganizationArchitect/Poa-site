@@ -1,4 +1,4 @@
-// pages/[userDAO]/voting/index.js
+// Code to display the voting page for a specific DAO
 import React, { useState, useEffect, use } from "react";
 import {
   HStack,
@@ -38,15 +38,12 @@ import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
 
 
 
-
-
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import CountDown from "@/templateComponents/studentOrgDAO/voting/countDown";
 import { IconButton } from "@chakra-ui/react";
 import PollModal from "@/templateComponents/studentOrgDAO/voting/pollModal";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
-// import { useGraphVotingContext } from "@/contexts/graphVotingContext";
 
 
 import { useRouter } from "next/router";
@@ -81,29 +78,55 @@ const Voting = () => {
   const router = useRouter();
   const { userDAO } = router.query;
 
-  const {createProposalDDVoting} = useWeb3Context();
+  const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
   const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing} = useGraphContext();
 
   useEffect(() => {
     setLoaded(userDAO);
   }, [userDAO]);
 
+  // Function to calculate the remaining time until the proposal expires
+  function calculateRemainingTime(expirationTimestamp, proposalId) {
+    // Current timestamp in seconds
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    
+    // Calculate the duration
+    const duration = expirationTimestamp - currentTimestamp;
+    
+    console.log("duration", duration);
+    console.log("expirationTimestamp", expirationTimestamp);
+    console.log("currentTimestamp", currentTimestamp);
+    // Ensure the duration is never negative by using Math.max
+    // if duration is negative call get winner function
+    async function getWinner(directDemocracyVotingContractAddress, proposalId) {
+      const tx= await getWinnerDDVoting(directDemocracyVotingContractAddress, proposalId);
+      tx.wait();
+
+    
+
+    }
+
+    if (duration < 0) {
+      getWinner(directDemocracyVotingContractAddress, proposalId);
+       
+    }
+
+
+  
+    return Math.max(0, duration);
+
+
+    
+  }
+
+
 
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  //   const {
-  //     kubidOngoingProposals,
-  //     kubidCompletedProposals,
-  //     loadOngoingKubidInitial,
-  //     loadCompletedKubidInitial,
-  //     loadMoreKubidOngoing,
-  //     loadMoreKubidCompleted,
-  //   } = useGraphVotingContext();
-
   // State hooks to manage displayed proposals
   const [ongoingStartIndex, setOngoingStartIndex] = useState(0); // Index to start displaying ongoing proposals from
-  const proposalDisplayLimit = 3; // Limit the number of proposals displayed at once
+  const proposalDisplayLimit = 3; 
 
   // Calculated slices of proposals to display based on the current index and limit
   const safeDemocracyVotingOngoing = Array.isArray(democracyVotingOngoing) ? democracyVotingOngoing : [];
@@ -157,6 +180,8 @@ const Voting = () => {
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
+  const [selectedOption, setSelectedOption] = useState("");
+
   const handlePollCreated = () => {
     function run() {
         return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, "0x06e6620C67255d308A466293070206176288A67B", 0, false);
@@ -186,18 +211,10 @@ const Voting = () => {
   const handlePollClick = (poll) => {
     console.log(poll);
     setSelectedPoll(poll);
-    router.push(`/voting?poll=${poll.id}`);
+    router.push(`/${userDAO}/voting?poll=${poll.id}`);
     onOpen();
   };
 
-  //   useEffect(() => {
-  //     const fetchPolls = async () => {
-  //       await loadCompletedKubidInitial();
-  //       await loadOngoingKubidInitial();
-  //       setLoaded(true);
-  //     };
-  //     fetchPolls();
-  //   }, []);
 
   const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 }
   const [proposal, setProposal] = useState(defaultProposal)
@@ -229,20 +246,20 @@ const Voting = () => {
    
   };
 
-  //   useEffect(() => {
-  //     console.log("router.query.poll: ", router.query.poll);
+    // useEffect(() => {
+    //   console.log("router.query.poll: ", router.query.poll);
 
-  //     if (router.query.poll !== undefined && loaded) {
-  //       console.log("router.query.poll: ", router.query.poll);
-  //       // find poll with index poll
-  //       const poll = kubidOngoingProposals.find(
-  //         (poll) => poll.id === router.query.poll
-  //       );
-  //       console.log("poll: ", poll);
-  //       setSelectedPoll(poll);
-  //       onOpen();
-  //     }
-  //   }, [router.query.poll, kubidOngoingProposals, loaded]);
+    //   if (router.query.poll !== undefined && loaded) {
+    //     console.log("router.query.poll: ", router.query.poll);
+    //     // find poll with index poll
+    //     const poll = kubidOngoingProposals.find(
+    //       (poll) => poll.id === router.query.poll
+    //     );
+    //     console.log("poll: ", poll);
+    //     setSelectedPoll(poll);
+    //     onOpen();
+    //   }
+    // }, [router.query.poll, kubidOngoingProposals, loaded]);
 
   return (
     <>
@@ -353,7 +370,7 @@ const Voting = () => {
                     onClick={() => handlePollClick(proposal)}>
                     <div className="glass" style={glassLayerStyle} />
                     <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                    <CountDown duration={proposal?.experationTimestamp- Math.floor(Date.now() / 1000)} />
+                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id)} />
                     <Text mt="2"> Voting Options:</Text>
                     <HStack mb={2} spacing={6}>
                       {proposal.options.map((option, index) => (
@@ -1085,11 +1102,12 @@ const Voting = () => {
         <PollModal
           isOpen={isOpen}
           onClose={onClose}
-          // handleVote={handleVote}
+          handleVote={ddVote}
+          contractAddress={selectedTab === 0 ? directDemocracyVotingContractAddress : directDemocracyVotingContractAddress}
           // loadingVote={loadingVote}
-          // selectedPoll={selectedPoll}
-          //   selectedOption={selectedOption}
-          //   setSelectedOption={setSelectedOption}
+          selectedPoll={selectedPoll}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
           onOpen={onOpen}
         />
       </Container>

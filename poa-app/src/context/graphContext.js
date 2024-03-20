@@ -183,6 +183,7 @@ export const GraphProvider = ({ children }) => {
                   name
                   experationTimestamp
                   creationTimestamp
+                  description
                   options{
                     id
                     name
@@ -508,6 +509,7 @@ export const GraphProvider = ({ children }) => {
         setHybridVotingOngoing(hybridVotingOngoing);
         setHybridVotingCompleted(hybridVotingCompleted);
         setDemocracyVotingOngoing(democracyVotingOngoing);
+        console.log("democracy voting ongoing", democracyVotingOngoing);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
         console.log(projectData);
