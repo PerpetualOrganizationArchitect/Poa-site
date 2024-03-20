@@ -101,6 +101,29 @@ const Voting = () => {
   //     loadMoreKubidCompleted,
   //   } = useGraphVotingContext();
 
+  // State hooks to manage displayed proposals
+  const [ongoingStartIndex, setOngoingStartIndex] = useState(0); // Index to start displaying ongoing proposals from
+  const proposalDisplayLimit = 3; // Limit the number of proposals displayed at once
+
+  // Calculated slices of proposals to display based on the current index and limit
+  const safeDemocracyVotingOngoing = Array.isArray(democracyVotingOngoing) ? democracyVotingOngoing : [];
+
+  const displayedOngoingProposals = safeDemocracyVotingOngoing.slice(
+    ongoingStartIndex,
+    ongoingStartIndex + proposalDisplayLimit
+  );
+
+  // Handlers for navigation buttons
+  const handlePreviousProposalsClick = () => {
+    setOngoingStartIndex(Math.max(0, ongoingStartIndex - proposalDisplayLimit));
+  };
+
+  const handleNextProposalsClick = () => {
+    if (ongoingStartIndex + proposalDisplayLimit < democracyVotingOngoing.length) {
+      setOngoingStartIndex(ongoingStartIndex + proposalDisplayLimit);
+    }
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [selectedPoll, setSelectedPoll] = useState(null);
@@ -108,8 +131,8 @@ const Voting = () => {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const [showCreateVote, setShowCreateVote]= useState(false);
 
-  //   const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
-  //   const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
+ const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
+ const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
 
   //   const [ongoingStartIndexKubix, setOngoingStartIndexKubix] = useState(0);
   //   const [historyStartIndexKubix, setHistoryStartIndexKubix] = useState(0);
@@ -310,8 +333,8 @@ const Voting = () => {
                       </Button>
                     </HStack>
                     <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
-              {democracyVotingOngoing.length > 0 ? (
-                democracyVotingOngoing.map((proposal, index) => (
+              {displayedOngoingProposals.length > 0 ? (
+                displayedOngoingProposals.map((proposal, index) => (
                   <Box key={index} flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
@@ -373,7 +396,7 @@ const Voting = () => {
                   </Box>
 
               )}
-              {democracyVotingOngoing.length > 0 ? (
+              {displayedOngoingProposals.length > 0 ? (
               <>
               <Spacer />
               <HStack justifyContent="bottom" spacing={4}>
@@ -389,12 +412,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={() => {
-                    if (ongoingStartIndexKubid - 3 >= 0) {
-
-                      setOngoingStartIndexKubid(ongoingStartIndexKubid - 3);
-                    }
-                  }}
+                  onClick={handlePreviousProposalsClick}
                 />
                 <IconButton
                   aria-label="Next polls"
@@ -408,12 +426,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={() => {
-                    if (ongoingStartIndexKubid + 3 < kubidOngoingProposals.length) {
-                      loadMoreKubidOngoing();
-                      setOngoingStartIndexKubid(ongoingStartIndexKubid + 3);
-                    }
-                  }}
+                  onClick={handleNextProposalsClick}
                 />
                 
               </HStack>
