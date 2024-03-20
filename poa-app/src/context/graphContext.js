@@ -204,7 +204,17 @@ export const GraphProvider = ({ children }) => {
             perpetualOrganization(id: "${id}") {
             DirectDemocracyVoting {
                 proposals(orderBy: experationTimestamp, orderDirection: desc, where: {winningOptionIndex_not: null}) {
-                id
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    winningOptionIndex
+                    options{
+                      id
+                      name
+                      votes
+                    }
                 }
             }
             }
@@ -212,7 +222,7 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data
+        return data.perpetualOrganization.DirectDemocracyVoting.proposals;
     }
 
     async function fetchProjectData(id) {
@@ -511,6 +521,7 @@ export const GraphProvider = ({ children }) => {
         setDemocracyVotingOngoing(democracyVotingOngoing);
         console.log("democracy voting ongoing", democracyVotingOngoing);
         setDemocracyVotingCompleted(democracyVotingCompleted);
+        console.log("democracy voting completed", democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
@@ -520,7 +531,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing}}>
+        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
         {children}
         </GraphContext.Provider>
     );

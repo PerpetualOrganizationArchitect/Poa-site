@@ -79,7 +79,7 @@ const Voting = () => {
   const { userDAO } = router.query;
 
   const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
-  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing} = useGraphContext();
+  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted} = useGraphContext();
 
   useEffect(() => {
     setLoaded(userDAO);
@@ -92,29 +92,22 @@ const Voting = () => {
     
     // Calculate the duration
     const duration = expirationTimestamp - currentTimestamp;
-    
-    console.log("duration", duration);
-    console.log("expirationTimestamp", expirationTimestamp);
-    console.log("currentTimestamp", currentTimestamp);
-    // Ensure the duration is never negative by using Math.max
+  
+
     // if duration is negative call get winner function
     async function getWinner(directDemocracyVotingContractAddress, proposalId) {
       const tx= await getWinnerDDVoting(directDemocracyVotingContractAddress, proposalId);
       tx.wait();
 
-    
-
+  
     }
 
     if (duration < 0) {
       getWinner(directDemocracyVotingContractAddress, proposalId);
        
     }
-
-
   
     return Math.max(0, duration);
-
 
     
   }
@@ -128,6 +121,15 @@ const Voting = () => {
   const [ongoingStartIndex, setOngoingStartIndex] = useState(0); // Index to start displaying ongoing proposals from
   const proposalDisplayLimit = 3; 
 
+  const[completedStartIndex, setCompletedStartIndex] = useState(0);
+
+  const safeDemocracyVotingCompleted = Array.isArray(democracyVotingCompleted) ? democracyVotingCompleted : [];
+
+  const displayedCompletedProposals = safeDemocracyVotingCompleted.slice(
+    completedStartIndex,
+    completedStartIndex + proposalDisplayLimit
+  );
+
   // Calculated slices of proposals to display based on the current index and limit
   const safeDemocracyVotingOngoing = Array.isArray(democracyVotingOngoing) ? democracyVotingOngoing : [];
 
@@ -137,13 +139,23 @@ const Voting = () => {
   );
 
   // Handlers for navigation buttons
-  const handlePreviousProposalsClick = () => {
+  const handlePreviousProposalsClickOngoing = () => {
     setOngoingStartIndex(Math.max(0, ongoingStartIndex - proposalDisplayLimit));
   };
 
-  const handleNextProposalsClick = () => {
+  const handleNextProposalsClickOngoing = () => {
     if (ongoingStartIndex + proposalDisplayLimit < democracyVotingOngoing.length) {
       setOngoingStartIndex(ongoingStartIndex + proposalDisplayLimit);
+    }
+  };
+
+  const handlePreviousProposalsClickCompleted = () => {
+    setCompletedStartIndex(Math.max(0, completedStartIndex - proposalDisplayLimit));
+  };
+
+  const handleNextProposalsClickCompleted = () => {
+    if (completedStartIndex + proposalDisplayLimit < democracyVotingCompleted.length) {
+      setCompletedStartIndex(completedStartIndex + proposalDisplayLimit);
     }
   };
 
@@ -154,29 +166,6 @@ const Voting = () => {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const [showCreateVote, setShowCreateVote]= useState(false);
 
- const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
- const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
-
-  //   const [ongoingStartIndexKubix, setOngoingStartIndexKubix] = useState(0);
-  //   const [historyStartIndexKubix, setHistoryStartIndexKubix] = useState(0);
-
-  //   const displayOngoingPollsKubid = kubidOngoingProposals.slice(
-  //     ongoingStartIndexKubid,
-  //     ongoingStartIndexKubid + 3
-  //   );
-  //   const displayHistoryPollsKubid = [...kubidCompletedProposals].slice(
-  //     historyStartIndexKubid,
-  //     historyStartIndexKubid + 3
-  //   );
-
-  //   const displayOngoingPollsKubix = ongoingPollsKubix.slice(
-  //     ongoingStartIndexKubix,
-  //     ongoingStartIndexKubix + 3
-  //   );
-  //   const displayHistoryPollsKubix = [...completedPollsKubix]
-  //     .reverse()
-  //     .slice(historyStartIndexKubix, historyStartIndexKubix + 3);
-  //   const [loaded, setLoaded] = useState(false);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -429,7 +418,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={handlePreviousProposalsClick}
+                  onClick={handlePreviousProposalsClickOngoing}
                 />
                 <IconButton
                   aria-label="Next polls"
@@ -443,7 +432,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={handleNextProposalsClick}
+                  onClick={handleNextProposalsClickOngoing}
                 />
                 
               </HStack>
@@ -459,15 +448,13 @@ const Voting = () => {
                     <Heading pl={2} color="rgba(333, 333, 333, 1)">
                       History{" "}
                     </Heading>
-                    {/* <HStack spacing={4} w="100%" justifyContent="flex-start">
-                      {kubidCompletedProposals.length > 0 ? (
-                        displayHistoryPollsKubid.map((proposal, index) => {
-                          const totalVotes = proposal.options.reduce(
-                            (total, option) =>
-                              total +
-                              ethers.BigNumber.from(option.votes).toNumber(),
-                            0
-                          );
+                     <HStack spacing={4} w="100%" justifyContent="flex-start">
+                      {displayedCompletedProposals.length > 0 ? (
+                        displayedCompletedProposals.map((proposal, index) => {
+                          const totalVotes = proposal.totalVotes;
+
+                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                  
                           const predefinedColors = [
                             "red",
                             "darkblue",
@@ -486,9 +473,9 @@ const Voting = () => {
                                       }, ${Math.random() * 255}, 1)`;
                                 return {
                                   value:
-                                    (ethers.BigNumber.from(
+                                    (
                                       option.votes
-                                    ).toNumber() /
+                                     /
                                       totalVotes) *
                                     100,
                                   color: color,
@@ -550,7 +537,7 @@ const Voting = () => {
                               </Flex>
 
                               <Text mb="2" fontSize="xl" fontWeight="extrabold">
-                                Winner: {proposal.winnerName}
+                                Winner: {WinnerName}
                               </Text>
                             </Box>
                           );
@@ -591,7 +578,7 @@ const Voting = () => {
                           </Flex>
                         </Box>
                       )}
-                      {kubidCompletedProposals.length > 0 ? (
+                      {displayedCompletedProposals.length > 0 ? (
                         <>
                           <Spacer />
                           <HStack justifyContent="bottom" spacing={-2}>
@@ -607,13 +594,7 @@ const Voting = () => {
                                   color="black"
                                 />
                               }
-                              onClick={() => {
-                                if (historyStartIndexKubid - 3 >= 0) {
-                                  setHistoryStartIndexKubid(
-                                    historyStartIndexKubid - 3
-                                  );
-                                }
-                              }}
+                              onClick={handlePreviousProposalsClickCompleted}
                             />
                             <IconButton
                               background="transparent"
@@ -627,22 +608,12 @@ const Voting = () => {
                                   color="black"
                                 />
                               }
-                              onClick={() => {
-                                if (
-                                  historyStartIndexKubid + 3 <
-                                  kubidCompletedProposals.length
-                                ) {
-                                  loadMoreKubidCompleted();
-                                  setHistoryStartIndexKubid(
-                                    historyStartIndexKubid + 3
-                                  );
-                                }
-                              }}
+                              onClick={handleNextProposalsClickCompleted}
                             />
                           </HStack>
                         </>
                       ) : null}
-                    </HStack> */}
+                    </HStack> 
                   </VStack>
                 </Flex>
               </Flex>
