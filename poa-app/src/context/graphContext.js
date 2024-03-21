@@ -89,19 +89,25 @@ export const GraphProvider = ({ children }) => {
     async function fetchUserData(id, org) {
         const query = `
         {
-        users(where: {organization: "${org}", id: "${id}"}) {
+        user(id: "${org}-${id}") {
             ptTokenBalance
             ddTokenBalance
             memberType {
             memberTypeName
             imageURL
             }
+            tasks {
+                id
+                ipfsHash
+                payout
+            }
         }
         }`;
 
         const data = await querySubgraph(query);
+        console.log("user data", data.user);
 
-        return data.users[0];
+        return data?.users;
 
 
     }
@@ -260,7 +266,7 @@ export const GraphProvider = ({ children }) => {
               NFTMembership {
                 executiveRoles
               }
-              Users(where: {id: "${id}"}){
+              Users(where: {id: "${poName}-${id}"}){
                       memberType{
                   memberTypeName
                 }
@@ -271,7 +277,6 @@ export const GraphProvider = ({ children }) => {
       console.log("execNFTcheck",query);
 
         const data = await querySubgraph(query);
-        console.log("pls",data.perpetualOrganization);
 
         // see if memberTypeName is in executiveRoles
         //loop through executive roles 
@@ -294,7 +299,7 @@ export const GraphProvider = ({ children }) => {
             const query = `{
                 perpetualOrganization(id: "${poName}") {
 
-                  Users(where: {id: "${id}"}){
+                  Users(where: {id: "${poName}-${id}"}){
                     id
                     }
                       
@@ -504,7 +509,7 @@ export const GraphProvider = ({ children }) => {
 
     async function loadGraphData(poName) {
 
-        const userData = await fetchUserData(poName);
+        const userData = await fetchUserData(account.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -527,8 +532,8 @@ export const GraphProvider = ({ children }) => {
         console.log("leaderboard", leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
-        console.log(await execNFTcheck(poName,"0x06e6620c67255d308a466293070206176288a67b"));
-        console.log(await memberNFTcheck(poName,"0x06e6620c67255d308a466293070206176288a67b"));
+        console.log(await execNFTcheck(poName,account.toLocaleLowerCase()));
+        console.log(await memberNFTcheck(poName,account.toLocaleLowerCase()));
 
     }
 
