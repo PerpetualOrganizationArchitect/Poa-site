@@ -3,12 +3,10 @@ import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import {useRouter} from "next/router";
 
-//import { useWeb3Context } from '../contexts/Web3Context';
 
 const Navbar = () => {
   const router = useRouter();
   const { userDAO } = router.query;
-  // const { isConnected } = useWeb3Context();
   return (
     <Box bg="black" p={4}>
       <Flex
@@ -18,13 +16,12 @@ const Navbar = () => {
         maxW={"100%"}
         justifyContent="space-between"
       >
-        <Box h="100%" w="12%" mr={{ base: "4", md: "8" }}>
+        <Box h="100%" w="12%" mr={{ base: "2", md: "4" }}>
           <Link as={NextLink} href={`/${userDAO}/home`} passHref>
             <Image
               src="/images/poa_character.png"
               alt="Your Logo"
-              w="auto"
-              maxW="65%"
+              w="45%"
             />
           </Link>
         </Box>
@@ -45,9 +42,9 @@ const Navbar = () => {
           >
             Tasks
           </Link>
-          {/* <Link as={NextLink} href="/Leaderboard" color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
+          <Link as={NextLink} href={`/${userDAO}/leaderboard`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
             Leaderboard
-          </Link> */}
+          </Link>
           <Link
             as={NextLink}
             href={`/${userDAO}/voting`}
@@ -58,16 +55,7 @@ const Navbar = () => {
           >
             Voting
           </Link>
-          <Box>
-            <Text
-              fontSize="xs"
-              ml={4}
-              mb={3}
-              mt={-8}
-              //   color={isConnected ? "green.500" : "red.500"}
-            >
-              {/* {isConnected ? "Connected" : "Not Connected"} */}
-            </Text>
+
             <Link
               as={NextLink}
               href={`/${userDAO}/user`}
@@ -78,7 +66,6 @@ const Navbar = () => {
             >
               User
             </Link>
-          </Box>
         </Flex>
       </Flex>
     </Box>

@@ -196,7 +196,7 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data.perpetualOrganization.DirectDemocracyVoting.proposals;
+        return data.perpetualOrganization.DirectDemocracyVoting?.proposals;
     }
 
     async function fetchDemocracyVotingCompleted(id) {
@@ -222,7 +222,7 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data.perpetualOrganization.DirectDemocracyVoting.proposals;
+        return data.perpetualOrganization.DirectDemocracyVoting?.proposals;
     }
 
     async function fetchProjectData(id) {
@@ -524,6 +524,7 @@ export const GraphProvider = ({ children }) => {
         setDemocracyVotingCompleted(democracyVotingCompleted);
         console.log("democracy voting completed", democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
+        console.log("leaderboard", leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
         console.log(await execNFTcheck(poName,"0x06e6620c67255d308a466293070206176288a67b"));
