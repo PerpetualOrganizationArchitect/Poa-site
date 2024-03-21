@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { MetaMaskSDK } from "@metamask/sdk";
+import { ethers } from 'ethers';
 import { useGraphContext } from '@/context/graphContext';
 
 export const useMetaMask = () => {
   const [accounts, setAccounts] = useState([]);
-  const [ethereum, setEthereum] = useState(null);
+  const [metaMaskProvider, setMetaMaskProvider] = useState(null);
+  const [wallet, setWallet] = useState(null);
   const { setAccountGraph } = useGraphContext();
 
   useEffect(() => {
@@ -18,54 +20,57 @@ export const useMetaMask = () => {
 
       await MMSDK.init();
       const ethereum = MMSDK.getProvider();
-      setEthereum(ethereum);
+      setMetaMaskProvider(ethereum);
 
-      // Request initially available accounts
+      // Directly create the Ethers provider here, not in state
+      const ethersProvider = new ethers.providers.Web3Provider(ethereum);
+
       ethereum.request({ method: 'eth_accounts' })
-        .then(handleAccountsChanged)
+        .then(accounts => handleAccountsChanged(accounts, ethersProvider))
         .catch(console.error);
 
-      // Event listener for account changes
-      ethereum.on('accountsChanged', handleAccountsChanged);
-
-      // Event listener for chain changes (re-initialize if needed)
-      ethereum.on('chainChanged', (chainId) => {
-        window.location.reload();
-      });
+      ethereum.on('accountsChanged', (accounts) => handleAccountsChanged(accounts, ethersProvider));
     };
 
     init();
 
-    // Cleanup function to remove event listeners
     return () => {
-      if (ethereum) {
-        ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        ethereum.removeListener('chainChanged', () => window.location.reload());
+      if (metaMaskProvider) {
+        console.log("Removing MetaMask event listeners");
+        metaMaskProvider.removeListener('accountsChanged', handleAccountsChanged);
       }
     };
   }, []);
 
-  // Handler for accounts change
-  const handleAccountsChanged = (accounts) => {
+  const handleAccountsChanged = (accounts, ethersProvider) => {
+    console.log("Accounts changed:", accounts);
     if (accounts.length > 0) {
       setAccounts(accounts);
       setAccountGraph(accounts[0]);
-      console.log("Account", accounts[0]);
+
+      // Use the provided ethersProvider directly
+      const signer = ethersProvider.getSigner(accounts[0]);
+      setWallet(signer); // Store the ethers signer as the "wallet"
+      console.log("Connected to MetaMask with account:", accounts[0]);
     } else {
-      // Handle case where user has locked/disconnected their MetaMask
       setAccounts([]);
-      setAccountGraph(null); // Adjust according to your app's logic
+      setAccountGraph(null);
+      setWallet(null);
     }
   };
 
   const connectWallet = async () => {
+    if (!metaMaskProvider) return;
+
     try {
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      handleAccountsChanged(accounts);
+      // Directly create an ethersProvider to use here
+      const ethersProvider = new ethers.providers.Web3Provider(metaMaskProvider);
+      const accounts = await metaMaskProvider.request({ method: 'eth_requestAccounts' });
+      handleAccountsChanged(accounts, ethersProvider);
     } catch (error) {
-      console.error(error);
+      console.error("Error connecting to MetaMask:", error);
     }
   };
 
-  return { connectWallet, accounts };
+  return { connectWallet, accounts, wallet };
 };

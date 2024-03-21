@@ -24,6 +24,9 @@ import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
 
 import {main} from "../../../scripts/realDeployment"
+import { useMetaMask } from "@/components/Metamask";
+
+
 
 
 
@@ -88,6 +91,7 @@ const defaultMembershipOptions = [
 ];
 
 const ArchitectPage = () => {
+  const {wallet} = useMetaMask();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
     useState(false);
@@ -323,7 +327,8 @@ const ArchitectPage = () => {
         orgDetails.hybridVotingEnabled,
         orgDetails.participationVotingEnabled,
         orgDetails.logoURL,
-        orgDetails.votingControlType
+        orgDetails.votingControlType, 
+        wallet
        );
       setTimeout(() => {
         setIsDeploying(true); // set deployment to true for demonstration

@@ -275,8 +275,9 @@ export const GraphProvider = ({ children }) => {
 
         // see if memberTypeName is in executiveRoles
         //loop through executive roles 
+    
         for (let i = 0; i < data.perpetualOrganization.NFTMembership.executiveRoles.length; i++){
-            if (data.perpetualOrganization.Users[0].memberType.memberTypeName === data.perpetualOrganization.NFTMembership.executiveRoles[i]){
+            if (data.perpetualOrganization.Users[0]?.memberType.memberTypeName === data.perpetualOrganization.NFTMembership.executiveRoles[i]){
                 setHasExecNFT(true);
                 return true;
             }

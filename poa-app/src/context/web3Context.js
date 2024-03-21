@@ -31,16 +31,6 @@ export const Web3Provider = ({ children }) => {
 
 
     const { accounts, connectWallet } = useMetaMask();
-
-
-
-
-
-
-
-    
-
-
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
     

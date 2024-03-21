@@ -225,11 +225,18 @@ async function makeNFTMembership(
     defaultImageURL,
     POname
   );
-  await tx.wait();
+  const txRecipet= await tx.wait();
 
-  const deployedContracts = await nftFactoryContract.getDeployedContracts();
-  const lastDeployedContractAddress =
-    deployedContracts[deployedContracts.length - 1];
+
+  let lastDeployedContractAddress;
+  // under receipt events [0] address is the contract address
+  if (txRecipet.events) {
+    lastDeployedContractAddress = txRecipet.events[0].address;
+  } else {
+    console.error("NFT Membership contract address not found");
+  }
+
+  
 
   console.log("NFT Membership contract address: ", lastDeployedContractAddress);
 
@@ -588,20 +595,22 @@ export async function main(
   hybridVotingEnabled,
   participationVotingEnabled,
   logoURL,
-  votingControlType
+  votingControlType,
+  wallet
 ) {
-  const provider = new ethers.providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_INFURA_URL
-  );
-  const wallet = new ethers.Wallet(
-    process.env.NEXT_PUBLIC_PRIVATE_KEY,
-    provider
-  );
+  // const provider = new ethers.providers.JsonRpcProvider(
+  //   process.env.NEXT_PUBLIC_INFURA_URL
+  // );
+  // // const wallet = new ethers.Wallet(
+  // //   process.env.NEXT_PUBLIC_PRIVATE_KEY,
+  // //   provider
+  // );
 
   // make sure POname is unique
 
   try {
     console.log("starting deploy");
+    console.log(wallet)
     //   const nftMembership = await deployNFTMembership(wallet);
     //   const ddToken = await deployDirectDemocracyToken(wallet);
     //   const ptToken = await deployParticipationToken(wallet);
@@ -630,6 +639,7 @@ export async function main(
       NFTMembershipFactory.abi,
       wallet
     );
+    console.log("created")
     const ddToken = new ethers.Contract(
       ddTokenFactoryAddress,
       DirectDemocracyTokenFactory.abi,
@@ -675,6 +685,7 @@ export async function main(
     const defaultImageURL = "http://example.com/default.jpg";
     //const POname = "Test Org2";
 
+
     const nftAddress = await makeNFTMembership(
       nftMembership,
       memberTypeNames,
@@ -682,6 +693,13 @@ export async function main(
       defaultImageURL,
       POname
     );
+
+
+  
+
+    
+
+    console.log("worked")
     const ddTokenAddress = await makeDDToken(
       ddToken,
       "DirectDemocracyToken",
