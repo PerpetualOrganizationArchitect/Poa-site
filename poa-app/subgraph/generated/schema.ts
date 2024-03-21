@@ -3287,6 +3287,23 @@ export class Task extends Entity {
   set completed(value: boolean) {
     this.set("completed", Value.fromBoolean(value));
   }
+
+  get user(): string | null {
+    let value = this.get("user");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set user(value: string | null) {
+    if (!value) {
+      this.unset("user");
+    } else {
+      this.set("user", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class Project extends Entity {
@@ -3952,6 +3969,10 @@ export class User extends Entity {
     } else {
       this.set("memberType", Value.fromString(<string>value));
     }
+  }
+
+  get tasks(): TaskLoader {
+    return new TaskLoader("User", this.get("id")!.toString(), "tasks");
   }
 }
 

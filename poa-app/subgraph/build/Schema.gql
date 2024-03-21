@@ -292,6 +292,7 @@ type Task @entity {
   project: Project! @link
   claimer: Bytes
   completed: Boolean!
+  user: User @link
 }
 
 type Project @entity {
@@ -354,6 +355,7 @@ type User @entity {
   ddTokenBalance: BigInt!
   ptTokenBalance: BigInt!
   memberType: NFTMemberType @link
+  tasks: [Task!] @derivedFrom(field: "user")
 }
 
 

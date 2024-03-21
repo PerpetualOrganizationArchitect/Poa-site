@@ -13,7 +13,14 @@ export function handleTokenMint(event: MintEvent): void {
   entity.amount = event.params.amount
   entity.save()
 
-  let user = User.load(event.params.to.toHex())
+  let token = DDToken.load(event.address.toHex())
+  if (token == null) {
+    //return if token not found
+    log.error("DDToken not found: {}", [event.address.toHex()])
+    return
+  }
+
+  let user = User.load(token.POname+'-'+event.params.to.toHex())
   if (user != null) {
     user.ddTokenBalance = user.ddTokenBalance.plus(event.params.amount)
     user.save()

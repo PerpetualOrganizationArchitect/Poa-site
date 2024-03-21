@@ -27,9 +27,16 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
       log.error("Task not found: {}", [event.params.id.toHex()])
       return
     }
+    let taskManager = TaskManager.load(event.address.toHex());
+    if (!taskManager) {
+      log.error("TaskManager not found: {}", [event.address.toHex()])
+      return
+    }
     task.claimer = event.params.claimer
+    task.user = taskManager.POname + '-' + event.params.claimer.toHex()
     task.save()
-  }
+}
+
 
 export function handleTaskUpdated(event: TaskUpdatedEvent): void {
     log.info("Triggered handleTaskUpdated", [])
