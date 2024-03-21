@@ -30,7 +30,7 @@ export const useWeb3Context = () => {
 export const Web3Provider = ({ children }) => {
 
 
-    const { accounts, connectWallet } = useMetaMask();
+    const { accounts, connectWallet, wallet } = useMetaMask();
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
     
@@ -44,7 +44,7 @@ export const Web3Provider = ({ children }) => {
 
 
     const getContractInstance = (contractAddress, contractABI) => {
-        return new ethers.Contract(contractAddress, contractABI, signer);
+        return new ethers.Contract(contractAddress, contractABI, wallet);
     };
 
     // Hybrid Voting
