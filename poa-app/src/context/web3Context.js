@@ -70,11 +70,19 @@ export const Web3Provider = ({ children }) => {
         console.log("Proposal created");
     }
 
-    async function ddVote(contractAddress,proposalID, voterAddress, optionIndex) {
+    async function ddVote(contractAddress,proposalID, optionIndex) {
+        const voterAddress = account;
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
         const tx = await contract.vote(proposalID, voterAddress, optionIndex);
         await tx.wait();
         console.log("Voted");
+    }
+
+    async function getWinnerDDVoting(contractAddress, proposalID) {
+        const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
+        const winner = await contract.announceWinner(proposalID);
+        console.log("Winner: ", winner);
+        return winner;
     }
 
     // PT Voting
@@ -204,7 +212,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{completeTask, account, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
+        <Web3Context.Provider value={{ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, account, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
         {children}
         </Web3Context.Provider>
     );

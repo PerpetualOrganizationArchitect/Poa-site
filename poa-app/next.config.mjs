@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eactStrictMode: true,
+  reactStrictMode: true,
   trailingSlash: true,
   output: 'export',
   images: {

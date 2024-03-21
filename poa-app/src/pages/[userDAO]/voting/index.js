@@ -1,4 +1,4 @@
-// pages/[userDAO]/voting/index.js
+// Code to display the voting page for a specific DAO
 import React, { useState, useEffect, use } from "react";
 import {
   HStack,
@@ -38,15 +38,12 @@ import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
 
 
 
-
-
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import CountDown from "@/templateComponents/studentOrgDAO/voting/countDown";
 import { IconButton } from "@chakra-ui/react";
 import PollModal from "@/templateComponents/studentOrgDAO/voting/pollModal";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
-// import { useGraphVotingContext } from "@/contexts/graphVotingContext";
 
 
 import { useRouter } from "next/router";
@@ -81,25 +78,86 @@ const Voting = () => {
   const router = useRouter();
   const { userDAO } = router.query;
 
-  const {createProposalDDVoting} = useWeb3Context();
-  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing} = useGraphContext();
+  const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
+  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted} = useGraphContext();
 
   useEffect(() => {
     setLoaded(userDAO);
   }, [userDAO]);
 
+  // Function to calculate the remaining time until the proposal expires
+  function calculateRemainingTime(expirationTimestamp, proposalId) {
+    // Current timestamp in seconds
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    
+    // Calculate the duration
+    const duration = expirationTimestamp - currentTimestamp;
+  
+
+    // if duration is negative call get winner function
+    async function getWinner(directDemocracyVotingContractAddress, proposalId) {
+      const tx= await getWinnerDDVoting(directDemocracyVotingContractAddress, proposalId);
+      tx.wait();
+
+  
+    }
+
+    if (duration < 0) {
+      getWinner(directDemocracyVotingContractAddress, proposalId);
+       
+    }
+  
+    return Math.max(0, duration);
+
+    
+  }
+
+
 
 
   const [selectedTab, setSelectedTab] = useState(0);
 
-  //   const {
-  //     kubidOngoingProposals,
-  //     kubidCompletedProposals,
-  //     loadOngoingKubidInitial,
-  //     loadCompletedKubidInitial,
-  //     loadMoreKubidOngoing,
-  //     loadMoreKubidCompleted,
-  //   } = useGraphVotingContext();
+  // State hooks to manage displayed proposals
+  const [ongoingStartIndex, setOngoingStartIndex] = useState(0); // Index to start displaying ongoing proposals from
+  const proposalDisplayLimit = 3; 
+
+  const[completedStartIndex, setCompletedStartIndex] = useState(0);
+
+  const safeDemocracyVotingCompleted = Array.isArray(democracyVotingCompleted) ? democracyVotingCompleted : [];
+
+  const displayedCompletedProposals = safeDemocracyVotingCompleted.slice(
+    completedStartIndex,
+    completedStartIndex + proposalDisplayLimit
+  );
+
+  // Calculated slices of proposals to display based on the current index and limit
+  const safeDemocracyVotingOngoing = Array.isArray(democracyVotingOngoing) ? democracyVotingOngoing : [];
+
+  const displayedOngoingProposals = safeDemocracyVotingOngoing.slice(
+    ongoingStartIndex,
+    ongoingStartIndex + proposalDisplayLimit
+  );
+
+  // Handlers for navigation buttons
+  const handlePreviousProposalsClickOngoing = () => {
+    setOngoingStartIndex(Math.max(0, ongoingStartIndex - proposalDisplayLimit));
+  };
+
+  const handleNextProposalsClickOngoing = () => {
+    if (ongoingStartIndex + proposalDisplayLimit < democracyVotingOngoing.length) {
+      setOngoingStartIndex(ongoingStartIndex + proposalDisplayLimit);
+    }
+  };
+
+  const handlePreviousProposalsClickCompleted = () => {
+    setCompletedStartIndex(Math.max(0, completedStartIndex - proposalDisplayLimit));
+  };
+
+  const handleNextProposalsClickCompleted = () => {
+    if (completedStartIndex + proposalDisplayLimit < democracyVotingCompleted.length) {
+      setCompletedStartIndex(completedStartIndex + proposalDisplayLimit);
+    }
+  };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -108,31 +166,10 @@ const Voting = () => {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const [showCreateVote, setShowCreateVote]= useState(false);
 
-  //   const [ongoingStartIndexKubid, setOngoingStartIndexKubid] = useState(0);
-  //   const [historyStartIndexKubid, setHistoryStartIndexKubid] = useState(0);
-
-  //   const [ongoingStartIndexKubix, setOngoingStartIndexKubix] = useState(0);
-  //   const [historyStartIndexKubix, setHistoryStartIndexKubix] = useState(0);
-
-  //   const displayOngoingPollsKubid = kubidOngoingProposals.slice(
-  //     ongoingStartIndexKubid,
-  //     ongoingStartIndexKubid + 3
-  //   );
-  //   const displayHistoryPollsKubid = [...kubidCompletedProposals].slice(
-  //     historyStartIndexKubid,
-  //     historyStartIndexKubid + 3
-  //   );
-
-  //   const displayOngoingPollsKubix = ongoingPollsKubix.slice(
-  //     ongoingStartIndexKubix,
-  //     ongoingStartIndexKubix + 3
-  //   );
-  //   const displayHistoryPollsKubix = [...completedPollsKubix]
-  //     .reverse()
-  //     .slice(historyStartIndexKubix, historyStartIndexKubix + 3);
-  //   const [loaded, setLoaded] = useState(false);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const [selectedOption, setSelectedOption] = useState("");
 
   const handlePollCreated = () => {
     function run() {
@@ -163,18 +200,10 @@ const Voting = () => {
   const handlePollClick = (poll) => {
     console.log(poll);
     setSelectedPoll(poll);
-    router.push(`/voting?poll=${poll.id}`);
+    router.push(`/${userDAO}/voting?poll=${poll.id}`);
     onOpen();
   };
 
-  //   useEffect(() => {
-  //     const fetchPolls = async () => {
-  //       await loadCompletedKubidInitial();
-  //       await loadOngoingKubidInitial();
-  //       setLoaded(true);
-  //     };
-  //     fetchPolls();
-  //   }, []);
 
   const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 }
   const [proposal, setProposal] = useState(defaultProposal)
@@ -206,20 +235,20 @@ const Voting = () => {
    
   };
 
-  //   useEffect(() => {
-  //     console.log("router.query.poll: ", router.query.poll);
+    // useEffect(() => {
+    //   console.log("router.query.poll: ", router.query.poll);
 
-  //     if (router.query.poll !== undefined && loaded) {
-  //       console.log("router.query.poll: ", router.query.poll);
-  //       // find poll with index poll
-  //       const poll = kubidOngoingProposals.find(
-  //         (poll) => poll.id === router.query.poll
-  //       );
-  //       console.log("poll: ", poll);
-  //       setSelectedPoll(poll);
-  //       onOpen();
-  //     }
-  //   }, [router.query.poll, kubidOngoingProposals, loaded]);
+    //   if (router.query.poll !== undefined && loaded) {
+    //     console.log("router.query.poll: ", router.query.poll);
+    //     // find poll with index poll
+    //     const poll = kubidOngoingProposals.find(
+    //       (poll) => poll.id === router.query.poll
+    //     );
+    //     console.log("poll: ", poll);
+    //     setSelectedPoll(poll);
+    //     onOpen();
+    //   }
+    // }, [router.query.poll, kubidOngoingProposals, loaded]);
 
   return (
     <>
@@ -310,8 +339,8 @@ const Voting = () => {
                       </Button>
                     </HStack>
                     <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
-              {democracyVotingOngoing.length > 0 ? (
-                democracyVotingOngoing.map((proposal, index) => (
+              {displayedOngoingProposals.length > 0 ? (
+                displayedOngoingProposals.map((proposal, index) => (
                   <Box key={index} flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
@@ -330,7 +359,7 @@ const Voting = () => {
                     onClick={() => handlePollClick(proposal)}>
                     <div className="glass" style={glassLayerStyle} />
                     <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                    <CountDown duration={proposal?.experationTimestamp- Math.floor(Date.now() / 1000)} />
+                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id)} />
                     <Text mt="2"> Voting Options:</Text>
                     <HStack mb={2} spacing={6}>
                       {proposal.options.map((option, index) => (
@@ -373,7 +402,7 @@ const Voting = () => {
                   </Box>
 
               )}
-              {democracyVotingOngoing.length > 0 ? (
+              {displayedOngoingProposals.length > 0 ? (
               <>
               <Spacer />
               <HStack justifyContent="bottom" spacing={4}>
@@ -389,12 +418,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={() => {
-                    if (ongoingStartIndexKubid - 3 >= 0) {
-
-                      setOngoingStartIndexKubid(ongoingStartIndexKubid - 3);
-                    }
-                  }}
+                  onClick={handlePreviousProposalsClickOngoing}
                 />
                 <IconButton
                   aria-label="Next polls"
@@ -408,12 +432,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={() => {
-                    if (ongoingStartIndexKubid + 3 < kubidOngoingProposals.length) {
-                      loadMoreKubidOngoing();
-                      setOngoingStartIndexKubid(ongoingStartIndexKubid + 3);
-                    }
-                  }}
+                  onClick={handleNextProposalsClickOngoing}
                 />
                 
               </HStack>
@@ -429,15 +448,13 @@ const Voting = () => {
                     <Heading pl={2} color="rgba(333, 333, 333, 1)">
                       History{" "}
                     </Heading>
-                    {/* <HStack spacing={4} w="100%" justifyContent="flex-start">
-                      {kubidCompletedProposals.length > 0 ? (
-                        displayHistoryPollsKubid.map((proposal, index) => {
-                          const totalVotes = proposal.options.reduce(
-                            (total, option) =>
-                              total +
-                              ethers.BigNumber.from(option.votes).toNumber(),
-                            0
-                          );
+                     <HStack spacing={4} w="100%" justifyContent="flex-start">
+                      {displayedCompletedProposals.length > 0 ? (
+                        displayedCompletedProposals.map((proposal, index) => {
+                          const totalVotes = proposal.totalVotes;
+
+                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                  
                           const predefinedColors = [
                             "red",
                             "darkblue",
@@ -456,9 +473,9 @@ const Voting = () => {
                                       }, ${Math.random() * 255}, 1)`;
                                 return {
                                   value:
-                                    (ethers.BigNumber.from(
+                                    (
                                       option.votes
-                                    ).toNumber() /
+                                     /
                                       totalVotes) *
                                     100,
                                   color: color,
@@ -520,7 +537,7 @@ const Voting = () => {
                               </Flex>
 
                               <Text mb="2" fontSize="xl" fontWeight="extrabold">
-                                Winner: {proposal.winnerName}
+                                Winner: {WinnerName}
                               </Text>
                             </Box>
                           );
@@ -561,7 +578,7 @@ const Voting = () => {
                           </Flex>
                         </Box>
                       )}
-                      {kubidCompletedProposals.length > 0 ? (
+                      {displayedCompletedProposals.length > 0 ? (
                         <>
                           <Spacer />
                           <HStack justifyContent="bottom" spacing={-2}>
@@ -577,13 +594,7 @@ const Voting = () => {
                                   color="black"
                                 />
                               }
-                              onClick={() => {
-                                if (historyStartIndexKubid - 3 >= 0) {
-                                  setHistoryStartIndexKubid(
-                                    historyStartIndexKubid - 3
-                                  );
-                                }
-                              }}
+                              onClick={handlePreviousProposalsClickCompleted}
                             />
                             <IconButton
                               background="transparent"
@@ -597,22 +608,12 @@ const Voting = () => {
                                   color="black"
                                 />
                               }
-                              onClick={() => {
-                                if (
-                                  historyStartIndexKubid + 3 <
-                                  kubidCompletedProposals.length
-                                ) {
-                                  loadMoreKubidCompleted();
-                                  setHistoryStartIndexKubid(
-                                    historyStartIndexKubid + 3
-                                  );
-                                }
-                              }}
+                              onClick={handleNextProposalsClickCompleted}
                             />
                           </HStack>
                         </>
                       ) : null}
-                    </HStack> */}
+                    </HStack> 
                   </VStack>
                 </Flex>
               </Flex>
@@ -1072,11 +1073,12 @@ const Voting = () => {
         <PollModal
           isOpen={isOpen}
           onClose={onClose}
-          // handleVote={handleVote}
+          handleVote={ddVote}
+          contractAddress={selectedTab === 0 ? directDemocracyVotingContractAddress : directDemocracyVotingContractAddress}
           // loadingVote={loadingVote}
-          // selectedPoll={selectedPoll}
-          //   selectedOption={selectedOption}
-          //   setSelectedOption={setSelectedOption}
+          selectedPoll={selectedPoll}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
           onOpen={onOpen}
         />
       </Container>

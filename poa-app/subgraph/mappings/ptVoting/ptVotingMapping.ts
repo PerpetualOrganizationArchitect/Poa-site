@@ -43,6 +43,16 @@ export function handleVoted(event: Voted): void {
   
     proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(100));
     proposal.save();
+
+    //update option votes
+    let optionId = proposalId + "-" + event.params.optionIndex.toString();
+    let option = PTPollOption.load(optionId);
+    if (!option) {
+      log.error("Option not found: {}", [optionId]);
+      return;
+    }
+    option.votes = option.votes.plus(BigInt.fromI32(100));
+    option.save();
   }
   
   export function handlePollOptionNames(event: PollOptionNames): void {
