@@ -4,7 +4,7 @@ import Layout from "../../components/Layout"; // If you have a Layout component
 import { Text, Box, Flex, Button } from "@chakra-ui/react";
 import { useMetaMask } from "../../components/Metamask";
 const AboutPage = () => {
-  const { connectWallet, accounts } = useMetaMask();
+  //const { connectWallet, accounts } = useMetaMask();
 
   return (
     <Layout>

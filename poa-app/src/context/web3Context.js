@@ -12,6 +12,7 @@ import TaskManager from "../../abi/TaskManager.json";
 import NFTMembership from "../../abi/NFTMembership.json";
 import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
+import { useMetaMask } from '@/components/Metamask';
 
 
 
@@ -19,16 +20,17 @@ import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 
 const Web3Context = createContext();
 
+
+
 export const useWeb3Context = () => {
     return useContext(Web3Context);
     }
 
 
 export const Web3Provider = ({ children }) => {
-    const account ="0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase();
-    
 
 
+    const { accounts, connectWallet, wallet } = useMetaMask();
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
     
@@ -42,7 +44,7 @@ export const Web3Provider = ({ children }) => {
 
 
     const getContractInstance = (contractAddress, contractABI) => {
-        return new ethers.Contract(contractAddress, contractABI, signer);
+        return new ethers.Contract(contractAddress, contractABI, wallet);
     };
 
     // Hybrid Voting
@@ -71,7 +73,7 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function ddVote(contractAddress,proposalID, optionIndex) {
-        const voterAddress = account;
+        const voterAddress = accounts[0];
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
         const tx = await contract.vote(proposalID, voterAddress, optionIndex);
         await tx.wait();
@@ -212,7 +214,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, account, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
+        <Web3Context.Provider value={{ ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
         {children}
         </Web3Context.Provider>
     );

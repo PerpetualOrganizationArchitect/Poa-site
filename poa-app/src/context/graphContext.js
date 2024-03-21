@@ -16,7 +16,7 @@ export const GraphProvider = ({ children }) => {
     const[poName, setPoName] = useState('1');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
-    const[account, setAccount] = useState("0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase());
+    const[account, setAccountGraph] = useState("0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase());
 
     const[userData, setUserData] = useState({});
     const[participationVotingOngoing, setParticipationVotingOngoing] = useState({});
@@ -275,8 +275,9 @@ export const GraphProvider = ({ children }) => {
 
         // see if memberTypeName is in executiveRoles
         //loop through executive roles 
+    
         for (let i = 0; i < data.perpetualOrganization.NFTMembership.executiveRoles.length; i++){
-            if (data.perpetualOrganization.Users[0].memberType.memberTypeName === data.perpetualOrganization.NFTMembership.executiveRoles[i]){
+            if (data.perpetualOrganization.Users[0]?.memberType.memberTypeName === data.perpetualOrganization.NFTMembership.executiveRoles[i]){
                 setHasExecNFT(true);
                 return true;
             }
@@ -531,7 +532,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
+        <GraphContext.Provider value={{setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
         {children}
         </GraphContext.Provider>
     );
