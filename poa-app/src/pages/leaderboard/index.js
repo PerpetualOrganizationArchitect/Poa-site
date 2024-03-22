@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 
 import { useGraphContext } from '@/context/graphContext';
 import { useDataBaseContext } from '@/context/dataBaseContext';
+import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 
 
@@ -70,6 +71,8 @@ const Leaderboard = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <Box position="relative" w="100%" minH="100vh" p={4} bg="#2d86fff7">
       <VStack spacing={4}>
         <Heading as="h1">Leaderboard</Heading>
@@ -118,6 +121,7 @@ const Leaderboard = () => {
         </Flex>
       </VStack>
     </Box>
+    </>
   );
 };
 

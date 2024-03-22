@@ -12,7 +12,7 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
     console.log("projectId: ", projectId);
     // Using template literals to include `userDAO` in the pathname
     router.push({
-      pathname: `/${userDAO}/tasks`,
+      pathname: `/tasks/?userDAO=${userDAO}`,
       query: { task: id, projectId: projectId },
     }, undefined, { shallow: true });
   };

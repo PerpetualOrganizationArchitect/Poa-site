@@ -184,14 +184,6 @@ const ArchitectPage = () => {
     onClose(); // Close the confirmation modal
   };
 
-  const handleConfirmation = () => {
-    // This is where you would handle the API call to create the site
-    // For now, we'll navigate to the new route
-    const formattedOrgName = encodeURIComponent(
-      orgName.trim().toLowerCase().replace(/\s+/g, "-")
-    );
-    router.push(`/${formattedOrgName}/home`);
-  };
 
   const startOver = () => {
     // Reset all state to initial values
@@ -279,30 +271,9 @@ const ArchitectPage = () => {
     setCurrentStep("ASK_QUAD_VOTING");
   };
 
-  function appendRandomNumsToPOname() {
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000); // Generates a number between 1000 and 9999
-    setOrgDetails((prevDetails) => ({
-      ...prevDetails,
-      POname: POname + "_" + randomSuffix,
-    }));
-    console.log("POname: ", orgDetails.POname);
-    return;
-  }
+
 
   const handleSaveAllSelections = async () => {
-    // Append a random number to POname
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000); // Generates a number between 1000 and 9999
-    const updatedPOname = `${orgDetails.POname}_${randomSuffix}`;
-
-    // Update orgDetails with the new POname
-    const updatedOrgDetails = {
-      ...orgDetails,
-      POname: updatedPOname,
-    };
-
-    // Update state to reflect changes
-    setOrgDetails(updatedOrgDetails);
-
     // Close any open modal and show deployment progress
     setIsConfirmationModalOpen(false);
     console.log("Saving: ", updatedOrgDetails);
@@ -585,7 +556,7 @@ const ArchitectPage = () => {
               top="4"
               right="4"
               colorScheme="teal"
-              onClick={() => router.push(`/${orgName}/home`)}
+              onClick={() => router.push(`/home/?userDAO=${orgName}`)}
             >
               Access site
             </Button>

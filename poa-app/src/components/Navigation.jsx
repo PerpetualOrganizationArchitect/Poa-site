@@ -18,7 +18,7 @@ const Navigation = () => {
       shadow={"md"}
     >
       {/* Wrap each Link in a Button component */}
-      <Link href="/dashboard" passHref>
+      <Link href="/landing" passHref>
         <IconButton
           icon={
             <Image

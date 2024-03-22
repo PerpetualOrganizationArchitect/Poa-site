@@ -48,18 +48,20 @@ const PollModal = ({
 
   const handleModalClose = () => {
     onClose();
-    router.push(`/${userDAO}/voting`);
+    router.push(`/voting/?userDAO=${userDAO}`);
   };
 
   const vote = () => {
 
     console.log("selectedOption", selectedOption);
     console.log("selectedPoll", selectedPoll.id);
-    console.log(handleVote)
 
-    // make selected option id as selectedpollid+ - + selectedoptionid
+
+    //make selected poll id be the part of string before -
+    let newPollId = selectedPoll.id.split("-")[0];
+
     
-    handleVote(contractAddress, selectedPoll.id, selectedOption);
+    handleVote(contractAddress, newPollId, selectedOption);
   };
 
 

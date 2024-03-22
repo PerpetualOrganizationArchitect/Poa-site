@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import MainLayout from '../../../components/TaskManager/MainLayout';
+import MainLayout from '../../components/TaskManager/MainLayout';
 //import FloatingBalls from '../components/TaskManager/floatingBalls';
 import { useDataBaseContext } from '@/context/dataBaseContext';
 import { useRouter } from 'next/router';

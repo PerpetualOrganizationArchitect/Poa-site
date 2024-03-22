@@ -200,7 +200,7 @@ const Voting = () => {
   const handlePollClick = (poll) => {
     console.log(poll);
     setSelectedPoll(poll);
-    router.push(`/${userDAO}/voting?poll=${poll.id}`);
+    router.push(`/voting?poll=${poll.id}&userDAO=${userDAO}`);
     onOpen();
   };
 
