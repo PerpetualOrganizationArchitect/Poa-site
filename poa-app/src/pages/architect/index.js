@@ -184,14 +184,6 @@ const ArchitectPage = () => {
     onClose(); // Close the confirmation modal
   };
 
-  const handleConfirmation = () => {
-    // This is where you would handle the API call to create the site
-    // For now, we'll navigate to the new route
-    const formattedOrgName = encodeURIComponent(
-      orgName.trim().toLowerCase().replace(/\s+/g, "-")
-    );
-    router.push(`/${formattedOrgName}/home`);
-  };
 
   const startOver = () => {
     // Reset all state to initial values
@@ -564,7 +556,7 @@ const ArchitectPage = () => {
               top="4"
               right="4"
               colorScheme="teal"
-              onClick={() => router.push(`/${orgName}/home`)}
+              onClick={() => router.push(`/home/?userDAO=${orgName}`)}
             >
               Access site
             </Button>
