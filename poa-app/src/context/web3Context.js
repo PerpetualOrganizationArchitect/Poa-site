@@ -35,9 +35,6 @@ export const Web3Provider = ({ children }) => {
 
     
 
-    const [providerUniversal, setProviderUniversal] = useState(new providers.StaticJsonRpcProvider(process.env.NEXT_PUBLIC_INFURA_URL));
-    const [signer, setSigner] = useState(new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY, providerUniversal));
-
     const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
     const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
     const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";

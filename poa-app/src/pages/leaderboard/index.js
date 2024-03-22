@@ -13,11 +13,10 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react';
-// import { useLeaderboard } from '../contexts/leaderboardContext';
+
 import { useRouter } from 'next/router';
 
 import { useGraphContext } from '@/context/graphContext';
-import { useDataBaseContext } from '@/context/dataBaseContext';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 
