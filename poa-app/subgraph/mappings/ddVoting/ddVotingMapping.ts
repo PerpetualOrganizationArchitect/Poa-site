@@ -6,7 +6,7 @@ import { DDProposal, DDPollOption,DDVote } from "../../generated/schema"
 export function handlePollCreated(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
 
-    let newProposal = new DDProposal(event.params.proposalId.toHex());
+    let newProposal = new DDProposal(event.params.proposalId.toHex()+"-"+event.address.toHex());
     newProposal.name = event.params.name;
     newProposal.description = event.params.description;
     newProposal.creationTimestamp = event.params.creationTimestamp;
@@ -27,7 +27,7 @@ export function handlePollCreated(event: NewProposal): void {
 export function handleVoted(event: Voted): void {
     log.info("Triggered handleVoted for proposalId {}", [event.params.proposalId.toString()]);
   
-    let proposalId = event.params.proposalId.toHex();
+    let proposalId = event.params.proposalId.toHex()+"-"+event.address.toHex()
     let proposal = DDProposal.load(proposalId);
     if (!proposal) {
       log.error("Proposal not found: {}", [proposalId]);
@@ -60,7 +60,7 @@ export function handleVoted(event: Voted): void {
   export function handlePollOptionNames(event: PollOptionNames): void {
     log.info("Triggered handlePollOptionNames for proposalId {}", [event.params.proposalId.toString()]);
   
-    let proposalId = event.params.proposalId.toHex();
+    let proposalId = event.params.proposalId.toHex()+"-"+event.address.toHex();
     let optionId = proposalId + "-" + event.params.optionIndex.toString();
     let option = new DDPollOption(optionId);
     option.proposal = proposalId;
@@ -72,7 +72,7 @@ export function handleVoted(event: Voted): void {
   export function handleWinnerAnnounced(event: WinnerAnnounced): void {
     log.info("Triggered handleWinnerAnnounced for proposalId {}", [event.params.proposalId.toString()]);
   
-    let proposalId = event.params.proposalId.toHex();
+    let proposalId = event.params.proposalId.toHex()+"-"+event.address.toHex();
     let proposal = DDProposal.load(proposalId);
     if (!proposal) {
       log.error("Proposal not found: {}", [proposalId]);
