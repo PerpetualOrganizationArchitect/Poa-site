@@ -492,7 +492,7 @@ export const GraphProvider = ({ children }) => {
         }
         if (data.perpetualOrganization.DirectDemocracyVoting?.id) {
             setDirectDemocracyVotingContractAddress(data.perpetualOrganization.DirectDemocracyVoting.id);
-            console.log("direct democracy voting", data.perpetualOrganization.DirectDemocracyVoting.id);
+            console.log("swjnjsjcd direct democracy voting", data.perpetualOrganization.DirectDemocracyVoting.id);
         }
         if (data.perpetualOrganization.DirectDemocracyToken?.id) {
             setDDTokenContractAddress(data.perpetualOrganization.DirectDemocracyToken.id);

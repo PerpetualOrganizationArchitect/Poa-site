@@ -86,7 +86,7 @@ const User = () => {
 
     useEffect(() => {
     if (hasMemberNFT) {
-          router.push(`/${userDAO}/dashboard`); 
+          router.push(`/dashboard/?userDAO=${userDAO}`); 
       }
     }, [hasMemberNFT]);
 

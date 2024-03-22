@@ -17,7 +17,7 @@ const Navbar = () => {
         justifyContent="space-between"
       >
         <Box h="100%" w="12%" mr={{ base: "2", md: "4" }}>
-          <Link as={NextLink} href={`/${userDAO}/home`} passHref>
+          <Link as={NextLink} href={`/home/?userDAO=${userDAO}`} passHref>
             <Image
               src="/images/poa_character.png"
               alt="Your Logo"
@@ -34,7 +34,7 @@ const Navbar = () => {
         >
           <Link
             as={NextLink}
-            href={`/${userDAO}/tasks`}
+            href={`/tasks/?userDAO=${userDAO}`}
             color="white"
             fontWeight="extrabold"
             fontSize="xl"
@@ -42,12 +42,12 @@ const Navbar = () => {
           >
             Tasks
           </Link>
-          <Link as={NextLink} href={`/${userDAO}/leaderboard`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
+          <Link as={NextLink} href={`/leaderboard/?userDAO=${userDAO}`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
             Leaderboard
           </Link>
           <Link
             as={NextLink}
-            href={`/${userDAO}/voting`}
+            href={`/voting/?userDAO=${userDAO}`}
             color="white"
             fontWeight="extrabold"
             fontSize="xl"
@@ -58,7 +58,7 @@ const Navbar = () => {
 
             <Link
               as={NextLink}
-              href={`/${userDAO}/user`}
+              href={`/user/?userDAO=${userDAO}`}
               color="white"
               fontWeight="extrabold"
               fontSize="xl"
