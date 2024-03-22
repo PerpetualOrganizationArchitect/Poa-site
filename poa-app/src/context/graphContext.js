@@ -90,6 +90,7 @@ export const GraphProvider = ({ children }) => {
         const query = `
         {
         user(id: "${org}-${id}") {
+            id
             ptTokenBalance
             ddTokenBalance
             memberType {
@@ -100,6 +101,7 @@ export const GraphProvider = ({ children }) => {
                 id
                 ipfsHash
                 payout
+                completed
             }
         }
         }`;
@@ -107,7 +109,7 @@ export const GraphProvider = ({ children }) => {
         const data = await querySubgraph(query);
         console.log("user data", data.user);
 
-        return data?.users;
+        return data?.user;
 
 
     }
@@ -509,7 +511,7 @@ export const GraphProvider = ({ children }) => {
 
     async function loadGraphData(poName) {
 
-        const userData = await fetchUserData(account.toLocaleLowerCase(),poName);
+        const userInfo = await fetchUserData(account.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -519,7 +521,8 @@ export const GraphProvider = ({ children }) => {
         const projectData = await fetchProjectData(poName);
         const leaderboardData = await fetchLeaderboardData(poName);
 
-        setUserData(userData);
+        console.log("setting user data", userInfo);
+        setUserData(userInfo);
         setParticipationVotingOngoing(participationVotingOngoing);
         setParticipationVotingCompleted(participationVotingCompleted);
         setHybridVotingOngoing(hybridVotingOngoing);
@@ -538,7 +541,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
+        <GraphContext.Provider value={{userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
         {children}
         </GraphContext.Provider>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -21,6 +21,7 @@ import { SettingsIcon } from '@chakra-ui/icons';
 // import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
 
 import { useWeb3Context } from '@/context/web3Context';
+import { useGraphContext } from '@/context/graphContext';
 
 
 // import DeployMenu from "@/components/userPage/DeployMenu";
@@ -34,13 +35,20 @@ import { useSpring, animated } from 'react-spring';
 import Link2 from 'next/link';
 import { set } from 'lodash';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
-
+import { useRouter } from 'next/router';
 
 
 
 
 
 const UserDashboard= () => {
+    const { userData, setLoaded} = useGraphContext();
+    const router = useRouter();
+    const { userDAO } = router.query;
+    useEffect(() => {
+        setLoaded(userDAO);
+      }, [userDAO]);
+  
 
     // const {setLeaderboardLoaded,userPercentage} = useLeaderboard();
 
@@ -187,28 +195,26 @@ const UserDashboard= () => {
     };
 
 
+    const [userInfo, setUserInfo] = useState({});
 
-  const userInfo = {
-    username: userDetails && userDetails.username ? userDetails.username : 'User',
-    kubixEarned: KUBIXbalance,
-    memberStatus: hasExecNFT ? 'Executive' : 'Member',
-    semesterKubix: userDetails && userDetails.kubixBalance2024Spring ? userDetails.kubixBalance2024Spring : 0,
-    yearKubix: userDetails && userDetails.kubixBalance2024Spring && userDetails.kubixBalance2023Fall ? userDetails.kubixBalance2023Fall+ userDetails.kubixBalance2024Spring : 0,
-    accountAddress: account ? account : '0x000',
-    tier: determineTier(KUBIXbalance),
-    nextReward: 'Shirt',
-    tasksCompleted: userDetails && userDetails.tasksCompleted ? userDetails.tasksCompleted : 0,
-    percentage: userPercentage? (userPercentage * 100) : 0,
+    useEffect(() => {
+        console.log("checking user data", userData)
+        if(userData){
+            console.log(userData);
+            let userInfo = {
+                username: userData.id,
+                ptBalance: Number(userData.ptTokenBalance),
+                memberStatus: userData.memberType?.memberTypeName,
+                accountAddress: userData.id,
+            };
+            setUserInfo(userInfo);
+        }
+    }, [userData]);
 
-  };
 
-  const nextTierInfo = tierInfo[userInfo.tier];
-
-  const tierImage = tierInfo[userInfo.tier].image;
-
-  const animatedKubix = useSpring({ 
-    kubix: userInfo.kubixEarned, 
-    from: { kubix: 0 },
+  const animatedPT = useSpring({ 
+    pt: userInfo.ptBalance, 
+    from: { pt: 0 },
     config: { duration: 1700 },
     onRest: () => setCountFinished(true),
   });
@@ -221,29 +227,6 @@ const UserDashboard= () => {
       };
 
 
-      const nextTierKUBIX = 1500;
-
-    let progressPercentage = (userInfo.kubixEarned / nextTierInfo.nextTierKUBIX) * 100;
-    console.log(userDetails);
-
-    useEffect(() => {
-        if ((userInfo.kubixEarned / nextTierInfo.nextTierKUBIX) * 100 > 100) {
-          setUpgradeAvailable(true);
-          progressPercentage = 100;
-        }
-      }, [userInfo.kubixEarned, nextTierInfo.nextTierKUBIX]);
-
-
-    const getProgressBarAnimation = (percentage) => keyframes`
-        0% { width: 0%; }
-        100% { width: ${percentage}%; }
-    `;
-
-    const progressAnimation = prefersReducedMotion
-    ? {}
-    : {
-        animation: `${getProgressBarAnimation(progressPercentage)} 2s ease-out forwards`,
-      };
   return (
     <Box p={4}>
       <Grid
@@ -270,48 +253,21 @@ const UserDashboard= () => {
           <VStack position="relative" borderTopRadius="2xl" align="flex-start">
           <div style={glassLayerStyle} />
             <Text pl={6} letterSpacing="-1%" mt={2} fontSize="4xl" id="kubix-earned" fontWeight="bold">
-                KUBIX Earned {' '}
+                Tokens Earned {' '}
                 {countFinished ? (
-                <chakra.span {...animationProps}>{userInfo.kubixEarned}</chakra.span>
+                <chakra.span {...animationProps}>{userInfo.ptBalance}</chakra.span>
 
             ) : (
                 <animated.span>
-                    {animatedKubix.kubix.to(kubix => kubix.toFixed(0))}
+                    {animatedPT.pt.to(pt => pt.toFixed(0))}
                 </animated.span>)}
                 </Text>
 
-            <Text pl={6} pb={4} fontSize="lg">This makes you top {userInfo.percentage}% of Contributors</Text>
+            {/* <Text pl={6} pb={4} fontSize="lg">This makes you top {userInfo.percentage}% of Contributors</Text> */}
           </VStack>
             <VStack p={0} pt={4} align="center" >
-                <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Member</Text>
-                <Image src={tierImage} alt="KUBC Logo"  maxW="45%" />
-                <Progress
-                    value={progressPercentage}
-                    max={100} 
-                    width="70%"
-                    colorScheme="green"
-                    height="20px"
-                    borderRadius="md"
-                    sx={{
-                        '& > div': {
-                        ...progressAnimation,
-                        },
-                    }}
-                    
-                    />
-
-                
-                <HStack>
-                    <Text fontSize="xl" fontWeight="bold">Next Tier: {nextTierInfo.nextTier}</Text>
-                    <Text>({userInfo.kubixEarned}/{nextTierInfo.nextTierKUBIX})</Text>
-                </HStack>
+                <Text fontSize="3xl" fontWeight="bold">{userInfo.memberStatus} Member</Text>
                 <Spacer />
-                {upgradeAvailable && (
-                <Button mt={6}colorScheme="blue">Upgrade Tier</Button>)}
-            </VStack>
-            <VStack  pl={6} pb={4} align="flex-start" spacing={2}>
-                <Text fontSize= "2xl" fontWeight="bold">Next Reward: {nextTierInfo.nextTierReward}</Text>
-                <Button colorScheme="green">Browse all</Button>
             </VStack>
 
         </Box>
@@ -352,8 +308,8 @@ const UserDashboard= () => {
       /> */}
         <HStack pb={4} pt={2}  spacing="27%">
             <VStack align={'flex-start'} ml="6%" spacing={1}>
-                <Text   fontWeight="bold" fontSize="md">Semester KUBIX: {userInfo.semesterKubix}</Text>
-                <Text  fontWeight="bold" fontSize="md">Year KUBIX: {userInfo.yearKubix}</Text>
+                {/* <Text   fontWeight="bold" fontSize="md">Semester KUBIX: {userInfo.semesterKubix}</Text>
+                <Text  fontWeight="bold" fontSize="md">Year KUBIX: {userInfo.yearKubix}</Text> */}
                 <Text  fontWeight="bold"  fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
             </VStack>
             <VStack align={'center'} spacing={2}>
