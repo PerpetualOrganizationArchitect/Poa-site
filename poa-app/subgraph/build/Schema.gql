@@ -167,7 +167,7 @@ type PTPollOption @entity {
 type PTVote @entity {
   id: ID!
   proposal: PTProposal! @link
-  voter: Bytes! 
+  voter: User @link
   optionIndex: BigInt!
   voteWeight: BigInt!
 }
@@ -215,9 +215,9 @@ type DDPollOption @entity {
 type DDVote @entity {
   id: ID!
   proposal: DDProposal! @link
-  voter: Bytes! 
   optionIndex: BigInt!
   voteWeight: BigInt!
+  voter: User @link
 }
 
 ## hybrid voting 
@@ -263,7 +263,7 @@ type HybridPollOption @entity {
 type HybridVote @entity {
   id: ID!
   proposal: HybridProposal! @link
-  voter: Bytes! 
+  voter: User @link
   optionIndex: BigInt!
   voteWeightPT: BigInt!
   voteWeightDD: BigInt!
@@ -356,6 +356,9 @@ type User @entity {
   ptTokenBalance: BigInt!
   memberType: NFTMemberType @link
   tasks: [Task!] @derivedFrom(field: "user")
+  ptVotes: [PTVote!] @derivedFrom(field: "voter")
+  ddVotes: [DDVote!] @derivedFrom(field: "voter")
+  hybridVotes: [HybridVote!] @derivedFrom(field: "voter")
 }
 
 

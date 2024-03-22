@@ -1878,17 +1878,21 @@ export class PTVote extends Entity {
     this.set("proposal", Value.fromString(value));
   }
 
-  get voter(): Bytes {
+  get voter(): string | null {
     let value = this.get("voter");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set voter(value: Bytes) {
-    this.set("voter", Value.fromBytes(value));
+  set voter(value: string | null) {
+    if (!value) {
+      this.unset("voter");
+    } else {
+      this.set("voter", Value.fromString(<string>value));
+    }
   }
 
   get optionIndex(): BigInt {
@@ -2417,19 +2421,6 @@ export class DDVote extends Entity {
     this.set("proposal", Value.fromString(value));
   }
 
-  get voter(): Bytes {
-    let value = this.get("voter");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set voter(value: Bytes) {
-    this.set("voter", Value.fromBytes(value));
-  }
-
   get optionIndex(): BigInt {
     let value = this.get("optionIndex");
     if (!value || value.kind == ValueKind.NULL) {
@@ -2454,6 +2445,23 @@ export class DDVote extends Entity {
 
   set voteWeight(value: BigInt) {
     this.set("voteWeight", Value.fromBigInt(value));
+  }
+
+  get voter(): string | null {
+    let value = this.get("voter");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set voter(value: string | null) {
+    if (!value) {
+      this.unset("voter");
+    } else {
+      this.set("voter", Value.fromString(<string>value));
+    }
   }
 }
 
@@ -2968,17 +2976,21 @@ export class HybridVote extends Entity {
     this.set("proposal", Value.fromString(value));
   }
 
-  get voter(): Bytes {
+  get voter(): string | null {
     let value = this.get("voter");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set voter(value: Bytes) {
-    this.set("voter", Value.fromBytes(value));
+  set voter(value: string | null) {
+    if (!value) {
+      this.unset("voter");
+    } else {
+      this.set("voter", Value.fromString(<string>value));
+    }
   }
 
   get optionIndex(): BigInt {
@@ -3973,6 +3985,22 @@ export class User extends Entity {
 
   get tasks(): TaskLoader {
     return new TaskLoader("User", this.get("id")!.toString(), "tasks");
+  }
+
+  get ptVotes(): PTVoteLoader {
+    return new PTVoteLoader("User", this.get("id")!.toString(), "ptVotes");
+  }
+
+  get ddVotes(): DDVoteLoader {
+    return new DDVoteLoader("User", this.get("id")!.toString(), "ddVotes");
+  }
+
+  get hybridVotes(): HybridVoteLoader {
+    return new HybridVoteLoader(
+      "User",
+      this.get("id")!.toString(),
+      "hybridVotes"
+    );
   }
 }
 

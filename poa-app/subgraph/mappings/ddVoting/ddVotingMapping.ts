@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/DirectDemocracyVoting/DirectDemocracyVoting"
-import { DDProposal, DDPollOption,DDVote } from "../../generated/schema"
+import { DDProposal, DDPollOption,DDVote, DDVoting } from "../../generated/schema"
 
 export function handlePollCreated(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
@@ -37,7 +37,15 @@ export function handleVoted(event: Voted): void {
     let voteId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
     let vote = new DDVote(voteId);
     vote.proposal = proposalId;
-    vote.voter = event.params.voter;
+
+    let contract = DDVoting.load(event.address.toHex());
+
+    if (!contract) {
+      log.error("Voting contract not found: {}", [event.address.toHex()]);
+      return;
+    }
+
+    vote.voter = contract.POname+'-' + event.params.voter.toHex();
     vote.optionIndex = event.params.optionIndex;
     vote.voteWeight = BigInt.fromI32(100);
     vote.save();
