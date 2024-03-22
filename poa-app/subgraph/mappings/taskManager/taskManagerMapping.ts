@@ -9,7 +9,7 @@ export function handleTaskCreated(event: TaskCreatedEvent): void {
   let task = new Task(event.params.id.toHex()+"-"+event.address.toHex())
   task.payout = event.params.payout
   task.ipfsHash = event.params.ipfsHash
-  task.project = event.params.projectName
+  task.project = event.params.projectName+"-"+event.address.toHex()
   task.completed = false
   task.taskManager = event.address.toHex()
 
@@ -66,7 +66,7 @@ export function handleTaskCompleted(event: TaskCompletedEvent): void {
 export function handleProjectCreated(event: ProjectCreatedEvent): void {
   log.info("Triggered handleProjectCreated", [])
 
-    let project = new Project(event.params.projectName)
+    let project = new Project(event.params.projectName+"-"+event.address.toHex())
     project.name = event.params.projectName
     project.taskManager = event.address.toHex()
     project.deleted = false
@@ -76,7 +76,7 @@ export function handleProjectCreated(event: ProjectCreatedEvent): void {
 export function handleProjectDeleted(event: ProjectDeletedEvent): void {
     log.info("Triggered handleProjectDeleted", [])
       
-    let project = Project.load(event.params.projectName)
+    let project = Project.load(event.params.projectName+"-"+event.address.toHex());
     if (!project) {
       log.error("Project not found: {}", [event.params.projectName])
       return
