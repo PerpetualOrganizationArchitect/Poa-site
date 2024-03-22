@@ -7,6 +7,7 @@ import YourPerpetualOrganizations from "@/components/Dashboard/YourPerpetualOrga
 import PoaPreview from "@/components/Dashboard/PoaPreview";
 
 
+
 // Convert Chakra UI components to motion components
 const MotionBox = motion(Box);
 const MotionFlex = motion(Flex);

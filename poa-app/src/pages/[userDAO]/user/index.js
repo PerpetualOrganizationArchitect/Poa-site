@@ -6,6 +6,7 @@ import { useWeb3Context } from "@/context/web3Context";
 import { HStack, ScaleFade } from "@chakra-ui/react";
 import NextLink from 'next/link';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+import { useGraphContext } from "@/context/graphContext";
 
 import { useRouter } from 'next/router';
 
@@ -45,7 +46,12 @@ const User = () => {
 
 
 
+  const { hasMemberNFT, setLoaded} = useGraphContext();
   const router = useRouter();
+  const { userDAO } = router.query;
+  useEffect(() => {
+      setLoaded(userDAO);
+    }, [userDAO]);
 
 
 
@@ -61,8 +67,6 @@ const User = () => {
 
 
 
-  const [isConnected, setIsConnected] = useState(false);
-  const [isMember, setIsMember] = useState(false);
 
 
 
@@ -71,35 +75,20 @@ const User = () => {
   const [loading,setLoading]=useState(false);
 
   const [userDetails, setUserDetails] = useState(null);
-  const{providerUniversal,signerUniversal, hasMemberNFT, execNftBalance,balance,nftBalance, fetchBalance,web3, account,kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
+  const{providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, account,kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
 
 
   
   const toast = useToast();
 
   
-  useEffect(() => {
-    const checkConnection = async () => {
-      if (web3 && account) {
-        setIsConnected(true);
-      
-        if (hasMemberNFT){
-          setIsMember(true);
-        }
-      } else {
-        setIsConnected(false);
-        setIsMember(false);
-      }
-    };
 
-    checkConnection();
-  }, [web3, account, hasMemberNFT]);
 
     useEffect(() => {
-    if (isConnected && isMember) {
-          router.push('/dashboard'); 
+    if (hasMemberNFT) {
+          router.push(`/${userDAO}/dashboard`); 
       }
-    }, [isConnected, isMember]);
+    }, [hasMemberNFT]);
 
 
 

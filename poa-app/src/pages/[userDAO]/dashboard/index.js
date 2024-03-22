@@ -36,6 +36,7 @@ import Link2 from 'next/link';
 import { set } from 'lodash';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import { useRouter } from 'next/router';
+import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 
 
@@ -228,6 +229,9 @@ const UserDashboard= () => {
 
 
   return (
+    <>
+    <Navbar />
+    
     <Box p={4}>
       <Grid
         color="white"
@@ -376,20 +380,14 @@ const UserDashboard= () => {
 
         {/* <OngoingPolls  OngoingPolls={kubidOngoingProposals}/> */}
 
-        
-        
-   
-            
-
-
             
         </Box>
-        
 
         </GridItem>
         
       </Grid>
     </Box>
+    </>
   );
 };
 
