@@ -11,12 +11,14 @@ export const useGraphContext = () => {
 
 
 export const GraphProvider = ({ children }) => {
+    
 
     const[loaded, setLoaded] = useState('');
     const[poName, setPoName] = useState('1');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
-    const[account, setAccountGraph] = useState("0x06e6620C67255d308A466293070206176288A67B".toLocaleLowerCase());
+    const[account, setAccountGraph] = useState("0x00".toLocaleLowerCase());
+    console.log("account", account);
 
     const[userData, setUserData] = useState({});
     const[participationVotingOngoing, setParticipationVotingOngoing] = useState({});
@@ -49,7 +51,7 @@ export const GraphProvider = ({ children }) => {
             await loadContractAddress(loaded);
             await loadGraphData(loaded);
         }
-        if (loaded !== undefined && loaded !== '') {
+        if (loaded !== undefined && loaded !== '' && account !== '0x00') {
             if (loaded === poName) {
                 console.log('loaded')
             }
@@ -61,7 +63,7 @@ export const GraphProvider = ({ children }) => {
             }
 
         }
-    }, [loaded]);
+    }, [account]);
 
 
 
@@ -295,6 +297,7 @@ export const GraphProvider = ({ children }) => {
         }
 
         async function memberNFTcheck(poName,id){   
+            console.log("memberNFTcheck",poName,id);
             if (poName === undefined){
                 return false;
             }

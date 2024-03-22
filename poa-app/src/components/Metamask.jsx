@@ -53,6 +53,7 @@ export const useMetaMask = () => {
       setWallet(signer); // Store the ethers signer as the "wallet"
       console.log("Connected to MetaMask with account:", accounts[0]);
     } else {
+      console.log("Disconnected from MetaMask");
       setAccounts([]);
       setAccountGraph(null);
       setWallet(null);
