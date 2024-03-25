@@ -38,6 +38,7 @@ export const useMetaMask = () => {
       // Directly create the Ethers provider here, not in state
       const ethersProvider = new ethers.providers.Web3Provider(ethereum);
       console.log("got here 6")
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
 
       ethereum.request({ method: 'eth_accounts' })
         .then(accounts => {
