@@ -11,6 +11,10 @@ export const useMetaMask = () => {
 
   useEffect(() => {
     const init = async () => {
+      if (!window.ethereum) {
+        console.log("MetaMask not detected");
+        return;
+      }
       const MMSDK = new MetaMaskSDK({
         dappMetadata: {
           name: "Example Next.js Dapp",
