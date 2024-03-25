@@ -15,9 +15,11 @@ export const useMetaMask = () => {
         console.log("MetaMask not detected");
         return;
       }
+      ethereum.request({ method: 'eth_accounts' })
+      
       const MMSDK = new MetaMaskSDK({
         dappMetadata: {
-          name: "Example Next.js Dapp",
+          name: "Perpetual Organization Architect",
           url: window.location.href,
         },
       });
