@@ -15,8 +15,9 @@ export const useMetaMask = () => {
         console.log("MetaMask not detected");
         return;
       }
-      ethereum.request({ method: 'eth_accounts' })
-      
+
+      console.log("got here 1")
+
       const MMSDK = new MetaMaskSDK({
         dappMetadata: {
           name: "Perpetual Organization Architect",
@@ -24,12 +25,17 @@ export const useMetaMask = () => {
         },
       });
 
+      console.log("got here 2")
       await MMSDK.init();
+      console.log("got here 3")
       const ethereum = MMSDK.getProvider();
+      console.log("got here 4")
       setMetaMaskProvider(ethereum);
+      console.log("got here 5")
 
       // Directly create the Ethers provider here, not in state
       const ethersProvider = new ethers.providers.Web3Provider(ethereum);
+      console.log("got here 6")
 
       ethereum.request({ method: 'eth_accounts' })
         .then(accounts => handleAccountsChanged(accounts, ethersProvider))
