@@ -41,7 +41,10 @@ export const useMetaMask = () => {
         .then(accounts => handleAccountsChanged(accounts, ethersProvider))
         .catch(console.error);
 
+      console.log("got here 7")
+
       ethereum.on('accountsChanged', (accounts) => handleAccountsChanged(accounts, ethersProvider));
+      console.log("got here 8")
     };
 
     init();
