@@ -40,8 +40,17 @@ export const useMetaMask = () => {
       console.log("got here 6")
 
       ethereum.request({ method: 'eth_accounts' })
-        .then(accounts => handleAccountsChanged(accounts, ethersProvider))
-        .catch(console.error);
+        .then(accounts => {
+          console.log("eth_accounts resolved:", accounts);
+          handleAccountsChanged(accounts, ethersProvider);
+        })
+        .catch(error => console.error("eth_accounts error:", error));
+
+      ethereum.on('accountsChanged', (accounts) => {
+        console.log("accountsChanged event triggered:", accounts);
+        handleAccountsChanged(accounts, ethersProvider);
+      });
+
 
       console.log("got here 7")
 
