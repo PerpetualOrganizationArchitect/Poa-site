@@ -25,6 +25,8 @@ export const useMetaMask = () => {
         },
       });
 
+      try{
+
       console.log("got here 2")
       await MMSDK.init();
       console.log("got here 3")
@@ -44,7 +46,10 @@ export const useMetaMask = () => {
       console.log("got here 7")
 
       ethereum.on('accountsChanged', (accounts) => handleAccountsChanged(accounts, ethersProvider));
-      console.log("got here 8")
+      console.log("got here 8")}
+      catch(e){
+        console.log("error init",e)
+      }
     };
 
     init();
