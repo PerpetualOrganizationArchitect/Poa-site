@@ -38,19 +38,33 @@ export const useMetaMask = () => {
       // Directly create the Ethers provider here, not in state
       const ethersProvider = new ethers.providers.Web3Provider(ethereum);
       console.log("got here 6")
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      // const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
 
       ethereum.request({ method: 'eth_accounts' })
-        .then(accounts => {
-          console.log("eth_accounts resolved:", accounts);
+      .then(accounts => {
+        console.log("eth_accounts resolved:", accounts);
+        if(accounts && accounts.length > 0) {
           handleAccountsChanged(accounts, ethersProvider);
-        })
-        .catch(error => console.error("eth_accounts error:", error));
-
-      ethereum.on('accountsChanged', (accounts) => {
-        console.log("accountsChanged event triggered:", accounts);
-        handleAccountsChanged(accounts, ethersProvider);
+        } else {
+          console.log("No accounts found. Please ensure you are connected to a wallet.");
+       
+        }
+      })
+      .catch(error => {
+        console.error("eth_accounts error:", error);
+        
       });
+    
+    ethereum.on('accountsChanged', (accounts) => {
+      console.log("accountsChanged event triggered:", accounts);
+      if(accounts && accounts.length > 0) {
+        handleAccountsChanged(accounts, ethersProvider);
+      } else {
+        console.log("The account has been disconnected. Please reconnect your wallet.");
+        // Handle the scenario of an account disconnecting, if necessary.
+      }
+    });
+    
 
 
       console.log("got here 7")
