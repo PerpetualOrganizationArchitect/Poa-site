@@ -63,13 +63,16 @@ export const useMetaMask = () => {
   }, []);
 
   const handleAccountsChanged = (accounts, ethersProvider) => {
+    console.log("got here 9.5")
     console.log("Accounts changed:", accounts);
     if (accounts.length > 0) {
       setAccounts(accounts);
       setAccountGraph(accounts[0]);
 
       // Use the provided ethersProvider directly
+      console.log("got here 9")
       const signer = ethersProvider.getSigner(accounts[0]);
+      console.log("got here 10")
       setWallet(signer); // Store the ethers signer as the "wallet"
       console.log("Connected to MetaMask with account:", accounts[0]);
     } else {
@@ -86,8 +89,11 @@ export const useMetaMask = () => {
     try {
       // Directly create an ethersProvider to use here
       const ethersProvider = new ethers.providers.Web3Provider(metaMaskProvider);
+      console.log("got here 11")
       const accounts = await metaMaskProvider.request({ method: 'eth_requestAccounts' });
+      console.log("got here 12")
       handleAccountsChanged(accounts, ethersProvider);
+      console.log("got here 13")
     } catch (error) {
       console.error("Error connecting to MetaMask:", error);
     }
