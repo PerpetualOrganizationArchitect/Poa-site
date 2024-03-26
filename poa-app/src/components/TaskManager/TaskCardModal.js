@@ -73,7 +73,7 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
   
   const handleCloseModal = () => {
     onClose();
-      router.push({ pathname: `/tasks/?userDAO=${userDAO}`, }, undefined, { shallow: true });
+      router.push({ pathname: `/tasks/`, query: { userDAO: userDAO} }, undefined, { shallow: true });
   };
 
 

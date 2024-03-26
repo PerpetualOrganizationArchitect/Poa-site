@@ -572,7 +572,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
+        <GraphContext.Provider value={{ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
         {children}
         </GraphContext.Provider>
     );

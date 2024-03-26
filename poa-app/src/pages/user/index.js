@@ -46,7 +46,7 @@ const User = () => {
 
 
 
-  const { hasMemberNFT, setLoaded} = useGraphContext();
+  const { nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress} = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
   useEffect(() => {
@@ -62,12 +62,24 @@ const User = () => {
   const[dispaly,setDispaly]=useState(true);
 
   const setDispalyHandle=()=>{
-    setDispaly(false);
+    // setDispaly(false);
+    async function mint(nftMembershipContractAddress, ddTokenContractAddress) {
+      if (!nftMembershipContractAddress) return;
+      try {
+        await mintDefaultNFT(nftMembershipContractAddress);
+      } catch (error) {
+        console.error(error);
+      }
+      if (!ddTokenContractAddress) return;
+      try {
+        await mintDDtokens(ddTokenContractAddress, 2023, 0, "yes");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    mint(nftMembershipContractAddress, ddTokenContractAddress);
+
   }
-
-
-
-
 
 
 
@@ -75,7 +87,7 @@ const User = () => {
   const [loading,setLoading]=useState(false);
 
   const [userDetails, setUserDetails] = useState(null);
-  const{providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, account,kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
+  const{mintDDtokens, mintDefaultNFT,mintNFT, providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, account,kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
 
 
   
@@ -461,11 +473,11 @@ const User = () => {
       {dispaly ? (
         console.log("displaying"),
         <VStack mt="8" spacing="6">
-          <Text  fontWeight="extrabold" fontSize="3xl" textColor="white">Join to become a member and Access the Dashboard Below</Text>
+          <Text  fontWeight="extrabold" ml="15%" mr="15%" fontSize="3xl" textColor="black">Join to become a member and Access the Dashboard. Please wait for both Transactions it could take some time</Text>
           <Button onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
             Join Now
           </Button>
-          <Image w="60%" src="/images/becomeUser.png" />
+
         </VStack>
       ):(
 

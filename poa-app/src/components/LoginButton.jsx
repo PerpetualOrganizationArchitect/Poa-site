@@ -21,10 +21,10 @@ const LoginButton = () => {
         // This runs only on the client, after the component has mounted
         console.log("accounts", account);
         if (account !=="0x00") {
-            setText("Connected");
+            setText("Dashboard");
         } else {
             console.log("accounts", account);
-            setText("Connect Wallet");
+            setText("Join or Connect");
         }
     }, [account]);
 

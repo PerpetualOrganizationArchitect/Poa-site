@@ -151,9 +151,10 @@ export const Web3Provider = ({ children }) => {
     }
 
     // NFT Membership
-    async function mintNFT(contractAddress, toAddress, membershipType) {
+    async function mintNFT(contractAddress, membershipType) {
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
-        const tx = await contract.mintNFT(toAddress, membershipType);
+        
+        const tx = await contract.mintNFT(account, membershipType);
         await tx.wait();
         console.log("NFT minted");
     }
@@ -212,7 +213,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{ setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
+        <Web3Context.Provider value={{mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
         {children}
         </Web3Context.Provider>
     );
