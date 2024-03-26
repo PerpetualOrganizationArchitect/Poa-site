@@ -213,7 +213,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
+        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
         {children}
         </Web3Context.Provider>
     );

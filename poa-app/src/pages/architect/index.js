@@ -15,6 +15,13 @@ import {
   Button,
   useDisclosure,
   Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import Deployer from "@/components/Architect/TempDeployer";
 
@@ -25,6 +32,7 @@ import Selection from "@/components/Architect/Selection";
 
 import {main} from "../../../scripts/realDeployment"
 import { useMetaMask } from "@/components/Metamask";
+import { useWeb3Context } from "@/context/web3Context";
 
 
 
@@ -91,7 +99,8 @@ const defaultMembershipOptions = [
 ];
 
 const ArchitectPage = () => {
-  const {wallet} = useMetaMask();
+  const {wallet, setChecked, setForce} = useMetaMask();
+  const {signer} = useWeb3Context();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
     useState(false);
@@ -128,6 +137,12 @@ const ArchitectPage = () => {
     // description: "",
     votingControlType: "DirectDemocracy",
   });
+
+  //function to set checked and force
+  const handleConnect = () => {
+    setForce(true);
+    setChecked(false);
+  };
 
   // Function for creating the organization site. This is where you would
   // include the logic for creating a new organization based on user input.
@@ -276,7 +291,7 @@ const ArchitectPage = () => {
   const handleSaveAllSelections = async () => {
     // Close any open modal and show deployment progress
     setIsConfirmationModalOpen(false);
-    console.log("Saving: ", updatedOrgDetails);
+    console.log("Saving: ", orgDetails );
 
     deploy(orgDetails);
 
@@ -286,6 +301,7 @@ const ArchitectPage = () => {
 
   const deploy = async (orgDetails) => {
     console.log("Deploying...");
+
     console.log(orgDetails);
     try {
       main(
@@ -299,7 +315,7 @@ const ArchitectPage = () => {
         orgDetails.participationVotingEnabled,
         orgDetails.logoURL,
         orgDetails.votingControlType, 
-        wallet
+        signer
        );
       setTimeout(() => {
         setIsDeploying(true); // set deployment to true for demonstration
@@ -502,7 +518,9 @@ const ArchitectPage = () => {
               orgDetails={orgDetails}
               onClose={() => setIsConfirmationModalOpen(false)}
               onStartOver={handleStartOver}
-              onSave={handleSaveAllSelections}
+              onSave={()=> {console.log("why"); handleSaveAllSelections()}}
+              onConnect={handleConnect}
+              wallet={wallet}
             />
           }
           <Deployer

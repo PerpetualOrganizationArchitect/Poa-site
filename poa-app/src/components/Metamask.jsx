@@ -11,6 +11,7 @@ export const useMetaMask = () => {
   const { setAccountGraph } = useGraphContext();
   const { setSigner, setAccount } = useWeb3Context();
   const [checked, setChecked] = useState(true);
+  const [force, setForce] = useState(false);
 
 
   const init = async () => {
@@ -81,7 +82,7 @@ export const useMetaMask = () => {
 
     console.log("lonnnggg af", checked, accounts.length)
 
-    if(checked && accounts.length == 0) {
+    if(checked && accounts.length == 0 && !force) {
       console.log("No accounts found. Please ensure you are connected to a wallet.");
       return;
     }
@@ -212,5 +213,5 @@ export const useMetaMask = () => {
     }
   };
 
-  return { setChecked, connectWallet, accounts, wallet };
+  return {setForce, setChecked, connectWallet, accounts, wallet };
 };

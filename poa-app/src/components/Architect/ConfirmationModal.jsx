@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   Modal,
   ModalOverlay,
@@ -12,14 +12,34 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+import { useGraphContext } from "@/context/graphContext";
+
 const ConfirmationModal = ({
   isOpen,
   orgDetails,
   onClose,
   onStartOver,
   onSave,
+  onConnect,
+  wallet
 }) => {
+
+  // variable thats true if the wallet exists from wallet prop
+  const connected = wallet ? true : false
+
+  const[display, setDisplay] = useState(connected)
+
+
+
+  const {account}= useGraphContext();
+
+  useEffect(() => {
+
+    
+  }, [account]);
+
   return (
+
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
@@ -71,9 +91,21 @@ const ConfirmationModal = ({
           <Button colorScheme="red" mr={3} onClick={onStartOver}>
             Start Over
           </Button>
-          <Button colorScheme="blue" onClick={onSave}>
-            Confirm
-          </Button>
+
+          {/* If wallet is connected, show confirm button */}
+          {display && (
+            <Button colorScheme="blue" onClick={onSave}>
+              Confirm
+            </Button>
+          )}
+
+          {/* If wallet is not connected, show connect button */}
+          {!display && (
+            <Button colorScheme="gray" onClick={() => { onConnect(); setDisplay(true); }}>
+              Connect Wallet Before Deploy
+            </Button>
+
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
