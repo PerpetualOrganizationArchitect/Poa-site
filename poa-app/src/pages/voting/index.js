@@ -96,7 +96,8 @@ const Voting = () => {
 
     // if duration is negative call get winner function
     async function getWinner(directDemocracyVotingContractAddress, proposalId) {
-      const tx= await getWinnerDDVoting(directDemocracyVotingContractAddress, proposalId);
+      let newID = proposalId.split("-")[0];
+      const tx= await getWinnerDDVoting(directDemocracyVotingContractAddress, newID);
       tx.wait();
 
   

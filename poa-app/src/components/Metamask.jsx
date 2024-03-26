@@ -2,79 +2,151 @@ import { useEffect, useState } from 'react';
 import { MetaMaskSDK } from "@metamask/sdk";
 import { ethers } from 'ethers';
 import { useGraphContext } from '@/context/graphContext';
+import { useWeb3Context } from '@/context/web3Context';
 
 export const useMetaMask = () => {
   const [accounts, setAccounts] = useState([]);
   const [metaMaskProvider, setMetaMaskProvider] = useState(null);
   const [wallet, setWallet] = useState(null);
   const { setAccountGraph } = useGraphContext();
+  const { setSigner, setAccount } = useWeb3Context();
+  const [checked, setChecked] = useState(true);
 
-  useEffect(() => {
-    const init = async () => {
-      if (!window.ethereum) {
-        console.log("MetaMask not detected");
-        return;
-      }
 
-      console.log("got here 1")
+  const init = async () => {
 
-      const MMSDK = new MetaMaskSDK({
+
+    if (!window.ethereum) {
+
+
+      console.log("MetaMask not detected. Please install MetaMask.");
+      const MMSDK1 = new MetaMaskSDK({
         dappMetadata: {
           name: "Perpetual Organization Architect",
-          url: window.location.href,
+          url: "https://poa.on-fleek.app",
         },
       });
 
-      try{
-
+  
       console.log("got here 2")
-      await MMSDK.init();
+      await MMSDK1.init();
       console.log("got here 3")
-      const ethereum = MMSDK.getProvider();
+      const ethereum = MMSDK1.getProvider();
       console.log("got here 4")
       setMetaMaskProvider(ethereum);
-      console.log("got here 5")
 
-      // Directly create the Ethers provider here, not in state
+
+
+
       const ethersProvider = new ethers.providers.Web3Provider(ethereum);
-      console.log("got here 6")
-      // const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-
-      ethereum.request({ method: 'eth_accounts' })
-      .then(accounts => {
-        console.log("eth_accounts resolved:", accounts);
-        if(accounts && accounts.length > 0) {
-          handleAccountsChanged(accounts, ethersProvider);
-        } else {
-          console.log("No accounts found. Please ensure you are connected to a wallet.");
-       
-        }
-      })
-      .catch(error => {
-        console.error("eth_accounts error:", error);
-        
-      });
-    
-    ethereum.on('accountsChanged', (accounts) => {
-      console.log("accountsChanged event triggered:", accounts);
+      
+     ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
+      console.log("eth_accounts resolved:", accounts);
       if(accounts && accounts.length > 0) {
         handleAccountsChanged(accounts, ethersProvider);
       } else {
-        console.log("The account has been disconnected. Please reconnect your wallet.");
-        // Handle the scenario of an account disconnecting, if necessary.
+        console.log("No accounts found. Please ensure you are connected to a wallet.");
+     
       }
+    })
+    .catch(error => {
+      console.error("eth_accounts error:", error);
+      
     });
-    
+
+    console.log("got here 7")
+  
+  ethereum.on('accountsChanged', (accounts) => {
+    console.log("accountsChanged event triggered:", accounts);
+    if(accounts && accounts.length > 0) {
+      handleAccountsChanged(accounts, ethersProvider);
+    } else {
+      console.log("The account has been disconnected. Please reconnect your wallet.");
+      // Handle the scenario of an account disconnecting, if necessary.
+    }
+  });
+
+      
+    }
+
+    // start 
+
+    console.log("got here 1")
 
 
-      console.log("got here 7")
 
-      ethereum.on('accountsChanged', (accounts) => handleAccountsChanged(accounts, ethersProvider));
-      console.log("got here 8")}
-      catch(e){
-        console.log("error init",e)
+    // Directly create the Ethers provider here, not in state
+
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+    console.log("lonnnggg af", checked, accounts.length)
+
+    if(checked && accounts.length == 0) {
+      console.log("No accounts found. Please ensure you are connected to a wallet.");
+      return;
+    }
+
+
+    const MMSDK = new MetaMaskSDK({
+      dappMetadata: {
+        name: "Perpetual Organization Architect",
+        url: "https://poa.on-fleek.app",
+      },
+    });
+
+    try{
+
+    console.log("got here 2")
+    await MMSDK.init();
+    console.log("got here 3")
+    const ethereum = MMSDK.getProvider();
+    console.log("got here 4")
+    setMetaMaskProvider(ethereum);
+    console.log("got here 5")
+
+    const ethersProvider = new ethers.providers.Web3Provider(ethereum);
+    console.log("got here 6")
+
+    ethereum.request({ method: 'eth_requestAccounts' })
+    .then(accounts => {
+      console.log("eth_accounts resolved:", accounts);
+      if(accounts && accounts.length > 0) {
+        handleAccountsChanged(accounts, ethersProvider);
+      } else {
+        console.log("No accounts found. Please ensure you are connected to a wallet.");
+     
       }
-    };
+    })
+    .catch(error => {
+      console.error("aaaeth_accounts error:", error);
+      return;
+      
+    });
+
+    console.log("got here 7")
+  
+  ethereum.on('accountsChanged', (accounts) => {
+    console.log("accountsChanged event triggered:", accounts);
+    if(accounts && accounts.length > 0) {
+      handleAccountsChanged(accounts, ethersProvider);
+    } else {
+      console.log("The account has been disconnected. Please reconnect your wallet.");
+      // Handle the scenario of an account disconnecting, if necessary.
+    }
+  });
+  
+
+
+
+    console.log("got here 8")}
+    catch(e){
+      console.log("error init",e)
+    }
+  };
+
+  useEffect(() => {
+    console.log("MetaMask hook initialized");
+    
 
     init();
 
@@ -84,12 +156,13 @@ export const useMetaMask = () => {
         metaMaskProvider.removeListener('accountsChanged', handleAccountsChanged);
       }
     };
-  }, []);
+  }, [checked]);
 
   const handleAccountsChanged = (accounts, ethersProvider) => {
     console.log("got here 9.5")
     console.log("Accounts changed:", accounts);
     if (accounts.length > 0) {
+      setAccount(accounts[0]);
       setAccounts(accounts);
       setAccountGraph(accounts[0]);
 
@@ -97,22 +170,38 @@ export const useMetaMask = () => {
       console.log("got here 9")
       const signer = ethersProvider.getSigner(accounts[0]);
       console.log("got here 10")
-      setWallet(signer); // Store the ethers signer as the "wallet"
+      setSigner(signer); // Store the ethers signer as the "wallet"
       console.log("Connected to MetaMask with account:", accounts[0]);
+      setChecked(true);
     } else {
       console.log("Disconnected from MetaMask");
-      setAccounts([]);
+      setAccount("0x00");
       setAccountGraph(null);
+      setAccounts([]);
       setWallet(null);
+      setSigner(null);
     }
   };
 
   const connectWallet = async () => {
-    if (!metaMaskProvider) return;
+    console.log("Connecting to MetaMask...");
+
 
     try {
-      // Directly create an ethersProvider to use here
-      const ethersProvider = new ethers.providers.Web3Provider(metaMaskProvider);
+      // create metamask provider
+      const MMSDK = new MetaMaskSDK({
+        dappMetadata: {
+          name: "Perpetual Organization Architect",
+          url: "https://poa.on-fleek.app",
+        },
+      });
+
+      console.log("got here 1")
+      await MMSDK.init();
+      console.log("got here 2")
+      const metaMaskProvider = MMSDK.getProvider();
+      console.log("got here 3")
+
       console.log("got here 11")
       const accounts = await metaMaskProvider.request({ method: 'eth_requestAccounts' });
       console.log("got here 12")
@@ -123,5 +212,5 @@ export const useMetaMask = () => {
     }
   };
 
-  return { connectWallet, accounts, wallet };
+  return { setChecked, connectWallet, accounts, wallet };
 };

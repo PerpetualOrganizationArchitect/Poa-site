@@ -29,9 +29,10 @@ export const useWeb3Context = () => {
 
 export const Web3Provider = ({ children }) => {
 
-
-    const { accounts, wallet } = useMetaMask();
+    const [signer, setSigner] = useState({});
+    const [account, setAccount] = useState("0x00");
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
+    
 
     
 
@@ -41,7 +42,7 @@ export const Web3Provider = ({ children }) => {
 
 
     const getContractInstance = (contractAddress, contractABI) => {
-        return new ethers.Contract(contractAddress, contractABI, wallet);
+        return new ethers.Contract(contractAddress, contractABI, signer);
     };
 
     // Hybrid Voting
@@ -70,7 +71,7 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function ddVote(contractAddress,proposalID, optionIndex) {
-        const voterAddress = accounts[0];
+        const voterAddress = account;
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
         const tx = await contract.vote(proposalID, voterAddress, optionIndex);
         await tx.wait();
@@ -211,7 +212,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{ ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
+        <Web3Context.Provider value={{ setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
         {children}
         </Web3Context.Provider>
     );

@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import {useRouter} from "next/router";
+import LoginButton from "@/components/LoginButton";
 
 
 const Navbar = () => {
@@ -55,17 +56,7 @@ const Navbar = () => {
           >
             Voting
           </Link>
-
-            <Link
-              as={NextLink}
-              href={`/user/?userDAO=${userDAO}`}
-              color="white"
-              fontWeight="extrabold"
-              fontSize="xl"
-              mx={"2%"}
-            >
-              User
-            </Link>
+          <LoginButton />
         </Flex>
       </Flex>
     </Box>

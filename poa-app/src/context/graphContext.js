@@ -51,6 +51,10 @@ export const GraphProvider = ({ children }) => {
             await loadContractAddress(loaded);
             await loadGraphData(loaded);
         }
+
+        async function noAccountInit(){
+            await loadGraphDataNoAccount(loaded);
+        }
         if (loaded !== undefined && loaded !== '' && account !== '0x00') {
             if (loaded === poName) {
                 console.log('loaded')
@@ -62,8 +66,10 @@ export const GraphProvider = ({ children }) => {
                 init();
             }
 
+        }else if (loaded !== undefined && loaded !== '' && account === '0x00'){
+            noAccountInit();
         }
-    }, [account]);
+    }, [account, loaded]);
 
 
 
@@ -205,6 +211,7 @@ export const GraphProvider = ({ children }) => {
           }`;
 
         const data = await querySubgraph(query);
+        console.log("democracy voting ongoing", data);
 
         return data.perpetualOrganization.DirectDemocracyVoting?.proposals;
     }
@@ -541,6 +548,27 @@ export const GraphProvider = ({ children }) => {
         console.log(await execNFTcheck(poName,account.toLocaleLowerCase()));
         console.log(await memberNFTcheck(poName,account.toLocaleLowerCase()));
 
+    }
+
+    //function that loads all graph data like last function but without any function that relies on account
+    async function loadGraphDataNoAccount(poName) {
+        const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
+        const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
+        const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
+        const hybridVotingCompleted = await fetchHybridVotingCompleted(poName);
+        const democracyVotingOngoing = await fetchDemocracyVotingOngoing(poName);
+        const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
+        const projectData = await fetchProjectData(poName);
+        const leaderboardData = await fetchLeaderboardData(poName);
+
+        setParticipationVotingOngoing(participationVotingOngoing);
+        setParticipationVotingCompleted(participationVotingCompleted);
+        setHybridVotingOngoing(hybridVotingOngoing);
+        setHybridVotingCompleted(hybridVotingCompleted);
+        setDemocracyVotingOngoing(democracyVotingOngoing);
+        setDemocracyVotingCompleted(democracyVotingCompleted);
+        setLeaderboardData(leaderboardData);
+        setProjectsData( await transformProjects(projectData));
     }
 
     return (
