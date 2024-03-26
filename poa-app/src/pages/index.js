@@ -46,7 +46,7 @@ export default function Home() {
           repeat={0}
         />
 
-        <Link href="/dashboard" passHref>
+        <Link href="/landing" passHref>
           {" "}
           {/* Use Link to navigate */}
           <Button size="lg" colorScheme="blue" variant="outline" mt={4}>

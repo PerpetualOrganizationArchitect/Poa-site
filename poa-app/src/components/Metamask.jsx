@@ -18,6 +18,10 @@ export const useMetaMask = () => {
 
 
     if (!window.ethereum) {
+      if(checked && !force) {
+        console.log("No accounts found. Please ensure you are connected to a wallet.");
+        return;
+      }
 
 
       console.log("MetaMask not detected. Please install MetaMask.");
