@@ -24,6 +24,8 @@ export const useMetaMask = () => {
       }
 
 
+
+
       console.log("MetaMask not detected. Please install MetaMask.");
       const MMSDK1 = new MetaMaskSDK({
         dappMetadata: {
@@ -76,20 +78,19 @@ export const useMetaMask = () => {
 
     // start 
 
-    console.log("got here 1")
-
-
-
     // Directly create the Ethers provider here, not in state
 
-    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
 
-    console.log("lonnnggg af", checked, accounts.length)
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
 
     if(checked && accounts.length == 0 && !force) {
       console.log("No accounts found. Please ensure you are connected to a wallet.");
       return;
     }
+
+    
+
+
 
 
     const MMSDK = new MetaMaskSDK({
@@ -213,6 +214,7 @@ export const useMetaMask = () => {
       handleAccountsChanged(accounts, ethersProvider);
       console.log("got here 13")
     } catch (error) {
+      
       console.error("Error connecting to MetaMask:", error);
     }
   };

@@ -79,7 +79,7 @@ const Voting = () => {
   const { userDAO } = router.query;
 
   const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
-  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted} = useGraphContext();
+  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, account } = useGraphContext();
 
   useEffect(() => {
     setLoaded(userDAO);
@@ -103,7 +103,7 @@ const Voting = () => {
   
     }
 
-    if (duration < 0) {
+    if (duration < 0 && account !="0x00") {
       getWinner(directDemocracyVotingContractAddress, proposalId);
        
     }
