@@ -86,7 +86,7 @@ const Voting = () => {
   }, [userDAO]);
 
   // Function to calculate the remaining time until the proposal expires
-  function calculateRemainingTime(expirationTimestamp, proposalId) {
+  function calculateRemainingTime(expirationTimestamp, proposalId, bool) {
     // Current timestamp in seconds
     const currentTimestamp = Math.floor(Date.now() / 1000);
     
@@ -95,17 +95,21 @@ const Voting = () => {
   
 
     // if duration is negative call get winner function
-    async function getWinner(directDemocracyVotingContractAddress, proposalId) {
+    
+    async function getWinner(Address, proposalId) {
       let newID = proposalId.split("-")[0];
-      const tx= await getWinnerDDVoting(directDemocracyVotingContractAddress, newID);
+      const tx= await getWinnerDDVoting(Address, newID);
       tx.wait();
 
   
     }
 
-    if (duration < 0 && account !="0x00") {
+    if (duration < 0 && account !="0x00"&& bool) {
       getWinner(directDemocracyVotingContractAddress, proposalId);
        
+    }
+    if (duration < 0 && account !="0x00"&& !bool) {
+      getWinner(votingContractAddress, proposalId);
     }
   
     return Math.max(0, duration);
@@ -408,7 +412,7 @@ const Voting = () => {
                     onClick={() => handlePollClick(proposal)}>
                     <div className="glass" style={glassLayerStyle} />
                     <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id)} />
+                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, true)} />
                     <Text mt="2"> Voting Options:</Text>
                     <HStack mb={2} spacing={6}>
                       {proposal.options.map((option, index) => (
@@ -732,7 +736,7 @@ const Voting = () => {
                     onClick={() => handlePollClick(proposal)}>
                     <div className="glass" style={glassLayerStyle} />
                     <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id)} />
+                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
                     <Text mt="2"> Voting Options:</Text>
                     <HStack mb={2} spacing={6}>
                       {proposal.options.map((option, index) => (
@@ -1076,7 +1080,7 @@ const Voting = () => {
           isOpen={isOpen}
           onClose={onClose}
           handleVote={ddVote}
-          contractAddress={selectedTab === 0 ? directDemocracyVotingContractAddress : directDemocracyVotingContractAddress}
+          contractAddress={selectedTab === 0 ? directDemocracyVotingContractAddress : votingContractAddress}
           // loadingVote={loadingVote}
           selectedPoll={selectedPoll}
           selectedOption={selectedOption}

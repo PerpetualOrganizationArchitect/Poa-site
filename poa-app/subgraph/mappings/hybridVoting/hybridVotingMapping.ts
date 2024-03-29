@@ -48,7 +48,7 @@ export function handleVoted(event: Voted): void {
     vote.voteWeightDD = event.params.voteWeightDDT;
     vote.save();
   
-    proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(100));
+    proposal.totalVotes = proposal.totalVotes.plus(event.params.voteWeightPT).plus(event.params.voteWeightDDT);
     proposal.save();
 
     //update option votes
@@ -58,7 +58,7 @@ export function handleVoted(event: Voted): void {
       log.error("Option not found: {}", [optionId]);
       return;
     }
-    option.votes = option.votes.plus(BigInt.fromI32(100));
+    option.votes = option.votes.plus(event.params.voteWeightPT).plus(event.params.voteWeightDDT);
     option.save();
   }
   
