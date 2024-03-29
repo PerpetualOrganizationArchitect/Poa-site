@@ -156,9 +156,19 @@ export const GraphProvider = ({ children }) => {
     async function fetchParticipationVotingCompleted(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            ParticipationVoting {
+           ParticipationVoting {
                 proposals(orderBy: experationTimestamp, orderDirection: desc, where: {winningOptionIndex_not: null}) {
-                id
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    winningOptionIndex
+                    options{
+                      id
+                      name
+                      votes
+                    }
                 }
             }
             }
@@ -166,7 +176,7 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data
+        return data.perpetualOrganization.ParticipationVoting?.proposals;
     }
 
     async function fetchHybridVotingOngoing(id) {
@@ -202,7 +212,17 @@ export const GraphProvider = ({ children }) => {
             perpetualOrganization(id: "${id}") {
             HybridVoting {
                 proposals(orderBy: experationTimestamp, orderDirection: desc, where: {winningOptionIndex_not: null}) {
-                id
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    winningOptionIndex
+                    options{
+                      id
+                      name
+                      votes
+                    }
                 }
             }
             }
@@ -210,7 +230,7 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data
+        return data.perpetualOrganization.HybridVoting?.proposals;
     }
 
     async function fetchDemocracyVotingOngoing(id) {
