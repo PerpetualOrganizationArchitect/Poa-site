@@ -79,7 +79,7 @@ const Voting = () => {
   const { userDAO } = router.query;
 
   const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
-  const {directDemocracyVotingContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, account } = useGraphContext();
+  const {directDemocracyVotingContractAddress, hybridVotingContractAddress, partcipationTokenContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, account, participationVotingCompleted, participationVotingOngoing, votingContractAddress } = useGraphContext();
 
   useEffect(() => {
     setLoaded(userDAO);
@@ -119,44 +119,85 @@ const Voting = () => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   // State hooks to manage displayed proposals
-  const [ongoingStartIndex, setOngoingStartIndex] = useState(0); // Index to start displaying ongoing proposals from
+  const [ongoingStartIndexDemocracy, setongoingStartIndexDemocracy] = useState(0); // Index to start displaying ongoing proposals from
   const proposalDisplayLimit = 3; 
 
-  const[completedStartIndex, setCompletedStartIndex] = useState(0);
+  const [ongoingStartIndexParticipation, setongoingStartIndexParticipation] = useState(0); // Index to start displaying ongoing proposals from
+
+
+
+  const[completedStartIndexDemocracy, setcompletedStartIndexDemocracy] = useState(0);
+  const[completedStartIndexParticipation, setcompletedStartIndexParticipation] = useState(0);
 
   const safeDemocracyVotingCompleted = Array.isArray(democracyVotingCompleted) ? democracyVotingCompleted : [];
 
+  const safeParticipationVotingCompleted = Array.isArray(participationVotingCompleted) ? participationVotingCompleted : [];
+
   const displayedCompletedProposals = safeDemocracyVotingCompleted.slice(
-    completedStartIndex,
-    completedStartIndex + proposalDisplayLimit
+    completedStartIndexDemocracy,
+    completedStartIndexDemocracy + proposalDisplayLimit
+  );
+
+  const displayedCompletedParticipationProposals = safeParticipationVotingCompleted.slice(
+    completedStartIndexParticipation,
+    completedStartIndexParticipation + proposalDisplayLimit
   );
 
   // Calculated slices of proposals to display based on the current index and limit
   const safeDemocracyVotingOngoing = Array.isArray(democracyVotingOngoing) ? democracyVotingOngoing : [];
 
+  const safeParticipationVotingOngoing = Array.isArray(participationVotingOngoing) ? participationVotingOngoing : [];
+
+
   const displayedOngoingProposals = safeDemocracyVotingOngoing.slice(
-    ongoingStartIndex,
-    ongoingStartIndex + proposalDisplayLimit
+    ongoingStartIndexDemocracy,
+    ongoingStartIndexDemocracy + proposalDisplayLimit
+  );
+
+  const displayedOngoingParticipationProposals = safeParticipationVotingOngoing.slice(
+    ongoingStartIndexParticipation,
+    ongoingStartIndexParticipation + proposalDisplayLimit
   );
 
   // Handlers for navigation buttons
-  const handlePreviousProposalsClickOngoing = () => {
-    setOngoingStartIndex(Math.max(0, ongoingStartIndex - proposalDisplayLimit));
+  const handlePreviousProposalsClickOngoingDemocracy = () => {
+    setongoingStartIndexDemocracy(Math.max(0, ongoingStartIndexDemocracy - proposalDisplayLimit));
   };
 
-  const handleNextProposalsClickOngoing = () => {
-    if (ongoingStartIndex + proposalDisplayLimit < democracyVotingOngoing.length) {
-      setOngoingStartIndex(ongoingStartIndex + proposalDisplayLimit);
+  const handlePreviousProposalsClickCompletedParticipation = () => {
+    setcompletedStartIndexParticipation(Math.max(0, completedStartIndexParticipation - proposalDisplayLimit));
+  };
+
+
+  const handleNextProposalsClickOngoingDemocracy = () => {
+    if (ongoingStartIndexDemocracy + proposalDisplayLimit < democracyVotingOngoing.length) {
+      setongoingStartIndexDemocracy(ongoingStartIndexDemocracy + proposalDisplayLimit);
     }
   };
 
-  const handlePreviousProposalsClickCompleted = () => {
-    setCompletedStartIndex(Math.max(0, completedStartIndex - proposalDisplayLimit));
+  const handleNextProposalsClickOngoingParticipation = () => {
+    if (ongoingStartIndexParticipation + proposalDisplayLimit < participationVotingOngoing.length) {
+      setongoingStartIndexParticipation(ongoingStartIndexParticipation + proposalDisplayLimit);
+    }
   };
 
-  const handleNextProposalsClickCompleted = () => {
-    if (completedStartIndex + proposalDisplayLimit < democracyVotingCompleted.length) {
-      setCompletedStartIndex(completedStartIndex + proposalDisplayLimit);
+  const handlePreviousProposalsClickCompletedDemocracy = () => {
+    setcompletedStartIndexDemocracy(Math.max(0, completedStartIndexDemocracy - proposalDisplayLimit));
+  };
+
+  const handlePreviousProposalsClickOngoingParticipation = () => {
+    setongoingStartIndexParticipation(Math.max(0, ongoingStartIndexParticipation - proposalDisplayLimit));
+  };
+
+  const handleNextProposalsClickCompletedDemocracy = () => {
+    if (completedStartIndexDemocracy + proposalDisplayLimit < democracyVotingCompleted.length) {
+      setcompletedStartIndexDemocracy(completedStartIndexDemocracy + proposalDisplayLimit);
+    }
+  };
+
+  const handleNextProposalsClickCompletedParticipation = () => {
+    if (completedStartIndexParticipation + proposalDisplayLimit < participationVotingCompleted.length) {
+      setcompletedStartIndexParticipation(completedStartIndexParticipation + proposalDisplayLimit);
     }
   };
 
@@ -174,7 +215,14 @@ const Voting = () => {
 
   const handlePollCreated = () => {
     function run() {
-        return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, "0x06e6620C67255d308A466293070206176288A67B", 0, false);
+      if (voteType === "Democracy") {
+        return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+      }
+      if(voteType === "Participation"){
+        console.log("Participation Voting");
+        console.log("address", votingContractAddress);
+        return createProposalDDVoting(votingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+      }
     }
     setLoadingSubmit(true);
     console.log("Poll Created");
@@ -419,7 +467,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={handlePreviousProposalsClickOngoing}
+                  onClick={handlePreviousProposalsClickOngoingDemocracy}
                 />
                 <IconButton
                   aria-label="Next polls"
@@ -433,7 +481,7 @@ const Voting = () => {
                     color="black"
                     />
                   }
-                  onClick={handleNextProposalsClickOngoing}
+                  onClick={handleNextProposalsClickOngoingDemocracy}
                 />
                 
               </HStack>
@@ -595,7 +643,7 @@ const Voting = () => {
                                   color="black"
                                 />
                               }
-                              onClick={handlePreviousProposalsClickCompleted}
+                              onClick={handlePreviousProposalsClickCompletedDemocracy}
                             />
                             <IconButton
                               background="transparent"
@@ -609,7 +657,7 @@ const Voting = () => {
                                   color="black"
                                 />
                               }
-                              onClick={handleNextProposalsClickCompleted}
+                              onClick={handleNextProposalsClickCompletedDemocracy}
                             />
                           </HStack>
                         </>
@@ -641,9 +689,9 @@ const Voting = () => {
                 <div className="glass" style={glassLayerStyle} />
                 <Flex w="100%" flexDirection="column">
                   <VStack alignItems={"flex-start"} spacing={8}>
-                    <HStack w="100%" justifyContent="space-between">
+                  <HStack w="100%" justifyContent="space-between">
                       <Heading pl={2} color="rgba(333, 333, 333, 1)">
-                        Ongoing Polls{" "}
+                        Ongoing Votes{" "}
                       </Heading>
                       <Button
                         fontWeight="black"
@@ -654,66 +702,219 @@ const Voting = () => {
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
-                     {selectedTab === 0
+                        {selectedTab === 0
                           ? showCreateVote
                             ? "Hide Create Vote Form"
-                            : "Create Democracy Vote"
+                            : "Create Vote"
                           : showCreatePoll
                           ? "Hide Create Poll Form"
-                          : "Create Poll"}
+                          : "Create Poll"} 
                       </Button>
                     </HStack>
+                    <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
+              {displayedOngoingParticipationProposals.length > 0 ? (
+                displayedOngoingParticipationProposals.map((proposal, index) => (
+                  <Box key={index} flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius="3xl"
+                  boxShadow="lg"
+                  display="flex"
+                  w="30%"
+                  minW="30%"
+                  maxWidth="30%"
+                  bg="transparent"
+                  position="relative"
+                  color="rgba(333, 333, 333, 1)"
+                  p={2}
+                  zIndex={1} 
+                    _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)"}}
+                    onClick={() => handlePollClick(proposal)}>
+                    <div className="glass" style={glassLayerStyle} />
+                    <Text mb ="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
+                    <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id)} />
+                    <Text mt="2"> Voting Options:</Text>
+                    <HStack mb={2} spacing={6}>
+                      {proposal.options.map((option, index) => (
+                        <Text fontSize= "sm" fontWeight="extrabold" key={index}>{option.name}</Text>
+                      ))}
+                    </HStack>            
+                  </Box>
+                ))
+              ) : (
+                  <Box flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius="3xl"
+                    boxShadow="lg"
+                    display="flex"
+                    w="100%"
+                    maxWidth="100%"
+                    bg="transparent"
+                    position="relative"
+                    p={4}
+                    zIndex={1}
+                    color="rgba(333, 333, 333, 1)">
+                    <div className="glass" style={glassLayerStyle} />
+                    <Flex
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center">
+                      <Text
+                        mb="2"
+                        fontSize="2xl"
+                        fontWeight="extrabold"
+                        pl={12}
+                        pr={12}
+                        pt={14}
+                        pb={14}
+                      >
+                        No Ongoing Votes
+                      </Text>
+                    </Flex>
+                  </Box>
 
-                    {/* <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
-                      {ongoingPollsKubix.length > 0 ? (
-                        ongoingPollsKubix.map((poll, index) => (
-                          <Box
-                            key={index}
-                            flexDirection="column"
-                            alignItems="center"
-                            justifyContent="center"
-                            borderRadius="3xl"
-                            boxShadow="lg"
-                            display="flex"
-                            w="30%"
-                            minW="30%"
-                            maxWidth="30%"
-                            bg="transparent"
-                            position="relative"
-                            color="rgba(333, 333, 333, 1)"
-                            p={2}
-                            zIndex={1}
-                            _hover={{
-                              bg: "black",
-                              boxShadow: "md",
-                              transform: "scale(1.05)",
-                            }}
-                            onClick={() => handlePollClick(poll)}
-                          >
-                            <div className="glass" style={glassLayerStyle} />
-                            <Text mb="4" fontSize="xl" fontWeight="extrabold">
-                              {poll.name}
-                            </Text>
-                            <CountDown
-                              duration={Math.floor(
-                                (poll?.completionDate - new Date().getTime()) /
-                                  1000
-                              )}
-                            />
-                            <Text mt="2"> Voting Options:</Text>
-                            <HStack spacing={6}>
-                              {poll.options.map((option, index) => (
-                                <Text
-                                  fontSize="lg"
-                                  fontWeight="extrabold"
-                                  key={index}
+              )}
+              {displayedOngoingParticipationProposals.length > 0 ? (
+              <>
+              <Spacer />
+              <HStack justifyContent="bottom" spacing={4}>
+              <IconButton
+                  aria-label="Previous polls"
+                  background="transparent"
+                  border="none" 
+                  _hover={{ bg: 'transparent' }} 
+                  _active={{ bg: 'transparent' }} 
+                  icon={
+                    <ArrowBackIcon 
+                    boxSize="6" // smaller size
+                    color="black"
+                    />
+                  }
+                  onClick={handlePreviousProposalsClickOngoingDemocracy}
+                />
+                <IconButton
+                  aria-label="Next polls"
+                  background="transparent"
+                  border="none" 
+                  _hover={{ bg: 'transparent' }} 
+                  _active={{ bg: 'transparent' }} 
+                  icon={
+                    <ArrowForwardIcon 
+                    boxSize="6" // smaller size
+                    color="black"
+                    />
+                  }
+                  onClick={handleNextProposalsClickOngoingDemocracy}
+                />
+                
+              </HStack>
+            </>
+              ) : null}
+            </HStack>
+
+                    {/*HStack needs to go here*/}
+
+                    {/* List ongoing votes here */}
+
+                    {/* History */}
+                    <Heading pl={2} color="rgba(333, 333, 333, 1)">
+                      History{" "}
+                    </Heading>
+                     <HStack spacing={4} w="100%" justifyContent="flex-start">
+                      {displayedCompletedParticipationProposals.length > 0 ? (
+                        displayedCompletedParticipationProposals.map((proposal, index) => {
+                          const totalVotes = proposal.totalVotes;
+
+                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                  
+                          const predefinedColors = [
+                            "red",
+                            "darkblue",
+                            "yellow",
+                            "purple",
+                          ];
+                          const data = [
+                            {
+                              name: "Options",
+                              values: proposal.options.map((option, index) => {
+                                const color =
+                                  index < predefinedColors.length
+                                    ? predefinedColors[index]
+                                    : `rgba(${Math.random() * 255}, ${
+                                        Math.random() * 255
+                                      }, ${Math.random() * 255}, 1)`;
+                                return {
+                                  value:
+                                    (
+                                      option.votes
+                                     /
+                                      totalVotes) *
+                                    100,
+                                  color: color,
+                                };
+                              }),
+                            },
+                          ];
+
+                          return (
+                            <Box
+                              key={index}
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
+                              borderRadius="3xl"
+                              boxShadow="lg"
+                              display="flex"
+                              w="30%"
+                              minW="30%"
+                              maxWidth="30%"
+                              bg="transparent"
+                              position="relative"
+                              color="rgba(333, 333, 333, 1)"
+                              zIndex={1}
+                            >
+                              <div className="glass" style={glassLayerStyle} />
+                              <Text
+                                mr="2"
+                                mt="4"
+                                ml="2 "
+                                mb="2"
+                                fontSize={"xl"}
+                                fontWeight="extrabold"
+                              >
+                                {proposal.name}
+                              </Text>
+                              <Flex justifyContent="center">
+                                <BarChart
+                                  width={200}
+                                  height={30}
+                                  layout="vertical"
+                                  data={data}
                                 >
-                                  {option.name}
-                                </Text>
-                              ))}
-                            </HStack>
-                          </Box>
-                        ))
+                                  <XAxis type="number" hide="true" />
+                                  <YAxis
+                                    type="category"
+                                    dataKey="name"
+                                    hide="true"
+                                  />
+                                  {data[0].values.map((option, index) => (
+                                    <Bar
+                                      key={index}
+                                      dataKey={`values[${index}].value`}
+                                      stackId="a"
+                                      fill={option.color}
+                                    />
+                                  ))}
+                                </BarChart>
+                              </Flex>
+
+                              <Text mb="2" fontSize="xl" fontWeight="extrabold">
+                                Winner: {WinnerName}
+                              </Text>
+                            </Box>
+                          );
+                        })
                       ) : (
                         <Box
                           flexDirection="column"
@@ -745,247 +946,47 @@ const Voting = () => {
                               pt={14}
                               pb={14}
                             >
-                              No Ongoing Polls
-                            </Text>
-                          </Flex>
-                        </Box>
-                      )}
-                      {ongoingPollsKubix.length > 0 ? (
-                        <>
-                          <Spacer />
-                          <HStack justifyContent="bottom" spacing={-2}>
-                            <IconButton
-                              aria-label="Next polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
-                              icon={
-                                <ArrowForwardIcon
-                                  boxSize="6" // smaller size
-                                  color="black"
-                                />
-                              }
-                              onClick={() => {
-                                if (
-                                  ongoingStartIndexKubix + 3 <
-                                  ongoingPollsKubix.length
-                                ) {
-                                  setOngoingStartIndexKubix(
-                                    ongoingStartIndexKubix + 3
-                                  );
-                                }
-                              }}
-                            />
-                            <IconButton
-                              aria-label="Previous polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
-                              icon={
-                                <ArrowBackIcon
-                                  boxSize="6" // smaller size
-                                  color="black"
-                                />
-                              }
-                              onClick={() => {
-                                if (ongoingStartIndexKubix - 3 >= 0) {
-                                  setOngoingStartIndexKubid(
-                                    ongoingStartIndexKubix - 3
-                                  );
-                                }
-                              }}
-                            />
-                          </HStack>
-                        </>
-                      ) : null}
-                    </HStack> */}
-
-                    <Heading pl={2} color="rgba(333, 333, 333, 1)">
-                      History{" "}
-                    </Heading>
-                    {/* <HStack spacing={4} w="100%" justifyContent="flex-start">
-                      {completedPollsKubix.length > 0 ? (
-                        displayHistoryPollsKubix.map((poll, index) => {
-                          const totalVotes = poll.options.reduce(
-                            (total, option) =>
-                              total +
-                              ethers.BigNumber.from(option.votes).toNumber(),
-                            0
-                          );
-                          const predefinedColors = [
-                            "red",
-                            "darkblue",
-                            "yellow",
-                            "purple",
-                          ];
-                          const data = [
-                            {
-                              name: "Options",
-                              values: poll.options.map((option, index) => {
-                                const color =
-                                  index < predefinedColors.length
-                                    ? predefinedColors[index]
-                                    : `rgba(${Math.random() * 255}, ${
-                                        Math.random() * 255
-                                      }, ${Math.random() * 255}, 1)`;
-                                return {
-                                  value:
-                                    (ethers.BigNumber.from(
-                                      option.votes
-                                    ).toNumber() /
-                                      totalVotes) *
-                                    100,
-                                  color: color,
-                                };
-                              }),
-                            },
-                          ];
-                          return (
-                            <Box
-                              key={index}
-                              flexDirection="column"
-                              alignItems="center"
-                              justifyContent="center"
-                              borderRadius="3xl"
-                              boxShadow="lg"
-                              display="flex"
-                              w="30%"
-                              minW="30%"
-                              maxWidth="30%"
-                              bg="transparent"
-                              position="relative"
-                              color="rgba(333, 333, 333, 1)"
-                              zIndex={1}
-                            >
-                              <div className="glass" style={glassLayerStyle} />
-                              <Text
-                                mr="2"
-                                mt="4"
-                                ml="2 "
-                                mb="2"
-                                fontSize={"xl"}
-                                fontWeight="extrabold"
-                              >
-                                {poll.name}
-                              </Text>
-                              <Flex justifyContent="center">
-                                <BarChart
-                                  width={200}
-                                  height={30}
-                                  layout="vertical"
-                                  data={data}
-                                >
-                                  <XAxis type="number" hide="true" />
-                                  <YAxis
-                                    type="category"
-                                    dataKey="name"
-                                    hide="true"
-                                  />
-                                  {data[0].values.map((option, index) => (
-                                    <Bar
-                                      key={index}
-                                      dataKey={`values[${index}].value`}
-                                      stackId="a"
-                                      fill={option.color}
-                                    />
-                                  ))}
-                                </BarChart>
-                              </Flex>
-                              <Text mb="2" fontSize="xl" fontWeight="extrabold">
-                                Winner: {poll.winner}
-                              </Text>
-                            </Box>
-                          );
-                        })
-                      ) : (
-                        <Box
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          borderRadius="3xl"
-                          boxShadow="lg"
-                          display="flex"
-                          w="100%"
-                          maxWidth="100%"
-                          bg="transparent"
-                          position="relative"
-                          p={4}
-                          zIndex={1}
-                          color="ghostwhite"
-                        >
-                          <div className="glass" style={glassLayerStyle} />
-                          <Flex
-                            flexDirection="column"
-                            alignItems="center"
-                            justifyContent="center"
-                          >
-                            <Text
-                              mb="2"
-                              fontSize="2xl"
-                              fontWeight="extrabold"
-                              pl={12}
-                              pr={12}
-                              pt={14}
-                              pb={14}
-                            >
                               No History
                             </Text>
                           </Flex>
                         </Box>
                       )}
-                      {completedPollsKubix.length > 0 ? (
+                      {displayedCompletedProposals.length > 0 ? (
                         <>
                           <Spacer />
-                          <HStack justifyContent="bottom" spacing={4}>
+                          <HStack justifyContent="bottom" spacing={-2}>
                             <IconButton
-                              aria-label="Next polls"
                               background="transparent"
                               border="none"
                               _hover={{ bg: "transparent" }}
                               _active={{ bg: "transparent" }}
-                              icon={
-                                <ArrowForwardIcon
-                                  boxSize="6" // smaller size
-                                  color="black"
-                                />
-                              }
-                              onClick={() => {
-                                if (
-                                  ongoingStartIndexKubix + 3 <
-                                  ongoingPollsKubix.length
-                                ) {
-                                  setOngoingStartIndexKubix(
-                                    ongoingStartIndexKubix + 3
-                                  );
-                                }
-                              }}
-                            />
-                            <IconButton
-                              aria-label="Previous polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
+                              aria-label="Previous history polls"
                               icon={
                                 <ArrowBackIcon
                                   boxSize="6" // smaller size
                                   color="black"
                                 />
                               }
-                              onClick={() => {
-                                if (ongoingStartIndexKubix - 3 >= 0) {
-                                  setOngoingStartIndexKubid(
-                                    ongoingStartIndexKubix - 3
-                                  );
-                                }
-                              }}
+                              onClick={handlePreviousProposalsClickCompletedDemocracy}
+                            />
+                            <IconButton
+                              background="transparent"
+                              border="none"
+                              _hover={{ bg: "transparent" }}
+                              _active={{ bg: "transparent" }}
+                              aria-label="Next history polls"
+                              icon={
+                                <ArrowForwardIcon
+                                  boxSize="6" // smaller size
+                                  color="black"
+                                />
+                              }
+                              onClick={handleNextProposalsClickCompletedDemocracy}
                             />
                           </HStack>
                         </>
                       ) : null}
-                    </HStack> */}
+                    </HStack> 
                   </VStack>
                 </Flex>
               </Flex>
