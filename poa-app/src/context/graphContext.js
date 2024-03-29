@@ -53,6 +53,7 @@ export const GraphProvider = ({ children }) => {
         }
 
         async function noAccountInit(){
+            await loadContractAddress(loaded);
             await loadGraphDataNoAccount(loaded);
         }
         if (loaded !== undefined && loaded !== '' && account !== '0x00') {
@@ -127,17 +128,29 @@ export const GraphProvider = ({ children }) => {
     async function fetchParticpationVotingOngoing(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            ParticipationVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+              id
+              ParticipationVoting{
                 id
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}){
+                  id
+                  name
+                  experationTimestamp
+                  creationTimestamp
+                  description
+                  options{
+                    id
+                    name
+                    votes
+                  }
                 }
+              }
             }
-            }
-        }`;
+          }`;
 
         const data = await querySubgraph(query);
+        console.log("participation voting ongoing", data);
 
-        return data
+        return data.perpetualOrganization.ParticipationVoting?.proposals;
     }
 
     async function fetchParticipationVotingCompleted(id) {
@@ -159,17 +172,29 @@ export const GraphProvider = ({ children }) => {
     async function fetchHybridVotingOngoing(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            HybridVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+              id
+              HybridVoting{
                 id
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}){
+                  id
+                  name
+                  experationTimestamp
+                  creationTimestamp
+                  description
+                  options{
+                    id
+                    name
+                    votes
+                  }
                 }
+              }
             }
-            }
-        }`;
+          }`;
 
         const data = await querySubgraph(query);
+        console.log("hybrid voting ongoing", data);
 
-        return data
+        return data.perpetualOrganization.HybridVoting?.proposals;
     }
 
     async function fetchHybridVotingCompleted(id) {
