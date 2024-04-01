@@ -9,6 +9,7 @@ interface INFTMembership4 {
 
 interface IParticipationToken {
     function mint(address to, uint256 amount) external;
+    function setTaskManagerAddress(address _taskManagerAddress) external;
 }
 
 contract TaskManager {

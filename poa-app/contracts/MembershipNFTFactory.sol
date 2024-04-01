@@ -9,10 +9,11 @@ contract NFTMembershipFactory {
 
     event ContractCreated(address contractAddress, string[] memberTypeNames, string[] executiveRoleNames, string defaultImageURL, string POname);
 
-    function createNFTMembership(string[] memory memberTypeNames, string[] memory _executiveRoleNames, string memory _defaultImageURL, string memory POname) public {
+    function createNFTMembership(string[] memory memberTypeNames, string[] memory _executiveRoleNames, string memory _defaultImageURL, string memory POname) public returns (address){
         NFTMembership newContract = new NFTMembership(memberTypeNames, _executiveRoleNames, _defaultImageURL);
         deployedContracts.push(address(newContract));
         emit ContractCreated(address(newContract), memberTypeNames, _executiveRoleNames, _defaultImageURL, POname);
+        return address(newContract);
     }
 
     function getDeployedContracts() public view returns (address[] memory) {

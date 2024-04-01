@@ -10,6 +10,7 @@ interface INFTMembership2 {
 
 interface ITreasury {
     function sendTokens(address _token, address _to, uint256 _amount) external;
+    function setVotingContractAddress(address _votingContractAddress) external;
 }
 
 
