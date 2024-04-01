@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface INFTMembership {
+interface INFTMembership2 {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
 }
 
@@ -15,7 +15,7 @@ interface ITreasury {
 
 contract DirectDemocracyVoting {
     IERC20 public DirectDemocracyToken;
-    INFTMembership public nftMembership;
+    INFTMembership2 public nftMembership;
     ITreasury public treasury;
 
     struct PollOption {
@@ -46,7 +46,7 @@ contract DirectDemocracyVoting {
 
     constructor(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames , address _treasuryAddress) {
         DirectDemocracyToken = IERC20(_ddToken);
-        nftMembership = INFTMembership(_nftMembership); 
+        nftMembership = INFTMembership2(_nftMembership); 
         treasury = ITreasury(_treasuryAddress);
         
         for (uint i = 0; i < _allowedRoleNames.length; i++) {

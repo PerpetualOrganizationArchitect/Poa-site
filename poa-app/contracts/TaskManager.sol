@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface INFTMembership {
+interface INFTMembership4 {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
 }
 
@@ -21,7 +21,7 @@ contract TaskManager {
 
 
     IParticipationToken public token;
-    INFTMembership public nftMembership;
+    INFTMembership4 public nftMembership;
 
 
 
@@ -42,7 +42,7 @@ contract TaskManager {
     constructor(address _token, address _nftMembership, string[] memory _allowedRoleNames) {
         token = IParticipationToken(_token);
 
-        nftMembership = INFTMembership(_nftMembership);
+        nftMembership = INFTMembership4(_nftMembership);
 
         for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
             allowedRoles[_allowedRoleNames[i]] = true;
