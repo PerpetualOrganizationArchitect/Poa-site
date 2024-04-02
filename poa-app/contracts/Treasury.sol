@@ -16,6 +16,7 @@ contract Treasury {
     event VotingContractSet(address votingContract);
 
     constructor() {
+        votingContract = address(0);
     }
 
     function setVotingContract(address _votingContract) external  {

@@ -44,50 +44,51 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
     );
   }
 
-  deployedVotings(param0: BigInt): Address {
+  createDirectDemocracyVoting(
+    _ddToken: Address,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _treasuryAddress: Address,
+    POname: string
+  ): Address {
     let result = super.call(
-      "deployedVotings",
-      "deployedVotings(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createDirectDemocracyVoting",
+      "createDirectDemocracyVoting(address,address,string[],address,string):(address)",
+      [
+        ethereum.Value.fromAddress(_ddToken),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromAddress(_treasuryAddress),
+        ethereum.Value.fromString(POname)
+      ]
     );
 
     return result[0].toAddress();
   }
 
-  try_deployedVotings(param0: BigInt): ethereum.CallResult<Address> {
+  try_createDirectDemocracyVoting(
+    _ddToken: Address,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _treasuryAddress: Address,
+    POname: string
+  ): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "deployedVotings",
-      "deployedVotings(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createDirectDemocracyVoting",
+      "createDirectDemocracyVoting(address,address,string[],address,string):(address)",
+      [
+        ethereum.Value.fromAddress(_ddToken),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromAddress(_treasuryAddress),
+        ethereum.Value.fromString(POname)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getDeployedVotings(): Array<Address> {
-    let result = super.call(
-      "getDeployedVotings",
-      "getDeployedVotings():(address[])",
-      []
-    );
-
-    return result[0].toAddressArray();
-  }
-
-  try_getDeployedVotings(): ethereum.CallResult<Array<Address>> {
-    let result = super.tryCall(
-      "getDeployedVotings",
-      "getDeployedVotings():(address[])",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddressArray());
   }
 }
 
@@ -134,5 +135,9 @@ export class CreateDirectDemocracyVotingCall__Outputs {
 
   constructor(call: CreateDirectDemocracyVotingCall) {
     this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
   }
 }

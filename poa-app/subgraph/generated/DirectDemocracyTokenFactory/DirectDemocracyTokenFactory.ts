@@ -51,6 +51,53 @@ export class DirectDemocracyTokenFactory extends ethereum.SmartContract {
       address
     );
   }
+
+  createDirectDemocracyToken(
+    name: string,
+    symbol: string,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _POname: string
+  ): Address {
+    let result = super.call(
+      "createDirectDemocracyToken",
+      "createDirectDemocracyToken(string,string,address,string[],string):(address)",
+      [
+        ethereum.Value.fromString(name),
+        ethereum.Value.fromString(symbol),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromString(_POname)
+      ]
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_createDirectDemocracyToken(
+    name: string,
+    symbol: string,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _POname: string
+  ): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "createDirectDemocracyToken",
+      "createDirectDemocracyToken(string,string,address,string[],string):(address)",
+      [
+        ethereum.Value.fromString(name),
+        ethereum.Value.fromString(symbol),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromString(_POname)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
 }
 
 export class CreateDirectDemocracyTokenCall extends ethereum.Call {
@@ -96,5 +143,9 @@ export class CreateDirectDemocracyTokenCall__Outputs {
 
   constructor(call: CreateDirectDemocracyTokenCall) {
     this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
   }
 }

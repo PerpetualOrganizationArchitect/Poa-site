@@ -30,7 +30,7 @@ import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
 
-import {main} from "../../../scripts/realDeployment"
+import {main} from "../../../scripts/newDeployment"
 import { useMetaMask } from "@/components/Metamask";
 import { useWeb3Context } from "@/context/web3Context";
 

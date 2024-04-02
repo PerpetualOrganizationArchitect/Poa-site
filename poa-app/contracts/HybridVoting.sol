@@ -95,8 +95,8 @@ contract HybridVoting {
         string memory _description,
         uint256 _timeInMinutes,
         string[] memory _optionNames,
-        address payable _transferRecipient,
         uint256 _transferTriggerOptionIndex,
+        address payable _transferRecipient,
         uint256 _transferAmount,
         bool _transferEnabled
     ) external canCreateProposal {

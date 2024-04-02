@@ -1,8 +1,8 @@
-const MasterDeployfactory = require("../abi/MasterDeployFactory.json");
+const MasterDeployfactory = require("../abi/MasterFactory.json");
 
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0x05723628fBBA52f7C4546661eca62da7Ff8A147b";
+const masterDeployFactoryAddress = "0x37286E635B4Bd90d35000aBf07C4486854558194";
 
 export async function main(
     memberTypeNames,
@@ -56,12 +56,19 @@ export async function main(
         contractNames,
     };
 
+    console.log("Deploying new DAO with the following parameters:");
+    console.log(params);
+
 
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
+    const gasLimit = ethers.utils.hexlify(14500000); // Example gas limit, adjust based on your needs
+
+    const options = {
+        gasLimit: gasLimit,
+    };
 
     try {
-       
-        const tx = await masterDeployer.deployAll(params);
+        const tx = await masterDeployer.deployAll(params, options);
         const receipt = await tx.wait();
 
         console.log("Deployment transaction was successful!");
@@ -69,8 +76,4 @@ export async function main(
     } catch (error) {
         console.error("An error occurred during deployment:", error);
     }
-
-
-
-
-  }
+}
