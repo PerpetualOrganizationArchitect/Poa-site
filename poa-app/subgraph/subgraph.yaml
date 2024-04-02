@@ -4,11 +4,12 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: DirectDemocracyTokenFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0xdF674Fd4b6fD809069Ffbd9deA727CE8A7e8C9f8"
+      address: "0xC10cACD3dD11aFdF11d14082556A5690b9cf53a7"
       abi: DirectDemocracyTokenFactory
-      startBlock: 46430300
+      startBlock: 29441420
+
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -24,11 +25,11 @@ dataSources:
       file: ./mappings/ddToken/ddTokenFactoryMapping.ts
   - kind: ethereum/contract
     name: ParticipationTokenFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0xb37C09ecc05F6031f987FD9baC34575D43249e6d"
+      address: "0x7d81E7Ee57b4C5E6E8A8B2B79E1708bA7417134B"
       abi:  ParticipationTokenFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -44,11 +45,11 @@ dataSources:
       file: ./mappings/ptToken/ptTokenFactoryMapping.ts
   - kind: ethereum/contract
     name: NFTMembershipFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0xC565CACD8CC57bF598E22aB47a063136fa9E984c"
+      address: "0xE204Aaa069B484a8fD406653190e08AC18B46c4b"
       abi: NFTMembershipFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -64,11 +65,11 @@ dataSources:
       file: ./mappings/nft/nftMembershipFactoryMapping.ts
   - kind: ethereum/contract
     name: TreasuryFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0x52ED44aB1cBD8323e15CB40b457e4E1eBf14408c"
+      address: "0x63FEf7Cd6Be84bCDad07d3Fc5304773d0589B909"
       abi: TreasuryFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -84,11 +85,11 @@ dataSources:
       file: ./mappings/treasury/treasuryFactoryMapping.ts
   - kind: ethereum/contract
     name: ParticipationVotingFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0x68bfACC747b5C98Df33476417d91EAD0F9A8f204"
+      address: "0xcF9b18C0410CEdC571d281CCa8bc5443e96F19bf"
       abi: ParticipationVotingFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -104,11 +105,11 @@ dataSources:
       file: ./mappings/ptVoting/ptVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: DirectDemocracyVotingFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0xa80927965487CA1bC9e4cf6b90a40B0954E8830A"
+      address: "0xe1F515ed411B51F6B374478C26FCf3e1C67d442e"
       abi: DirectDemocracyVotingFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -124,11 +125,11 @@ dataSources:
       file: ./mappings/ddVoting/ddVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: HybridVotingFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0x4bC864D2EFD9e10B64ffd94982bb76Ef41030A46"
+      address: "0x812d400DF57368C46eCcb3Fc6b5cD669aCdeB97a"
       abi: HybridVotingFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -144,11 +145,11 @@ dataSources:
       file: ./mappings/hybridVoting/hybridVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: TaskManagerFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0xa8029FbDA0f31D35806db542b8c5307A09475Fdc"
+      address: "0xABF14D0f94Bf942038EE96A769E46303acC04c41"
       abi: TaskManagerFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -164,11 +165,11 @@ dataSources:
       file: ./mappings/taskManager/taskManagerFactoryMapping.ts
   - kind: ethereum/contract
     name: RegistryFactory
-    network: mumbai
+    network: arbitrum-sepolia
     source:
-      address: "0x70EfBb9557196e09D33F430c3bD0E52338c86a5E"
+      address: "0xc3e465dF27c4F2795AD582B98879C26A695F6268"
       abi: RegistryFactory
-      startBlock: 46430300
+      startBlock: 29441420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -185,7 +186,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: DirectDemocracyToken
     mapping:
@@ -205,7 +206,7 @@ templates:
       file: ./mappings/ddToken/ddTokenMapping.ts
   - kind: ethereum/contract
     name: ParticipationToken
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: ParticipationToken
     mapping:
@@ -227,7 +228,7 @@ templates:
       file: ./mappings/ptToken/ptTokenMapping.ts
   - kind: ethereum/contract
     name: NFTMembership
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: NFTMembership
     mapping:
@@ -250,7 +251,7 @@ templates:
       file: ./mappings/nft/nftMembershipMapping.ts
   - kind: ethereum/contract
     name: Treasury
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: Treasury
     mapping:
@@ -268,7 +269,7 @@ templates:
       file: ./mappings/treasury/treasuryMapping.ts
   - kind: ethereum/contract
     name: ParticipationVoting
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: ParticipationVoting
     mapping:
@@ -295,7 +296,7 @@ templates:
       file: ./mappings/ptVoting/ptVotingMapping.ts
   - kind: ethereum/contract
     name: DirectDemocracyVoting
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: DirectDemocracyVoting
     mapping:
@@ -322,7 +323,7 @@ templates:
       file: ./mappings/ddVoting/ddVotingMapping.ts
   - kind: ethereum/contract
     name: HybridVoting
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: HybridVoting
     mapping:
@@ -349,7 +350,7 @@ templates:
       file: ./mappings/hybridVoting/hybridVotingMapping.ts
   - kind: ethereum/contract
     name: TaskManager
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: TaskManager
     mapping:
@@ -377,7 +378,7 @@ templates:
       file: ./mappings/taskManager/taskManagerMapping.ts
   - kind: ethereum/contract
     name: Registry
-    network: mumbai
+    network: arbitrum-sepolia
     source:
       abi: Registry
     mapping:
