@@ -40,67 +40,49 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
     );
   }
 
-  getVotingContractAddress(index: BigInt): Address {
+  createParticipationVoting(
+    _ParticipationToken: Address,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _quadraticVotingEnabled: boolean,
+    _treasuryAddress: Address,
+    POname: string
+  ): Address {
     let result = super.call(
-      "getVotingContractAddress",
-      "getVotingContractAddress(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(index)]
+      "createParticipationVoting",
+      "createParticipationVoting(address,address,string[],bool,address,string):(address)",
+      [
+        ethereum.Value.fromAddress(_ParticipationToken),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromBoolean(_quadraticVotingEnabled),
+        ethereum.Value.fromAddress(_treasuryAddress),
+        ethereum.Value.fromString(POname)
+      ]
     );
 
     return result[0].toAddress();
   }
 
-  try_getVotingContractAddress(index: BigInt): ethereum.CallResult<Address> {
+  try_createParticipationVoting(
+    _ParticipationToken: Address,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _quadraticVotingEnabled: boolean,
+    _treasuryAddress: Address,
+    POname: string
+  ): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "getVotingContractAddress",
-      "getVotingContractAddress(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(index)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getVotingContractsCount(): BigInt {
-    let result = super.call(
-      "getVotingContractsCount",
-      "getVotingContractsCount():(uint256)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_getVotingContractsCount(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getVotingContractsCount",
-      "getVotingContractsCount():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  votingContracts(param0: BigInt): Address {
-    let result = super.call(
-      "votingContracts",
-      "votingContracts(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_votingContracts(param0: BigInt): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "votingContracts",
-      "votingContracts(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createParticipationVoting",
+      "createParticipationVoting(address,address,string[],bool,address,string):(address)",
+      [
+        ethereum.Value.fromAddress(_ParticipationToken),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromBoolean(_quadraticVotingEnabled),
+        ethereum.Value.fromAddress(_treasuryAddress),
+        ethereum.Value.fromString(POname)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -157,5 +139,9 @@ export class CreateParticipationVotingCall__Outputs {
 
   constructor(call: CreateParticipationVotingCall) {
     this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
   }
 }

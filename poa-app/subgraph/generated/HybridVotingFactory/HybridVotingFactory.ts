@@ -41,73 +41,67 @@ export class HybridVotingFactory extends ethereum.SmartContract {
     return new HybridVotingFactory("HybridVotingFactory", address);
   }
 
-  allHybridVotings(param0: BigInt): Address {
+  createHybridVoting(
+    _ParticipationToken: Address,
+    _DemocracyToken: Address,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _quadraticVotingEnabled: boolean,
+    _democracyVoteWeight: BigInt,
+    _participationVoteWeight: BigInt,
+    _treasuryAddress: Address,
+    POname: string
+  ): Address {
     let result = super.call(
-      "allHybridVotings",
-      "allHybridVotings(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createHybridVoting",
+      "createHybridVoting(address,address,address,string[],bool,uint256,uint256,address,string):(address)",
+      [
+        ethereum.Value.fromAddress(_ParticipationToken),
+        ethereum.Value.fromAddress(_DemocracyToken),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromBoolean(_quadraticVotingEnabled),
+        ethereum.Value.fromUnsignedBigInt(_democracyVoteWeight),
+        ethereum.Value.fromUnsignedBigInt(_participationVoteWeight),
+        ethereum.Value.fromAddress(_treasuryAddress),
+        ethereum.Value.fromString(POname)
+      ]
     );
 
     return result[0].toAddress();
   }
 
-  try_allHybridVotings(param0: BigInt): ethereum.CallResult<Address> {
+  try_createHybridVoting(
+    _ParticipationToken: Address,
+    _DemocracyToken: Address,
+    _nftMembership: Address,
+    _allowedRoleNames: Array<string>,
+    _quadraticVotingEnabled: boolean,
+    _democracyVoteWeight: BigInt,
+    _participationVoteWeight: BigInt,
+    _treasuryAddress: Address,
+    POname: string
+  ): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "allHybridVotings",
-      "allHybridVotings(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createHybridVoting",
+      "createHybridVoting(address,address,address,string[],bool,uint256,uint256,address,string):(address)",
+      [
+        ethereum.Value.fromAddress(_ParticipationToken),
+        ethereum.Value.fromAddress(_DemocracyToken),
+        ethereum.Value.fromAddress(_nftMembership),
+        ethereum.Value.fromStringArray(_allowedRoleNames),
+        ethereum.Value.fromBoolean(_quadraticVotingEnabled),
+        ethereum.Value.fromUnsignedBigInt(_democracyVoteWeight),
+        ethereum.Value.fromUnsignedBigInt(_participationVoteWeight),
+        ethereum.Value.fromAddress(_treasuryAddress),
+        ethereum.Value.fromString(POname)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getHybridVotingAddress(index: BigInt): Address {
-    let result = super.call(
-      "getHybridVotingAddress",
-      "getHybridVotingAddress(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(index)]
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_getHybridVotingAddress(index: BigInt): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "getHybridVotingAddress",
-      "getHybridVotingAddress(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(index)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getHybridVotingCount(): BigInt {
-    let result = super.call(
-      "getHybridVotingCount",
-      "getHybridVotingCount():(uint256)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_getHybridVotingCount(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getHybridVotingCount",
-      "getHybridVotingCount():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 }
 
@@ -170,5 +164,9 @@ export class CreateHybridVotingCall__Outputs {
 
   constructor(call: CreateHybridVotingCall) {
     this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
   }
 }

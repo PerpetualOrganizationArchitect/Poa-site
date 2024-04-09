@@ -5,19 +5,19 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 
-interface INFTMembership {
+interface INFTMembership5 {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
 }
 
-interface ITreasury {
+interface ITreasury3 {
     function sendTokens(address _token, address _to, uint256 _amount) external;
 }
 
 
 contract ParticipationVoting {
     IERC20 public ParticipationToken;
-    INFTMembership public nftMembership;
-    ITreasury public treasury;
+    INFTMembership5 public nftMembership;
+    ITreasury3 public treasury;
 
     struct PollOption {
         uint256 votes;
@@ -48,8 +48,8 @@ contract ParticipationVoting {
 
     constructor(address _ParticipationToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, address _treasuryAddress) {
         ParticipationToken = IERC20(_ParticipationToken);
-        nftMembership = INFTMembership(_nftMembership);
-        treasury = ITreasury(_treasuryAddress);
+        nftMembership = INFTMembership5(_nftMembership);
+        treasury = ITreasury3(_treasuryAddress);
 
         for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
             allowedRoles[_allowedRoleNames[i]] = true;

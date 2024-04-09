@@ -40,6 +40,7 @@ export const GraphProvider = ({ children }) => {
     const [participationVotingContractAddress, setParticipationVotingContractAddress] = useState('');
     const [directDemocracyVotingContractAddress, setDirectDemocracyVotingContractAddress] = useState('');
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
+    const [votingContractAddress, setVotingContractAddress] = useState('');
 
 
     
@@ -53,6 +54,7 @@ export const GraphProvider = ({ children }) => {
         }
 
         async function noAccountInit(){
+            await loadContractAddress(loaded);
             await loadGraphDataNoAccount(loaded);
         }
         if (loaded !== undefined && loaded !== '' && account !== '0x00') {
@@ -127,25 +129,47 @@ export const GraphProvider = ({ children }) => {
     async function fetchParticpationVotingOngoing(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            ParticipationVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+              id
+              ParticipationVoting{
                 id
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}){
+                  id
+                  name
+                  experationTimestamp
+                  creationTimestamp
+                  description
+                  options{
+                    id
+                    name
+                    votes
+                  }
                 }
+              }
             }
-            }
-        }`;
+          }`;
 
         const data = await querySubgraph(query);
+        console.log("participation voting ongoing", data);
 
-        return data
+        return data.perpetualOrganization.ParticipationVoting?.proposals;
     }
 
     async function fetchParticipationVotingCompleted(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            ParticipationVoting {
+           ParticipationVoting {
                 proposals(orderBy: experationTimestamp, orderDirection: desc, where: {winningOptionIndex_not: null}) {
-                id
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    winningOptionIndex
+                    options{
+                      id
+                      name
+                      votes
+                    }
                 }
             }
             }
@@ -153,23 +177,35 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data
+        return data.perpetualOrganization.ParticipationVoting?.proposals;
     }
 
     async function fetchHybridVotingOngoing(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-            HybridVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+              id
+              HybridVoting{
                 id
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}){
+                  id
+                  name
+                  experationTimestamp
+                  creationTimestamp
+                  description
+                  options{
+                    id
+                    name
+                    votes
+                  }
                 }
+              }
             }
-            }
-        }`;
+          }`;
 
         const data = await querySubgraph(query);
+        console.log("hybrid voting ongoing", data);
 
-        return data
+        return data.perpetualOrganization.HybridVoting?.proposals;
     }
 
     async function fetchHybridVotingCompleted(id) {
@@ -177,7 +213,17 @@ export const GraphProvider = ({ children }) => {
             perpetualOrganization(id: "${id}") {
             HybridVoting {
                 proposals(orderBy: experationTimestamp, orderDirection: desc, where: {winningOptionIndex_not: null}) {
-                id
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    winningOptionIndex
+                    options{
+                      id
+                      name
+                      votes
+                    }
                 }
             }
             }
@@ -185,7 +231,7 @@ export const GraphProvider = ({ children }) => {
 
         const data = await querySubgraph(query);
 
-        return data
+        return data.perpetualOrganization.HybridVoting?.proposals;
     }
 
     async function fetchDemocracyVotingOngoing(id) {
@@ -459,6 +505,7 @@ export const GraphProvider = ({ children }) => {
     };
 
     async function loadContractAddress(poName) {
+        console.log("loading contract address", poName);
         const query = `{
             perpetualOrganization(id:"${poName}") {
                 TaskManager {
@@ -488,18 +535,23 @@ export const GraphProvider = ({ children }) => {
         const data = await querySubgraph(query);
 
         // set the data reuslts to contract address
+        console.log("contract address", data);
         if (data.perpetualOrganization.TaskManager?.id) {
             setTaskManagerContractAddress(data.perpetualOrganization.TaskManager.id);
         }
         if (data.perpetualOrganization.HybridVoting?.id) {
+            console.log("hybrid voting contract address", data.perpetualOrganization.HybridVoting.id);
             setHybridVotingContractAddress(data.perpetualOrganization.HybridVoting.id);
+            setVotingContractAddress(data.perpetualOrganization.HybridVoting.id);
         }
         if (data.perpetualOrganization.ParticipationVoting?.id) {
+           
             setParticipationVotingContractAddress(data.perpetualOrganization.ParticipationVoting.id);
+            setVotingContractAddress(data.perpetualOrganization.ParticipationVoting.id);
         }
         if (data.perpetualOrganization.DirectDemocracyVoting?.id) {
             setDirectDemocracyVotingContractAddress(data.perpetualOrganization.DirectDemocracyVoting.id);
-            console.log("swjnjsjcd direct democracy voting", data.perpetualOrganization.DirectDemocracyVoting.id);
+
         }
         if (data.perpetualOrganization.DirectDemocracyToken?.id) {
             setDDTokenContractAddress(data.perpetualOrganization.DirectDemocracyToken.id);
@@ -561,18 +613,26 @@ export const GraphProvider = ({ children }) => {
         const projectData = await fetchProjectData(poName);
         const leaderboardData = await fetchLeaderboardData(poName);
 
-        setParticipationVotingOngoing(participationVotingOngoing);
-        setParticipationVotingCompleted(participationVotingCompleted);
-        setHybridVotingOngoing(hybridVotingOngoing);
-        setHybridVotingCompleted(hybridVotingCompleted);
+        console.log("participationTokenContractAddress", participationVotingContractAddress);
+        if(participationVotingContractAddress === ''){
+            setParticipationVotingOngoing(hybridVotingOngoing);
+            setParticipationVotingOngoing(hybridVotingCompleted);
+            console.log("hybrid voting contract address", hybridVotingContractAddress);
+        }else
+        {
+            setParticipationVotingOngoing(participationVotingOngoing);
+            setParticipationVotingCompleted(participationVotingCompleted);
+            console.log("participation voting contract address", participationVotingContractAddress);
+        }
         setDemocracyVotingOngoing(democracyVotingOngoing);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
         setProjectsData( await transformProjects(projectData));
+
     }
 
     return (
-        <GraphContext.Provider value={{ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted}}>
+        <GraphContext.Provider value={{ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress}}>
         {children}
         </GraphContext.Provider>
     );

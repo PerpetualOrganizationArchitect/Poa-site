@@ -49,50 +49,47 @@ export class NFTMembershipFactory extends ethereum.SmartContract {
     return new NFTMembershipFactory("NFTMembershipFactory", address);
   }
 
-  deployedContracts(param0: BigInt): Address {
+  createNFTMembership(
+    memberTypeNames: Array<string>,
+    _executiveRoleNames: Array<string>,
+    _defaultImageURL: string,
+    POname: string
+  ): Address {
     let result = super.call(
-      "deployedContracts",
-      "deployedContracts(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createNFTMembership",
+      "createNFTMembership(string[],string[],string,string):(address)",
+      [
+        ethereum.Value.fromStringArray(memberTypeNames),
+        ethereum.Value.fromStringArray(_executiveRoleNames),
+        ethereum.Value.fromString(_defaultImageURL),
+        ethereum.Value.fromString(POname)
+      ]
     );
 
     return result[0].toAddress();
   }
 
-  try_deployedContracts(param0: BigInt): ethereum.CallResult<Address> {
+  try_createNFTMembership(
+    memberTypeNames: Array<string>,
+    _executiveRoleNames: Array<string>,
+    _defaultImageURL: string,
+    POname: string
+  ): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "deployedContracts",
-      "deployedContracts(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createNFTMembership",
+      "createNFTMembership(string[],string[],string,string):(address)",
+      [
+        ethereum.Value.fromStringArray(memberTypeNames),
+        ethereum.Value.fromStringArray(_executiveRoleNames),
+        ethereum.Value.fromString(_defaultImageURL),
+        ethereum.Value.fromString(POname)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getDeployedContracts(): Array<Address> {
-    let result = super.call(
-      "getDeployedContracts",
-      "getDeployedContracts():(address[])",
-      []
-    );
-
-    return result[0].toAddressArray();
-  }
-
-  try_getDeployedContracts(): ethereum.CallResult<Array<Address>> {
-    let result = super.tryCall(
-      "getDeployedContracts",
-      "getDeployedContracts():(address[])",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddressArray());
   }
 }
 
@@ -135,5 +132,9 @@ export class CreateNFTMembershipCall__Outputs {
 
   constructor(call: CreateNFTMembershipCall) {
     this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
   }
 }

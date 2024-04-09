@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IERC20 {
+interface IERC202 {
     function transfer(address to, uint256 amount) external returns (bool);
     function transferFrom(address from, address to, uint256 amount) external returns (bool);
     function approve(address spender, uint256 amount) external returns (bool);
@@ -16,6 +16,7 @@ contract Treasury {
     event VotingContractSet(address votingContract);
 
     constructor() {
+        votingContract = address(0);
     }
 
     function setVotingContract(address _votingContract) external  {
@@ -31,13 +32,13 @@ contract Treasury {
     }
 
     function sendTokens(address _token, address _to, uint256 _amount) external onlyVotingContract {
-        require(IERC20(_token).balanceOf(address(this)) >= _amount, "Insufficient balance");
-        require(IERC20(_token).transfer(_to, _amount), "Transfer failed");
+        require(IERC202(_token).balanceOf(address(this)) >= _amount, "Insufficient balance");
+        require(IERC202(_token).transfer(_to, _amount), "Transfer failed");
         emit TokensSent(_token, _to, _amount);
     }
 
     function receiveTokens(address _token, address _from, uint256 _amount) public {
-        require(IERC20(_token).transferFrom(_from, address(this), _amount), "Transfer failed");
+        require(IERC202(_token).transferFrom(_from, address(this), _amount), "Transfer failed");
         emit TokensReceived(_token, _from, _amount);
     }
 

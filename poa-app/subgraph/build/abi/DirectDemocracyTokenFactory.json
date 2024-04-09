@@ -65,7 +65,13 @@
       }
     ],
     "name": "createDirectDemocracyToken",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   }

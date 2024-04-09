@@ -7,8 +7,6 @@ contract HybridVotingFactory {
     
     event HybridVotingContractCreated(address indexed creator, address hybridVotingAddress, string POname);
 
-    
-    address[] public allHybridVotings;
 
     
     function createHybridVoting(
@@ -21,7 +19,7 @@ contract HybridVotingFactory {
         uint256 _participationVoteWeight,
         address _treasuryAddress,
         string memory POname
-    ) public {
+    ) public  returns (address){
         HybridVoting newHybridVoting = new HybridVoting(
             _ParticipationToken,
             _DemocracyToken,
@@ -32,18 +30,9 @@ contract HybridVotingFactory {
             _participationVoteWeight,
             _treasuryAddress
         );
-        allHybridVotings.push(address(newHybridVoting));
         emit HybridVotingContractCreated(msg.sender, address(newHybridVoting), POname);
+        return address(newHybridVoting);
     }
 
     
-    function getHybridVotingCount() public view returns (uint256) {
-        return allHybridVotings.length;
-    }
-
-    
-    function getHybridVotingAddress(uint256 index) public view returns (address) {
-        require(index < allHybridVotings.length, "Index out of bounds");
-        return allHybridVotings[index];
-    }
 }

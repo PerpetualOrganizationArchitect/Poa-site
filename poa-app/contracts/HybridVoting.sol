@@ -5,11 +5,11 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 //importnaant vote weights arent percerntages but integers 
 
-interface INFTMembership {
+interface INFTMembership3 {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
 }
 
-interface ITreasury {
+interface ITreasury2{
     function sendTokens(address _token, address _to, uint256 _amount) external;
 }
 
@@ -17,8 +17,8 @@ interface ITreasury {
 contract HybridVoting {
     IERC20 public ParticipationToken;
     IERC20 public DirectDemocracyToken;
-    INFTMembership public nftMembership;
-    ITreasury public treasury;
+    INFTMembership3 public nftMembership;
+    ITreasury2 public treasury;
 
     struct PollOption {
         uint256 votesPT;
@@ -56,7 +56,7 @@ contract HybridVoting {
     constructor(address _ParticipationToken, address _DemocracyToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, uint256 _democracyVoteWeight, uint256 _participationVoteWeight, address _treasuryAddress) {
         ParticipationToken = IERC20(_ParticipationToken);
         DirectDemocracyToken = IERC20(_DemocracyToken);
-        nftMembership = INFTMembership(_nftMembership);
+        nftMembership = INFTMembership3(_nftMembership);
 
         for (uint256 i = 0; i < _allowedRoleNames.length; i++) {
             allowedRoles[_allowedRoleNames[i]] = true;
@@ -66,7 +66,7 @@ contract HybridVoting {
 
         democracyVoteWeight = _democracyVoteWeight;
         participationVoteWeight = _participationVoteWeight;
-        treasury = ITreasury(_treasuryAddress);
+        treasury = ITreasury2(_treasuryAddress);
 
     }
 
@@ -95,8 +95,8 @@ contract HybridVoting {
         string memory _description,
         uint256 _timeInMinutes,
         string[] memory _optionNames,
-        address payable _transferRecipient,
         uint256 _transferTriggerOptionIndex,
+        address payable _transferRecipient,
         uint256 _transferAmount,
         bool _transferEnabled
     ) external canCreateProposal {

@@ -79,50 +79,6 @@ export class TaskManagerFactory extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
-
-  getAllTaskManagers(): Array<Address> {
-    let result = super.call(
-      "getAllTaskManagers",
-      "getAllTaskManagers():(address[])",
-      []
-    );
-
-    return result[0].toAddressArray();
-  }
-
-  try_getAllTaskManagers(): ethereum.CallResult<Array<Address>> {
-    let result = super.tryCall(
-      "getAllTaskManagers",
-      "getAllTaskManagers():(address[])",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddressArray());
-  }
-
-  taskManagers(param0: BigInt): Address {
-    let result = super.call("taskManagers", "taskManagers(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-
-    return result[0].toAddress();
-  }
-
-  try_taskManagers(param0: BigInt): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "taskManagers",
-      "taskManagers(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
 }
 
 export class CreateTaskManagerCall extends ethereum.Call {

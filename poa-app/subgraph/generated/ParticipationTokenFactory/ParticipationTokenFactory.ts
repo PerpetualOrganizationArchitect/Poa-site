@@ -45,50 +45,43 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
     return new ParticipationTokenFactory("ParticipationTokenFactory", address);
   }
 
-  deployedTokens(param0: BigInt): Address {
+  createParticipationToken(
+    name: string,
+    symbol: string,
+    POname: string
+  ): Address {
     let result = super.call(
-      "deployedTokens",
-      "deployedTokens(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createParticipationToken",
+      "createParticipationToken(string,string,string):(address)",
+      [
+        ethereum.Value.fromString(name),
+        ethereum.Value.fromString(symbol),
+        ethereum.Value.fromString(POname)
+      ]
     );
 
     return result[0].toAddress();
   }
 
-  try_deployedTokens(param0: BigInt): ethereum.CallResult<Address> {
+  try_createParticipationToken(
+    name: string,
+    symbol: string,
+    POname: string
+  ): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "deployedTokens",
-      "deployedTokens(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      "createParticipationToken",
+      "createParticipationToken(string,string,string):(address)",
+      [
+        ethereum.Value.fromString(name),
+        ethereum.Value.fromString(symbol),
+        ethereum.Value.fromString(POname)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getDeployedTokens(): Array<Address> {
-    let result = super.call(
-      "getDeployedTokens",
-      "getDeployedTokens():(address[])",
-      []
-    );
-
-    return result[0].toAddressArray();
-  }
-
-  try_getDeployedTokens(): ethereum.CallResult<Array<Address>> {
-    let result = super.tryCall(
-      "getDeployedTokens",
-      "getDeployedTokens():(address[])",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddressArray());
   }
 }
 
@@ -127,5 +120,9 @@ export class CreateParticipationTokenCall__Outputs {
 
   constructor(call: CreateParticipationTokenCall) {
     this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
   }
 }
