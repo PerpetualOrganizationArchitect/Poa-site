@@ -13,7 +13,7 @@ const theme = extendTheme({
   styles: {
     global: {
       body: {
-        bgGradient: "linear(to-r, orange.200, pink.200)", // Using Chakra UI's color tokens
+        bgGradient: "linear(to-r, orange.200, pink.200)", 
       },
     },
   },

@@ -53,7 +53,7 @@ const UserDashboard= () => {
 
     // const {setLeaderboardLoaded,userPercentage} = useLeaderboard();
 
-    const {democracyVotingOngoing} = useGraphContext();
+    const {claimedTasks,democracyVotingOngoing} = useGraphContext();
     
 
     
@@ -74,7 +74,7 @@ const UserDashboard= () => {
   const openSettingsModal = () => setSettingsModalOpen(true);
   const closeSettingsModal = () => setSettingsModalOpen(false);
 
-  const [claimedTasks, setClaimedTasks] = useState([]);
+
     const [notLoaded, setNotLoaded] = useState(true);
   const [reccomendedTasks, setReccomendedTasks] = useState([]);
 
@@ -290,8 +290,25 @@ const UserDashboard= () => {
                 <Text pl={6} fontWeight="bold" fontSize="2xl">
                     {claimedTasks && claimedTasks.length > 0 ? 'Claimed Tasks' : 'Recommended Tasks'}
                 </Text>
-            </VStack>
 
+            </VStack>
+            <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
+                {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccomendedTasks)?.slice(0, 3).map((task) => (
+                    <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
+                        <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
+                            <VStack textColor="white" align="stretch" spacing={3}>
+                                <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
+                                    {task.id}
+                                </Text>
+                                <HStack justify="space-between">
+                                    <Badge colorScheme="yellow">{task.difficulty}</Badge>
+                                    <Text fontWeight="bold">Tokens {task.payout}</Text>
+                                </HStack>
+                            </VStack>
+                        </Link2>
+                    </Box>
+                ))}
+            </HStack>
 
 
         </Box>
