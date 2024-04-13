@@ -70,9 +70,10 @@ const User = () => {
       } catch (error) {
         console.error(error);
       }
+      console.log("minting dd tokens", ddTokenContractAddress)
       if (!ddTokenContractAddress) return;
       try {
-        await mintDDtokens(ddTokenContractAddress, 2023, 0, "yes");
+        await mintDDtokens(ddTokenContractAddress);
       } catch (error) {
         console.error(error);
       }
@@ -118,7 +119,6 @@ const User = () => {
       toast({ title: "Error", description: "Error minting Membership NFT", status: "error", duration: 5000, isClosable: true });
     }
   };
-
 
 
   const handleJoin = async (e) => {

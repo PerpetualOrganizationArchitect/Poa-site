@@ -25,7 +25,7 @@ const waveAnimation = keyframes`
   }
   50% {
     transform: translateX(-150px);
-  }
+  
   100% {
     transform: translateX(0);
   }
