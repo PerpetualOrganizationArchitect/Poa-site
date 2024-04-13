@@ -41,6 +41,16 @@ const OngoingPolls = ({OngoingPolls}) => {
     // duplicate poll 2 times 
     //const randomPolls = OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3).concat(OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3)).concat(OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3));
 
+    console.log("llelelelle",randomPolls)
+
+    function calculateRemainingTime(expirationTimestamp) {
+        // Current timestamp in seconds
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        // Calculate the duration
+        const duration = expirationTimestamp - currentTimestamp;
+        return duration;
+    }
 
     return (
             <HStack ml={0} mr={8} spacing="3.5%" >
@@ -64,7 +74,7 @@ const OngoingPolls = ({OngoingPolls}) => {
 
                                     <Heading pt={2} ml={4} fontWeight="extrabold" mt={2} size="sm">{poll.name}</Heading>
                                     
-                                    <Box pl="4" mt="2"><CountDown duration={poll?.expirationTimestamp- Math.floor(Date.now() / 1000)}/></Box>
+                                    <Box pl="4" mt="2"><CountDown duration={calculateRemainingTime(poll?.experationTimestamp)}/></Box>
                                 </VStack>
                                 </Link2>
                                 
