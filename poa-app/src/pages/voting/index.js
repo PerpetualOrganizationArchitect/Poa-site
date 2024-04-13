@@ -335,7 +335,7 @@ const Voting = () => {
               color="rgba(333, 333, 333, 1)"
               _selected={{ backgroundColor: "ghostwhite", color: "black" }}
             >
-              Votes
+              Democracy
             </Tab>
             <Tab
               fontSize="2xl"
@@ -343,7 +343,7 @@ const Voting = () => {
               color="rgba(333, 333, 333, 1)"
               _selected={{ backgroundColor: "ghostwhite", color: "black" }}
             >
-              Polls
+              Hybrid
             </Tab>
           </TabList>
           <TabPanels>

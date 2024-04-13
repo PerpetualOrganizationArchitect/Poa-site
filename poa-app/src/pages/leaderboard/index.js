@@ -34,6 +34,7 @@ const glassLayerStyle = {
 
 
 const Leaderboard = () => {
+  
 
 
     const router = useRouter();
@@ -72,13 +73,13 @@ const Leaderboard = () => {
   return (
     <>
     <Navbar />
-    <Box position="relative" w="100%" minH="100vh" p={4} bg="#2d86fff7">
+    <Box position="relative" w="100%" minH="100vh" p={4} >
       <VStack spacing={4}>
         <Heading as="h1">Leaderboard</Heading>
         <Flex justifyContent="center" alignItems="center">
           <Box
             w="100%"
-            mt="4%"
+            mt="2"
             borderRadius="2xl"
             bg="transparent"
             boxShadow="lg"
