@@ -1010,7 +1010,7 @@ const Voting = () => {
                     w="100%"
                   >
                     <FormControl>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>Proposal title</FormLabel>
                       <Input
                         type="text"
                         name="name"
@@ -1020,7 +1020,7 @@ const Voting = () => {
                       />
                     </FormControl>
                     <FormControl>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Proposal Description</FormLabel>
                       <Textarea
                         name="description"
                         value={proposal.description}
@@ -1029,16 +1029,7 @@ const Voting = () => {
                       />
                     </FormControl>
                     <FormControl>
-                      <FormLabel>Execution</FormLabel>
-                      <Textarea
-                        name="execution"
-                        value={proposal.execution}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel>Time</FormLabel>
+                      <FormLabel>Time (in Minutes)</FormLabel>
                       <Input
                         type="number"
                         name="time"
@@ -1049,7 +1040,7 @@ const Voting = () => {
                     </FormControl>
                     <FormControl>
                       <FormControl>
-                        <FormLabel>Options</FormLabel>
+                        <FormLabel>Options (comma and space seperated)</FormLabel>
                         <Textarea
                           name="options"
                           value={proposal.options.join(", ")}
