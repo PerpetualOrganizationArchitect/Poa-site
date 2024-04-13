@@ -35,11 +35,7 @@ const MainLayout = () => {
 
 
   return (
-    <Flex direction="column" w="100%" minH="90vh">
-      <Box bg={"#2d86fff7"} p={4} boxShadow="md">
-        <Heading mr={"300px"}color={'white'} size="md">Task Manager</Heading>
-      </Box>
-      <Flex w="100%" flex="1">
+      <Flex minHeight={`calc(100vh - 94px)`}>
         <ProjectSidebar
           projects={projects}
           selectedProject={selectedProject}
@@ -65,7 +61,6 @@ const MainLayout = () => {
           </Flex>
         )}
       </Flex>
-    </Flex>
   );
 };
 
