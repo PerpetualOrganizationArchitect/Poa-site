@@ -32,8 +32,6 @@ const MainLayout = () => {
   };
 
 
-
-
   return (
       <Flex minHeight={`calc(100vh - 94px)`}>
         <ProjectSidebar

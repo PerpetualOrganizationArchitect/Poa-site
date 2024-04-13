@@ -22,8 +22,8 @@ const TaskBoard = ({ columns, projectName }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <VStack w="100%" align="stretch">
-        <Box bg="blue.500" w="100%" p={2}  color="white">
-          <Text ml={4}  fontSize="2xl" fontWeight="bold" color="white">{projectName}</Text>
+        <Box bg="purple.300" w="100%" p={2}  >
+          <Text ml={5}  fontSize="2xl" fontWeight="bold" color="black">{projectName}</Text>
         </Box>
       <Flex
         direction={{ base: 'column', md: 'row' }}
