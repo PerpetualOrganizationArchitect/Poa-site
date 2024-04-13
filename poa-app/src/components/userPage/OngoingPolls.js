@@ -29,7 +29,11 @@ const glassLayerStyle = {
 
 const OngoingPolls = ({OngoingPolls}) => {
 
-
+    // check if ongoing polsl exist
+    const ongoingPollsExist = OngoingPolls && OngoingPolls.length > 0;
+    if (!ongoingPollsExist) {
+        return <Text mt="4" ml="7">No ongoing polls available</Text>;
+    }
 
     //randomize polls
     const randomPolls = OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3);
@@ -41,6 +45,7 @@ const OngoingPolls = ({OngoingPolls}) => {
     return (
             <HStack ml={0} mr={8} spacing="3.5%" >
                         {randomPolls.map((poll) => (
+                            
                             
                             <Box
                                 _hover={{ transform: 'scale(1.07)' }}

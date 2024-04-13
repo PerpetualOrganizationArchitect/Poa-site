@@ -53,7 +53,7 @@ const UserDashboard= () => {
 
     // const {setLeaderboardLoaded,userPercentage} = useLeaderboard();
 
-    // const {loadOngoingKubidInitial, kubidOngoingProposals} = useGraphVotingContext();
+    const {democracyVotingOngoing} = useGraphContext();
     
 
     
@@ -80,54 +80,6 @@ const UserDashboard= () => {
 
 
     const { web3, account,KUBIXbalance, hasExecNFT} = useWeb3Context();
-    // const {userDetails, fetchUserDetails, findUserInProgressTasks, projects, findRandomTasks} = useDataBaseContext();
-
-
-    // useEffect(() => {
-        
-    //     async function fetch(){
-    //         await fetchUserDetails(web3,account);
-    //         await setLeaderboardLoaded(true);
-    //         await loadOngoingKubidInitial();
-            
-            
-    //     }
-    //     if(web3 && account&& notLoaded){
-    //         setNotLoaded(false)
-
-    //         fetch();
-    //     }
-        
-    //   }, [web3, account]);
-
-    //   useEffect(() => {
-    //         async function fetch(){
-    //             if (userDetails && projects){
-    //                 console.log(userDetails.username)
-    //                 console.log(projects)
-    //                 const wait =await findUserInProgressTasks(projects , userDetails.username)
-                   
-    //                 if(wait.length === 0){
-    //                     console.log("ready");
-    //                     const random = await findRandomTasks(projects, 3);
-    //                     setReccomendedTasks(random);
-    //                     console.log(random);
-    //                 }
-
-    //                 setClaimedTasks(wait);
-    //                 console.log(wait);
-
-    //             }
-    //             else{
-    //                 console.log("not ready");
-        
-    //             }
-                
-
-    //         }
-    //         fetch();
-    //     }, [userDetails, projects]);
-
         
 
 
@@ -292,7 +244,7 @@ const UserDashboard= () => {
           <Text  pl={4}  fontSize="3xl" fontWeight="extrabold">{userInfo.username} </Text>
           <Text pt={2} pl={2} fontSize="lg" > {userInfo.memberStatus}</Text>
         </HStack>
-          {/* <IconButton
+          <IconButton
           icon={<SettingsIcon />}
           isRound={true}
           size="md"
@@ -304,7 +256,7 @@ const UserDashboard= () => {
           top="8%"
           right="4%"
           color="black"
-        /> */}
+        />
         
         {/* <AccountSettingsModal
         isOpen={isSettingsModalOpen}
@@ -312,8 +264,6 @@ const UserDashboard= () => {
       /> */}
         <HStack pb={4} pt={2}  spacing="27%">
             <VStack align={'flex-start'} ml="6%" spacing={1}>
-                {/* <Text   fontWeight="bold" fontSize="md">Semester KUBIX: {userInfo.semesterKubix}</Text>
-                <Text  fontWeight="bold" fontSize="md">Year KUBIX: {userInfo.yearKubix}</Text> */}
                 <Text  fontWeight="bold"  fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
             </VStack>
             <VStack align={'center'} spacing={2}>
@@ -342,23 +292,7 @@ const UserDashboard= () => {
                 </Text>
             </VStack>
 
-            {/* <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
-                {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccomendedTasks)?.slice(0, 3).map((task) => (
-                    <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
-                        <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}`}>
-                            <VStack textColor="white" align="stretch" spacing={3}>
-                                <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
-                                    {task.name.length > 57 ? `${task.name.substring(0, 57)}...` : task.name}
-                                </Text>
-                                <HStack justify="space-between">
-                                    <Badge colorScheme="yellow">{task.difficulty}</Badge>
-                                    <Text fontWeight="bold">KUBIX {task.kubixPayout}</Text>
-                                </HStack>
-                            </VStack>
-                        </Link2>
-                    </Box>
-                ))}
-            </HStack> */}
+
 
         </Box>
 
@@ -378,7 +312,7 @@ const UserDashboard= () => {
 
         </VStack>
 
-        {/* <OngoingPolls  OngoingPolls={kubidOngoingProposals}/> */}
+        <OngoingPolls  OngoingPolls={democracyVotingOngoing}/>
 
             
         </Box>
