@@ -23,6 +23,7 @@ export const DataBaseProvider = ({ children }) => {
         if (typeof projectsData === 'object' && projectsData !== null && Object.keys(projectsData).length !== 0) {
             console.log("projectsData", projectsData);
             setProjects(projectsData);
+            setSelectedProject(projectsData[0]);
         }
     },[projectsData])
 
