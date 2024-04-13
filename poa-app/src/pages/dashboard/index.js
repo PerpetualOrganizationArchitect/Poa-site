@@ -282,7 +282,7 @@ const UserDashboard= () => {
             </VStack>
             </HStack>
         </Box>
-        <Box w="100%" pt={4} borderRadius="2xl" bg="transparent" boxShadow="lg" position="relative" zIndex={2} >
+        <Box w="100%" pt={4} borderRadius="2xl" bg="transparent"  position="relative" zIndex={2} >
             <div style={glassLayerStyle} />
 
             <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
@@ -317,7 +317,7 @@ const UserDashboard= () => {
             pt={8}
             borderRadius="2xl"
             bg="transparent"
-            boxShadow="lg"
+            
             position="relative"
             zIndex={2}>
         <div style={glassLayerStyle} />
