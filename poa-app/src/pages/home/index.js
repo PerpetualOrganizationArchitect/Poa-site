@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
-//import "../styles/TaskColumn.module.css";
+
+import styled, { keyframes } from 'styled-components';
 import {
   Box,
   Flex,
@@ -16,15 +17,32 @@ import Link2 from "next/link";
 import Typist from "react-typist";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
-const glassLayerStyle = {
-  position: "absolute",
-  height: "100%",
-  width: "100%",
-  zIndex: -1,
-  borderRadius: "inherit",
-  backdropFilter: "blur(20px)",
-  backgroundColor: "rgba(0, 0, 0, .6)",
-};
+
+// CSS for the wave animation
+const waveAnimation = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-150px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+`;
+
+// CSS for the floating effect
+const floatingAnimation = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
 
 const waveBackgroundStyle = {
   position: "absolute",
@@ -35,25 +53,50 @@ const waveBackgroundStyle = {
   zIndex: 0,
 };
 
-const ballStyle = {
-  position: "relative",
-  width: "70%",
-  height: "500px",
-  borderRadius: "0%",
-  marginTop: "5%",
-  marginBottom: "5%",
-  boxShadow:
-    "inset 0 0 70px #fff, inset 20px 0 400px #ff0000, inset -20px 0 100px #fff, inset 20px 0 200px #ff0000, inset -10px 0 150px #166, 0 0 50px #fff, -10px 0 80px #fff, 10px 0 70px #fff",
+const glassLayerStyle = {
+  position: 'absolute',
+  height: '100%',
+  width: '100%',
+  zIndex: -1,
+  borderRadius: 'inherit',
+  backdropFilter: 'blur(20px)',
+  backgroundColor: 'rgba(0, 0, 0, .6)',
 };
+
+const WaveBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% + 150px);
+  height: 100%;
+  z-index: 0;
+  animation: ${waveAnimation} 5s ease-in-out infinite;
+`;
+
+const FloatingBox = styled.div`
+  width: 60%;  
+  border-radius: 20px;
+  display: flex;
+  flexDirection: column;
+  background: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(20px);  
+  boxShadow: lg;
+  position: relative;
+  zIndex: 1;
+  margin-top: 7%;
+  animation: ${floatingAnimation} 3s ease-in-out infinite;
+`;
 
 const Home = () => {
   const router = useRouter();
   const { userDAO } = router.query;
+
+
   return (
     <>
       <Navbar />
       <VStack spacing={10} style={{ position: "relative" }}>
-        <Box style={waveBackgroundStyle}>
+        <WaveBackground>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <defs>
               <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="100%">
@@ -78,8 +121,7 @@ const Home = () => {
               d="M0,96L48,117.3C96,139,192,181,288,192C384,203,480,181,576,176C672,171,768,181,864,170.7C960,160,1056,128,1152,133.3C1248,139,1344,181,1392,202.7L1440,224V320H1392C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320H0Z"
             />
           </svg>
-        </Box>
-
+        </WaveBackground>
         <Box
           w="60%"
           borderRadius="2xl"
@@ -88,11 +130,11 @@ const Home = () => {
           bg="transparent"
           boxShadow="lg"
           position="relative"
-          zIndex={1}
-          mt="10%"
-        >
+          mt="7%"
+          zIndex={1}>
           <div className="glass" style={glassLayerStyle} />
           <Container centerContent>
+            
             <Heading as="h1" size="2xl" color="white" mt="8">
               Welcome to {userDAO}
             </Heading>
@@ -100,7 +142,7 @@ const Home = () => {
               Brief Description will go here
             </Text>
 
-            <Link2 href="/user">
+            <Link2 href={`/user/?userDAO=${userDAO}`}>
               <Button
                 size="lg"
                 bg="green.300"
@@ -116,7 +158,7 @@ const Home = () => {
               </Button>
             </Link2>
           </Container>
-        </Box>
+          </Box>
 
         <Box
           w="40%"
