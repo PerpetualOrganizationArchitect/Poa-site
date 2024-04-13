@@ -57,7 +57,7 @@ const Home = () => {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <defs>
               <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="100%">
-                <stop offset="0%" stopColor="#cc0000" />
+                <stop offset="0%" stopColor="#D6BCFA" />
                 <stop offset="100%" stopColor="#6495ED00" />
               </linearGradient>
             </defs>
@@ -69,7 +69,7 @@ const Home = () => {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <defs>
               <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="100%">
-                <stop offset="0%" stopColor="#cc0000" />
+                <stop offset="0%" stopColor="#D6BCFA0" />
                 <stop offset="100%" stopColor="#6495ED00" />
               </linearGradient>
             </defs>
@@ -89,14 +89,15 @@ const Home = () => {
           boxShadow="lg"
           position="relative"
           zIndex={1}
+          mt="10%"
         >
           <div className="glass" style={glassLayerStyle} />
           <Container centerContent>
-            <Heading as="h1" size="2xl" color="white" mt="4%">
+            <Heading as="h1" size="2xl" color="white" mt="8">
               Welcome to {userDAO}
             </Heading>
             <Text fontSize="2xl" color="white" mt={8}>
-              Description will go here
+              Brief Description will go here
             </Text>
 
             <Link2 href="/user">
@@ -137,35 +138,16 @@ const Home = () => {
               ml="8%"
               mr="8%"
               mt="4%"
+              mb="4%"
               color="ghostwhite"
               fontSize="lg"
               textAlign="left"
             >
-              Description text will go here
+             Longer Description text will go here. long long long long long long long 
             </Text>
-
-            {/* <Text
-            mt="4%"
-            mb="4%"
-            color="ghostwhite"
-            fontSize="2xl"
-            textAlign="center"
-            fontWeight={900}
-          >
-            Read more here at our GitHub{" "}
-            <Link
-              href="https://github.com/KU-Blockchain/DAO2#readme"
-              isExternal
-              fontWeight="bold"
-              textDecoration="underline"
-              color="white"
-            >
-              Here
-            </Link>
-          </Text> */}
           </Container>
         </Box>
-        <div style={ballStyle} className="div2">
+        {/* <div style={ballStyle} className="div2">
           <div
             style={{
               position: "absolute",
@@ -186,7 +168,7 @@ const Home = () => {
               {userDAO}
             </Typist>
           </div>
-        </div>
+        </div> */}
       </VStack>
     </>
   );

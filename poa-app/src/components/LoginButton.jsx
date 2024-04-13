@@ -8,7 +8,7 @@ import { useGraphContext } from '@/context/graphContext';
 const LoginButton = () => {
     const { setChecked } = useMetaMask();
 
-    const {account}= useGraphContext();
+    const {account, hasMemberNFT}= useGraphContext();
     
     const router = useRouter();
     const { userDAO } = router.query;
@@ -20,7 +20,7 @@ const LoginButton = () => {
     useEffect(() => {
         // This runs only on the client, after the component has mounted
         console.log("accounts", account);
-        if (account !=="0x00") {
+        if (hasMemberNFT) {
             setText("Dashboard");
         } else {
             console.log("accounts", account);
