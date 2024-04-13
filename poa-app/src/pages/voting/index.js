@@ -384,11 +384,11 @@ const Voting = () => {
                       >
                         {selectedTab === 0
                           ? showCreateVote
-                            ? "Hide Create Vote Form"
-                            : "Create Vote"
+                            ? "Hide Create Democracy Vote Form"
+                            : "Create Democracy Vote"
                           : showCreatePoll
-                          ? "Hide Create Poll Form"
-                          : "Create Poll"} 
+                          ? "Hide Create Hybrid Vote Form"
+                          : "Create Hybrid Vote"} 
                       </Button>
                     </HStack>
                     <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
@@ -708,11 +708,11 @@ const Voting = () => {
                       >
                         {selectedTab === 0
                           ? showCreateVote
-                            ? "Hide Create Vote Form"
+                            ? "Hide"
                             : "Create Vote"
                           : showCreatePoll
-                          ? "Hide Create Poll Form"
-                          : "Create Poll"} 
+                          ? "Hide"
+                          : "Create Hybrid Vote"} 
                       </Button>
                     </HStack>
                     <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
