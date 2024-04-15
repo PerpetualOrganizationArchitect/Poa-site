@@ -23,6 +23,11 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     let po = PerpetualOrganization.load(newRegistry.POname);
     if (po != null) {
       po.registry = newRegistry.id;
+      po.description= description 
+      po.logoURL = logurl 
+      po.constitution = constitution
+      
+      
       po.save();
     }
     

@@ -20,6 +20,8 @@ contract HybridVoting {
     INFTMembership3 public nftMembership;
     ITreasury2 public treasury;
 
+    uint256 public quorumPercentage = 50;
+
     struct PollOption {
         uint256 votesPT;
         uint256 votesDDT;
@@ -53,7 +55,8 @@ contract HybridVoting {
 
     bool public quadraticVotingEnabled;
 
-    constructor(address _ParticipationToken, address _DemocracyToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, uint256 _democracyVoteWeight, uint256 _participationVoteWeight, address _treasuryAddress) {
+    constructor(address _ParticipationToken, address _DemocracyToken, address _nftMembership, string[] memory _allowedRoleNames, bool _quadraticVotingEnabled, uint256 _democracyVoteWeight, uint256 _participationVoteWeight, address _treasuryAddress, uint256 _quorumPercentage) {
+        quorumPercentage = _quorumPercentage;
         ParticipationToken = IERC20(_ParticipationToken);
         DirectDemocracyToken = IERC20(_DemocracyToken);
         nftMembership = INFTMembership3(_nftMembership);

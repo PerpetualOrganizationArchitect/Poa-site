@@ -336,8 +336,9 @@ type ValidContract @entity {
 type PerpetualOrganization @entity {
   id: ID!
   name: String!
-  description: String!
-  logoURL: String!
+  description: String
+  constitution: String
+  logoURL: String
   NFTMembership: NFTMembership! @link
   registry: Registry @link
   DirectDemocracyToken: DDToken @liknk

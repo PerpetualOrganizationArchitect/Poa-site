@@ -18,7 +18,8 @@ contract HybridVotingFactory {
         uint256 _democracyVoteWeight,
         uint256 _participationVoteWeight,
         address _treasuryAddress,
-        string memory POname
+        string memory POname,
+        uint256 _quorumPercentage
     ) public  returns (address){
         HybridVoting newHybridVoting = new HybridVoting(
             _ParticipationToken,
@@ -28,7 +29,8 @@ contract HybridVotingFactory {
             _quadraticVotingEnabled,
             _democracyVoteWeight,
             _participationVoteWeight,
-            _treasuryAddress
+            _treasuryAddress,
+            _quorumPercentage
         );
         emit HybridVotingContractCreated(msg.sender, address(newHybridVoting), POname);
         return address(newHybridVoting);

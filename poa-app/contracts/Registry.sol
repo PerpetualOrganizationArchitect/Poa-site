@@ -5,6 +5,8 @@ contract Registry {
     address public VotingControlAddress;
 
     mapping(string => address) public contracts;
+    string public POname;
+    string public POinfoHash;
 
     event ContractAdded(string name, address contractAddress);
     event ContractUpgraded(string name, address newAddress);
@@ -20,13 +22,18 @@ contract Registry {
     constructor(
         address _VotingControlAddress, 
         string[] memory contractNames, 
-        address[] memory contractAddresses
+        address[] memory contractAddresses,
+        string memory hashInfo,
+        string memory name
     ) {
+        POname = name;
+        POinfoHash = hashInfo;
         require(contractNames.length == contractAddresses.length, "Contract names and addresses must be of the same length");
         VotingControlAddress = _VotingControlAddress;
         for (uint i = 0; i < contractNames.length; i++) {
             contracts[contractNames[i]] = contractAddresses[i];
         }
+
     }
 
 

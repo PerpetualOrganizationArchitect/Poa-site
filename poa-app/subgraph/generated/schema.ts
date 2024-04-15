@@ -3717,6 +3717,57 @@ export class PerpetualOrganization extends Entity {
     this.set("name", Value.fromString(value));
   }
 
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
+  }
+
+  get constitution(): string | null {
+    let value = this.get("constitution");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set constitution(value: string | null) {
+    if (!value) {
+      this.unset("constitution");
+    } else {
+      this.set("constitution", Value.fromString(<string>value));
+    }
+  }
+
+  get logoURL(): string | null {
+    let value = this.get("logoURL");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set logoURL(value: string | null) {
+    if (!value) {
+      this.unset("logoURL");
+    } else {
+      this.set("logoURL", Value.fromString(<string>value));
+    }
+  }
+
   get NFTMembership(): string {
     let value = this.get("NFTMembership");
     if (!value || value.kind == ValueKind.NULL) {
@@ -4001,6 +4052,97 @@ export class User extends Entity {
       this.get("id")!.toString(),
       "hybridVotes"
     );
+  }
+
+  get Account(): string | null {
+    let value = this.get("Account");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set Account(value: string | null) {
+    if (!value) {
+      this.unset("Account");
+    } else {
+      this.set("Account", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Account extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Account entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Account must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Account", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Account | null {
+    return changetype<Account | null>(store.get_in_block("Account", id));
+  }
+
+  static load(id: string): Account | null {
+    return changetype<Account | null>(store.get("Account", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get userName(): string | null {
+    let value = this.get("userName");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set userName(value: string | null) {
+    if (!value) {
+      this.unset("userName");
+    } else {
+      this.set("userName", Value.fromString(<string>value));
+    }
+  }
+
+  get users(): UserLoader {
+    return new UserLoader("Account", this.get("id")!.toString(), "users");
   }
 }
 

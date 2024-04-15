@@ -1050,6 +1050,7 @@ const Voting = () => {
                         />
                       </FormControl>
                     </FormControl>
+                    <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
                   </VStack>
                 </ModalBody>
                 <ModalFooter>

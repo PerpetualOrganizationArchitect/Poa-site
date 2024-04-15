@@ -19,6 +19,8 @@ contract DirectDemocracyVoting {
     INFTMembership2 public nftMembership;
     ITreasury public treasury;
 
+    uint256 public quorumPercentage = 50;
+
     struct PollOption {
         uint256 votes;
     }
@@ -45,7 +47,8 @@ contract DirectDemocracyVoting {
 
     mapping(string => bool) private allowedRoles;
 
-    constructor(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames , address _treasuryAddress) {
+    constructor(address _ddToken, address _nftMembership, string[] memory _allowedRoleNames , address _treasuryAddress, uint256 _quorumPercentage) {
+        quorumPercentage = _quorumPercentage;
         DirectDemocracyToken = IERC20(_ddToken);
         nftMembership = INFTMembership2(_nftMembership); 
         treasury = ITreasury(_treasuryAddress);
