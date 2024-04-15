@@ -18,6 +18,7 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes.times(BigInt.fromI32(60)));
     newProposal.totalVotes = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
+    newProposal.validWinner = false;
     newProposal.save();
 }
 
@@ -85,6 +86,7 @@ export function handleVoted(event: Voted): void {
     }
   
     proposal.winningOptionIndex = event.params.winningOptionIndex;
+    proposal.validWinner = event.params.hasValidWinner;
     proposal.save();
   }
   

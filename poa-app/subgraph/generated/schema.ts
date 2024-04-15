@@ -1519,6 +1519,19 @@ export class PTVoting extends Entity {
       "proposals"
     );
   }
+
+  get quorum(): BigInt {
+    let value = this.get("quorum");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set quorum(value: BigInt) {
+    this.set("quorum", Value.fromBigInt(value));
+  }
 }
 
 export class PTProposal extends Entity {
@@ -1742,6 +1755,19 @@ export class PTProposal extends Entity {
     } else {
       this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get validWinner(): boolean {
+    let value = this.get("validWinner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set validWinner(value: boolean) {
+    this.set("validWinner", Value.fromBoolean(value));
   }
 }
 
@@ -2062,6 +2088,19 @@ export class DDVoting extends Entity {
       "proposals"
     );
   }
+
+  get quorum(): BigInt {
+    let value = this.get("quorum");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set quorum(value: BigInt) {
+    this.set("quorum", Value.fromBigInt(value));
+  }
 }
 
 export class DDProposal extends Entity {
@@ -2285,6 +2324,19 @@ export class DDProposal extends Entity {
     } else {
       this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get validWinner(): boolean {
+    let value = this.get("validWinner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set validWinner(value: boolean) {
+    this.set("validWinner", Value.fromBoolean(value));
   }
 }
 
@@ -2609,6 +2661,19 @@ export class HybridVoting extends Entity {
       "proposals"
     );
   }
+
+  get quorum(): BigInt {
+    let value = this.get("quorum");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set quorum(value: BigInt) {
+    this.set("quorum", Value.fromBigInt(value));
+  }
 }
 
 export class HybridProposal extends Entity {
@@ -2838,6 +2903,19 @@ export class HybridProposal extends Entity {
     } else {
       this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get validWinner(): boolean {
+    let value = this.get("validWinner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set validWinner(value: boolean) {
+    this.set("validWinner", Value.fromBoolean(value));
   }
 }
 

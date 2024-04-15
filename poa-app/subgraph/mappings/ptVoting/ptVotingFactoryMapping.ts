@@ -18,6 +18,7 @@ export function handleVotingContractCreated(event: VotingContractCreated): void 
     let newVoting = new PTVoting(event.params.votingContractAddress.toHex());
     newVoting.contract = event.params.votingContractAddress.toHex();
     newVoting.POname = event.params.POname;
+    newVoting.quorum = event.params.quorumPercentage;
     newVoting.save();
 
     let po = PerpetualOrganization.load(event.params.POname);
