@@ -336,6 +336,8 @@ type ValidContract @entity {
 type PerpetualOrganization @entity {
   id: ID!
   name: String!
+  description: String!
+  logoURL: String!
   NFTMembership: NFTMembership! @link
   registry: Registry @link
   DirectDemocracyToken: DDToken @liknk
@@ -359,6 +361,14 @@ type User @entity {
   ptVotes: [PTVote!] @derivedFrom(field: "voter")
   ddVotes: [DDVote!] @derivedFrom(field: "voter")
   hybridVotes: [HybridVote!] @derivedFrom(field: "voter")
+  Account: Account @link
+}
+
+type Account @entity {
+  id: ID!
+  address: Bytes!
+  userName: String
+  users: [User!] @derivedFrom(field: "Account")
 }
 
 

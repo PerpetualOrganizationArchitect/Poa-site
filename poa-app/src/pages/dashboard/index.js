@@ -222,8 +222,10 @@ const UserDashboard= () => {
             {/* <Text pl={6} pb={4} fontSize="lg">This makes you top {userInfo.percentage}% of Contributors</Text> */}
           </VStack>
             <VStack p={0} pt={4} align="center" >
-                <Text fontSize="3xl" fontWeight="bold">{userInfo.memberStatus} Member</Text>
+                <Text fontSize="3xl" fontWeight="bold">Gold Tier Contributor</Text>
                 <Spacer />
+                <Image width="50%" src={"/images/poa_character.png"} />
+                <Text textAlign={"center"} fontSize="lg" p={4} >Participation Tier System Coming Soon</Text>
             </VStack>
 
         </Box>
