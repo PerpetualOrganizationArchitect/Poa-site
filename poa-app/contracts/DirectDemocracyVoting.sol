@@ -42,7 +42,7 @@ contract DirectDemocracyVoting {
     event NewProposal(uint256 indexed proposalId, string name, string description, uint256 timeInMinutes, uint256 creationTimestamp,  uint256 transferTriggerOptionIndex, address transferRecipient, uint256 transferAmount, bool transferEnabled);
     event Voted(uint256 indexed proposalId, address indexed voter, uint256 optionIndex);
     event PollOptionNames(uint256 indexed proposalId, uint256 indexed optionIndex, string name);
-    event WinnerAnnounced(uint256 indexed proposalId, uint256 winningOptionIndex);
+    event WinnerAnnounced(uint256 indexed proposalId, uint256 winningOptionIndex, bool hasValidWinner);
 
 
     mapping(string => bool) private allowedRoles;
@@ -133,27 +133,34 @@ contract DirectDemocracyVoting {
         
 
 
-        uint256 winningOptionIndex = getWinner(_proposalId);
+        (uint256 winningOptionIndex, bool hasValidWinner) = getWinner(_proposalId);
 
-        if (proposals[_proposalId].transferEnabled && winningOptionIndex == proposals[_proposalId].transferTriggerOptionIndex) {
+        if (hasValidWinner && proposals[_proposalId].transferEnabled && winningOptionIndex == proposals[_proposalId].transferTriggerOptionIndex) {
             treasury.sendTokens(address(DirectDemocracyToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
         }
 
-        emit WinnerAnnounced(_proposalId, winningOptionIndex);
+        emit WinnerAnnounced(_proposalId, winningOptionIndex, hasValidWinner);
     }
 
 
-    function getWinner(uint256 _proposalId) internal view returns (uint256 winningOptionIndex) {
+    function getWinner(uint256 _proposalId) public view returns (uint256, bool) {
         require(_proposalId < proposals.length, "Invalid proposal ID");
         Proposal storage proposal = proposals[_proposalId];
         uint256 highestVotes = 0;
+        uint256 winningOptionIndex = 0;  
+        bool hasValidWinner = false;
+        uint256 quorumThreshold = (proposal.totalVotes * quorumPercentage);
 
+        // Determine the option with the highest votes that meets or exceeds the quorum
         for (uint256 i = 0; i < proposal.options.length; i++) {
             if (proposal.options[i].votes > highestVotes) {
                 highestVotes = proposal.options[i].votes;
                 winningOptionIndex = i;
+                hasValidWinner = highestVotes*100 >= quorumThreshold;
             }
         }
+
+        return (winningOptionIndex, hasValidWinner);
     }
 
     function getOptionsCount(uint256 _proposalId) public view returns (uint256) {
