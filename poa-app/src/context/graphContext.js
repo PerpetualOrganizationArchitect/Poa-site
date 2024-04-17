@@ -641,8 +641,9 @@ export const GraphProvider = ({ children }) => {
 
         console.log("participationTokenContractAddress", participationVotingContractAddress);
         if(participationVotingContractAddress === ''){
+            console.log("hybrid voting ongoinngg", hybridVotingOngoing);
             setParticipationVotingOngoing(hybridVotingOngoing);
-            setParticipationVotingOngoing(hybridVotingCompleted);
+            setParticipationVotingCompleted(hybridVotingCompleted);
             console.log("hybrid voting contract address", hybridVotingContractAddress);
         }else
         {
@@ -661,7 +662,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress}}>
+        <GraphContext.Provider value={{claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing}}>
         {children}
         </GraphContext.Provider>
     );

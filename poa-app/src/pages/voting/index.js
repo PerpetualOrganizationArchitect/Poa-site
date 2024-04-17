@@ -80,7 +80,7 @@ const Voting = () => {
 
   const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
   const {directDemocracyVotingContractAddress, hybridVotingContractAddress, partcipationTokenContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, account, participationVotingCompleted, participationVotingOngoing, votingContractAddress } = useGraphContext();
-
+  console.log("particpation voting1", participationVotingOngoing);
   useEffect(() => {
     setLoaded(userDAO);
   }, [userDAO]);
