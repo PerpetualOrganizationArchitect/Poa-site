@@ -3901,6 +3901,23 @@ export class PerpetualOrganization extends Entity {
     }
   }
 
+  get content(): string | null {
+    let value = this.get("content");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set content(value: string | null) {
+    if (!value) {
+      this.unset("content");
+    } else {
+      this.set("content", Value.fromString(<string>value));
+    }
+  }
+
   get NFTMembership(): string {
     let value = this.get("NFTMembership");
     if (!value || value.kind == ValueKind.NULL) {

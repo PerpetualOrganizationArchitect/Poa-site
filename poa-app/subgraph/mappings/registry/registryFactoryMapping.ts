@@ -25,7 +25,7 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     let po = PerpetualOrganization.load(newRegistry.POname);
     if (po != null) {
       po.registry = newRegistry.id;
-      po.save();
+
 
       let context = new DataSourceContext();
       context.setString(PONAME_KEY, event.params.POname);
@@ -34,7 +34,9 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
         
       DataSourceTemplate.createWithContext("IpfsContent", [event.params.POinfoHash], context);
 
-      
+      po.content = event.params.POname;
+
+      po.save();
     }
     
     //loop through all contractNames and ConttractAddresses and add them to the registry as validContracts

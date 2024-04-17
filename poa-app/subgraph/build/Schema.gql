@@ -350,6 +350,7 @@ type PerpetualOrganization @entity {
   description: String
   constitution: String
   logoURL: String
+  content: IPFSContent @link
   NFTMembership: NFTMembership! @link
   registry: Registry @link
   DirectDemocracyToken: DDToken @liknk

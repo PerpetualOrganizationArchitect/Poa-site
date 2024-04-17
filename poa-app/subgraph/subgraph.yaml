@@ -407,6 +407,7 @@ templates:
       language: wasm/assemblyscript
       entities:
         - IPFSContent
+        - PerpetualOrganization
       abis:
         - name: RegistryFactory
           file: ../abi/RegistryFactory.json
