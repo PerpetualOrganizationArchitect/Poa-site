@@ -68,9 +68,9 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
   return (
     <DndProvider backend={HTML5Backend}>
       <Box
-        w="300px"
-        marginRight={1}
-
+        w="17%"
+        minW="200px"
+        marginRight={0}
         display="flex"
         flexDirection="column"
         bg="transparent" // Set the background to transparent
@@ -79,8 +79,8 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
         zIndex={1}
       >
         <div className="glass" style={glassLayerStyle} />
-      <Heading size="md" mb={4} color="white" mt={3}ml="7%">
-        Projects
+      <Heading textAlign={"center"} fontSize="28px" mb={8} color="white" mt={4} >
+        PROJECTS
         </Heading>
       <Box flexGrow={1} overflowY="auto" pl={1} pr={1}>
       
@@ -120,7 +120,7 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
           onClick={showInput ? handleCreateProject : () => setShowInput(true)}
           disabled={showInput && !newProjectName.trim()}
           ml="5%"
-          width="90%" // Set width to 100%
+          width="90%"
           _hover={{ bg: "#2d86fff7", boxShadow: "md", transform: "scale(1.05)"}}
           mb="4"
           color={'ghostwhite'}

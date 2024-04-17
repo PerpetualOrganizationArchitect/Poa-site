@@ -80,7 +80,7 @@ const Voting = () => {
 
   const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
   const {directDemocracyVotingContractAddress, hybridVotingContractAddress, partcipationTokenContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, account, participationVotingCompleted, participationVotingOngoing, votingContractAddress } = useGraphContext();
-
+  console.log("particpation voting1", participationVotingOngoing);
   useEffect(() => {
     setLoaded(userDAO);
   }, [userDAO]);
@@ -335,7 +335,7 @@ const Voting = () => {
               color="rgba(333, 333, 333, 1)"
               _selected={{ backgroundColor: "ghostwhite", color: "black" }}
             >
-              Votes
+              Democracy
             </Tab>
             <Tab
               fontSize="2xl"
@@ -343,7 +343,7 @@ const Voting = () => {
               color="rgba(333, 333, 333, 1)"
               _selected={{ backgroundColor: "ghostwhite", color: "black" }}
             >
-              Polls
+              Hybrid
             </Tab>
           </TabList>
           <TabPanels>
@@ -384,11 +384,11 @@ const Voting = () => {
                       >
                         {selectedTab === 0
                           ? showCreateVote
-                            ? "Hide Create Vote Form"
-                            : "Create Vote"
+                            ? "Hide Create Democracy Vote Form"
+                            : "Create Democracy Vote"
                           : showCreatePoll
-                          ? "Hide Create Poll Form"
-                          : "Create Poll"} 
+                          ? "Hide Create Hybrid Vote Form"
+                          : "Create Hybrid Vote"} 
                       </Button>
                     </HStack>
                     <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
@@ -708,11 +708,11 @@ const Voting = () => {
                       >
                         {selectedTab === 0
                           ? showCreateVote
-                            ? "Hide Create Vote Form"
+                            ? "Hide"
                             : "Create Vote"
                           : showCreatePoll
-                          ? "Hide Create Poll Form"
-                          : "Create Poll"} 
+                          ? "Hide"
+                          : "Create Hybrid Vote"} 
                       </Button>
                     </HStack>
                     <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
@@ -1010,7 +1010,7 @@ const Voting = () => {
                     w="100%"
                   >
                     <FormControl>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>Proposal title</FormLabel>
                       <Input
                         type="text"
                         name="name"
@@ -1020,7 +1020,7 @@ const Voting = () => {
                       />
                     </FormControl>
                     <FormControl>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Proposal Description</FormLabel>
                       <Textarea
                         name="description"
                         value={proposal.description}
@@ -1029,16 +1029,7 @@ const Voting = () => {
                       />
                     </FormControl>
                     <FormControl>
-                      <FormLabel>Execution</FormLabel>
-                      <Textarea
-                        name="execution"
-                        value={proposal.execution}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel>Time</FormLabel>
+                      <FormLabel>Time (in Minutes)</FormLabel>
                       <Input
                         type="number"
                         name="time"
@@ -1049,7 +1040,7 @@ const Voting = () => {
                     </FormControl>
                     <FormControl>
                       <FormControl>
-                        <FormLabel>Options</FormLabel>
+                        <FormLabel>Options (comma and space seperated)</FormLabel>
                         <Textarea
                           name="options"
                           value={proposal.options.join(", ")}
@@ -1059,6 +1050,7 @@ const Voting = () => {
                         />
                       </FormControl>
                     </FormControl>
+                    <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
                   </VStack>
                 </ModalBody>
                 <ModalFooter>

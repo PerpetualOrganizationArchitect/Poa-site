@@ -8,7 +8,7 @@ import { useGraphContext } from '@/context/graphContext';
 const LoginButton = () => {
     const { setChecked } = useMetaMask();
 
-    const {account}= useGraphContext();
+    const {account, hasMemberNFT}= useGraphContext();
     
     const router = useRouter();
     const { userDAO } = router.query;
@@ -18,20 +18,20 @@ const LoginButton = () => {
 
     // Effect to set text based on accounts, only runs on client side after mount
     useEffect(() => {
-        // This runs only on the client, after the component has mounted
+
         console.log("accounts", account);
-        if (account !=="0x00") {
+        if (hasMemberNFT) {
             setText("Dashboard");
         } else {
             console.log("accounts", account);
             setText("Join or Connect");
         }
-    }, [account]);
+    }, [hasMemberNFT]);
 
     // Effect to set isMounted to true when component mounts
     useEffect(() => {
-        setIsMounted(true); // Set mounted state to true
-    }, []); // Empty dependency array ensures this only runs on mount
+        setIsMounted(true); 
+    }, []); 
 
     // Conditional rendering based on the isMounted state
     if (!isMounted) {

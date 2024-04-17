@@ -34,6 +34,10 @@ export class HybridVotingContractCreated__Params {
   get POname(): string {
     return this._event.parameters[2].value.toString();
   }
+
+  get quorumPercentage(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
 }
 
 export class HybridVotingFactory extends ethereum.SmartContract {
@@ -50,11 +54,12 @@ export class HybridVotingFactory extends ethereum.SmartContract {
     _democracyVoteWeight: BigInt,
     _participationVoteWeight: BigInt,
     _treasuryAddress: Address,
-    POname: string
+    POname: string,
+    _quorumPercentage: BigInt
   ): Address {
     let result = super.call(
       "createHybridVoting",
-      "createHybridVoting(address,address,address,string[],bool,uint256,uint256,address,string):(address)",
+      "createHybridVoting(address,address,address,string[],bool,uint256,uint256,address,string,uint256):(address)",
       [
         ethereum.Value.fromAddress(_ParticipationToken),
         ethereum.Value.fromAddress(_DemocracyToken),
@@ -64,7 +69,8 @@ export class HybridVotingFactory extends ethereum.SmartContract {
         ethereum.Value.fromUnsignedBigInt(_democracyVoteWeight),
         ethereum.Value.fromUnsignedBigInt(_participationVoteWeight),
         ethereum.Value.fromAddress(_treasuryAddress),
-        ethereum.Value.fromString(POname)
+        ethereum.Value.fromString(POname),
+        ethereum.Value.fromUnsignedBigInt(_quorumPercentage)
       ]
     );
 
@@ -80,11 +86,12 @@ export class HybridVotingFactory extends ethereum.SmartContract {
     _democracyVoteWeight: BigInt,
     _participationVoteWeight: BigInt,
     _treasuryAddress: Address,
-    POname: string
+    POname: string,
+    _quorumPercentage: BigInt
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createHybridVoting",
-      "createHybridVoting(address,address,address,string[],bool,uint256,uint256,address,string):(address)",
+      "createHybridVoting(address,address,address,string[],bool,uint256,uint256,address,string,uint256):(address)",
       [
         ethereum.Value.fromAddress(_ParticipationToken),
         ethereum.Value.fromAddress(_DemocracyToken),
@@ -94,7 +101,8 @@ export class HybridVotingFactory extends ethereum.SmartContract {
         ethereum.Value.fromUnsignedBigInt(_democracyVoteWeight),
         ethereum.Value.fromUnsignedBigInt(_participationVoteWeight),
         ethereum.Value.fromAddress(_treasuryAddress),
-        ethereum.Value.fromString(POname)
+        ethereum.Value.fromString(POname),
+        ethereum.Value.fromUnsignedBigInt(_quorumPercentage)
       ]
     );
     if (result.reverted) {
@@ -156,6 +164,10 @@ export class CreateHybridVotingCall__Inputs {
 
   get POname(): string {
     return this._call.inputValues[8].value.toString();
+  }
+
+  get _quorumPercentage(): BigInt {
+    return this._call.inputValues[9].value.toBigInt();
   }
 }
 

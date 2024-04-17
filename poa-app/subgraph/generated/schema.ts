@@ -1519,6 +1519,19 @@ export class PTVoting extends Entity {
       "proposals"
     );
   }
+
+  get quorum(): BigInt {
+    let value = this.get("quorum");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set quorum(value: BigInt) {
+    this.set("quorum", Value.fromBigInt(value));
+  }
 }
 
 export class PTProposal extends Entity {
@@ -1742,6 +1755,19 @@ export class PTProposal extends Entity {
     } else {
       this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get validWinner(): boolean {
+    let value = this.get("validWinner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set validWinner(value: boolean) {
+    this.set("validWinner", Value.fromBoolean(value));
   }
 }
 
@@ -2062,6 +2088,19 @@ export class DDVoting extends Entity {
       "proposals"
     );
   }
+
+  get quorum(): BigInt {
+    let value = this.get("quorum");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set quorum(value: BigInt) {
+    this.set("quorum", Value.fromBigInt(value));
+  }
 }
 
 export class DDProposal extends Entity {
@@ -2285,6 +2324,19 @@ export class DDProposal extends Entity {
     } else {
       this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get validWinner(): boolean {
+    let value = this.get("validWinner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set validWinner(value: boolean) {
+    this.set("validWinner", Value.fromBoolean(value));
   }
 }
 
@@ -2609,6 +2661,19 @@ export class HybridVoting extends Entity {
       "proposals"
     );
   }
+
+  get quorum(): BigInt {
+    let value = this.get("quorum");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set quorum(value: BigInt) {
+    this.set("quorum", Value.fromBigInt(value));
+  }
 }
 
 export class HybridProposal extends Entity {
@@ -2838,6 +2903,19 @@ export class HybridProposal extends Entity {
     } else {
       this.set("winningOptionIndex", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get validWinner(): boolean {
+    let value = this.get("validWinner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set validWinner(value: boolean) {
+    this.set("validWinner", Value.fromBoolean(value));
   }
 }
 
@@ -3658,6 +3736,61 @@ export class ValidContract extends Entity {
   }
 }
 
+export class IPFSContent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save IPFSContent entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type IPFSContent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("IPFSContent", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): IPFSContent | null {
+    return changetype<IPFSContent | null>(
+      store.get_in_block("IPFSContent", id)
+    );
+  }
+
+  static load(id: string): IPFSContent | null {
+    return changetype<IPFSContent | null>(store.get("IPFSContent", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get data(): string {
+    let value = this.get("data");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set data(value: string) {
+    this.set("data", Value.fromString(value));
+  }
+}
+
 export class PerpetualOrganization extends Entity {
   constructor(id: string) {
     super();
@@ -3715,6 +3848,74 @@ export class PerpetualOrganization extends Entity {
 
   set name(value: string) {
     this.set("name", Value.fromString(value));
+  }
+
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
+  }
+
+  get constitution(): string | null {
+    let value = this.get("constitution");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set constitution(value: string | null) {
+    if (!value) {
+      this.unset("constitution");
+    } else {
+      this.set("constitution", Value.fromString(<string>value));
+    }
+  }
+
+  get logoURL(): string | null {
+    let value = this.get("logoURL");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set logoURL(value: string | null) {
+    if (!value) {
+      this.unset("logoURL");
+    } else {
+      this.set("logoURL", Value.fromString(<string>value));
+    }
+  }
+
+  get content(): string | null {
+    let value = this.get("content");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set content(value: string | null) {
+    if (!value) {
+      this.unset("content");
+    } else {
+      this.set("content", Value.fromString(<string>value));
+    }
   }
 
   get NFTMembership(): string {
@@ -4001,6 +4202,97 @@ export class User extends Entity {
       this.get("id")!.toString(),
       "hybridVotes"
     );
+  }
+
+  get Account(): string | null {
+    let value = this.get("Account");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set Account(value: string | null) {
+    if (!value) {
+      this.unset("Account");
+    } else {
+      this.set("Account", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Account extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Account entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Account must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Account", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Account | null {
+    return changetype<Account | null>(store.get_in_block("Account", id));
+  }
+
+  static load(id: string): Account | null {
+    return changetype<Account | null>(store.get("Account", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get userName(): string | null {
+    let value = this.get("userName");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set userName(value: string | null) {
+    if (!value) {
+      this.unset("userName");
+    } else {
+      this.set("userName", Value.fromString(<string>value));
+    }
+  }
+
+  get users(): UserLoader {
+    return new UserLoader("Account", this.get("id")!.toString(), "users");
   }
 }
 

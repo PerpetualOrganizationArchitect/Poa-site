@@ -1,7 +1,9 @@
-import { Address, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, dataSource,json, log, ipfs , Bytes, DataSourceTemplate} from "@graphprotocol/graph-ts";
 import { RegistryCreated as RegistryContractCreatedEvent } from "../../generated/RegistryFactory/RegistryFactory";
-import { RegistryCreated, Registry, ValidContract, PerpetualOrganization} from "../../generated/schema";
+import {IPFSContent, RegistryCreated, Registry, ValidContract, PerpetualOrganization} from "../../generated/schema";
 import {DataSourceContext} from "@graphprotocol/graph-ts";
+
+let PONAME_KEY = "PONAME";
 
 export function handleRegistryContractCreated(event: RegistryContractCreatedEvent): void {
     log.info("Triggered handleRegistryContractCreated", []);
@@ -23,6 +25,17 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     let po = PerpetualOrganization.load(newRegistry.POname);
     if (po != null) {
       po.registry = newRegistry.id;
+
+
+      let context = new DataSourceContext();
+      context.setString(PONAME_KEY, event.params.POname);
+
+      context.setBytes("hash", Bytes.fromUTF8(event.params.POinfoHash));
+        
+      DataSourceTemplate.createWithContext("IpfsContent", [event.params.POinfoHash], context);
+
+      po.content = event.params.POname;
+
       po.save();
     }
     
@@ -40,3 +53,20 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     }
 
   }
+
+  export function handleIpfsContent(content: Bytes): void {
+    let ctx = dataSource.context();
+    let poName = ctx.getString(PONAME_KEY).toString();
+
+    let ipfsContent = content.toString();
+
+    let i = new IPFSContent(poName);
+    i.data = ipfsContent;
+    i.save();
+
+    let po = PerpetualOrganization.load(poName);
+    if (po != null) {
+      po.description = ipfsContent;
+      po.save();
+    }
+}

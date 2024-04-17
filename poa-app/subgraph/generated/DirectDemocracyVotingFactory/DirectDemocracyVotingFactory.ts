@@ -34,6 +34,10 @@ export class VotingContractCreated__Params {
   get POname(): string {
     return this._event.parameters[2].value.toString();
   }
+
+  get quorumPercentage(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
 }
 
 export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
@@ -49,17 +53,19 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
     _nftMembership: Address,
     _allowedRoleNames: Array<string>,
     _treasuryAddress: Address,
-    POname: string
+    POname: string,
+    quorumPercentage: BigInt
   ): Address {
     let result = super.call(
       "createDirectDemocracyVoting",
-      "createDirectDemocracyVoting(address,address,string[],address,string):(address)",
+      "createDirectDemocracyVoting(address,address,string[],address,string,uint256):(address)",
       [
         ethereum.Value.fromAddress(_ddToken),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
         ethereum.Value.fromAddress(_treasuryAddress),
-        ethereum.Value.fromString(POname)
+        ethereum.Value.fromString(POname),
+        ethereum.Value.fromUnsignedBigInt(quorumPercentage)
       ]
     );
 
@@ -71,17 +77,19 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
     _nftMembership: Address,
     _allowedRoleNames: Array<string>,
     _treasuryAddress: Address,
-    POname: string
+    POname: string,
+    quorumPercentage: BigInt
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createDirectDemocracyVoting",
-      "createDirectDemocracyVoting(address,address,string[],address,string):(address)",
+      "createDirectDemocracyVoting(address,address,string[],address,string,uint256):(address)",
       [
         ethereum.Value.fromAddress(_ddToken),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
         ethereum.Value.fromAddress(_treasuryAddress),
-        ethereum.Value.fromString(POname)
+        ethereum.Value.fromString(POname),
+        ethereum.Value.fromUnsignedBigInt(quorumPercentage)
       ]
     );
     if (result.reverted) {
@@ -127,6 +135,10 @@ export class CreateDirectDemocracyVotingCall__Inputs {
 
   get POname(): string {
     return this._call.inputValues[4].value.toString();
+  }
+
+  get quorumPercentage(): BigInt {
+    return this._call.inputValues[5].value.toBigInt();
   }
 }
 

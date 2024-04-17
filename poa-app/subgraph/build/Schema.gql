@@ -137,6 +137,7 @@ type PTVoting @entity {
   contract: PTVotingCreated! @link
   POname: String!
   proposals: [PTProposal!]! @derivedFrom(field: "voting")
+  quorum: BigInt!
 }
 
 type PTProposal @entity {
@@ -155,6 +156,7 @@ type PTProposal @entity {
   options: [PTPollOption!] @derivedFrom(field: "proposal")
   votes: [PTVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
+  validWinner: Boolean
 }
 
 type PTPollOption @entity {
@@ -185,6 +187,7 @@ type DDVoting @entity {
   contract: DDVotingCreated! @link
   POname: String!
   proposals: [DDProposal!]! @derivedFrom(field: "voting")
+  quorum: BigInt!
 }
 
 type DDProposal @entity {
@@ -203,6 +206,7 @@ type DDProposal @entity {
   options: [DDPollOption!] @derivedFrom(field: "proposal")
   votes: [DDVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
+  validWinner: Boolean
 }
 
 type DDPollOption @entity {
@@ -233,6 +237,7 @@ type HybridVoting @entity {
   contract: HybridVotingCreated! @link
   POname: String!
   proposals: [HybridProposal!]! @derivedFrom(field: "voting")
+  quorum: BigInt!
 }
 
 type HybridProposal @entity {
@@ -251,6 +256,7 @@ type HybridProposal @entity {
   options: [HybridPollOption!] @derivedFrom(field: "proposal")
   votes: [HybridVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
+  validWinner: Boolean
 }
 
 type HybridPollOption @entity {
@@ -327,7 +333,12 @@ type ValidContract @entity {
   name: String!
 }
 
+## ipfs
 
+type IPFSContent @entity {
+  id: ID!
+  data: String!
+}
 
 ## Perpetual Organization info 
 
@@ -336,6 +347,10 @@ type ValidContract @entity {
 type PerpetualOrganization @entity {
   id: ID!
   name: String!
+  description: String
+  constitution: String
+  logoURL: String
+  content: IPFSContent @link
   NFTMembership: NFTMembership! @link
   registry: Registry @link
   DirectDemocracyToken: DDToken @liknk
@@ -359,6 +374,14 @@ type User @entity {
   ptVotes: [PTVote!] @derivedFrom(field: "voter")
   ddVotes: [DDVote!] @derivedFrom(field: "voter")
   hybridVotes: [HybridVote!] @derivedFrom(field: "voter")
+  Account: Account @link
+}
+
+type Account @entity {
+  id: ID!
+  address: Bytes!
+  userName: String
+  users: [User!] @derivedFrom(field: "Account")
 }
 
 

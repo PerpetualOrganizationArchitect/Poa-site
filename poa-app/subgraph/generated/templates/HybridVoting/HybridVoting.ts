@@ -140,6 +140,10 @@ export class WinnerAnnounced__Params {
   get winningOptionIndex(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
+
+  get hasValidWinner(): boolean {
+    return this._event.parameters[2].value.toBoolean();
+  }
 }
 
 export class HybridVoting__getOptionVotesResult {
@@ -372,6 +376,29 @@ export class HybridVoting extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
+  quorumPercentage(): BigInt {
+    let result = super.call(
+      "quorumPercentage",
+      "quorumPercentage():(uint256)",
+      []
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_quorumPercentage(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "quorumPercentage",
+      "quorumPercentage():(uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   treasury(): Address {
     let result = super.call("treasury", "treasury():(address)", []);
 
@@ -435,6 +462,10 @@ export class ConstructorCall__Inputs {
 
   get _treasuryAddress(): Address {
     return this._call.inputValues[7].value.toAddress();
+  }
+
+  get _quorumPercentage(): BigInt {
+    return this._call.inputValues[8].value.toBigInt();
   }
 }
 
@@ -509,12 +540,12 @@ export class CreateProposalCall__Inputs {
     return this._call.inputValues[3].value.toStringArray();
   }
 
-  get _transferRecipient(): Address {
-    return this._call.inputValues[4].value.toAddress();
+  get _transferTriggerOptionIndex(): BigInt {
+    return this._call.inputValues[4].value.toBigInt();
   }
 
-  get _transferTriggerOptionIndex(): BigInt {
-    return this._call.inputValues[5].value.toBigInt();
+  get _transferRecipient(): Address {
+    return this._call.inputValues[5].value.toAddress();
   }
 
   get _transferAmount(): BigInt {

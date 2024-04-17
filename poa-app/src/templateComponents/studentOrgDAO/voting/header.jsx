@@ -31,13 +31,13 @@ const HeadingVote = ({ selectedTab }) => {
       <div className="glass" style={glassLayerStyle} />
 
       <Heading color="ghostwhite" size="2xl">
-        {selectedTab === 0 ? "Democracy Voting" : "Polling"}
+        {selectedTab === 0 ? "Democracy Voting" : "Hybrid Voting"}
       </Heading>
 
       <Text mt={2} color="ghostwhite" fontSize="md" fontWeight="bold">
         {selectedTab === 0
-          ? "Equal Vote for All: For Critical Decisions"
-          : "Participation Based Polling: For Casual Decisions"}
+          ? "Equal Vote for All"
+          : "Participation Based Voting"}
       </Text>
 
       <Spacer />

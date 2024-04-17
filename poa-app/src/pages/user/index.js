@@ -63,6 +63,8 @@ const User = () => {
 
   const setDispalyHandle=()=>{
     // setDispaly(false);
+    setLoading(true);
+
     async function mint(nftMembershipContractAddress, ddTokenContractAddress) {
       if (!nftMembershipContractAddress) return;
       try {
@@ -70,9 +72,11 @@ const User = () => {
       } catch (error) {
         console.error(error);
       }
+      console.log("minting dd tokens", ddTokenContractAddress)
       if (!ddTokenContractAddress) return;
       try {
-        await mintDDtokens(ddTokenContractAddress, 2023, 0, "yes");
+        await mintDDtokens(ddTokenContractAddress);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -118,7 +122,6 @@ const User = () => {
       toast({ title: "Error", description: "Error minting Membership NFT", status: "error", duration: 5000, isClosable: true });
     }
   };
-
 
 
   const handleJoin = async (e) => {
@@ -474,7 +477,7 @@ const User = () => {
         console.log("displaying"),
         <VStack mt="8" spacing="6">
           <Text  fontWeight="extrabold" ml="15%" mr="15%" fontSize="3xl" textColor="black">Join to become a member and Access the Dashboard. Please wait for both Transactions it could take some time</Text>
-          <Button onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
+          <Button  isLoading={loading} loadingText="Joining Please wait for Second Transaction" onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
             Join Now
           </Button>
 

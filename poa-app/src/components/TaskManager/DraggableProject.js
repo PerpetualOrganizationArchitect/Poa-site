@@ -24,7 +24,7 @@ const DraggableProject = ({ project, isSelected, onSelectProject, onDeleteProjec
       mx="5%"
       ref={drag}
       onClick={() => onSelectProject(project.id)}
-      bg={isSelected ? '#2d86fff7' : 'ghostwhite'}
+      bg={isSelected ? 'purple.300' : 'ghostwhite'}
       style={{ opacity }}
       _hover={{ bg: "#2d86fff7", boxShadow: "md", transform: "scale(1.05)"}}
     >

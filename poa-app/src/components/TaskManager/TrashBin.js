@@ -28,7 +28,7 @@ const TrashBin = ({}) => {
       borderRadius="md"
     >
       
-      <Text  color="lightgray">
+      <Text align={"center"} color="gray.600">
       {isActive ? 'Release here to delete' : 'Drag a project here to delete'}
       </Text>
     </Box>

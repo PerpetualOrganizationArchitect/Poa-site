@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Flex, Box } from '@chakra-ui/react';
+import { Flex, Box , VStack, Text} from '@chakra-ui/react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useTaskBoard } from '../../context/TaskBoardContext';
@@ -21,15 +21,19 @@ const TaskBoard = ({ columns, projectName }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
+      <VStack w="100%" align="stretch">
+        <Box bg="purple.300" w="100%" p={2}  >
+          <Text ml={5}  fontSize="2xl" fontWeight="bold" color="black">{projectName}</Text>
+        </Box>
       <Flex
         direction={{ base: 'column', md: 'row' }}
         justifyContent="space-between"
         w="100%"
-        h="85vh"
         overflowX="hidden"
         overflowY="hidden"
+        minHeight={`calc(100vh - 148px)`}
         wrap={{ base: 'nowrap', md: 'nowrap' }}
-        mt={2}
+        mt={0}
       >
         {taskColumns &&
           taskColumns.map((column) => (
@@ -52,6 +56,7 @@ const TaskBoard = ({ columns, projectName }) => {
             </Box>
           ))}
       </Flex>
+      </VStack>
     </DndProvider>
   );
 };

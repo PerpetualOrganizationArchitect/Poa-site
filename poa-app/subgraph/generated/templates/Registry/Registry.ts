@@ -103,6 +103,36 @@ export class Registry extends ethereum.SmartContract {
     return new Registry("Registry", address);
   }
 
+  POinfoHash(): string {
+    let result = super.call("POinfoHash", "POinfoHash():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_POinfoHash(): ethereum.CallResult<string> {
+    let result = super.tryCall("POinfoHash", "POinfoHash():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  POname(): string {
+    let result = super.call("POname", "POname():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_POname(): ethereum.CallResult<string> {
+    let result = super.tryCall("POname", "POname():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
   VotingControlAddress(): Address {
     let result = super.call(
       "VotingControlAddress",
@@ -196,6 +226,14 @@ export class ConstructorCall__Inputs {
 
   get contractAddresses(): Array<Address> {
     return this._call.inputValues[2].value.toAddressArray();
+  }
+
+  get hashInfo(): string {
+    return this._call.inputValues[3].value.toString();
+  }
+
+  get name(): string {
+    return this._call.inputValues[4].value.toString();
   }
 }
 

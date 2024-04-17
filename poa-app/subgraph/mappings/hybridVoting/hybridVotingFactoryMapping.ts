@@ -22,6 +22,7 @@ export function handleVotingContractCreated(event: HybridVotingContractCreated):
     let newVoting = new HybridVoting(event.params.hybridVotingAddress.toHex());
     newVoting.contract = event.params.hybridVotingAddress.toHex();
     newVoting.POname = event.params.POname;
+    newVoting.quorum = event.params.quorumPercentage;
     newVoting.save();
   
     votingTemplate.create(event.params.hybridVotingAddress);

@@ -30,6 +30,7 @@ export const GraphProvider = ({ children }) => {
     const[projectsData, setProjectsData] = useState({});
     const[leaderboardData, setLeaderboardData] = useState({});
 
+    const [claimedTasks, setClaimedTasks] = useState([]);
     const { fetchFromIpfs } = useIPFScontext();
 
     //contract address state 
@@ -94,6 +95,27 @@ export const GraphProvider = ({ children }) => {
         }
 
         return data.data;
+    }
+
+    async function fetchUserClaimedTasks(id, org) {
+
+        const query = `
+        {
+            user(id: "${org}-${id}") {
+                id
+                tasks(where:{completed: false}) {
+                id
+                ipfsHash
+                payout
+                completed
+                }
+            }
+            }`;
+
+        const data = await querySubgraph(query);
+        console.log("claimed tasks", data);
+    
+        return data?.user?.tasks;
     }
 
     async function fetchUserData(id, org) {
@@ -573,6 +595,8 @@ export const GraphProvider = ({ children }) => {
 
     async function loadGraphData(poName) {
 
+
+        const claimedTasks = await fetchUserClaimedTasks(account.toLocaleLowerCase(), poName);
         const userInfo = await fetchUserData(account.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
@@ -584,6 +608,7 @@ export const GraphProvider = ({ children }) => {
         const leaderboardData = await fetchLeaderboardData(poName);
 
         console.log("setting user data", userInfo);
+        setClaimedTasks(claimedTasks);
         setUserData(userInfo);
         setParticipationVotingOngoing(participationVotingOngoing);
         setParticipationVotingCompleted(participationVotingCompleted);
@@ -613,10 +638,12 @@ export const GraphProvider = ({ children }) => {
         const projectData = await fetchProjectData(poName);
         const leaderboardData = await fetchLeaderboardData(poName);
 
+
         console.log("participationTokenContractAddress", participationVotingContractAddress);
         if(participationVotingContractAddress === ''){
+            console.log("hybrid voting ongoinngg", hybridVotingOngoing);
             setParticipationVotingOngoing(hybridVotingOngoing);
-            setParticipationVotingOngoing(hybridVotingCompleted);
+            setParticipationVotingCompleted(hybridVotingCompleted);
             console.log("hybrid voting contract address", hybridVotingContractAddress);
         }else
         {
@@ -629,10 +656,13 @@ export const GraphProvider = ({ children }) => {
         setLeaderboardData(leaderboardData);
         setProjectsData( await transformProjects(projectData));
 
+        
+
+
     }
 
     return (
-        <GraphContext.Provider value={{ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress}}>
+        <GraphContext.Provider value={{claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing}}>
         {children}
         </GraphContext.Provider>
     );

@@ -23,6 +23,7 @@ export function handleVotingContractCreated(event: VotingContractCreated): void 
     let newVoting = new DDVoting(event.params.votingAddress.toHex());
     newVoting.contract = event.params.votingAddress.toHex();
     newVoting.POname = event.params.POname;
+    newVoting.quorum = event.params.quorumPercentage;
     newVoting.save();
   
     votingTemplate.create(event.params.votingAddress);
