@@ -30,6 +30,10 @@ export class VotingContractCreated__Params {
   get POname(): string {
     return this._event.parameters[1].value.toString();
   }
+
+  get quorumPercentage(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
 }
 
 export class ParticipationVotingFactory extends ethereum.SmartContract {
@@ -46,18 +50,20 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
     _allowedRoleNames: Array<string>,
     _quadraticVotingEnabled: boolean,
     _treasuryAddress: Address,
-    POname: string
+    POname: string,
+    _quorumPercentage: BigInt
   ): Address {
     let result = super.call(
       "createParticipationVoting",
-      "createParticipationVoting(address,address,string[],bool,address,string):(address)",
+      "createParticipationVoting(address,address,string[],bool,address,string,uint256):(address)",
       [
         ethereum.Value.fromAddress(_ParticipationToken),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
         ethereum.Value.fromBoolean(_quadraticVotingEnabled),
         ethereum.Value.fromAddress(_treasuryAddress),
-        ethereum.Value.fromString(POname)
+        ethereum.Value.fromString(POname),
+        ethereum.Value.fromUnsignedBigInt(_quorumPercentage)
       ]
     );
 
@@ -70,18 +76,20 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
     _allowedRoleNames: Array<string>,
     _quadraticVotingEnabled: boolean,
     _treasuryAddress: Address,
-    POname: string
+    POname: string,
+    _quorumPercentage: BigInt
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createParticipationVoting",
-      "createParticipationVoting(address,address,string[],bool,address,string):(address)",
+      "createParticipationVoting(address,address,string[],bool,address,string,uint256):(address)",
       [
         ethereum.Value.fromAddress(_ParticipationToken),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
         ethereum.Value.fromBoolean(_quadraticVotingEnabled),
         ethereum.Value.fromAddress(_treasuryAddress),
-        ethereum.Value.fromString(POname)
+        ethereum.Value.fromString(POname),
+        ethereum.Value.fromUnsignedBigInt(_quorumPercentage)
       ]
     );
     if (result.reverted) {
@@ -131,6 +139,10 @@ export class CreateParticipationVotingCall__Inputs {
 
   get POname(): string {
     return this._call.inputValues[5].value.toString();
+  }
+
+  get _quorumPercentage(): BigInt {
+    return this._call.inputValues[6].value.toBigInt();
   }
 }
 

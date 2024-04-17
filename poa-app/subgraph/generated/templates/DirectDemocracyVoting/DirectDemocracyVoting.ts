@@ -132,6 +132,35 @@ export class WinnerAnnounced__Params {
   get winningOptionIndex(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
+
+  get hasValidWinner(): boolean {
+    return this._event.parameters[2].value.toBoolean();
+  }
+}
+
+export class DirectDemocracyVoting__getWinnerResult {
+  value0: BigInt;
+  value1: boolean;
+
+  constructor(value0: BigInt, value1: boolean) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromBoolean(this.value1));
+    return map;
+  }
+
+  getValue0(): BigInt {
+    return this.value0;
+  }
+
+  getValue1(): boolean {
+    return this.value1;
+  }
 }
 
 export class DirectDemocracyVoting extends ethereum.SmartContract {
@@ -217,6 +246,37 @@ export class DirectDemocracyVoting extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  getWinner(_proposalId: BigInt): DirectDemocracyVoting__getWinnerResult {
+    let result = super.call("getWinner", "getWinner(uint256):(uint256,bool)", [
+      ethereum.Value.fromUnsignedBigInt(_proposalId)
+    ]);
+
+    return new DirectDemocracyVoting__getWinnerResult(
+      result[0].toBigInt(),
+      result[1].toBoolean()
+    );
+  }
+
+  try_getWinner(
+    _proposalId: BigInt
+  ): ethereum.CallResult<DirectDemocracyVoting__getWinnerResult> {
+    let result = super.tryCall(
+      "getWinner",
+      "getWinner(uint256):(uint256,bool)",
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new DirectDemocracyVoting__getWinnerResult(
+        value[0].toBigInt(),
+        value[1].toBoolean()
+      )
+    );
+  }
+
   nftMembership(): Address {
     let result = super.call("nftMembership", "nftMembership():(address)", []);
 
@@ -234,6 +294,29 @@ export class DirectDemocracyVoting extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  quorumPercentage(): BigInt {
+    let result = super.call(
+      "quorumPercentage",
+      "quorumPercentage():(uint256)",
+      []
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_quorumPercentage(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "quorumPercentage",
+      "quorumPercentage():(uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   treasury(): Address {
@@ -283,6 +366,10 @@ export class ConstructorCall__Inputs {
 
   get _treasuryAddress(): Address {
     return this._call.inputValues[3].value.toAddress();
+  }
+
+  get _quorumPercentage(): BigInt {
+    return this._call.inputValues[4].value.toBigInt();
   }
 }
 

@@ -108,7 +108,7 @@ contract MasterFactory {
         treasury.setVotingContract(votingControlAddress);
 
         
-        registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, "r", "ipfsHash");
+        registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, "r", "QmdkMvFTLhkR6m292MaHQ9YoHv6geJotiWCgxw4wTLvryN");
     }
 
 

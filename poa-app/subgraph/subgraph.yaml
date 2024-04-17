@@ -6,9 +6,9 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: sepolia
     source:
-      address: "0x44466163Ecc88AE1Bf5a178233e2fe559dC5b60E"
+      address: "0x2b5c604112a2247C7E9F1CCED9D2f010BBcBef78"
       abi: DirectDemocracyTokenFactory
-      startBlock: 5685869
+      startBlock: 5713300
 
     mapping:
       kind: ethereum/events
@@ -27,9 +27,9 @@ dataSources:
     name: ParticipationTokenFactory
     network: sepolia
     source:
-      address: "0x6cC260901121060fEeBcBB500834B2960FE61556"
+      address: "0x6CC8b40c85b01eB2D97210eACAD39002e255122A"
       abi:  ParticipationTokenFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -47,9 +47,9 @@ dataSources:
     name: NFTMembershipFactory
     network: sepolia
     source:
-      address: "0xDBE0cb6f796Cb382c058c38FEfDfb53b61a9E982"
+      address: "0xE63Dd01E3a81C6b8DAeA30936Eb52239a1C199A1"
       abi: NFTMembershipFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -67,9 +67,9 @@ dataSources:
     name: TreasuryFactory
     network: sepolia
     source:
-      address: "0x2b9D48C8b133079EF470F67e9D0D709E35d02340"
+      address: "0xa45C999aFFbc40D0412aA4E333fb29E25E1412ec"
       abi: TreasuryFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -87,9 +87,9 @@ dataSources:
     name: ParticipationVotingFactory
     network: sepolia
     source:
-      address: "0xC148A78E53fF6e7A2bB029c9f7F271BCeAf3531d"
+      address: "0xE1ff13eFE48F3eDB14f8aB945b2C9d55d19bb46e"
       abi: ParticipationVotingFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -100,16 +100,16 @@ dataSources:
         - name: ParticipationVotingFactory
           file: ../abi/ParticipationVotingFactory.json
       eventHandlers:
-        - event: VotingContractCreated(indexed address,string)
+        - event: VotingContractCreated(indexed address,string,uint256)
           handler: handleVotingContractCreated
       file: ./mappings/ptVoting/ptVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: DirectDemocracyVotingFactory
     network: sepolia
     source:
-      address: "0x0cBe4009f5D41c0A5c9721558bEB697d668b25aA"
+      address: "0x9D7136534c33C3ebD9325d0Ee3B4Ae99B4eCaF32"
       abi: DirectDemocracyVotingFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -120,16 +120,16 @@ dataSources:
         - name: DirectDemocracyVotingFactory
           file: ../abi/DirectDemocracyVotingFactory.json
       eventHandlers:
-        - event: VotingContractCreated(indexed address,indexed address,string)
+        - event: VotingContractCreated(indexed address,indexed address,string,uint256)
           handler: handleVotingContractCreated
       file: ./mappings/ddVoting/ddVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: HybridVotingFactory
     network: sepolia
     source:
-      address: "0x68Ceb892808AE77f39f9A57Fee46ADb53819a473"
+      address: "0xC79dAdd9C2E107FA29C39a134738beEd127E6b47"
       abi: HybridVotingFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -140,16 +140,16 @@ dataSources:
         - name: HybridVotingFactory
           file: ../abi/HybridVotingFactory.json
       eventHandlers:
-        - event: HybridVotingContractCreated(indexed address,address,string)
+        - event: HybridVotingContractCreated(indexed address,address,string,uint256)
           handler: handleVotingContractCreated
       file: ./mappings/hybridVoting/hybridVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: TaskManagerFactory
     network: sepolia
     source:
-      address: "0x4B582A5D4A7FAB0Ed6e98bAeE39ba429BdD48F02"
+      address: "0x462E19188d9DA45154CA5d68851F0Eeeb343064c"
       abi: TaskManagerFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -167,9 +167,9 @@ dataSources:
     name: RegistryFactory
     network: sepolia
     source:
-      address: "0xe17DF3e2f5996706e52573152e1E95798cfc01f9"
+      address: "0x2fd3f80cb9B0e5D12ac18412bb8Dceb323a0838a"
       abi: RegistryFactory
-      startBlock: 5685869
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -180,7 +180,7 @@ dataSources:
         - name: RegistryFactory
           file: ../abi/RegistryFactory.json
       eventHandlers:
-        - event: RegistryCreated(address,string,string,address,string[],address[])
+        - event: RegistryCreated(address,string,string,address,string[],address[],string)
           handler: handleRegistryContractCreated
       file: ./mappings/registry/registryFactoryMapping.ts
 templates:
@@ -291,7 +291,7 @@ templates:
           handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256,uint256)
           handler: handleVoted
-        - event: WinnerAnnounced(indexed uint256,uint256)
+        - event: WinnerAnnounced(indexed uint256,uint256,bool)
           handler: handleWinnerAnnounced
       file: ./mappings/ptVoting/ptVotingMapping.ts
   - kind: ethereum/contract
@@ -318,7 +318,7 @@ templates:
           handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256)
           handler: handleVoted
-        - event: WinnerAnnounced(indexed uint256,uint256)
+        - event: WinnerAnnounced(indexed uint256,uint256,bool)
           handler: handleWinnerAnnounced
       file: ./mappings/ddVoting/ddVotingMapping.ts
   - kind: ethereum/contract
@@ -345,7 +345,7 @@ templates:
           handler: handlePollOptionNames
         - event: Voted(indexed uint256,indexed address,uint256,uint256,uint256)
           handler: handleVoted
-        - event: WinnerAnnounced(indexed uint256,uint256)
+        - event: WinnerAnnounced(indexed uint256,uint256,bool)
           handler: handleWinnerAnnounced
       file: ./mappings/hybridVoting/hybridVotingMapping.ts
   - kind: ethereum/contract
@@ -399,4 +399,16 @@ templates:
         - event: VotingControlAddressSet(address)
           handler: handleVotingControlAddressSet
       file: ./mappings/registry/registryMapping.ts
-      
+  - kind: file/ipfs
+    name: IpfsContent
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - IPFSContent
+      abis:
+        - name: RegistryFactory
+          file: ../abi/RegistryFactory.json
+      handler: handleIpfsContent
+      file: ./mappings/registry/registryFactoryMapping.ts

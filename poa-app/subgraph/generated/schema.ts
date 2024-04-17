@@ -3736,6 +3736,61 @@ export class ValidContract extends Entity {
   }
 }
 
+export class IPFSContent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save IPFSContent entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type IPFSContent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("IPFSContent", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): IPFSContent | null {
+    return changetype<IPFSContent | null>(
+      store.get_in_block("IPFSContent", id)
+    );
+  }
+
+  static load(id: string): IPFSContent | null {
+    return changetype<IPFSContent | null>(store.get("IPFSContent", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get data(): string {
+    let value = this.get("data");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set data(value: string) {
+    this.set("data", Value.fromString(value));
+  }
+}
+
 export class PerpetualOrganization extends Entity {
   constructor(id: string) {
     super();

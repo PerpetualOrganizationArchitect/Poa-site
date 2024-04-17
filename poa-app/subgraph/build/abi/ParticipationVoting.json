@@ -25,6 +25,11 @@
         "internalType": "address",
         "name": "_treasuryAddress",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quorumPercentage",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -161,6 +166,12 @@
         "internalType": "uint256",
         "name": "winningOptionIndex",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "hasValidWinner",
+        "type": "bool"
       }
     ],
     "name": "WinnerAnnounced",
@@ -284,11 +295,35 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_proposalId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getWinner",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "nftMembership",
     "outputs": [
       {
-        "internalType": "contract INFTMembership",
+        "internalType": "contract INFTMembership5",
         "name": "",
         "type": "address"
       }
@@ -311,10 +346,23 @@
   },
   {
     "inputs": [],
+    "name": "quorumPercentage",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "treasury",
     "outputs": [
       {
-        "internalType": "contract ITreasury",
+        "internalType": "contract ITreasury3",
         "name": "",
         "type": "address"
       }

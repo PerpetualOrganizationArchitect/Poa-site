@@ -5,7 +5,7 @@ import "./HybridVoting.sol";
 
 contract HybridVotingFactory {
     
-    event HybridVotingContractCreated(address indexed creator, address hybridVotingAddress, string POname);
+    event HybridVotingContractCreated(address indexed creator, address hybridVotingAddress, string POname, uint256 quorumPercentage);
 
 
     
@@ -32,7 +32,7 @@ contract HybridVotingFactory {
             _treasuryAddress,
             _quorumPercentage
         );
-        emit HybridVotingContractCreated(msg.sender, address(newHybridVoting), POname);
+        emit HybridVotingContractCreated(msg.sender, address(newHybridVoting), POname, _quorumPercentage);
         return address(newHybridVoting);
     }
 

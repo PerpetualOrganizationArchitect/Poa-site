@@ -333,7 +333,12 @@ type ValidContract @entity {
   name: String!
 }
 
+## ipfs
 
+type IPFSContent @entity {
+  id: ID!
+  data: String!
+}
 
 ## Perpetual Organization info 
 

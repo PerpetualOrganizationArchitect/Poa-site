@@ -233,7 +233,7 @@
     "name": "nftMembership",
     "outputs": [
       {
-        "internalType": "contract INFTMembership",
+        "internalType": "contract INFTMembership4",
         "name": "",
         "type": "address"
       }

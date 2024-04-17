@@ -2,7 +2,7 @@ const MasterDeployfactory = require("../abi/MasterFactory.json");
 
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0x9f16e77A357DF9E4F7Ae50F85602795DeD83D179";
+const masterDeployFactoryAddress = "0x5d3f91b7C653e25F017C0C68F762157BA91067c2";
 
 export async function main(
     memberTypeNames,
@@ -41,6 +41,8 @@ export async function main(
         ];
       }
   
+      let quorumPercentageDD = 50;
+      let quorumPercentagePV = 50;
 
     const params = {
         memberTypeNames,
@@ -54,6 +56,8 @@ export async function main(
         logoURL,
         votingControlType,
         contractNames,
+        quorumPercentageDD,
+        quorumPercentagePV
     };
 
     console.log("Deploying new DAO with the following parameters:");
@@ -61,7 +65,7 @@ export async function main(
 
 
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(14500000); // Example gas limit, adjust based on your needs
+    const gasLimit = ethers.utils.hexlify(14500000); 
 
     const options = {
         gasLimit: gasLimit,

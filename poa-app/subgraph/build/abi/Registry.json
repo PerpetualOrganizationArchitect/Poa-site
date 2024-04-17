@@ -15,6 +15,16 @@
         "internalType": "address[]",
         "name": "contractAddresses",
         "type": "address[]"
+      },
+      {
+        "internalType": "string",
+        "name": "hashInfo",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       }
     ],
     "stateMutability": "nonpayable",
@@ -95,6 +105,32 @@
     ],
     "name": "VotingControlAddressSet",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "POinfoHash",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "POname",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],

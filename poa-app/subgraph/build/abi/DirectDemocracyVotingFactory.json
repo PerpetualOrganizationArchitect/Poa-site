@@ -19,6 +19,12 @@
         "internalType": "string",
         "name": "POname",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quorumPercentage",
+        "type": "uint256"
       }
     ],
     "name": "VotingContractCreated",
@@ -50,6 +56,11 @@
         "internalType": "string",
         "name": "POname",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quorumPercentage",
+        "type": "uint256"
       }
     ],
     "name": "createDirectDemocracyVoting",
