@@ -119,6 +119,8 @@ const ArchitectPage = () => {
   const [siteCreated, setSiteCreated] = useState(false);
   const [showDeployer, setShowDeployer] = useState(false);
 
+  const [loadingCompleted, setLoadingCompleted] = useState(false);
+
   // Refs and hooks for UI effects and navigation.
   const selectionRef = useRef(null);
   const [selectionHeight, setSelectionHeight] = useState(0); // State for managing the dynamic height of the selection component.
@@ -293,7 +295,8 @@ const ArchitectPage = () => {
     setIsConfirmationModalOpen(false);
     console.log("Saving: ", orgDetails );
 
-    deploy(orgDetails);
+    await deploy(orgDetails);
+    setLoadingCompleted(true);
 
     // Prepare to show the deployment modal
     setShowDeployer(true);
@@ -518,12 +521,13 @@ const ArchitectPage = () => {
               orgDetails={orgDetails}
               onClose={() => setIsConfirmationModalOpen(false)}
               onStartOver={handleStartOver}
-              onSave={()=> {console.log("why"); handleSaveAllSelections()}}
+              onSave={() => setShowDeployer(true)}
               onConnect={handleConnect}
               wallet={wallet}
             />
           }
           <Deployer
+            signer={signer}
             isOpen={showDeployer}
             onClose={() => setShowDeployer(false)}
             deploymentDetails={orgDetails}
@@ -568,7 +572,7 @@ const ArchitectPage = () => {
           paddingRight={10}
           zIndex="sticky"
         >
-          {orgName && (
+          {orgName &&loadingCompleted && (
             <Button
               position="absolute"
               top="4"
