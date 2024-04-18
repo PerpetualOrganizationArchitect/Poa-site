@@ -3,6 +3,28 @@ schema:
   file: Schema.gql
 dataSources:
   - kind: ethereum/contract
+    name: UniversalAccountRegistry
+    network: sepolia
+    source:
+      address: "0x2b5c604112a2247C7E9F1CCED9D2f010BBcBef78"
+      abi: AccountManager
+      startBlock: 5713300
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Account
+      abis:
+        - name: AccountManager
+          file: abi/AccountManager.json
+      eventHandlers:
+        - event: UserRegistered(indexed address,string)
+          handler: handleUserRegistered
+        - event: UsernameChanged(indexed address,string)
+          handler: handleUsernameChanged
+      file: UniversalAccountRegistry/UniversalAccountRegistry.wasm
+  - kind: ethereum/contract
     name: DirectDemocracyTokenFactory
     network: sepolia
     source:
