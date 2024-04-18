@@ -39,8 +39,8 @@ const AboutPage = () => {
         </Text>
         <Text fontSize={"2xl"} textAlign={"center"} pr="15vh" pl="15vh">
           The Perpetual Organization Architect, or Poa, is a friendly chat bot
-          that guides you through a no-code process of building a perpetual
-          organization.
+          that guides you through a no-code process of building a Perpetual
+          Organization.
         </Text>
         <Text fontSize="4xl" fontWeight="bold" color="grey.600">
           Purpose
@@ -54,21 +54,21 @@ const AboutPage = () => {
         >
           Poa aims to simplify the{" "}
           <Text as="span" fontWeight="bold">
-            creation
+            Creation
           </Text>{" "}
           of and{" "}
           <Text as="span" fontWeight="bold">
-            participation
+            Participation
           </Text>{" "}
-          in fully community-owned organizations by leveraging{" "}
+          in fully Community-owned organizations by leveraging{" "}
           <Text as="span" fontWeight="bold">
             AI
           </Text>{" "}
           for onboarding and{" "}
           <Text as="span" fontWeight="bold">
-            decentralized technologies
+            Decentralized technologies
           </Text>{" "}
-          for the infrastructure.{" "}
+          for the infrastructure. We believe that Votes should not be purchased but rather Earned by Participating or granted through Direct Democracy.
         </Text>
         <Text
           textAlign={"center"}
@@ -84,12 +84,12 @@ const AboutPage = () => {
         </Text>
         <Box
           bgColor="white"
-          p="8"
+          p="6"
           borderRadius="xl"
           opacity="0.7"
           textAlign="center"
         >
-          <HStack pt="5vh" spacing={4} align="center">
+          <HStack pt="1vh" spacing={2} align="center">
             {" "}
             <Text fontSize="3xl" fontWeight="semibold">
               Our community
@@ -112,7 +112,7 @@ const AboutPage = () => {
           <Text fontSize="md" m="5" fontWeight="bold" color="grey.600">
             so that
           </Text>
-          <HStack pb="5vh" spacing={4} align="center">
+          <HStack pb="1vh" spacing={4} align="center">
             {" "}
             <Text fontSize="3xl" fontWeight="semibold">
               Poa
@@ -133,10 +133,10 @@ const AboutPage = () => {
             </Text>
           </HStack>
         </Box>
-        <Text fontSize="lg" fontWeight="bold" color="grey.600">
-          Join our community
+        <Text  fontSize="xl" fontWeight="bold" color="grey.600">
+          Join our Community
         </Text>
-        <HStack spacing={4} align="center">
+        <HStack mt="-8" spacing={4} align="center">
           {" "}
           <Box width="20">
             <Link href="https://discord.gg/kKDKgetdNx" passHref>

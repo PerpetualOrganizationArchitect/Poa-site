@@ -12,39 +12,62 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-function Deployer({ isOpen, onClose, deploymentDetails }) {
+import {main} from "../../../scripts/newDeployment";
+import { is } from "@react-spring/shared";
+
+function Deployer({ isOpen, onClose, deploymentDetails, signer}) {
   const [isDeployed, setIsDeployed] = useState(false);
   const toast = useToast();
   const router = useRouter();
 
   useEffect(() => {
-    // Simulate deployment progress
-    const deploy = async () => {
-      try {
-        // Replace this with your actual deployment function call
-        // await deployContracts(...deploymentDetails);
-        setTimeout(() => {
-          setIsDeployed(true); // set deployment to true for demonstration
-        }, 3000); // Simulates a deployment time of 3 seconds
-      } catch (error) {
-        toast({
-          title: "Deployment failed.",
-          description: "There was an error during the deployment process.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    };
+  const deploy = async (deploymentDetails) => {
+    console.log("Deploying...");
 
-    deploy();
-  }, [toast]);
+    console.log(deploymentDetails);
+    try {
+      await main(
+        deploymentDetails.membershipTypeNames,
+        deploymentDetails.membershipTypeNames,
+        deploymentDetails.POname,
+        deploymentDetails.quadraticVotingEnabled,
+        deploymentDetails.democracyVoteWeight,
+        deploymentDetails.participationVoteWeight,
+        deploymentDetails.hybridVotingEnabled,
+        deploymentDetails.participationVotingEnabled,
+        deploymentDetails.logoURL,
+        deploymentDetails.votingControlType, 
+        signer
+       );
+    } catch (error) {
+      toast({
+        title: "Deployment failed.",
+        description: "There was an error during the deployment process.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
+  async function run(){
+    await deploy(deploymentDetails);
+
+
+    setIsDeployed(true);
+  }
+
+
+  if (isOpen) {
+    run();
+  }
+  }, [isOpen]);
 
   const handleAccessOrganization = () => {
     const formattedOrgName = encodeURIComponent(
-      deploymentDetails.POname.trim().toLowerCase().replace(/\s+/g, "-")
+      deploymentDetails.POname.trim().replace(/\s+/g, "-")
     );
-    router.push(`/home/userDAO=${formattedOrgName}`);
+    router.push(`/user/?userDAO=${formattedOrgName}`);
   };
 
   return (
@@ -60,7 +83,7 @@ function Deployer({ isOpen, onClose, deploymentDetails }) {
           )}
         </ModalBody>
         <ModalFooter>
-          {isDeployed ? (
+          {isDeployed? (
             <Button colorScheme="blue" onClick={handleAccessOrganization}>
               Access Organization
             </Button>

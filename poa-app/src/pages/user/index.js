@@ -46,7 +46,7 @@ const User = () => {
 
 
 
-  const { nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress} = useGraphContext();
+  const { account, nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress, fetchUsername} = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
   useEffect(() => {
@@ -56,7 +56,8 @@ const User = () => {
 
 
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
   const [name, setName] = useState("");
   const[showMetaMaskMessage, setShowMetaMaskMessage]=useState(false);
   const[dispaly,setDispaly]=useState(true);
@@ -76,12 +77,56 @@ const User = () => {
       if (!ddTokenContractAddress) return;
       try {
         await mintDDtokens(ddTokenContractAddress);
-        setLoading(false);
+        
       } catch (error) {
         console.error(error);
       }
+
+      setTimeout(() => {
+        setLoading(false);
+        router.push(`/dashboard/?userDAO=${userDAO}`);
+
+      }, 2700);
     }
     mint(nftMembershipContractAddress, ddTokenContractAddress);
+
+  }
+
+  const setDispalyHandleNew=()=>{
+    // setDispaly(false);
+    setLoading(true);
+
+    async function join(nftMembershipContractAddress, ddTokenContractAddress) {
+      try{
+        await createNewUser(newUsername);
+      }catch(error){
+        console.error(error);
+      }
+
+      if (!nftMembershipContractAddress) return;
+      try {
+        await mintDefaultNFT(nftMembershipContractAddress);
+      } catch (error) {
+        console.error(error);
+      }
+      console.log("minting dd tokens", ddTokenContractAddress)
+      if (!ddTokenContractAddress) return;
+      try {
+        await mintDDtokens(ddTokenContractAddress);
+        
+      } catch (error) {
+        console.error(error);
+      }
+
+      setTimeout(() => {
+        setLoading(false);
+        router.push(`/dashboard/?userDAO=${userDAO}`);
+
+      }, 2700);
+
+
+    }
+    join(nftMembershipContractAddress, ddTokenContractAddress);
 
   }
 
@@ -91,13 +136,27 @@ const User = () => {
   const [loading,setLoading]=useState(false);
 
   const [userDetails, setUserDetails] = useState(null);
-  const{mintDDtokens, mintDefaultNFT,mintNFT, providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, account,kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
+  const{mintDDtokens,createNewUser, mintDefaultNFT,mintNFT, providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
 
 
   
   const toast = useToast();
 
   
+
+    useEffect(() => {
+          async function fetchUserDetails() {
+            const userName = await fetchUsername(account);
+            console.log("username", userName);
+            setUsername(userName);
+      }
+
+      if (account!= null) {
+        fetchUserDetails();
+
+      }
+    }, [account]);
+
 
 
     useEffect(() => {
@@ -472,28 +531,43 @@ const User = () => {
 
   return (
     <>
-    <Navbar />
-      {dispaly ? (
-        console.log("displaying"),
+      <Navbar />
+      {dispaly && username ? (
         <VStack mt="8" spacing="6">
-          <Text  fontWeight="extrabold" ml="15%" mr="15%" fontSize="3xl" textColor="black">Join to become a member and Access the Dashboard. Please wait for both Transactions it could take some time</Text>
-          <Button  isLoading={loading} loadingText="Joining Please wait for Second Transaction" onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
+          <Text fontWeight="extrabold" ml="15%" mr="15%" fontSize="3xl" textColor="black">
+            Join to become a member and Access the Dashboard. Please wait for both Transactions; it could take some time.
+          </Text>
+          <Button isLoading={loading} loadingText="Joining Please wait for Second Transaction" onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
             Join Now
           </Button>
-
         </VStack>
-      ):(
-
-        render()
-        
+      ) : (
+        <VStack mt="8" spacing="6">
+          <Text fontWeight="extrabold" ml="15%" mr="15%" fontSize="3xl" textColor="black">
+            Join to become a member and Access the Dashboard. Please wait for all three Transactions; it could take some time.
+          </Text>
+          <Input 
+            placeholder="Enter your username" 
+            value={newUsername} 
+            onChange={(e) => setNewUsername(e.target.value)}
+            size="lg" 
+            mt={4}
+          />
+          <Button 
+            isLoading={loading} 
+            loadingText="Joining Please wait for Three total Transactions" 
+            onClick={setDispalyHandleNew} 
+            size="lg" 
+            mt={4} 
+            bg="green.300" 
+            _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}
+            isDisabled={!newUsername}  
+          >
+            Join Now and Create Account
+          </Button>
+        </VStack>
       )}
-      
     </>
-
-    
-
-
-    
   );
 };
 
