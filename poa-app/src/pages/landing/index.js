@@ -6,8 +6,6 @@ import AboutPreview from "@/components/Dashboard/AboutPreview";
 import YourPerpetualOrganizations from "@/components/Dashboard/YourPerpetualOrganizations";
 import PoaPreview from "@/components/Dashboard/PoaPreview";
 
-
-
 // Convert Chakra UI components to motion components
 const MotionBox = motion(Box);
 const MotionFlex = motion(Flex);
@@ -43,18 +41,24 @@ const DashboardPage = () => {
         initial="hidden"
         animate="visible"
       >
-        <VStack mt= "6" spacing={6} w="full" h="full" justify="center" >
-
-
+        <VStack
+          mt="6"
+          spacing={6}
+          w="full"
+          h="full"
+          justify="center"
+          align="center"
+        >
           <MotionFlex
             w="full"
             flex="1"
             direction={{ base: "column", md: "row" }}
             p={3}
             variants={itemVariants}
+            align="center" // Ensure alignment is centered for all sizes
           >
             <MotionBox
-              w={{ base: "full", md: "50%" }}
+              w={{ base: "full", md: "40%" }}
               h="full"
               p={3}
               variants={itemVariants}
@@ -62,19 +66,19 @@ const DashboardPage = () => {
               <PoaPreview />
             </MotionBox>
             <MotionBox
-              w={{ base: "full", md: "50%" }}
+              w={{ base: "full", md: "60%" }}
               h="full"
               p={3}
+              px={{ base: 0, md: 6 }} // Responsive horizontal padding
               variants={itemVariants}
             >
-              <YourPerpetualOrganizations />
+              <AboutPreview />
             </MotionBox>
-            
           </MotionFlex>
         </VStack>
         <MotionBox w="full" flex="1" p={3} variants={itemVariants}>
-            <AboutPreview />
-          </MotionBox>
+          <YourPerpetualOrganizations />
+        </MotionBox>
       </MotionBox>
     </Layout>
   );

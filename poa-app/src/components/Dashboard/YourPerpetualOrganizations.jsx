@@ -1,6 +1,7 @@
 import Organization from "./Organization";
 //import { organizations } from "./TempOrgData";
 import { Flex, Text, Box, Button } from "@chakra-ui/react";
+import Link from "next/link";
 
 const YourPerpetualOrganizations = () => {
   const organizations = [];
@@ -20,7 +21,18 @@ const YourPerpetualOrganizations = () => {
           <Text fontSize="lg" mb={4} color="gray.600">
             Would you like to create one?
           </Text>
-          <Button colorScheme="blue">Create</Button>
+          <Link href="/architect" passHref>
+            <Button
+              textColor="black"
+              backgroundColor="lightblue"
+              size="lg"
+              colorScheme="blue"
+              variant="outline"
+              mt={4}
+            >
+              Start Building
+            </Button>
+          </Link>
         </Flex>
       ) : (
         <Flex

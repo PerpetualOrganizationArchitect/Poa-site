@@ -9,16 +9,22 @@ const AboutPreview = () => {
       justify="center"
       w="full"
       h="full"
-      p={4}
+      textAlign={"center"}
+      mt="3"
     >
-      <Text  fontSize="2xl" fontWeight="bold" mb={4} textAlign="center">
-        Fully Yours. Forever.
+      <Text fontSize="3xl" fontWeight="bold" mb={4} textAlign="center">
+        Own Your Organizations
       </Text>
-      <Text fontSize="lg" mb={4} ml="25%" mr="25%" textAlign={"left"}>
-        Poa is commited to making Organizations that are Fully Owned by the Community itself, not investors, buisnesses, or even Poa. Once you deploy your Perpetual Organization we can't stop it or change it even if we wanted to. Only a Community Vote can. That's why we call them Perpetual.
+      <Text fontSize="lg" pl="5" pr="5" mb={2} textAlign={"center"}>
+        Poa helps you create organizations that are fully owned by the community
+        itself - not investors, buisnesses, or even Poa.
       </Text>
+      <Text fontSize="lg" pl="5" pr="5" mb={2} textAlign={"center"}>
+        Once you deploy your Perpetual Organization, the only thing that can
+        stop or change it is a community vote.
+      </Text>{" "}
       <Link href="/about" passHref>
-        <Button size="lg" colorScheme="blue" variant="outline" mt={2}>
+        <Button size="lg" colorScheme={"navy"} variant="outline" mt={2}>
           Learn More
         </Button>
       </Link>
