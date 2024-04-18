@@ -32,21 +32,21 @@ const Navigation = () => {
           aria-label="Home"
         />
       </Link>
-      
-      <Link href="/architect" passHref>
-        <Button variant="ghost" p={4}>
-          Architect
+
+      <Link href="/about" passHref>
+        <Button variant="outline" p={4} colorScheme="black">
+          About
         </Button>
       </Link>
 
       <Link href="/browser" passHref>
-        <Button variant="ghost" p={4}>
+        <Button variant="outline" p={4} colorScheme="black">
           Browser
         </Button>
       </Link>
-      <Link href="/about" passHref>
-        <Button variant="ghost" p={4}>
-          About
+      <Link href="/architect" passHref>
+        <Button variant="outline" p={4} colorScheme="black">
+          Architect
         </Button>
       </Link>
     </Flex>

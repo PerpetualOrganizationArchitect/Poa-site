@@ -30,7 +30,7 @@ const YourPerpetualOrganizations = () => {
               variant="outline"
               mt={4}
             >
-              Start Building
+              Create
             </Button>
           </Link>
         </Flex>
