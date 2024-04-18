@@ -39,6 +39,8 @@ const NFTMembership = require('../abi/NFTMembership.json')
 
 const MasterDeployFactory = require('../abi/MasterFactory.json');
 
+const AccountManager = require('../abi/AccountManager.json');
+
 
 
 async function deployDirectDemocracyToken(wallet) {
@@ -143,6 +145,14 @@ async function deployRegistry(wallet) {
   const contract = await factory.deploy(); 
   await contract.deployed();
   console.log(`Registry Contract deployed at address: ${contract.address}`);
+  return contract;
+}
+
+async function deployAccountManager(wallet) {
+  const factory = new ethers.ContractFactory(AccountManager.abi, AccountManager.bytecode, wallet);
+  const contract = await factory.deploy();
+  await contract.deployed();
+  console.log(`Account Manager Contract deployed at address: ${contract.address}`);
   return contract;
 }
 
@@ -408,12 +418,15 @@ const makeRegistry = async (votingControlAddress, registryFactoryContract, contr
 
 
 
+
+
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_INFURA_URL);
   const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY, provider);
 
   try {
       console.log("starting deploy")
+      const accountManager = await deployAccountManager(wallet);
       const nftMembership = await deployNFTMembership(wallet);
       const ddToken = await deployDirectDemocracyToken(wallet);
       const ptToken = await deployParticipationToken(wallet);
