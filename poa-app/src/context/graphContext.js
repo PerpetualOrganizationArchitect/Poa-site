@@ -427,6 +427,9 @@ export const GraphProvider = ({ children }) => {
         `{
             perpetualOrganization(id: "${id}") {
             Users(orderBy: ptTokenBalance, orderDirection: desc) {
+                Account {
+                    userName
+                }
                 id
                 ptTokenBalance
                 ddTokenBalance
@@ -442,8 +445,9 @@ export const GraphProvider = ({ children }) => {
         if (response && response.perpetualOrganization && response.perpetualOrganization.Users) {
             return response.perpetualOrganization.Users.map(user => ({
                 id: user.id,
-                name: user.id, 
+                name: user.Account.userName, 
                 token: user.ptTokenBalance, 
+                
                 
             }));
         } else {
