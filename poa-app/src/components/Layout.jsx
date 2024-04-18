@@ -14,7 +14,7 @@ const Layout = ({ children, isArchitectPage }) => {
           width="full"
           zIndex="banner"
         >
-          <Link href="/dashboard" passHref>
+          <Link href="/landing" passHref>
             <IconButton
               icon={
                 <Image
