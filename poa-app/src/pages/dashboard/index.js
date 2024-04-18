@@ -45,15 +45,31 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 const UserDashboard= () => {
     const { userData, setLoaded} = useGraphContext();
     const router = useRouter();
+    const [username, setUsername] = useState("");
+    
     const { userDAO } = router.query;
     useEffect(() => {
         setLoaded(userDAO);
       }, [userDAO]);
+
+
+      useEffect(() => {
+        async function fetchUserDetails() {
+          const userName = await fetchUsername(account);
+          console.log("username", userName);
+          setUsername(userName);
+    }
+
+    if (account!= null) {
+      fetchUserDetails();
+
+    }
+  }, []);
   
 
     // const {setLeaderboardLoaded,userPercentage} = useLeaderboard();
 
-    const {claimedTasks,democracyVotingOngoing} = useGraphContext();
+    const {claimedTasks,democracyVotingOngoing, graphUsername} = useGraphContext();
     
 
     
@@ -155,14 +171,14 @@ const UserDashboard= () => {
         if(userData){
             console.log(userData);
             let userInfo = {
-                username: userData.id,
+                username: graphUsername,
                 ptBalance: Number(userData.ptTokenBalance),
                 memberStatus: userData.memberType?.memberTypeName,
                 accountAddress: userData.id,
             };
             setUserInfo(userInfo);
         }
-    }, [userData]);
+    }, [userData, graphUsername]);
 
 
   const animatedPT = useSpring({ 

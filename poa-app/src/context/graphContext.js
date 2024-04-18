@@ -20,7 +20,7 @@ export const GraphProvider = ({ children }) => {
     const[account, setAccountGraph] = useState("0x00".toLocaleLowerCase());
     console.log("account", account);
 
-    const[username, setUsername] = useState(false);
+    const[graphUsername, setGraphUsername] = useState(false);
 
     const[userData, setUserData] = useState({});
     const[participationVotingOngoing, setParticipationVotingOngoing] = useState({});
@@ -401,21 +401,26 @@ export const GraphProvider = ({ children }) => {
 
 
 
-    async function fetchUsername(id){
-        const query = `{
-            account(id: "${id}") {
-                id
-                username
+        async function fetchUsername(id) {
+            const query = `{
+                account(id: "${id}") {
+                    id
+                    userName
+                }
+            }`;
+        
+            const data = await querySubgraph(query);
+
+            console.log("fetchUsername", data);
+        
+            // Check if 'account' exists and has a 'username' property
+            if (data && data.account && data.account.userName) {
+                console.log("fetchUsername", data.account.userName);
+                return data.account.userName;
             }
-        }`;
-
-        const data = await querySubgraph(query);
-
-        if (data.account.username){
-            return data.account.username;
+            return false;
         }
-        return false;
-    }
+        
 
     async function fetchLeaderboardData(id) {
         const query =
@@ -611,7 +616,8 @@ export const GraphProvider = ({ children }) => {
 
     async function loadGraphData(poName) {
 
-
+        const username = await fetchUsername(account.toLocaleLowerCase());
+        setGraphUsername(username);
         const claimedTasks = await fetchUserClaimedTasks(account.toLocaleLowerCase(), poName);
         const userInfo = await fetchUserData(account.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
@@ -640,6 +646,7 @@ export const GraphProvider = ({ children }) => {
         setProjectsData( await transformProjects(projectData));
         console.log(await execNFTcheck(poName,account.toLocaleLowerCase()));
         console.log(await memberNFTcheck(poName,account.toLocaleLowerCase()));
+
 
     }
 
@@ -678,7 +685,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername}}>
+        <GraphContext.Provider value={{graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername}}>
         {children}
         </GraphContext.Provider>
     );

@@ -46,7 +46,7 @@ const User = () => {
 
 
 
-  const {createNewUser, account, nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress, fetchUername} = useGraphContext();
+  const { account, nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress, fetchUsername} = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
   useEffect(() => {
@@ -81,6 +81,11 @@ const User = () => {
       } catch (error) {
         console.error(error);
       }
+
+      // delay of .3 seconds
+      setTimeout(() => {
+        router.push(`/dashboard/?userDAO=${userDAO}`);
+      },900);
     }
     mint(nftMembershipContractAddress, ddTokenContractAddress);
 
@@ -112,6 +117,11 @@ const User = () => {
         console.error(error);
       }
 
+      // delay of .3 seconds
+      setTimeout(() => {
+        router.push(`/dashboard/?userDAO=${userDAO}`);
+      }, 900);
+
     }
     join(nftMembershipContractAddress, ddTokenContractAddress);
 
@@ -123,7 +133,7 @@ const User = () => {
   const [loading,setLoading]=useState(false);
 
   const [userDetails, setUserDetails] = useState(null);
-  const{mintDDtokens, mintDefaultNFT,mintNFT, providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
+  const{mintDDtokens,createNewUser, mintDefaultNFT,mintNFT, providerUniversal,signerUniversal, execNftBalance,balance,nftBalance, fetchBalance,web3, kubiMembershipNFTContract, contract,KUBIXbalance, kubiMembershipNFTAddress}=useWeb3Context();
 
 
   
@@ -133,11 +143,12 @@ const User = () => {
 
     useEffect(() => {
           async function fetchUserDetails() {
-            const userName = await fetchUername(account);
+            const userName = await fetchUsername(account);
+            console.log("username", userName);
             setUsername(userName);
       }
 
-      if (account) {
+      if (account!= null) {
         fetchUserDetails();
 
       }
