@@ -31,6 +31,7 @@ export function handleMintedNFT(event: MintEvent): void {
     user.ddTokenBalance = BigInt.fromI32(0);
     user.ptTokenBalance = BigInt.fromI32(0);
     user.memberType = nft.contractAddress.toHex() + "-" + event.params.memberTypeName
+    user.Account = event.params.recipient.toHex();
     user.save();
   }
 }

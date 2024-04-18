@@ -53,19 +53,7 @@ const UserDashboard= () => {
       }, [userDAO]);
 
 
-      useEffect(() => {
-        async function fetchUserDetails() {
-          const userName = await fetchUsername(account);
-          console.log("username", userName);
-          setUsername(userName);
-    }
 
-    if (account!= null) {
-      fetchUserDetails();
-
-    }
-  }, []);
-  
 
     // const {setLeaderboardLoaded,userPercentage} = useLeaderboard();
 
@@ -95,7 +83,23 @@ const UserDashboard= () => {
   const [reccomendedTasks, setReccomendedTasks] = useState([]);
 
 
+
+
     const { web3, account,KUBIXbalance, hasExecNFT} = useWeb3Context();
+
+    useEffect(() => {
+          async function fetchUserDetails() {
+            const userName = await fetchUsername(account);
+            console.log("username", userName);
+            setUsername(userName);
+      }
+
+      if (account!= null) {
+        fetchUserDetails();
+
+      }
+    }, [account]);
+
         
 
 

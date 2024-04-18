@@ -77,15 +77,16 @@ const User = () => {
       if (!ddTokenContractAddress) return;
       try {
         await mintDDtokens(ddTokenContractAddress);
-        setLoading(false);
+        
       } catch (error) {
         console.error(error);
       }
 
-      // delay of .3 seconds
       setTimeout(() => {
+        setLoading(false);
         router.push(`/dashboard/?userDAO=${userDAO}`);
-      },900);
+
+      }, 2700);
     }
     mint(nftMembershipContractAddress, ddTokenContractAddress);
 
@@ -112,15 +113,17 @@ const User = () => {
       if (!ddTokenContractAddress) return;
       try {
         await mintDDtokens(ddTokenContractAddress);
-        setLoading(false);
+        
       } catch (error) {
         console.error(error);
       }
 
-      // delay of .3 seconds
       setTimeout(() => {
+        setLoading(false);
         router.push(`/dashboard/?userDAO=${userDAO}`);
-      }, 900);
+
+      }, 2700);
+
 
     }
     join(nftMembershipContractAddress, ddTokenContractAddress);

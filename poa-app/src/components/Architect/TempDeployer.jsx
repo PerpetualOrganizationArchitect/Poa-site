@@ -65,7 +65,7 @@ function Deployer({ isOpen, onClose, deploymentDetails, signer}) {
 
   const handleAccessOrganization = () => {
     const formattedOrgName = encodeURIComponent(
-      deploymentDetails.POname.trim().toLowerCase().replace(/\s+/g, "-")
+      deploymentDetails.POname.trim().replace(/\s+/g, "-")
     );
     router.push(`/user/?userDAO=${formattedOrgName}`);
   };
