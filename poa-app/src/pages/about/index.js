@@ -68,7 +68,15 @@ const AboutPage = () => {
           <Text as="span" fontWeight="bold">
             Decentralized technologies
           </Text>{" "}
-          for the infrastructure. We believe that Votes should not be purchased but rather Earned by Participating or granted through Direct Democracy.
+          for the infrastructure. We believe that Votes should not be purchased
+          but rather{" "}
+          <Text as="span" fontWeight="bold">
+            earned through participation{" "}
+          </Text>
+          or{" "}
+          <Text as="span" fontWeight="bold">
+            granted through Direct Democracy.
+          </Text>
         </Text>
         <Text
           textAlign={"center"}
@@ -133,7 +141,7 @@ const AboutPage = () => {
             </Text>
           </HStack>
         </Box>
-        <Text  fontSize="xl" fontWeight="bold" color="grey.600">
+        <Text fontSize="xl" fontWeight="bold" color="grey.600">
           Join our Community
         </Text>
         <HStack mt="-8" spacing={4} align="center">
@@ -144,7 +152,7 @@ const AboutPage = () => {
             </Link>
           </Box>
           <Box width="20">
-            <Link href="https://discord.gg/kKDKgetdNx" passHref>
+            <Link href="https://twitter.com/PoaPerpetual" passHref>
               <Image src="/images/x.png" alt="Descriptive Alt Text" />
             </Link>
           </Box>
