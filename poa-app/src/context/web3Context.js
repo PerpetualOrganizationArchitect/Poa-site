@@ -12,6 +12,7 @@ import TaskManager from "../../abi/TaskManager.json";
 import NFTMembership from "../../abi/NFTMembership.json";
 import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
+import AccountManager from '../../abi/AccountManager.json';
 import { useMetaMask } from '@/components/Metamask';
 
 
@@ -35,7 +36,7 @@ export const Web3Provider = ({ children }) => {
     
 
     
-
+    const AccountManagerAddress = "0x70224eABe4FA11e21dc5C936B62ecc9AE090925a";
     const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
     const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
     const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
@@ -46,6 +47,12 @@ export const Web3Provider = ({ children }) => {
     };
 
     // Hybrid Voting
+
+    async function createNewUser(username) {
+        const address = AccountManagerAddress;
+        const contract = getContractInstance(address, AccountManager.abi);
+        const tx = await contract.registerAccount(username);
+    }
 
     async function createProposalHybridVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend) {
         const contract = getContractInstance(contractAddress, HybridVoting.abi);
@@ -213,7 +220,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting}}>
+        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
     );

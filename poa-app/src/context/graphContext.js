@@ -20,6 +20,8 @@ export const GraphProvider = ({ children }) => {
     const[account, setAccountGraph] = useState("0x00".toLocaleLowerCase());
     console.log("account", account);
 
+    const[username, setUsername] = useState(false);
+
     const[userData, setUserData] = useState({});
     const[participationVotingOngoing, setParticipationVotingOngoing] = useState({});
     const[participationVotingCompleted, setParticipationVotingCompleted] = useState({});
@@ -399,7 +401,21 @@ export const GraphProvider = ({ children }) => {
 
 
 
-    
+    async function fetchUsername(id){
+        const query = `{
+            account(id: "${id}") {
+                id
+                username
+            }
+        }`;
+
+        const data = await querySubgraph(query);
+
+        if (data.account.username){
+            return data.account.username;
+        }
+        return false;
+    }
 
     async function fetchLeaderboardData(id) {
         const query =
@@ -662,7 +678,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing}}>
+        <GraphContext.Provider value={{claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername}}>
         {children}
         </GraphContext.Provider>
     );
