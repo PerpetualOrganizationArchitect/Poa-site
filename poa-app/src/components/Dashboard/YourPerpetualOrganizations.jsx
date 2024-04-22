@@ -7,13 +7,7 @@ import Link from "next/link";
 const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
 
 const YourPerpetualOrganizations = () => {
-  let href = `http://localhost:3000`;
-  if(baseDomain=="localhost:3000"){
-     href = `http://localhost:3000/create`;
-  }
-  else{
-    href = `http://create.${baseDomain}`;
-  }
+
   const organizations = [];
   return (
     <>
@@ -31,7 +25,7 @@ const YourPerpetualOrganizations = () => {
           <Text fontSize="lg" mb={4} color="gray.600">
             Would you like to create one?
           </Text>
-          <Link href={href} passHref>
+          <Link href="/create" passHref>
             <Button
               textColor="black"
               backgroundColor="lightblue"

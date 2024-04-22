@@ -8,13 +8,6 @@ const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
 
 const Navigation = () => {
 
-  let href = `http://localhost:3000`;
-  if(baseDomain=="localhost:3000"){
-     href = `http://localhost:3000/create`;
-  }
-  else{
-    href = `http://create.${baseDomain}`;
-  }
   return (
     <Flex
       align="center"
@@ -54,7 +47,7 @@ const Navigation = () => {
           Browser
         </Button>
       </Link>
-      <Link href={href} passHref>
+      <Link href="/create" passHref>
         <Button variant="outline" p={4} colorScheme="black">
           Architect
         </Button>
