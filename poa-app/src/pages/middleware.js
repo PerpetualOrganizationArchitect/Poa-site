@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
 // Function to extract subdomain from the host
-function getSubdomain(host: string): string | null {
+function getSubdomain(host) {
   const parts = host.split('.');
   if (parts.length > 2) {
     return parts[0]; // Return the subdomain (e.g., 'create')
@@ -11,7 +10,7 @@ function getSubdomain(host: string): string | null {
 }
 
 // Middleware to rewrite URLs based on subdomain
-export function middleware(req: NextRequest) {
+export function middleware(req) {
   const host = req.headers.get('host');
   const subdomain = host ? getSubdomain(host) : null;
 
