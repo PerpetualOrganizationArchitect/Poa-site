@@ -11,6 +11,10 @@ function getSubdomain(host) {
 
 // Middleware to rewrite URLs based on subdomain
 export function middleware(req) {
+  console.log('Host:', host);
+  console.log('Subdomain:', subdomain);
+
+
   const host = req.headers.get('host');
   const subdomain = host ? getSubdomain(host) : null;
 
@@ -18,7 +22,9 @@ export function middleware(req) {
     // Clone the request URL and rewrite it based on the subdomain
     const newUrl = req.nextUrl.clone();
     newUrl.pathname = `/${subdomain}${req.nextUrl.pathname}`; // Rewrite based on subdomain
+    console.log('New URL:', newUrl);
     return NextResponse.rewrite(newUrl); // Rewrite to new URL
+
   }
 
   return NextResponse.next(); // Continue without rewriting if no subdomain
