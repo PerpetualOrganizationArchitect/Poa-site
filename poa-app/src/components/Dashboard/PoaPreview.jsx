@@ -2,7 +2,16 @@ import { Box, Text, Image, Button, Flex } from "@chakra-ui/react";
 import NextImage from "next/image";
 import Link from "next/link";
 
+const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
+
 const PoaPreview = () => {
+  let href = `http://localhost:3000`;
+  if(baseDomain=="localhost:3000"){
+     href = `http://localhost:3000/create`;
+  }
+  else{
+    href = `http://create.${baseDomain}`;
+  }
   return (
     <Flex
       direction="column"
@@ -25,7 +34,7 @@ const PoaPreview = () => {
         The Perpetual Organization Architect
       </Text>
 
-      <Link href="/architect" passHref>
+      <Link href={href} passHref>
         <Button
           textColor="black"
           backgroundColor="lightblue"
