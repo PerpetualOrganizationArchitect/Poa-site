@@ -3,7 +3,17 @@ import Organization from "./Organization";
 import { Flex, Text, Box, Button } from "@chakra-ui/react";
 import Link from "next/link";
 
+
+const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
+
 const YourPerpetualOrganizations = () => {
+  let href = `http://localhost:3000`;
+  if(baseDomain=="localhost:3000"){
+     href = `http://localhost:3000/create`;
+  }
+  else{
+    href = `http://create.${baseDomain}`;
+  }
   const organizations = [];
   return (
     <>
@@ -21,7 +31,7 @@ const YourPerpetualOrganizations = () => {
           <Text fontSize="lg" mb={4} color="gray.600">
             Would you like to create one?
           </Text>
-          <Link href="/architect" passHref>
+          <Link href={href} passHref>
             <Button
               textColor="black"
               backgroundColor="lightblue"
