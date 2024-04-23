@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Flex, Box, Button, Text } from "@chakra-ui/react";
 import { TypeAnimation } from "react-type-animation";
-import AutoPlayVideo from "@/components/AutoPlayVideo";
+import AutoPlayVideo1 from "@/components/AutoPlayVideo1";
 
 export default function Home() {
   return (
@@ -52,7 +52,7 @@ export default function Home() {
           </Button>
         </Link>
 
-        <AutoPlayVideo />
+        <AutoPlayVideo1 />
 
         <Text fontSize={["20px", "25px", "30px", "33px"]} color="black.900" mt="6%">
           What is a Perpetual Organization?

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, AspectRatio } from '@chakra-ui/react';
 
-const AutoPlayVideo = () => {
+const AutoPlayVideo1 = () => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -27,4 +27,4 @@ const AutoPlayVideo = () => {
   );
 };
 
-export default AutoPlayVideo;
+export default AutoPlayVideo1;
