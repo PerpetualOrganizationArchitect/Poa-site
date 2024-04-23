@@ -54,7 +54,7 @@ export default function Home() {
 
         <AutoPlayVideo1 />
 
-        <Text fontSize={["20px", "25px", "30px", "33px"]} color="black.900" mt="6%">
+        <Text fontWeight={"bold"} fontSize={["20px", "25px", "30px", "33px"]} color="black.900" mt="6%">
           What is a Perpetual Organization?
         </Text>
         <Text fontSize={["18px", "20px", "21px"]} color="black.900" mt="7" w={["95%", "85%", "7%", "555px"]} >
