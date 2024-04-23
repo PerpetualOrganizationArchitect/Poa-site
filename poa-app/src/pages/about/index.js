@@ -142,6 +142,9 @@ const AboutPage = () => {
           </HStack>
         </Box>
         <Text fontSize="xl" fontWeight="bold" color="grey.600">
+          In live Alpha stage deployed on Sepolia testnet
+        </Text>
+        <Text fontSize="xl" fontWeight="bold" color="grey.600">
           Join our Community
         </Text>
         <HStack mt="-8" spacing={4} align="center">
