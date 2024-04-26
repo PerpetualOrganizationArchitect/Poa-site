@@ -13,7 +13,7 @@ const AutoPlayVideo1 = () => {
   }, []); // Only run when the component mounts
 
   return (
-    <Box mt="7%" w ={["95%","78%","69%"]}>
+    <Box mt="5%" w ={["95%","78%","69%"]} zIndex={1}>
         <video
           ref={videoRef}
           autoPlay
@@ -22,6 +22,7 @@ const AutoPlayVideo1 = () => {
           playsInline
           muted
           src="/video/demo.mp4" 
+         
         />
     </Box>
   );
