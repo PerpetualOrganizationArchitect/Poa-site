@@ -37,6 +37,32 @@ import { useWeb3Context } from "@/context/web3Context";
 
 
 
+const cornerTextBox = (
+  <Box
+    position="fixed"
+    top="150px"
+    right="40"
+    padding="8px"
+    backgroundColor="red"
+    color="white"
+    borderRadius="5px"
+    width={["100px", "180px"]}
+  >
+    <Text fontSize="md">
+      This is a working early alpha release deployed on the Sepolia testnet. 
+    </Text>
+    <Button
+      mt="4"
+      size="sm"
+      colorScheme="teal"
+      onClick={() => {
+        router.push("/landing");
+      }}
+    >
+      Explore Poa
+    </Button>
+  </Box>
+);
 
 const steps = {
   ASK_NAME: "ASK_NAME",
@@ -479,7 +505,9 @@ const ArchitectPage = () => {
   };
 
   return (
+
     <Layout isArchitectPage>
+      {cornerTextBox}
       <motion.div
         variants={containerVariants}
         initial="hidden"
