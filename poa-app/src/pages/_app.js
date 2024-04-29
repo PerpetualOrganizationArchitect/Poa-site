@@ -3,7 +3,7 @@ import { IPFSprovider } from "@/context/ipfsContext";
 import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
-
+import { DashboardProvider } from "@/context/dashboardContext";
 const theme = extendTheme({
   fonts: {
     heading: "'Roboto Mono', monospace", // Use Roboto Mono for headings
@@ -21,7 +21,9 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }) {
   return (
+
     <IPFSprovider>
+      <DashboardProvider>
       <GraphProvider>
         <Web3Provider>
           <DataBaseProvider>
@@ -31,6 +33,7 @@ function MyApp({ Component, pageProps }) {
           </DataBaseProvider>
         </Web3Provider>
       </GraphProvider>
+      </DashboardProvider>
     </IPFSprovider>
   );
 }
