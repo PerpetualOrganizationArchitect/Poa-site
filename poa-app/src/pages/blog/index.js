@@ -7,10 +7,11 @@ export default function Home({ allPostsData }) {
     console.log(allPostsData);
     return (
         <Layout>
-        <Text align={"center"} mt="100px">Blog</Text>
-        <Flex ml="5%">
-            <Box>
-            <VStack align={"flex-start"}>
+        
+        <Flex ml="6%">
+        
+            <Box mt="120px">
+            <VStack mt="2" align={"flex-start"}>
                 <Text fontWeight={"600"} fontSize={"22px"}>Articles</Text>
                 <Divider color={"black"} />
 
@@ -34,6 +35,11 @@ export default function Home({ allPostsData }) {
                 </Link>
             ))}
             </VStack>
+            </Box>
+            <Box ml="12%"  mt="120px" >
+                
+            <Text fontSize={"32px"}  >Get Started with Poa</Text>
+            <Text fontSize={"22px"} mt="4"  >Perpetual Organization Architect</Text>
             </Box>
         </Flex>
         </Layout>
