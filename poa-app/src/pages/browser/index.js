@@ -28,7 +28,7 @@ const BrowserPage = () => {
   h="100vh"
   pt="3rem"
 >
-  <Text textAlign="center" fontSize="2xl" fontWeight="bold" color="gray.800">
+  <Text mt="70px" textAlign="center" fontSize="2xl" fontWeight="bold" color="gray.800">
     Browse and Join a Perpetual Organization
   </Text>
   <Flex

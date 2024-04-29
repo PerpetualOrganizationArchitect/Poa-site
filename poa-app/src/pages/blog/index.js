@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getSortedPostsData } from '../../util/posts';
-import { Text, Flex, VStack, Box, Divider } from '@chakra-ui/react';
+import { Text, Flex, VStack, Box, Divider, HStack } from '@chakra-ui/react';
 import Layout from '@/components/Layout';
 
 export default function Home({ allPostsData }) {
@@ -38,8 +38,42 @@ export default function Home({ allPostsData }) {
             </Box>
             <Box ml="12%"  mt="120px" >
                 
-            <Text fontSize={"32px"}  >Get Started with Poa</Text>
-            <Text fontSize={"22px"} mt="4"  >Perpetual Organization Architect</Text>
+            <Text fontWeight={"700"} fontSize={"32px"}  >Get Started with Poa</Text>
+            <Text fontSize={"16px"} mt="4"  >Perpetual Organization Architect</Text>
+          {/* box with transparent gray backgriund */}
+
+            <HStack mt="4" mr="5%" >
+            <Box
+                mt="4"
+                p="4"
+                borderRadius="lg"
+                bg="rgba(0, 0, 0, 0.1)"
+                w="33%"
+            >
+                <Text fontSize="20px">Create a new Perpetual Organization</Text>
+
+            </Box>
+            <Box
+                mt="4"
+                p="4"
+                borderRadius="lg"
+                bg="rgba(0, 0, 0, 0.1)"
+                w="33%"
+            >
+                <Text fontSize="20px">Join an existing Perpetual Organization</Text>
+
+            </Box>
+            <Box
+                mt="4"
+                p="4"
+                borderRadius="lg"
+                bg="rgba(0, 0, 0, 0.1)"
+                w="33%"
+            >
+                <Text fontSize="20px">Manage your Perpetual Organization</Text>
+
+            </Box>
+            </HStack>
             </Box>
         </Flex>
         </Layout>
