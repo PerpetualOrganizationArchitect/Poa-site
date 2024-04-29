@@ -36,19 +36,19 @@ export default function Home({ allPostsData }) {
             ))}
             </VStack>
             </Box>
-            <Box ml="12%"  mt="120px" >
+            <Box ml="9%"  mt="120px"  bg="rgba(0, 0, 0, 0.1)" p="4" borderRadius={"xl"} maxWidth="fit-content"  mr="10%"  >
                 
-            <Text fontWeight={"700"} fontSize={"32px"}  >Get Started with Poa</Text>
-            <Text fontSize={"16px"} mt="4"  >Perpetual Organization Architect</Text>
+            <Text fontWeight={"700"} fontSize={"32px"} maxWidth={"400px"}  >Get Started with Poa</Text>
+            <Text fontSize={"16px"} mt="4"  maxWidth={"400px"}  >Perpetual Organization Architect</Text>
           {/* box with transparent gray backgriund */}
 
-            <HStack mt="4" mr="5%" >
+            <HStack mt="4" >
             <Box
                 mt="4"
                 p="4"
                 borderRadius="lg"
                 bg="rgba(0, 0, 0, 0.1)"
-                w="33%"
+                
             >
                 <Text fontSize="20px">Create a new Perpetual Organization</Text>
 
@@ -58,7 +58,7 @@ export default function Home({ allPostsData }) {
                 p="4"
                 borderRadius="lg"
                 bg="rgba(0, 0, 0, 0.1)"
-                w="33%"
+               
             >
                 <Text fontSize="20px">Join an existing Perpetual Organization</Text>
 
@@ -68,7 +68,7 @@ export default function Home({ allPostsData }) {
                 p="4"
                 borderRadius="lg"
                 bg="rgba(0, 0, 0, 0.1)"
-                w="33%"
+                
             >
                 <Text fontSize="20px">Manage your Perpetual Organization</Text>
 
