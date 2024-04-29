@@ -17,10 +17,23 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Poa</title>
-        <meta name="description" content="Perpetual Organization Architect" />
+        <title>Poa - Perpetual Organization Architect</title>
+        <meta name="description" content="Poa, the perpetual organization architect, helps you create and manage decentralized autonomous organizations (DAOs) with no coding required. Start building your community-driven organization today." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "http://schema.org",
+            "@type": "Organization",
+            "name": "Poa",
+            "url": "https://poa.community",
+            "logo": "https://poa.community/images/poa_logo.png",
+            "sameAs": [
+              "https://twitter.com/PoaPerpetual",
+            ],
+            "description": "Poa is a no code DAO builder that makes it easy to create and join fully community owned censorship restiant organizations called Perpetual Organizations."
+          })}
+        </script>
       </Head>
       <Flex
         bg="white"
@@ -43,7 +56,7 @@ export default function Home() {
         </Text> */}
         <Image
           src="/images/poa_logo.png"
-          alt="Poa Logo"
+          alt="Poa Perpetual Organization Architect Logo"
           width={["100px", "130px", "190px"]}
           zIndex={1}
           
