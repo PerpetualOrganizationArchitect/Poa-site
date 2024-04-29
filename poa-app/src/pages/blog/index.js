@@ -1,7 +1,12 @@
 import Link from 'next/link';
 import { getSortedPostsData } from '../../util/posts';
-import { Text, Flex, VStack, Box, Divider, HStack } from '@chakra-ui/react';
+import { Text, Flex, VStack, Box, Divider, HStack} from '@chakra-ui/react';
 import Layout from '@/components/Layout';
+
+
+
+
+
 
 export default function Home({ allPostsData }) {
     console.log(allPostsData);

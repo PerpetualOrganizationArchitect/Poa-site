@@ -78,7 +78,7 @@ export const GraphProvider = ({ children }) => {
 
 
 
-    const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/hudsonhrh/poa';
+    const SUBGRAPH_URL = 'https://api.studio.thegraph.com/query/73367/poa/v0.0.1';
 
     async function querySubgraph(query) {
         const response = await fetch(SUBGRAPH_URL, {
