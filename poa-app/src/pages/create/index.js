@@ -37,32 +37,7 @@ import { useWeb3Context } from "@/context/web3Context";
 
 
 
-const cornerTextBox = (
-  <Box
-    position="fixed"
-    top="150px"
-    right="40"
-    padding="8px"
-    backgroundColor="red"
-    color="white"
-    borderRadius="5px"
-    width={["100px", "180px"]}
-  >
-    <Text fontSize="md">
-      This is a working early alpha release deployed on the Sepolia testnet. 
-    </Text>
-    <Button
-      mt="4"
-      size="sm"
-      colorScheme="teal"
-      onClick={() => {
-        router.push("/landing");
-      }}
-    >
-      Explore Poa
-    </Button>
-  </Box>
-);
+
 
 const steps = {
   ASK_NAME: "ASK_NAME",
@@ -152,6 +127,23 @@ const ArchitectPage = () => {
   const [selectionHeight, setSelectionHeight] = useState(0); // State for managing the dynamic height of the selection component.
   const toast = useToast(); // Toast is used for showing alerts and messages to the user.
   const router = useRouter(); // useRouter hook from Next.js for handling client-side navigation.
+
+  const cornerTextBox = (
+    <Box
+      position="fixed"
+      top="150px"
+      right="40"
+      padding="8px"
+      backgroundColor="red"
+      color="white"
+      borderRadius="5px"
+      width={["100px", "180px"]}
+    >
+      <Text fontSize="md">
+        This is a working early alpha release deployed on the Sepolia testnet. AI under construction. Coming May 10th
+      </Text>
+    </Box>
+  );
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"], // Default membership types
