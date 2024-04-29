@@ -36,11 +36,11 @@ const Layout = ({ children, isArchitectPage }) => {
       )}
       {/* Ensure content is always below the navbar */}
       <Box as="main">{children}</Box>
-      {!isArchitectPage && (
+      {/* {!isArchitectPage && (
         <Box p={4}>
           © {new Date().getFullYear()} Perpetuate. All rights reserved.
         </Box>
-      )}
+      )} */}
     </>
   );
 };
