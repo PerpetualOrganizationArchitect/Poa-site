@@ -46,7 +46,7 @@ const theme = extendTheme({
                 marginBottom: '0.5rem',
               },
               'p': {
-                fontSize: '1rem',
+                fontSize: '1.2rem',
                 lineHeight: '1.75rem',
                 marginBottom: '1rem',
               },
@@ -96,6 +96,9 @@ const theme = extendTheme({
                 maxWidth: '100%',
                 height: 'auto',
               },
+              '.katex-mathml': {
+                display: 'none', // This hides the MathML part, which is not visually needed if the HTML part renders correctly
+            },
         },
     },
 });
@@ -108,6 +111,8 @@ export default function Post({ postData }) {
         return <p>No Post Found</p>;
     }
 
+    console.log(postData.contentHtml);
+
     return (
         <ChakraProvider theme={theme}>
         <Layout>
@@ -117,9 +122,7 @@ export default function Post({ postData }) {
             align="flex-start" 
             justify="center" 
         >
-            <Box mt="20" mb="10" textColor="white" bg="black" padding="4" maxW="800px" borderRadius="xl">
-                <Heading  size="2xl" marginBottom="2">{postData.id}</Heading>
-                <Divider marginBottom="4" />
+            <Box mt="20" mb="10" textColor="white"  bg="#1A202C" pl="8" pr="8" maxW="800px" borderRadius="xl">
                 <Box dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
             </Box>
         </Flex>
