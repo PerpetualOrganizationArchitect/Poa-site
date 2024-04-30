@@ -10,7 +10,7 @@ Poa, the Perpetual Organization Architect represents a revolutionary leap forwar
 
 These Perpetual Organizations, once deployed, are sustained by decentralized technology ensuring they operate continuously without central points of failure. 
 
-Combined with voting tokens you can only earn not buy makes Perpetual Organizations fully community controlled.
+Coupled with voting tokens that can only be earned and not purchased, Perpetual Organizations are entirely controlled by the community.
 
 The AlphaV1 release is packed with innovative features that include a variety of voting mechanisms, a robust AI assistant, customizable roles, and integrated financial tools to support organizational growth and sustainability. 
 
