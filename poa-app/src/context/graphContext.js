@@ -78,8 +78,8 @@ export const GraphProvider = ({ children }) => {
 
 
 
-    const SUBGRAPH_URL = 'https://api.studio.thegraph.com/query/73367/poa/v0.0.1';
-
+    const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH_URL;
+    
     async function querySubgraph(query) {
         const response = await fetch(SUBGRAPH_URL, {
             method: 'POST',
