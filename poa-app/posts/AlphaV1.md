@@ -8,7 +8,7 @@ Poa, the Perpetual Organization Architect represents a revolutionary leap forwar
 
 
 
-These Perpetual Organizations, once deployed, are sustained by decentralized technology ensuring they operate continuously without central points of failure. 
+These Perpetual Organizations, once deployed, are sustained by decentralized technology at all levels ensuring they operate continuously without central points of failure. 
 
 Coupled with voting tokens that can only be earned and not purchased, Perpetual Organizations are entirely controlled by the community.
 
@@ -85,9 +85,9 @@ These features provide a robust framework for creating and managing dynamic, dec
 
 ## Treasury Management and Fundraising
 
-Poa organizations can leverage their treasury for growth and sustainability through various methods:
+Perpetual Organizations can leverage their treasury for growth and sustainability through various methods:
 - **NFT Sales**: Generate funds by creating and selling NFTs, tied to either organizational assets or membership privileges.
 - **Donations**: Accept contributions directly through decentralized payment systems.
 - **Future Fundraising Tools**: Plans to expand fundraising capabilities, providing organizations with more ways to secure financial support.
-- **Future Contribution-based Revenue Sharing**: Portion of revenue will be paid out to participation token holders for the work they did. 
+- **Future Contribution-based Revenue Sharing**: In a future release, a portion of revenue will be paid out to participation token holders for the work they did. 
 
