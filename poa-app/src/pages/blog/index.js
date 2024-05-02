@@ -6,8 +6,8 @@ import Layout from '@/components/Layout';
 export default function Home({ allPostsData }) {
     return (
         <Layout>
-            <Flex  ml="4%">
-                <Box mb="40px" mt="120px">
+            <Flex  ml="3%">
+                <Box mb="40px" mt="110px">
                     <VStack  spacing={4} align="flex-start">
                         {/* Get Started Section */}
                         <Heading size="lg">Get Started</Heading>
@@ -74,12 +74,12 @@ export default function Home({ allPostsData }) {
                     </VStack>
                     
                 </Box>
-                <Box ml="5%"  mt="120px"  bg="rgba(0, 0, 0, 0.75)" p="4" borderRadius={"xl"} maxWidth="fit-content"  mr="3%" textColor={"white"}  >
+                <Box ml="5%"  mt="110px"  bg="rgba(0, 0, 0, 0.75)" p="4" borderRadius={"xl"} maxWidth="fit-content"  mr="3%" textColor={"white"}  >
                 
             <Text fontWeight={"700"} fontSize={"32px"} maxWidth={"400px"}  >Learn About Poa</Text>
           {/* box with transparent gray backgriund */}
 
-            <HStack mt="4" justifyContent="space-evenly" >
+            <HStack mt="4"  spacing={2} justifyContent={"space-evenly"} width="full"  >
             <Link href="/blog/PerpetualOrganization" passHref>
             <Box
                 mt="4"
@@ -93,7 +93,7 @@ export default function Home({ allPostsData }) {
                 }}
                 
             >
-                <Text fontWeight={"500"} fontSize="20px">What is a Perpetual Organization?</Text>
+                <Text fontWeight={"600"} fontSize="20px">What is a Perpetual Organization?</Text>
 
             </Box>
             </Link>
@@ -110,7 +110,7 @@ export default function Home({ allPostsData }) {
                 }}
                
             >
-                <Text fontWeight={"500"} fontSize="20px">How to Create a new Perpetual Organization</Text>
+                <Text fontWeight={"600"} fontSize="20px">How to Create a new Perpetual Organization</Text>
 
             </Box>
             </Link>
@@ -128,7 +128,7 @@ export default function Home({ allPostsData }) {
                 
                 
             >
-                <Text fontWeight={"500"} fontSize="20px">How to Join an existing Perpetual Organization</Text>
+                <Text fontWeight={"600"} fontSize="20px">How to Join an existing Perpetual Organization</Text>
 
             </Box>
             </Link>
@@ -136,7 +136,42 @@ export default function Home({ allPostsData }) {
 
             </HStack>
             <Text fontWeight={"700"} fontSize={"32px"} maxWidth={"400px"} mt="8">New Blog Posts</Text>
+            <HStack mt="4" spacing={2} justifyContent={"space-evenly"} width="full">
+                {allPostsData.slice(0, 3).map(({ id }) => ( 
+                    <Link href={`/blog/${id}`} style={{ textDecoration: 'none', flex: 1 }}> 
+                        <Box
+                            maxW={"33%"}
+                            p="4"
+                            borderRadius="lg"
+                            bg="rgba(0, 0, 0, 0.6)"
+                            minH={"150px"}
+                            _hover={{
+                                textDecoration: "none",
+                                transform: "scale(1.03)"
+                            }}
+                            transition="transform 0.2s"
+                        >
+                            <Text
+                                fontWeight="600"
+                                fontSize="22px"
+                                textDecoration="none"
+                                _hover={{
+                                    textDecoration: "none"
+                                }}
+                                transition="transform 0.2s"
+                                display="block"
+                                width="full" 
+                            >
+                                {id.replace(/-/g, ' ')}
+                            </Text>
+                        </Box>
+                    </Link>
+                ))}
+            </HStack>
+
             </Box>
+     
+
 
             </Flex>
         </Layout>
