@@ -21,6 +21,7 @@ export default function Home() {
         <meta name="description" content="Poa, the perpetual organization architect, helps you create and manage decentralized autonomous organizations (DAOs) with no coding required. Start building your community-driven organization today." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="canonical" href="https://poa.community" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "http://schema.org",
