@@ -19,6 +19,7 @@ const Navigation = () => {
       top={0}
       w="100%"
       shadow={"md"}
+      zIndex="banner"
     >
       {/* Wrap each Link in a Button component */}
       <Link href="/landing" passHref>
@@ -39,6 +40,11 @@ const Navigation = () => {
       <Link href="/about" passHref>
         <Button variant="outline" p={4} colorScheme="black">
           About
+        </Button>
+      </Link>
+      <Link href="/docs" passHref>
+        <Button variant="outline" p={4} colorScheme="black">
+          Docs
         </Button>
       </Link>
 

@@ -17,6 +17,11 @@
   <priority>0.93</priority>
 </url>
 <url>
+  <loc>https://poa.community/docs</loc>
+  <lastmod>2024-05-07T18:57:05+00:00</lastmod>
+  <priority>0.93</priority>
+</url>
+<url>
   <loc>https://poa.community/landing/</loc>
   <lastmod>2024-05-06T19:00:22+00:00</lastmod>
   <priority>1.00</priority>
@@ -34,7 +39,7 @@
 <url>
   <loc>https://poa.community/create/</loc>
   <lastmod>2024-05-06T19:00:22+00:00</lastmod>
-  <priority>0.90</priority>
+  <priority>0.91</priority>
 </url>
 
 
