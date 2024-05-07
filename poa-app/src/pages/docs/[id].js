@@ -97,7 +97,7 @@ const theme = extendTheme({
                 height: 'auto',
               },
               '.katex-mathml': {
-                display: 'none', // This hides the MathML part, which is not visually needed if the HTML part renders correctly
+                display: 'none', 
             },
         },
     },
