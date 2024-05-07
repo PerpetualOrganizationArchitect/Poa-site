@@ -1,9 +1,9 @@
 import { getAllPostIds, getPostData } from '../../util/posts';
 
-import  Layout  from '../../components/Layout';
-
-
-import { Box, Heading, Text, Flex, Divider, extendTheme, ChakraProvider } from '@chakra-ui/react';
+import  Navigation from '@/components/Navigation';
+import { useEffect, useState } from 'react';
+import { Box, Heading, Text, Flex, Divider, extendTheme, ChakraProvider, useBreakpointValue, HStack } from '@chakra-ui/react';
+import SideBar from '@/components/docs/SideBar';
 
 const theme = extendTheme({
     styles: {
@@ -106,29 +106,72 @@ const theme = extendTheme({
 
 
 export default function Post({ postData }) {
-    if (!postData) {
-        console.log("No post data available");
-        return <p>No Post Found</p>;
-    }
+  if (!postData) {
+    console.log("No post data available");
+    return <p>No Post Found</p>;
+  }
 
-    console.log(postData.contentHtml);
+  console.log(postData.contentHtml);
 
-    return (
-        <ChakraProvider theme={theme}>
-        <Layout>
+  const showSidebar = useBreakpointValue({ base: false, md: true });
+  const [marginLeft, setMarginLeft] = useState('0px');
+
+  useEffect(() => {
+    const checkAndSetMargin = () => {
+      const requiredMargin = 250;
+      const availableSpace = window.innerWidth - 850-230;
+      console.log(availableSpace);
+
+      if (showSidebar && availableSpace < requiredMargin) {
+        setMarginLeft('230px');
+      } else {
+        setMarginLeft('0px');
+      }
+    };
+
+    // Check and set margin initially and on window resize
+    checkAndSetMargin();
+    window.addEventListener('resize', checkAndSetMargin);
+
+    // Cleanup listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', checkAndSetMargin);
+    };
+  }, [showSidebar]);
+
+  return (
+    <ChakraProvider theme={theme}>
+      <Navigation />
+      <Flex position="relative" minHeight="110vh" width="100%">
+        {showSidebar && (
+          <Flex position="absolute" top="0" left="0" ml="3%" width="200px">
+            <SideBar />
+          </Flex>
+        )}
+
         <Flex
-            minHeight="110vh"  
-            width="100%"  
-            align="flex-start" 
-            justify="center" 
+          align="start"
+          justify="center"
+          width="100%"
+          ml={marginLeft}
         >
-            <Box mt="20" mb="10" textColor="white"  bg="#1A202C" pl="8" pr="8" maxW="800px" borderRadius="xl">
-                <Box dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
-            </Box>
+          <Box
+            mt="100px"
+            mb="10"
+            textColor="white"
+            bg="#1A202C"
+            pl="8"
+            pr="8"
+            maxW="850px"
+            borderRadius="xl"
+            width="100%"
+          >
+            <Box dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+          </Box>
         </Flex>
-        </Layout>
-        </ChakraProvider>
-    );
+      </Flex>
+    </ChakraProvider>
+  );
 }
 
 export async function getStaticPaths() {
