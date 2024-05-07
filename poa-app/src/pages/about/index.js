@@ -29,19 +29,15 @@ const AboutPage = () => {
         pr="1.5rem"
         pl="1.5rem"
       >
-        {/* {accounts.length > 0 ? (
-          <Text>Connected as {accounts[0]}</Text>
-        ) : (
-          <Button onClick={connectWallet}>Connect Wallet</Button>
-        )} */}
         <Text fontSize="5xl" fontWeight="bold" color="grey.600" pt="2rem">
           What is Poa?
         </Text>
         <Text fontSize={"2xl"} textAlign={"center"} pr="15vh" pl="15vh">
           The Perpetual Organization Architect, or Poa, is a friendly chat bot
           that guides you through a no-code process of building a Perpetual
-          Organization.
+          Organization. 
         </Text>
+
         <Text fontSize="4xl" fontWeight="bold" color="grey.600">
           Purpose
         </Text>
@@ -144,6 +140,11 @@ const AboutPage = () => {
         <Text fontSize="xl" fontWeight="bold" color="grey.600">
           In live Alpha stage deployed on Sepolia testnet
         </Text>
+        <Link href="/docs" passHref>
+          <Button as="a" colorScheme="green" size="lg">
+          Want to learn more? Visit our docs
+          </Button>
+        </Link>
         <Text fontSize="xl" fontWeight="bold" color="grey.600">
           Join our Community
         </Text>
