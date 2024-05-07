@@ -11,7 +11,7 @@ The journey begins with Poa asking you basic yet crucial details about your new 
 
 One of the core features of any organization is its voting system, and with Poa, you have the flexibility to choose from several innovative options:
 
-- **Hybrid Voting**: This method allows you to balance between contribution-based voting and direct democracy, tailoring how each is weighted in decision-making processes. [Learn about why this is useful](#).
+- **Hybrid Voting**: This method allows you to balance between contribution-based voting and direct democracy, tailoring how each is weighted in decision-making processes. [Learn about why this is useful](https://poa.community/docs/hybridVoting).
 - **Contribution-based Voting**: Your members' voting power correlates with their activity and contributions to the organization, ensuring that those who invest effort have a greater say.
 - **Direct Democracy**: Each member has an equal vote, promoting fairness and equality within your organization.
 
