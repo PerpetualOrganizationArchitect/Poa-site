@@ -160,8 +160,8 @@ export default function Post({ postData }) {
             mb="10"
             textColor="white"
             bg="#1A202C"
-            pl="8"
-            pr="8"
+            pl={["4", "8", "8"]}
+            pr={["4", "8", "8"]}
             maxW="850px"
             borderRadius="xl"
             width="100%"
