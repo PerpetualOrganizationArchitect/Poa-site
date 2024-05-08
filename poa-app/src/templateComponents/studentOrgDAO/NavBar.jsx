@@ -3,12 +3,14 @@ import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import {useRouter} from "next/router";
 import LoginButton from "@/components/LoginButton";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 
 const Navbar = () => {
   const router = useRouter();
   const { userDAO } = router.query;
   return (
+    
     <Box bg="black" p={4}>
       <Flex
         alignItems="center"
@@ -26,6 +28,7 @@ const Navbar = () => {
             />
           </Link>
         </Box>
+        
         <Flex
           justifyContent="space-between"
           flexGrow={1}
@@ -33,6 +36,7 @@ const Navbar = () => {
           mr={4}
           alignItems="center"
         >
+          
           <Link
             as={NextLink}
             href={`/tasks/?userDAO=${userDAO}`}
@@ -56,9 +60,11 @@ const Navbar = () => {
           >
             Voting
           </Link>
+          <ConnectButton />
           <LoginButton />
         </Flex>
       </Flex>
+
     </Box>
   );
 };

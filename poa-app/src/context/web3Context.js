@@ -1,5 +1,5 @@
 // web3context 
-import React, { createContext, useState, useReducer, useEffect, useContext } from 'react';
+import React, { createContext, useState, useReducer, useEffect, useContext, use } from 'react';
 
 import { ethers, providers } from 'ethers';
 import { useIPFScontext } from './ipfsContext';
@@ -14,6 +14,16 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
 import { useMetaMask } from '@/components/Metamask';
+
+import {
+    useAccount,
+    useConnect,
+    useContract,
+    useNetwork,
+    useWaitForTransaction,
+  } from "wagmi";
+  
+import { useEthersProvider, useEthersSigner } from '@/components/ProviderConverter';
 
 
 
@@ -30,8 +40,23 @@ export const useWeb3Context = () => {
 
 export const Web3Provider = ({ children }) => {
 
-    const [signer, setSigner] = useState({});
     const [account, setAccount] = useState("0x00");
+
+    const {address}= useAccount();
+    const provider = useEthersProvider();
+    const signer = useEthersSigner();
+
+    useEffect(() => {
+        console.log("provider: ", provider )
+        
+        
+        console.log("signer1: ", signer);
+        console.log("address1: ", address)
+    
+        setAccount(address);
+    }, [address]);
+
+    
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
     
 
@@ -220,7 +245,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
+        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
     );

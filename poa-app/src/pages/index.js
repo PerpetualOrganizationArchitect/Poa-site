@@ -70,7 +70,7 @@ export default function Home() {
           Perpetual Organization Architect
         </Text>
 
-        <ConnectButton />
+  
 
         <Text
         ml="1%"

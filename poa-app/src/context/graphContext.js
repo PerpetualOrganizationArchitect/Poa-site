@@ -1,9 +1,11 @@
 //graphContext
 
-import React, { createContext, useReducer, useContext, useState, useEffect } from 'react';
+import React, { createContext, useReducer, useContext, useState, useEffect, use } from 'react';
 import { useIPFScontext } from './ipfsContext';
 
 const GraphContext = createContext();
+
+import {useAccount } from 'wagmi';
 
 export const useGraphContext = () => {
     return useContext(GraphContext);
@@ -17,8 +19,9 @@ export const GraphProvider = ({ children }) => {
     const[poName, setPoName] = useState('1');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
-    const[account, setAccountGraph] = useState("0x00".toLocaleLowerCase());
-    console.log("account", account);
+    
+    const {address}= useAccount();
+
 
     const[graphUsername, setGraphUsername] = useState(false);
 
@@ -51,6 +54,7 @@ export const GraphProvider = ({ children }) => {
 
 
     useEffect(() => {
+        
         async function init() {
             await loadContractAddress(loaded);
             await loadGraphData(loaded);
@@ -60,7 +64,7 @@ export const GraphProvider = ({ children }) => {
             await loadContractAddress(loaded);
             await loadGraphDataNoAccount(loaded);
         }
-        if (loaded !== undefined && loaded !== '' && account !== '0x00') {
+        if (loaded !== undefined && loaded !== '' && address !== '0x00') {
             if (loaded === poName) {
                 console.log('loaded')
             }
@@ -71,10 +75,10 @@ export const GraphProvider = ({ children }) => {
                 init();
             }
 
-        }else if (loaded !== undefined && loaded !== '' && account === '0x00'){
+        }else if (loaded !== undefined && loaded !== '' && address === '0x00'){
             noAccountInit();
         }
-    }, [account, loaded]);
+    }, [address, loaded]);
 
 
 
@@ -620,10 +624,10 @@ export const GraphProvider = ({ children }) => {
 
     async function loadGraphData(poName) {
 
-        const username = await fetchUsername(account.toLocaleLowerCase());
+        const username = await fetchUsername(address.toLocaleLowerCase());
         setGraphUsername(username);
-        const claimedTasks = await fetchUserClaimedTasks(account.toLocaleLowerCase(), poName);
-        const userInfo = await fetchUserData(account.toLocaleLowerCase(),poName);
+        const claimedTasks = await fetchUserClaimedTasks(address.toLocaleLowerCase(), poName);
+        const userInfo = await fetchUserData(address.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -648,8 +652,8 @@ export const GraphProvider = ({ children }) => {
         console.log("leaderboard", leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
-        console.log(await execNFTcheck(poName,account.toLocaleLowerCase()));
-        console.log(await memberNFTcheck(poName,account.toLocaleLowerCase()));
+        console.log(await execNFTcheck(poName,address.toLocaleLowerCase()));
+        console.log(await memberNFTcheck(poName,address.toLocaleLowerCase()));
 
 
     }
@@ -689,7 +693,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername}}>
+        <GraphContext.Provider value={{address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername}}>
         {children}
         </GraphContext.Provider>
     );

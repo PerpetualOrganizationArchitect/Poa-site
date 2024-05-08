@@ -16,6 +16,7 @@ import {
   optimism,
   arbitrum,
   base,
+  sepolia,
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -29,7 +30,7 @@ const queryClient = new QueryClient();
 const config = getDefaultConfig({
   appName: 'Poa',
   projectId: '7dc7409d6ef96f46e91e9d5797e4deac',
-  chains: [mainnet, polygon, optimism, arbitrum, base],
+  chains: [mainnet, polygon, optimism, arbitrum, base, sepolia],
   ssr: false,
 });
 
@@ -55,19 +56,19 @@ function MyApp({ Component, pageProps }) {
     <WagmiProvider config={config}>
     <QueryClientProvider client={queryClient}>
     <RainbowKitProvider>
-    <IPFSprovider>
-      <DashboardProvider>
-      <GraphProvider>
-        <Web3Provider>
-          <DataBaseProvider>
-            <ChakraProvider theme={theme}>
-              <Component {...pageProps} />
-            </ChakraProvider>
-          </DataBaseProvider>
-        </Web3Provider>
-      </GraphProvider>
-      </DashboardProvider>
-    </IPFSprovider>
+      <IPFSprovider>
+        <DashboardProvider>
+        <GraphProvider>
+          <Web3Provider>
+            <DataBaseProvider>
+              <ChakraProvider theme={theme}>
+                <Component {...pageProps} />
+              </ChakraProvider>
+            </DataBaseProvider>
+          </Web3Provider>
+        </GraphProvider>
+        </DashboardProvider>
+      </IPFSprovider>
     </RainbowKitProvider>
     </QueryClientProvider>
     </WagmiProvider>

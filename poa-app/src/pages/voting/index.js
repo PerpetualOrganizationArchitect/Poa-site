@@ -79,7 +79,7 @@ const Voting = () => {
   const { userDAO } = router.query;
 
   const {createProposalDDVoting, getWinnerDDVoting, ddVote } = useWeb3Context();
-  const {directDemocracyVotingContractAddress, hybridVotingContractAddress, partcipationTokenContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, account, participationVotingCompleted, participationVotingOngoing, votingContractAddress } = useGraphContext();
+  const {directDemocracyVotingContractAddress, hybridVotingContractAddress, partcipationTokenContractAddress, setLoaded, democracyVotingOngoing, democracyVotingCompleted, address: account, participationVotingCompleted, participationVotingOngoing, votingContractAddress } = useGraphContext();
   console.log("particpation voting1", participationVotingOngoing);
   useEffect(() => {
     setLoaded(userDAO);
@@ -224,7 +224,7 @@ const Voting = () => {
       }
       if(voteType === "Participation"){
         console.log("Participation Voting");
-        console.log("address", votingContractAddress);
+        
         return createProposalDDVoting(votingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
       }
     }

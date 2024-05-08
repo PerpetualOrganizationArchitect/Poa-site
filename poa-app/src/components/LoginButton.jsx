@@ -6,38 +6,38 @@ import NextLink from 'next/link';
 import { useGraphContext } from '@/context/graphContext';
 
 const LoginButton = () => {
-    const { setChecked } = useMetaMask();
+    // const { setChecked } = useMetaMask();
 
-    const {account, hasMemberNFT}= useGraphContext();
+    // const {account, hasMemberNFT}= useGraphContext();
     
     const router = useRouter();
     const { userDAO } = router.query;
 
-    const [isMounted, setIsMounted] = useState(false); // new state to track mounting
+    // const [isMounted, setIsMounted] = useState(false); // new state to track mounting
     const [text, setText] = useState("Connect Wallet");
 
-    // Effect to set text based on accounts, only runs on client side after mount
-    useEffect(() => {
+    // // Effect to set text based on accounts, only runs on client side after mount
+    // useEffect(() => {
 
-        console.log("accounts", account);
-        if (hasMemberNFT) {
-            setText("Dashboard");
-        } else {
-            console.log("accounts", account);
-            setText("Join or Connect");
-        }
-    }, [hasMemberNFT]);
+    //     console.log("accounts", account);
+    //     if (hasMemberNFT) {
+    //         setText("Dashboard");
+    //     } else {
+    //         console.log("accounts", account);
+    //         setText("Join or Connect");
+    //     }
+    // }, [hasMemberNFT]);
 
-    // Effect to set isMounted to true when component mounts
-    useEffect(() => {
-        setIsMounted(true); 
-    }, []); 
+    // // Effect to set isMounted to true when component mounts
+    // useEffect(() => {
+    //     setIsMounted(true); 
+    // }, []); 
 
-    // Conditional rendering based on the isMounted state
-    if (!isMounted) {
-        // If the component hasn't mounted yet, render nothing or a placeholder
-        return null;
-    }
+    // // Conditional rendering based on the isMounted state
+    // if (!isMounted) {
+    //     // If the component hasn't mounted yet, render nothing or a placeholder
+    //     return null;
+    // }
 
     return (
         <NextLink href={`/user/?userDAO=${userDAO}`} passHref>
@@ -57,7 +57,7 @@ const LoginButton = () => {
                 fontWeight="bold"
                 textColor="black"
                 onClick={(e) => {
-                        setChecked(false);
+                        // setChecked(false);
                 
                 }}
             >
