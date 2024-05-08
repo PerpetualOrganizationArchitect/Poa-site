@@ -15,6 +15,9 @@
     "@emotion/styled": "^11.11.0",
     "@metamask/sdk": "^0.15.0",
     "@openzeppelin/contracts": "4.7.3",
+    "@rainbow-me/rainbowkit": "^2.0.7",
+    "@tanstack/query-core": "^5.35.1",
+    "@tanstack/react-query": "^5.35.1",
     "dotenv": "^16.4.5",
     "ethers": "5.7.2",
     "framer-motion": "^11.0.6",
@@ -42,6 +45,8 @@
     "remark-math": "^6.0.0",
     "remark-rehype": "^11.1.0",
     "styled-components": "^6.1.8",
+    "viem": "2.x",
+    "wagmi": "^2.8.1",
     "web3": "^1.9.0"
   },
   "devDependencies": {
