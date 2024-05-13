@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import { useMetaMask } from './Metamask';
 import NextLink from 'next/link';
 import { useGraphContext } from '@/context/graphContext';
+import { a } from 'react-spring';
 
 const LoginButton = () => {
-    // const { setChecked } = useMetaMask();
 
-    // const {account, hasMemberNFT}= useGraphContext();
+    const {address, hasMemberNFT}= useGraphContext();
     
     const router = useRouter();
     const { userDAO } = router.query;
@@ -16,17 +16,16 @@ const LoginButton = () => {
     // const [isMounted, setIsMounted] = useState(false); // new state to track mounting
     const [text, setText] = useState("Connect Wallet");
 
-    // // Effect to set text based on accounts, only runs on client side after mount
-    // useEffect(() => {
+    // Effect to set text based on accounts, only runs on client side after mount
+    useEffect(() => {
 
-    //     console.log("accounts", account);
-    //     if (hasMemberNFT) {
-    //         setText("Dashboard");
-    //     } else {
-    //         console.log("accounts", account);
-    //         setText("Join or Connect");
-    //     }
-    // }, [hasMemberNFT]);
+        if (hasMemberNFT) {
+            setText("Dashboard");
+        } else {
+          
+            setText("Join or Connect");
+        }
+    }, [hasMemberNFT, address]);
 
     // // Effect to set isMounted to true when component mounts
     // useEffect(() => {
