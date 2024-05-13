@@ -225,6 +225,7 @@ type DDVote @entity {
 }
 
 ## hybrid voting 
+## add voteWeightPT and voteWeightDD to HybridVote
 
 type HybridVotingCreated @entity {
   id: ID!
