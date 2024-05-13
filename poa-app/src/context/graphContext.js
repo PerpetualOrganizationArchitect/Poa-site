@@ -103,6 +103,38 @@ export const GraphProvider = ({ children }) => {
         return data.data;
     }
 
+    async function fetchRules(id){
+        const query = `
+        {
+            perpetualOrganization(id: "TreeHouse"){
+              HybridVoting{
+                id
+                quorum
+              }
+              DirectDemocracyVoting{
+                id
+                quorum
+              }
+              ParticipationVoting{
+                id 
+                quorum
+              }
+              NFTMembership{
+                executiveRoles
+                memberTypeNames
+              }
+              Treasury{
+                votingContract
+              }
+            }
+          }`;
+
+        const data = await querySubgraph(query);
+
+        return data;
+
+    }
+
     async function fetchUserClaimedTasks(id, org) {
 
         const query = `
