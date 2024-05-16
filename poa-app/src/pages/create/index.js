@@ -253,10 +253,14 @@ const ArchitectPage = () => {
         } else {
           setCurrentStep(steps.ASK_CONFIRMATION);
           addMessage("Okay, skipping logo upload.");
+          setIsConfirmationModalOpen(true);
         }
         break;
       case steps.ASK_CONFIRMATION:
-        // Handle confirmation step
+        // Handle confirmation step open confirmation modal
+        setIsConfirmationModalOpen(true);
+
+
         break;
     }
   };
