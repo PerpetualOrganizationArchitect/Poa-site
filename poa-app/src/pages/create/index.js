@@ -24,33 +24,26 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import Deployer from "@/components/Architect/TempDeployer";
-
 import { useRouter } from "next/router";
 import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
-
-import {main} from "../../../scripts/newDeployment"
-import { useMetaMask } from "@/components/Metamask";
+import { main } from "../../../scripts/newDeployment";
 import { useWeb3Context } from "@/context/web3Context";
-
-
-
-
-
+import OpenAI from "openai";
+import ReactMarkdown from "react-markdown";
 
 const steps = {
+  ASK_INTRO: "ASK_INTRO",
+  ASK_MORE_INFO: "ASK_MORE_INFO",
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
-  ASK_MEMBERSHIP_DEFAULT: "ASK_MEMBERSHIP_DEFAULT",
-  ASK_MEMBERSHIP_CUSTOMIZE: "ASK_MEMBERSHIP_CUSTOMIZE",
-  ASK_ADD_ANOTHER_ROLE: "ASK_ADD_ANOTHER_ROLE",
   ASK_VOTING: "ASK_VOTING",
   ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
-  ASK_QUAD_VOTING: "ASK_QUAD_VOTING",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
 };
+
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
@@ -62,83 +55,39 @@ const itemVariants = {
 };
 
 const votingOptions = [
+  { label: "Participation Based", value: "participation_based" },
   { label: "Direct Democracy", value: "direct_democracy" },
-  { label: "Quadratic Voting", value: "quadratic" },
-];
-
-const membershipOptions = [
-  { label: "Executives", value: "executives" },
-  { label: "Uniform Membership", value: "uniform_membership" },
-];
-
-const logoUploadOptions = [
-  { label: "Use Default Logo", value: "no" },
-  { label: "Upload My Own", value: "yes" },
-];
-const defaultMembershipOptions = [
-  {
-    label: "Keep default",
-    value: "default",
-    action: () => {
-      setOrgDetails({
-        ...orgDetails,
-        membershipTypeNames: ["member", "executive"],
-      });
-      setCurrentStep(steps.ASK_VOTING);
-
-      setShowSelection(false);
-    },
-  },
-  {
-    label: "I'd like more customization",
-    value: "customize",
-    action: () => {
-      setCurrentStep(steps.ASK_MEMBERSHIP_CUSTOMIZE);
-      setShowSelection(false);
-    },
-  },
+  { label: "Hybrid", value: "hybrid" },
 ];
 
 const ArchitectPage = () => {
-  const {wallet, setChecked, setForce} = useMetaMask();
-  const {signer} = useWeb3Context();
+  const { signer } = useWeb3Context();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
-    useState(false);
+  const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] = useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
-
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showSelection, setShowSelection] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
-
   const [options, setOptions] = useState([]);
-  const [orgName, setOrgName] = useState(""); // Holds the organization name input by the user.
-  const [currentStep, setCurrentStep] = useState(steps.ASK_NAME);
+  const [orgName, setOrgName] = useState("");
+  const [currentStep, setCurrentStep] = useState(steps.ASK_INTRO);
   const [siteCreated, setSiteCreated] = useState(false);
   const [showDeployer, setShowDeployer] = useState(false);
-
   const [loadingCompleted, setLoadingCompleted] = useState(false);
-
-  // Refs and hooks for UI effects and navigation.
   const selectionRef = useRef(null);
-  const [selectionHeight, setSelectionHeight] = useState(0); // State for managing the dynamic height of the selection component.
-  const toast = useToast(); // Toast is used for showing alerts and messages to the user.
-  const router = useRouter(); // useRouter hook from Next.js for handling client-side navigation.
+  const [selectionHeight, setSelectionHeight] = useState(0);
+  const toast = useToast();
+  const router = useRouter();
+  const [assistant, setAssistant] = useState(null);
+  const [thread, setThread] = useState(null);
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [openai, setOpenai] = useState(null);
 
   const cornerTextBox = (
-    <Box
-      position="fixed"
-      top="150px"
-      right="40"
-      padding="8px"
-      backgroundColor="red"
-      color="white"
-      borderRadius="5px"
-      width={["100px", "180px"]}
-    >
+    <Box position="fixed" top="150px" right="40" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
       <Text fontSize="md">
         This is a working early alpha release deployed on the Sepolia testnet. AI under construction. Coming May 10th
       </Text>
@@ -146,7 +95,7 @@ const ArchitectPage = () => {
   );
 
   const [orgDetails, setOrgDetails] = useState({
-    membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"], // Default membership types
+    membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"],
     POname: "",
     quadraticVotingEnabled: false,
     democracyVoteWeight: 100,
@@ -154,18 +103,14 @@ const ArchitectPage = () => {
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
     logoURL: "",
-    // description: "",
     votingControlType: "DirectDemocracy",
   });
 
-  //function to set checked and force
   const handleConnect = () => {
     setForce(true);
     setChecked(false);
   };
 
-  // Function for creating the organization site. This is where you would
-  // include the logic for creating a new organization based on user input.
   const createOrgSite = () => {
     if (!orgName.trim()) {
       toast({
@@ -177,34 +122,16 @@ const ArchitectPage = () => {
 
       return;
     }
-
-    // Navigate to the new DAO route after creation.
-    // const formattedOrgName = encodeURIComponent(
-    //   orgName.trim().toLowerCase().replace(/\s+/g, "-")
-    // );
-    // setIsConfirmationModalOpen(false);
-    // router.push(`/[userDAO]/home`, `/${formattedOrgName}/home`);
   };
 
-  //   const handleConfirmation = () => {
-  //     // This is where you would handle the API call to create the site
-  //     // For now, we'll navigate to the new route
-  //     const formattedOrgName = encodeURIComponent(
-  //       orgName.trim().toLowerCase().replace(/\s+/g, "-")
-  //     );
-  //     router.push(`/${formattedOrgName}/home`);
-  //   };
-
   const handleStartOver = () => {
-    // Reset all state to initial values
     setUserInput("");
     setMessages([]);
     setShowSelection(false);
-
     setOptions([]);
     setOrgName("");
     setOrgDetails({
-      membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"], // Default membership types
+      membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"],
       POname: "",
       quadraticVotingEnabled: false,
       democracyVoteWeight: 100,
@@ -212,16 +139,13 @@ const ArchitectPage = () => {
       hybridVotingEnabled: false,
       participationVotingEnabled: false,
       logoURL: "",
-      // description: "",
       votingControlType: "DirectDemocracy",
     });
     setCurrentStep(steps.ASK_NAME);
-    onClose(); // Close the confirmation modal
+    onClose();
   };
 
-
   const startOver = () => {
-    // Reset all state to initial values
     setUserInput("");
     setMessages([]);
     setShowSelection(false);
@@ -232,42 +156,53 @@ const ArchitectPage = () => {
       description: "",
       membershipType: "",
       votingType: "",
-      // ... reset other details as needed
     });
     setCurrentStep(steps.ASK_NAME);
-    onClose(); // Close the confirmation modal
+    onClose();
   };
 
   useEffect(() => {
-    // Update the selectionHeight state if the selectionRef is set and the component is visible
     if (showSelection && selectionRef.current) {
-      const height = selectionRef.current.offsetHeight + 20; // Get the height of the Selection component
-      setSelectionHeight(height); // Set the height state
+      const height = selectionRef.current.offsetHeight + 20;
+      setSelectionHeight(height);
     }
   }, [showSelection, options]);
 
   useEffect(() => {
-    // Simulating a greeting message from "POA" on initial load
-    const greetingMessage = {
-      speaker: "POA",
-      text: "Hello! I'm Poa, your perpetual organization architect.",
-    };
-
-    setMessages([...messages, greetingMessage]);
+    initChatBot();
   }, []);
 
-  // ------ membership customization handlers
+  const initChatBot = async () => {
+    const openai = new OpenAI({
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    });
+
+    setOpenai(openai);
+
+    const assistant = await openai.beta.assistants.retrieve("asst_HopuEd843XXuOmDlfRCCfT7k");
+    const thread = await openai.beta.threads.create();
+
+    setAssistant(assistant);
+    setThread(thread);
+
+    const greetingMessage = {
+      speaker: "Poa",
+      text: "Hello! I'm Poa, your perpetual organization architect. Would you like to learn more about perpetual organizations and hear some examples, or get started?",
+    };
+    setMessages([greetingMessage]);
+  };
 
   const handleSaveMemberRole = (roleName) => {
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
       membershipTypeNames: [...prevDetails.membershipTypeNames, roleName],
     }));
-
     addMessage(`I just added the ${roleName} role to your organization.`);
     askToAddAnotherRole(roleName);
-    setCurrentStep("ASK_ADD_ANOTHER_ROLE");
+    setCurrentStep(steps.ASK_ADD_ANOTHER_ROLE);
   };
+
   const askToAddAnotherRole = () => {
     addMessage(`Would you like to add another role?`);
     setOptions([
@@ -276,8 +211,6 @@ const ArchitectPage = () => {
     ]);
     setShowSelection(true);
   };
-
-  // ------- participation voting handler
 
   const enableParticipation = () => {
     setOrgDetails((prevDetails) => ({
@@ -293,8 +226,6 @@ const ArchitectPage = () => {
     }));
   };
 
-  // ------ hybrid voting handlers
-
   const handleWeight = ({ participationWeight, democracyWeight }) => {
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
@@ -302,27 +233,19 @@ const ArchitectPage = () => {
       democracyVoteWeight: democracyWeight,
       participationVoteWeight: participationWeight,
     }));
-
-    setCurrentStep("ASK_QUAD_VOTING");
+    setCurrentStep(steps.ASK_QUAD_VOTING);
   };
 
-
-
   const handleSaveAllSelections = async () => {
-    // Close any open modal and show deployment progress
     setIsConfirmationModalOpen(false);
-    console.log("Saving: ", orgDetails );
-
+    console.log("Saving: ", orgDetails);
     await deploy(orgDetails);
     setLoadingCompleted(true);
-
-    // Prepare to show the deployment modal
     setShowDeployer(true);
   };
 
   const deploy = async (orgDetails) => {
     console.log("Deploying...");
-
     console.log(orgDetails);
     try {
       main(
@@ -335,12 +258,12 @@ const ArchitectPage = () => {
         orgDetails.hybridVotingEnabled,
         orgDetails.participationVotingEnabled,
         orgDetails.logoURL,
-        orgDetails.votingControlType, 
+        orgDetails.votingControlType,
         signer
-       );
+      );
       setTimeout(() => {
-        setIsDeploying(true); // set deployment to true for demonstration
-      }, 3000); // Simulates a deployment time of 3 seconds
+        setIsDeploying(true);
+      }, 3000);
     } catch (error) {
       toast({
         title: "Deployment failed.",
@@ -354,82 +277,109 @@ const ArchitectPage = () => {
 
   const handleSendClick = () => {
     if (!userInput.trim()) return;
+    handleUserInput(userInput.trim());
+    setUserInput("");
+  };
 
-    switch (currentStep) {
-      case "ASK_NAME":
-        setOrgDetails({ ...orgDetails, POname: userInput.trim() });
-        setCurrentStep("ASK_DESCRIPTION");
-        break;
-      case "ASK_DESCRIPTION":
-        // setOrgDetails({ ...orgDetails, description: userInput.trim() });
-        setCurrentStep("ASK_MEMBERSHIP_DEFAULT");
-        break;
+  const handleUserInput = async (input) => {
+    addMessage(input, "User");
+
+    if (currentStep === steps.ASK_INTRO) {
+      setIsWaiting(true);
+
+      // Send a message to the thread
+      await openai.beta.threads.messages.create(thread.id, {
+        role: "user",
+        content: input,
+      });
+
+      // Run the assistant
+      const run = await openai.beta.threads.runs.create(thread.id, {
+        assistant_id: assistant.id,
+      });
+
+      // Create a response
+      let response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+
+      // Wait for the response to be ready
+      while (response.status === "in_progress" || response.status === "queued") {
+        console.log("waiting...");
+
+        await new Promise((resolve) => setTimeout(resolve, 250));
+
+        response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+      }
+
+      setIsWaiting(false);
+
+      // Get the messages for the thread
+      const messageList = await openai.beta.threads.messages.list(thread.id);
+
+      // Find the last message for the current run
+      const lastMessage = messageList.data
+        .filter((message) => message.run_id === run.id && message.role === "assistant")
+        .pop();
+
+      // Print the last message coming from the assistant
+      if (lastMessage) {
+        addMessage(lastMessage.content[0]["text"].value, "POA");
+      }
+
+      if (input.toLowerCase().includes("learn")) {
+        setCurrentStep(steps.ASK_MORE_INFO);
+      } else {
+        setCurrentStep(steps.ASK_NAME);
+      }
+    } else {
+      switch (currentStep) {
+        case steps.ASK_NAME:
+          setOrgDetails({ ...orgDetails, POname: input });
+          setCurrentStep(steps.ASK_DESCRIPTION);
+          break;
+        case steps.ASK_DESCRIPTION:
+          setCurrentStep(steps.ASK_VOTING);
+          break;
+        // Add cases for other steps as needed
+      }
     }
-
-    setUserInput(""); // Clear the input after handling
-    addMessage(userInput, "user"); // Show user input in the conversation log
   };
 
   useEffect(() => {
     switch (currentStep) {
-      case "ASK_NAME":
+      case steps.ASK_NAME:
         addMessage("Please give your organization's name.");
         break;
-      case "ASK_DESCRIPTION":
+      case steps.ASK_DESCRIPTION:
         addMessage("Please describe your organization.");
         break;
-      case "ASK_MEMBERSHIP_DEFAULT":
-        addMessage(
-          "The default membership structure has two roles: executives and members. Would you like to add more roles?"
-        );
-        setOptions([
-          { label: "Keep default", value: "default" },
-          { label: "Customize roles", value: "customize" },
-        ]);
-        setShowSelection(true);
-        break;
-      case "ASK_MEMBERSHIP_CUSTOMIZE":
-        break;
-      case "ASK_ADD_ANOTHER_ROLE":
-        askToAddAnotherRole();
-        setShowSelection(true);
-        break;
-      case "ASK_VOTING":
+      case steps.ASK_VOTING:
         addMessage("Please select a voting type.");
         setShowSelection(true);
-        setOptions([
-          { label: "Participation only", value: "participation" },
-          { label: "Hybrid", value: "hybrid" },
-        ]);
+        setOptions(votingOptions);
         break;
-
-      case "ASK_HYBRID_WEIGHT":
-        break;
-      case "ASK_QUAD_VOTING":
+      case steps.ASK_QUAD_VOTING:
         addMessage("Would you like to enable quadratic voting?");
         setShowSelection(true);
         setOptions([
           { label: "Yes", value: "yes" },
           { label: "No", value: "no" },
         ]);
-
         break;
-      case "ASK_IF_LOGO_UPLOAD":
+      case steps.ASK_IF_LOGO_UPLOAD:
         addMessage("Would you like to upload a logo?");
         setShowSelection(true);
         setOptions([
           { label: "Yes", value: "yes" },
           { label: "Later", value: "no" },
         ]);
-
-      case "ASK_CONFIRMATION":
         break;
+      // Add more steps as needed
     }
   }, [currentStep]);
 
   const handleCloseWeightModal = () => {
-    setIsWeightModalOpen(false); // This will close the WeightModal
-    setCurrentStep("ASK_IF_LOGO_UPLOAD");
+    setIsWeightModalOpen(false);
+    setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
   };
 
   const pinLogoFile = () => {
@@ -437,122 +387,68 @@ const ArchitectPage = () => {
   };
 
   const handleOptionSelected = (value) => {
-    // Handle option selection based on the current step
-    setShowSelection(false); // Hide selection options after choosing
-    if (currentStep === "ASK_MEMBERSHIP_DEFAULT") {
-      if (value === "default") {
-        setCurrentStep("ASK_VOTING");
-      } else if (value === "customize") {
-        // Open modal for custom membership setup
-        // Assume setIsMemberSpecificationModalOpen exists to control the modal
-        setIsMemberSpecificationModalOpen(true);
-      }
-    }
-
-    if (
-      currentStep === "ASK_ADD_ANOTHER_ROLE" ||
-      currentStep === "ASK_MEMBERSHIP_CUSTOMIZE"
-    ) {
-      if (value === "yes") {
-        setIsMemberSpecificationModalOpen(true);
-      } else if (value === "no") {
-        setCurrentStep("ASK_VOTING");
-      }
-    }
-
-    if (currentStep === "ASK_VOTING") {
-      if (value === "participation") {
-        //setIsParticipationModalOpen(true);
+    setShowSelection(false);
+    if (currentStep === steps.ASK_VOTING) {
+      if (value === "participation_based") {
         enableParticipation();
-        setCurrentStep("ASK_QUAD_VOTING");
+        setCurrentStep(steps.ASK_QUAD_VOTING);
       } else if (value === "hybrid") {
-        //hybrid should be part direct democracy, part participation
         setIsWeightModalOpen(true);
-        setCurrentStep("ASK_HYBRID_WEIGHT");
-      }
-      if (currentStep === "ASK_HYBRID_WEIGHT") {
-        setCurrentStep("ASK_QUAD_VOTING");
+        setCurrentStep(steps.ASK_VOTING_WEIGHT);
       }
     }
-    if (currentStep === "ASK_QUAD_VOTING") {
+    if (currentStep === steps.ASK_QUAD_VOTING) {
       if (value === "yes") {
         enableQuadraticVoting();
       }
-      setShowSelection(false);
-      setCurrentStep("ASK_IF_LOGO_UPLOAD");
+      setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
     }
-    if (currentStep === "ASK_IF_LOGO_UPLOAD") {
+    if (currentStep === steps.ASK_IF_LOGO_UPLOAD) {
       if (value === "yes") {
         setIsLogoModalOpen(true);
-        setCurrentStep("ASK_LOGO_UPLOAD");
+        setCurrentStep(steps.ASK_LOGO_UPLOAD);
       } else if (value === "no") {
         setIsConfirmationModalOpen(true);
-        setCurrentStep("ASK_CONFIRMATION");
+        setCurrentStep(steps.ASK_CONFIRMATION);
       }
     }
   };
 
-  const addMessage = (text, speaker = "system") => {
+  const addMessage = (text, speaker = "Poa") => {
     setMessages((prevMessages) => [...prevMessages, { speaker, text }]);
   };
 
-  return (
+  const renderMessageContent = (message) => {
+    return <ReactMarkdown>{message.text}</ReactMarkdown>;
+  };
 
+  return (
     <Layout isArchitectPage>
       {cornerTextBox}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <Box mt ="10" position="fixed" top="0" left="0" right="0" zIndex="sticky">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
+        <Box mt="10" position="fixed" top="0" left="0" right="0" zIndex="sticky">
           <motion.div variants={itemVariants}>
             <Character />
           </motion.div>
         </Box>
 
-        <Box
-          position="fixed"
-          top="115px" 
-          bottom="60px"
-          overflowY="auto"
-          width="full"
-          pt="4"
-          px="4"
-        >
-          <ConversationLog
-            messages={messages}
-            selectionHeight={selectionHeight}
-          />
-
+        <Box position="fixed" top="115px" bottom="60px" overflowY="auto" width="full" pt="4" px="4">
+          <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={renderMessageContent} />
           <MemberSpecificationModal
             isOpen={isMemberSpecificationModalOpen}
             onSave={handleSaveMemberRole}
             onClose={() => setIsMemberSpecificationModalOpen(false)}
           />
-          <WeightModal
-            isOpen={isWeightModalOpen}
-            onSave={handleWeight}
-            onClose={handleCloseWeightModal}
+          <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={handleCloseWeightModal} />
+          <ConfirmationModal
+            isOpen={isConfirmationModalOpen}
+            orgDetails={orgDetails}
+            onClose={() => setIsConfirmationModalOpen(false)}
+            onStartOver={handleStartOver}
+            onSave={() => setShowDeployer(true)}
+            onConnect={handleConnect}
           />
-          {
-            <ConfirmationModal
-              isOpen={isConfirmationModalOpen}
-              orgDetails={orgDetails}
-              onClose={() => setIsConfirmationModalOpen(false)}
-              onStartOver={handleStartOver}
-              onSave={() => setShowDeployer(true)}
-              onConnect={handleConnect}
-              wallet={wallet}
-            />
-          }
-          <Deployer
-            signer={signer}
-            isOpen={showDeployer}
-            onClose={() => setShowDeployer(false)}
-            deploymentDetails={orgDetails}
-          />
-
+          <Deployer signer={signer} isOpen={showDeployer} onClose={() => setShowDeployer(false)} deploymentDetails={orgDetails} />
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
           {isDeploying && (
             <Center>
@@ -562,61 +458,19 @@ const ArchitectPage = () => {
         </Box>
 
         {showSelection && options.length > 0 && (
-          <Box
-            position="fixed"
-            bottom="60px" // ArchitectInput component height
-            left="0"
-            right="0"
-            p="4"
-            display="flex"
-            alignItems="centerx"
-            justifyContent="center"
-            bg="purple.50"
-            borderTop="2px solid"
-            borderColor="gray.200"
-            zIndex="sticky"
-          >
-            <Selection
-              ref={selectionRef}
-              options={options}
-              onOptionSelected={handleOptionSelected}
-            />
+          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="centerx" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+            <Selection ref={selectionRef} options={options} onOptionSelected={handleOptionSelected} />
           </Box>
         )}
 
-        <Box
-          position="fixed"
-          bottom="0"
-          width="full"
-          p={4}
-          paddingRight={10}
-          zIndex="sticky"
-        >
-          {orgName &&loadingCompleted && (
-            <Button
-              position="absolute"
-              top="4"
-              right="4"
-              colorScheme="teal"
-              onClick={() => router.push(`/home/?userDAO=${orgName}`)}
-            >
+        <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10} zIndex="sticky">
+          {orgName && loadingCompleted && (
+            <Button position="absolute" top="4" right="4" colorScheme="teal" onClick={() => router.push(`/home/?userDAO=${orgName}`)}>
               Access site
             </Button>
           )}
-          <Box
-            position="fixed"
-            bottom="0"
-            width="full"
-            p={4}
-            paddingRight={10}
-            zIndex="sticky"
-          >
-            <ArchitectInput
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              onSubmit={handleSendClick}
-              isDisabled={showSelection} // Pass showSelection as the isDisabled prop
-            />
+          <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10} zIndex="sticky">
+            <ArchitectInput value={userInput} onChange={(e) => setUserInput(e.target.value)} onSubmit={handleSendClick} isDisabled={isWaiting} />
           </Box>
         </Box>
       </motion.div>

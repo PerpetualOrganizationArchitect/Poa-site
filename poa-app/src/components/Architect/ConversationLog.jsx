@@ -8,7 +8,7 @@ const ConversationLog = ({ messages, selectionHeight }) => {
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, selectionHeight + "300px"]);
+  }, [messages, selectionHeight]);
 
   return (
     <VStack

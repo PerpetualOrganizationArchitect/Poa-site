@@ -1,7 +1,11 @@
+// components/SpeechBubble.jsx
+import React from "react";
 import { Box, Text } from "@chakra-ui/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const SpeechBubble = ({ speaker, children }) => {
-  const isUser = speaker === "user";
+  const isUser = speaker === "User";
   return (
     <Box
       bg={isUser ? "purple.400" : "purple.600"}
@@ -9,13 +13,16 @@ const SpeechBubble = ({ speaker, children }) => {
       p={3}
       borderRadius="lg"
       alignSelf={isUser ? "flex-end" : "flex-start"}
-      maxWidth="80%"
+      maxWidth="60%"
       marginLeft={6}
       marginRight={6}
       marginTop={2}
       marginBottom={2}
     >
-      <Text>{children}</Text>
+      <Text mb="2" fontWeight="bold">{speaker}</Text>
+      <Box p="2">
+      <ReactMarkdown remarkPlugins={[remarkGfm]} >{children}</ReactMarkdown>
+      </Box>
     </Box>
   );
 };
