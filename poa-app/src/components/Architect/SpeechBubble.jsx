@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const SpeechBubble = ({ speaker, children }) => {
+  console.log(children);
   const isUser = speaker === "User";
   return (
     <Box
@@ -20,7 +21,7 @@ const SpeechBubble = ({ speaker, children }) => {
       marginBottom={2}
     >
       <Text mb="2" fontWeight="bold">{speaker}</Text>
-      <Box p="2">
+      <Box p="2" ml="4">
       <ReactMarkdown remarkPlugins={[remarkGfm]} >{children}</ReactMarkdown>
       </Box>
     </Box>

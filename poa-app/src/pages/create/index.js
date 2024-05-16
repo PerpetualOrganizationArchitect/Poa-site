@@ -15,13 +15,6 @@ import {
   Button,
   useDisclosure,
   Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react";
 import Deployer from "@/components/Architect/TempDeployer";
 import { useRouter } from "next/router";
@@ -36,6 +29,7 @@ import ReactMarkdown from "react-markdown";
 const steps = {
   ASK_INTRO: "ASK_INTRO",
   ASK_MORE_INFO: "ASK_MORE_INFO",
+  ASK_READY: "ASK_READY",
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
   ASK_VOTING: "ASK_VOTING",
@@ -233,7 +227,7 @@ const ArchitectPage = () => {
       democracyVoteWeight: democracyWeight,
       participationVoteWeight: participationWeight,
     }));
-    setCurrentStep(steps.ASK_QUAD_VOTING);
+    setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
   };
 
   const handleSaveAllSelections = async () => {
@@ -284,6 +278,13 @@ const ArchitectPage = () => {
   const handleUserInput = async (input) => {
     addMessage(input, "User");
 
+    // check if the user is ready to start or has more questions
+    if (input.toLowerCase().includes("start") || input.toLowerCase().includes("ready")) {
+      setCurrentStep(steps.ASK_NAME);
+      return;
+      
+    }
+
     if (currentStep === steps.ASK_INTRO) {
       setIsWaiting(true);
 
@@ -322,16 +323,18 @@ const ArchitectPage = () => {
 
       // Print the last message coming from the assistant
       if (lastMessage) {
-        addMessage(lastMessage.content[0]["text"].value, "POA");
-      }
-
-      if (input.toLowerCase().includes("learn")) {
-        setCurrentStep(steps.ASK_MORE_INFO);
-      } else {
-        setCurrentStep(steps.ASK_NAME);
+        addMessage(lastMessage.content[0]["text"].value, "Poa");
+        addMessage("Do you have any more questions about perpetual organizations, or are you ready to get started?");
       }
     } else {
       switch (currentStep) {
+        case steps.ASK_READY:
+          if (input.toLowerCase().includes("ready")) {
+            setCurrentStep(steps.ASK_NAME);
+          } else {
+            addMessage("What else would you like to know about perpetual organizations?");
+          }
+          break;
         case steps.ASK_NAME:
           setOrgDetails({ ...orgDetails, POname: input });
           setCurrentStep(steps.ASK_DESCRIPTION);
@@ -458,7 +461,7 @@ const ArchitectPage = () => {
         </Box>
 
         {showSelection && options.length > 0 && (
-          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="centerx" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
             <Selection ref={selectionRef} options={options} onOptionSelected={handleOptionSelected} />
           </Box>
         )}
