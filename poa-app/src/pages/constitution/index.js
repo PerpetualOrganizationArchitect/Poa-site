@@ -17,12 +17,13 @@ function generatePODetails(poData) {
     let descriptions = [];
     let treasuryControl = "an unidentified voting system";
 
-    descriptions.push(<Heading size="lg" >Voting Types</Heading>);
+    descriptions.push(<Heading mb="4" size="lg">Voting Types</Heading>);
 
-    const addVotingSystemDescription = (name, system) => {
+    const addVotingSystemDescription = (name, system, description) => {
         if (system) {
-            descriptions.push(<Heading size="md" mt="2">{name}</Heading>);
-            descriptions.push(<Text>Description: Requires a quorum of {system.quorum}% of total votes.</Text>);
+            descriptions.push(<Heading ml="2" size="md" mt="2">{name}</Heading>);
+            descriptions.push(<Text mt="2" mb="2" ml="2">{description}</Text>);
+            descriptions.push(<Text ml="2">Minimum Quorum: {system.quorum}% of total votes to pass</Text>);
             // Check if this system controls the treasury
             if (Treasury && Treasury.votingContract === system.id) {
                 treasuryControl = name;
@@ -30,26 +31,39 @@ function generatePODetails(poData) {
         }
     };
 
-    addVotingSystemDescription("Hybrid Voting", HybridVoting);
-    addVotingSystemDescription("Direct Democracy Voting", DirectDemocracyVoting);
-    addVotingSystemDescription("Participation Voting", ParticipationVoting);
+    addVotingSystemDescription(
+        "Hybrid Voting",
+        HybridVoting,
+        "Hybrid Voting combines elements of both direct and representative democracy. It allows members to vote directly on some issues while delegating other decisions to elected representatives."
+    );
+    addVotingSystemDescription(
+        "Direct Democracy Voting",
+        DirectDemocracyVoting,
+        "Direct Democracy Voting enables all members to vote directly on every issue, ensuring that each member has a direct say in the decision-making process."
+    );
+    addVotingSystemDescription(
+        "Participation Voting",
+        ParticipationVoting,
+        "Participation Voting is designed to encourage active involvement by requiring a minimum level of participation for votes to be valid, fostering engagement and accountability."
+    );
 
-    descriptions.push(<Heading size="lg" mt="4">Treasury</Heading>);
-    const votingControlDescription = <Text>The treasury is controlled by the {treasuryControl} System.</Text>;
-    descriptions.push(votingControlDescription);
 
     if (NFTMembership) {
-        descriptions.push(<Heading size="lg" mt="4">Roles</Heading>);
-        descriptions.push(<Heading size="md" mt="2">Executive Roles</Heading>);
-        descriptions.push(<Text>{NFTMembership.executiveRoles.join(', ')}</Text>);
-        descriptions.push(<Heading size="md" mt="2">Member Types</Heading>);
-        descriptions.push(<Text>{NFTMembership.memberTypeNames.join(', ')}</Text>);
+        descriptions.push(<Heading mb="4" size="lg" mt="4">Member Roles</Heading>);
+        descriptions.push(<Text ml="2">Executive member types can add tasks and create votes</Text>);
+        descriptions.push(<Heading ml="2" size="md" mt="2">Member Types</Heading>);
+        descriptions.push(<Text ml="2">{NFTMembership.memberTypeNames.join(', ')}</Text>);
+        descriptions.push(<Heading ml="2" size="md" mt="2">Executive</Heading>);
+        descriptions.push(<Text ml="2">{NFTMembership.executiveRoles.join(', ')}</Text>);
     }
+
+    descriptions.push(<Heading size="lg" mb="4" mt="4">Treasury and DAO Upgrades</Heading>);
+    const votingControlDescription = <Text ml="2">The treasury and upgradability is controlled by the {treasuryControl} System.</Text>;
+    descriptions.push(votingControlDescription);
+
 
     return descriptions;
 }
-
-
 
 const ConstitutionPage = () => {
     const { fetchRules } = useGraphContext();
@@ -71,10 +85,10 @@ const ConstitutionPage = () => {
 
     return (
         <>
-            <Navbar/>
+            <Navbar />
             <VStack spacing={4} align="center">
-                <Heading mt="2" as="h1" size="xl" fontWeight="bold">Perpetual Organization Constitution</Heading>
-                <Box textColor={"white"} p="20px"  borderRadius="lg" overflow="hidden" bg="rgba(0, 0, 0, 0.85)">
+                <Heading mt="4" as="h1" size="xl" mb="2" fontWeight="bold">Perpetual Organization Constitution</Heading>
+                <Box textColor={"white"} p="20px" width={"70%"} borderRadius="lg" overflow="hidden" bg="rgba(0, 0, 0, 0.85)">
                     {descriptionElements}
                 </Box>
                 <Link href={`/user/?userDAO=${userDAO}`} passHref>
