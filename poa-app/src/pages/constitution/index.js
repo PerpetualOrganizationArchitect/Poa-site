@@ -34,7 +34,7 @@ function generatePODetails(poData) {
     addVotingSystemDescription(
         "Hybrid Voting",
         HybridVoting,
-        "Hybrid Voting combines elements of both direct and representative democracy. It allows members to vote directly on some issues while delegating other decisions to elected representatives."
+        "Hybrid Voting combines elements of both direct democracy and participation based voting. It allows for particpants and the community to check and balance each other. For example, the particpant vote weight could be 70% and the community vote weight could be 30%. This allows for a worker ownerrship model while making sure the community at large has a say in the decision making process."
     );
     addVotingSystemDescription(
         "Direct Democracy Voting",
@@ -44,7 +44,7 @@ function generatePODetails(poData) {
     addVotingSystemDescription(
         "Participation Voting",
         ParticipationVoting,
-        "Participation Voting is designed to encourage active involvement by requiring a minimum level of participation for votes to be valid, fostering engagement and accountability."
+        "Participation Voting is designed to reward workers/contributors for their participation in the organization. The more a member participates, the more voting power they have. This is detrimened by task done in the task management system."
     );
 
 
