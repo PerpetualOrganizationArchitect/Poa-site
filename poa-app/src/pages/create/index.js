@@ -153,7 +153,7 @@ const ArchitectPage = () => {
     setCurrentStep(steps.ASK_NAME);
     onClose();
   };
-  
+
   const pinLogoFile = (file) => {
     console.log("Pinning logo file:", file);
     setOrgDetails((prevDetails) => ({
@@ -167,7 +167,6 @@ const ArchitectPage = () => {
   const handleUserInput = async (input) => {
     console.log("input", input);
     addMessage(input, "User");
-
 
     switch (currentStep) {
       case steps.ASK_INTRO:
@@ -199,33 +198,42 @@ const ArchitectPage = () => {
         setCurrentStep(steps.ASK_VOTING);
         addMessage("The Quorum percentage has been set. Now let's talk about other voting types. Hybrid and participation-based voting can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:");
         await explainVotingTypes();
-        addMessage("Which voting type would you like to use?");
+        addMessage("If you have any more questions aboit voting go ahead and ask! If not, select a voting type below.");
         setShowSelection(true);
         setOptions(votingOptions);
         break;
       case steps.ASK_VOTING:
-        setShowSelection(false);
-        if (input === "participation_based") {
-          setOrgDetails((prevDetails) => ({
-            ...prevDetails,
-            participationVotingEnabled: true,
-          }));
-          addMessage("Great! Participation based voting has been enabled. What quorum percentage would you like?");
-          setCurrentStep(steps.ASK_VOTING_WEIGHT);
-        } else if (input === "hybrid") {
-          setOrgDetails((prevDetails) => ({
-            ...prevDetails,
-            hybridVotingEnabled: true,
-          }));
-          addMessage("Hybrid voting has been enabled. Now let's set the voting weights for each type.");
-          setIsWeightModalOpen(true);
+
+      //rewrite if statement to see if response = hybrid or particpation or neither
           
+        if (input.toLowerCase() == "hybrid"|| input.toLowerCase() == "participation_based" || input.toLowerCase() == "neither")
+        {
+          setShowSelection(false);
+          if (input.toLowerCase().includes("participation_based")) {
+            setOrgDetails((prevDetails) => ({
+              ...prevDetails,
+              participationVotingEnabled: true,
+            }));
+            addMessage("Great! Participation based voting has been enabled. What quorum percentage would you like?");
+            setCurrentStep(steps.ASK_VOTING_WEIGHT);
+          } else if (input.toLowerCase().includes("hybrid")) {
+            setOrgDetails((prevDetails) => ({
+              ...prevDetails,
+              hybridVotingEnabled: true,
+            }));
+            addMessage("Hybrid voting has been enabled. Now let's set the voting weights for each type.");
+            setCurrentStep(steps.ASK_VOTING_WEIGHT);
+            setIsWeightModalOpen(true);
+          } else if (input.toLowerCase().includes("neither")) {
+            setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
+            addMessage("Proceeding without additional voting types.");
+            addMessage("Would you like to upload a logo for your organization? Click No if you don't have one.");
+            setOptions(yesNoOptions);
+            setShowSelection(true);
+          }
         } else {
-          setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
-          addMessage("Proceeding without additional voting types.");
-          addMessage("Would you like to upload a logo for your organization? Click No if you don't have one.");
-          setOptions(yesNoOptions);
-          setShowSelection(true);
+          await askChatBot(input);
+          addMessage("Do you have any more questions about hybrid or participation-based voting, or are you ready to select a voting type?");
         }
         break;
       case steps.ASK_VOTING_WEIGHT:
@@ -236,7 +244,6 @@ const ArchitectPage = () => {
         addMessage("Got it! Would you like to upload a logo for your organization? Click No if you don't have one.");
         setOptions(yesNoOptions);
         setShowSelection(true);
-       
         setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
         break;
       case steps.ASK_IF_LOGO_UPLOAD:
