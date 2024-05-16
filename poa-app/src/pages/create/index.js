@@ -33,6 +33,7 @@ const steps = {
   ASK_DIRECT_DEMOCRACY: "ASK_DIRECT_DEMOCRACY",
   ASK_VOTING: "ASK_VOTING",
   ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
+  ASK_ROLE: "ASK_ROLE",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
   ASK_CONFIRMATION: "ASK_CONFIRMATION",
@@ -87,7 +88,7 @@ const ArchitectPage = () => {
   const [openai, setOpenai] = useState(null);
 
   const [orgDetails, setOrgDetails] = useState({
-    membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"],
+    membershipTypeNames: ["Regular", "Executive"],
     POname: "",
     quadraticVotingEnabled: false,
     democracyVoteWeight: 100,
@@ -140,7 +141,7 @@ const ArchitectPage = () => {
     setOptions([]);
     setOrgName("");
     setOrgDetails({
-      membershipTypeNames: ["Gold", "Silver", "Bronze", "Default", "Executive"],
+      membershipTypeNames: ["Regular", "Executive"],
       POname: "",
       quadraticVotingEnabled: false,
       democracyVoteWeight: 100,
@@ -161,6 +162,12 @@ const ArchitectPage = () => {
       logoURL: URL.createObjectURL(file),
     }));
     setIsLogoModalOpen(false);
+    addMessage("Logo uploaded successfully. Now let's confirm your selections.");
+    // wait for .3 seconds before asking for confirmation
+    setTimeout(() => {
+      setIsConfirmationModalOpen(true);
+    }, 300);
+    
     setCurrentStep(steps.ASK_CONFIRMATION);
   };
 
@@ -225,9 +232,9 @@ const ArchitectPage = () => {
             setCurrentStep(steps.ASK_VOTING_WEIGHT);
             setIsWeightModalOpen(true);
           } else if (input.toLowerCase().includes("neither")) {
-            setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
+            setCurrentStep(steps.ASK_ROLE);
             addMessage("Proceeding without additional voting types.");
-            addMessage("Would you like to upload a logo for your organization? Click No if you don't have one.");
+            addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
             setOptions(yesNoOptions);
             setShowSelection(true);
           }
@@ -241,10 +248,21 @@ const ArchitectPage = () => {
           ...prevDetails,
           hybridVoteWeight: parseInt(input, 10), // Assuming input is a number
         }));
-        addMessage("Got it! Would you like to upload a logo for your organization? Click No if you don't have one.");
+        setCurrentStep(steps.ASK_ROLE);
+        addMessage("Weights have been set. Now let's talk about roles. By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
         setOptions(yesNoOptions);
         setShowSelection(true);
-        setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
+        break;
+      case steps.ASK_ROLE:
+        setShowSelection(false);
+        if (input.toLowerCase() === "yes") {
+          setIsMemberSpecificationModalOpen(true);
+        } else {
+          setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
+          addMessage("Okay, skipping role addition. Would you like to upload a logo for your organization? Click No if you don't have one.");
+          setOptions(yesNoOptions);
+          setShowSelection(true);
+        }
         break;
       case steps.ASK_IF_LOGO_UPLOAD:
         setShowSelection(false);
@@ -258,9 +276,6 @@ const ArchitectPage = () => {
         break;
       case steps.ASK_CONFIRMATION:
         // Handle confirmation step open confirmation modal
-        setIsConfirmationModalOpen(true);
-
-
         break;
     }
   };
