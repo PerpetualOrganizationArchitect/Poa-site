@@ -127,7 +127,9 @@ const ArchitectPage = () => {
   };
 
   const addMessage = (text, speaker = "Poa") => {
+    
     setMessages((prevMessages) => [...prevMessages, { speaker, text }]);
+
   };
 
   const handleSendClick = () => {
@@ -206,8 +208,39 @@ const ArchitectPage = () => {
         }));
         setCurrentStep(steps.ASK_VOTING);
         addMessage("The Quorum percentage has been set. Now let's talk about other voting types. Hybrid and participation-based voting can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:");
-        await explainVotingTypes();
-        addMessage("If you have any more questions about voting go ahead and ask! If not, select a voting type below.");
+        const markdownContent = '## Voting Types for Poa\n\n'
+        + '### Direct Democracy\n'
+        + '**Description:**\n'
+        + 'In direct democracy, every member has an equal vote on every decision. Each member\'s vote counts equally, ensuring that the majority rules.\n\n'
+        + '**Advantages:**\n'
+        + '- Promotes fairness and equality\n'
+        + '- Simple to understand and implement\n'
+        + '- Encourages active participation from all members\n\n'
+        + '**When to Use:**\n'
+        + 'Direct democracy is ideal for small to medium-sized organizations where every member\'s input is valued, and decisions need to reflect the majority\'s preference.\n\n'
+        + '### Participation-Based Voting\n'
+        + '**Description:**\n'
+        + 'Participation-based voting allocates votes based on members\' participation or contributions. Members who are more active or have contributed more to the organization have a greater influence on decisions.\n\n'
+        + '**Advantages:**\n'
+        + '- Rewards active and contributing members\n'
+        + '- Encourages greater involvement and productivity\n'
+        + '- Aligns decision-making power with effort and investment\n\n'
+        + '**When to Use:**\n'
+        + 'This method is suitable for organizations where contributions vary significantly among members, and it is important to incentivize and reward active participation.\n\n'
+        + '### Hybrid Voting\n'
+        + '**Description:**\n'
+        + 'Hybrid voting combines elements of both direct democracy and participation-based voting. Votes are weighted based on a predefined percentage of equal votes (direct democracy) and contribution-based votes (participation-based).\n\n'
+        + '**Advantages:**\n'
+        + '- Balances fairness with incentivizing contributions\n'
+        + '- Flexible and customizable to organizational needs\n'
+        + '- Encourages participation while maintaining majority rule\n\n'
+        + '**When to Use:**\n'
+        + 'Hybrid voting is best for organizations that want to balance equal representation with rewarding active contributors. It’s particularly useful in diverse teams where contributions and engagement levels vary.\n';
+
+        const markdownContentString = String(markdownContent);
+
+      addMessage(markdownContentString, "Poa");
+        addMessage(`If you have any more questions about voting go ahead and ask! If not, select a voting type below.`);
         setShowSelection(true);
         setOptions(votingOptions);
         break;
@@ -417,7 +450,7 @@ const ArchitectPage = () => {
           </motion.div>
         </Box>
         <Box position="fixed" top="115px" bottom="60px" overflowY="auto" width="full" pt="4" px="4">
-          <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => <ReactMarkdown>{message.text}</ReactMarkdown>} />
+          <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => {message.text}} />
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
           <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} />

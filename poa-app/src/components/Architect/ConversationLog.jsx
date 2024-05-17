@@ -1,4 +1,3 @@
-// components/ConversationLog.jsx
 import React, { useEffect, useRef } from "react";
 import { VStack } from "@chakra-ui/react";
 import SpeechBubble from "./SpeechBubble";
