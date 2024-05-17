@@ -193,13 +193,13 @@ const ArchitectPage = () => {
       case steps.ASK_NAME:
         setOrgDetails((prevDetails) => ({ ...prevDetails, POname: input }));
         setCurrentStep(steps.ASK_DESCRIPTION);
-        addMessage(`Awesome! Now, can you describe your organization in a few words?`);
+        addMessage(`Awesome! Now, can you describe your organization in a few words? This will be displayed on your organization's homepage.`);
         break;
       case steps.ASK_DESCRIPTION:
         setOrgDetails((prevDetails) => ({ ...prevDetails, description: input }));
         setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
         addMessage(`Got it! Now, let's talk about voting. Direct democracy is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.`);
-        addMessage("What quorum percentage would you like?");
+        addMessage("What quorum percentage would you like? If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
         break;
       case steps.ASK_DIRECT_DEMOCRACY:
         setOrgDetails((prevDetails) => ({
@@ -209,15 +209,6 @@ const ArchitectPage = () => {
         setCurrentStep(steps.ASK_VOTING);
         addMessage("The Quorum percentage has been set. Now let's talk about other voting types. Hybrid and participation-based voting can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:");
         const markdownContent = '## Voting Types for Poa\n\n'
-        + '### Direct Democracy\n'
-        + '**Description:**\n'
-        + 'In direct democracy, every member has an equal vote on every decision. Each member\'s vote counts equally, ensuring that the majority rules.\n\n'
-        + '**Advantages:**\n'
-        + '- Promotes fairness and equality\n'
-        + '- Simple to understand and implement\n'
-        + '- Encourages active participation from all members\n\n'
-        + '**When to Use:**\n'
-        + 'Direct democracy is ideal for small to medium-sized organizations where every member\'s input is valued, and decisions need to reflect the majority\'s preference.\n\n'
         + '### Participation-Based Voting\n'
         + '**Description:**\n'
         + 'Participation-based voting allocates votes based on members\' participation or contributions. Members who are more active or have contributed more to the organization have a greater influence on decisions.\n\n'
@@ -230,6 +221,8 @@ const ArchitectPage = () => {
         + '### Hybrid Voting\n'
         + '**Description:**\n'
         + 'Hybrid voting combines elements of both direct democracy and participation-based voting. Votes are weighted based on a predefined percentage of equal votes (direct democracy) and contribution-based votes (participation-based).\n\n'
+        +'**Example:**\n'
+        + 'An organization is voting on a project to work on. In a hybrid voting system, 70% of the voting power could be allocated to the participants, while the remaining 30% would be direct democracy votes. This allows for a balance between community needs (democracy) and making sure that contributors are willing to work on the project.\n\n'
         + '**Advantages:**\n'
         + '- Balances fairness with incentivizing contributions\n'
         + '- Flexible and customizable to organizational needs\n'
@@ -264,7 +257,7 @@ const ArchitectPage = () => {
         } else if (input.toLowerCase() === "neither") {
           setCurrentStep(steps.ASK_ROLE);
           addMessage("Proceeding without additional voting types.");
-          addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
+          addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. You will be an executive by default. Would you like to add more roles?");
           setOptions(yesNoOptions);
           setShowSelection(true);
         } else {
@@ -277,9 +270,10 @@ const ArchitectPage = () => {
       case steps.ASK_VOTING_WEIGHT:
         setOrgDetails((prevDetails) => ({
           ...prevDetails,
-          hybridVoteWeight: parseInt(input, 10), // Assuming input is a number
+          hybridVoteWeight: parseInt(input, 10), 
         }));
         setCurrentStep(steps.ASK_QUADRATIC_VOTING);
+        // need explanation of quad voting here
         addMessage("Weights have been set. Would you like to enable quadratic voting?");
         setOptions(yesNoOptions);
         setShowSelection(true);
