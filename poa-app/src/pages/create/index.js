@@ -31,12 +31,14 @@ const steps = {
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
   ASK_DIRECT_DEMOCRACY: "ASK_DIRECT_DEMOCRACY",
+  ASK_QUADRATIC_VOTING: "ASK_QUADRATIC_VOTING",
   ASK_VOTING: "ASK_VOTING",
   ASK_VOTING_WEIGHT: "ASK_VOTING_WEIGHT",
   ASK_ROLE: "ASK_ROLE",
   ASK_IF_LOGO_UPLOAD: "ASK_IF_LOGO_UPLOAD",
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
   ASK_CONFIRMATION: "ASK_CONFIRMATION",
+  ASK_VOTING_CONTRACT: "ASK_VOTING_CONTRACT",
 };
 
 const containerVariants = {
@@ -167,14 +169,14 @@ const ArchitectPage = () => {
     setTimeout(() => {
       setIsConfirmationModalOpen(true);
     }, 300);
-    
+
     setCurrentStep(steps.ASK_CONFIRMATION);
   };
 
   const handleUserInput = async (input) => {
     console.log("input", input);
     addMessage(input, "User");
-
+  
     switch (currentStep) {
       case steps.ASK_INTRO:
         if (input.toLowerCase().includes("ready") || input.toLowerCase().includes("start")) {
@@ -205,42 +207,38 @@ const ArchitectPage = () => {
         setCurrentStep(steps.ASK_VOTING);
         addMessage("The Quorum percentage has been set. Now let's talk about other voting types. Hybrid and participation-based voting can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:");
         await explainVotingTypes();
-        addMessage("If you have any more questions aboit voting go ahead and ask! If not, select a voting type below.");
+        addMessage("If you have any more questions about voting go ahead and ask! If not, select a voting type below.");
         setShowSelection(true);
         setOptions(votingOptions);
         break;
       case steps.ASK_VOTING:
-
-      //rewrite if statement to see if response = hybrid or particpation or neither
-          
-        if (input.toLowerCase() == "hybrid"|| input.toLowerCase() == "participation_based" || input.toLowerCase() == "neither")
-        {
-          setShowSelection(false);
-          if (input.toLowerCase().includes("participation_based")) {
-            setOrgDetails((prevDetails) => ({
-              ...prevDetails,
-              participationVotingEnabled: true,
-            }));
-            addMessage("Great! Participation based voting has been enabled. What quorum percentage would you like?");
-            setCurrentStep(steps.ASK_VOTING_WEIGHT);
-          } else if (input.toLowerCase().includes("hybrid")) {
-            setOrgDetails((prevDetails) => ({
-              ...prevDetails,
-              hybridVotingEnabled: true,
-            }));
-            addMessage("Hybrid voting has been enabled. Now let's set the voting weights for each type.");
-            setCurrentStep(steps.ASK_VOTING_WEIGHT);
-            setIsWeightModalOpen(true);
-          } else if (input.toLowerCase().includes("neither")) {
-            setCurrentStep(steps.ASK_ROLE);
-            addMessage("Proceeding without additional voting types.");
-            addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
-            setOptions(yesNoOptions);
-            setShowSelection(true);
-          }
+        setShowSelection(false);
+        if (input.toLowerCase() === "hybrid") {
+          setOrgDetails((prevDetails) => ({
+            ...prevDetails,
+            hybridVotingEnabled: true,
+          }));
+          addMessage("Hybrid voting has been enabled. Now let's set the voting weights for each type.");
+          setCurrentStep(steps.ASK_VOTING_WEIGHT);
+          setIsWeightModalOpen(true);
+        } else if (input.toLowerCase() === "participation_based") {
+          setOrgDetails((prevDetails) => ({
+            ...prevDetails,
+            participationVotingEnabled: true,
+          }));
+          addMessage("Great! Participation based voting has been enabled. What quorum percentage would you like?");
+          setCurrentStep(steps.ASK_VOTING_WEIGHT);
+        } else if (input.toLowerCase() === "neither") {
+          setCurrentStep(steps.ASK_ROLE);
+          addMessage("Proceeding without additional voting types.");
+          addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
+          setOptions(yesNoOptions);
+          setShowSelection(true);
         } else {
           await askChatBot(input);
           addMessage("Do you have any more questions about hybrid or participation-based voting, or are you ready to select a voting type?");
+          setShowSelection(true);
+          setOptions(votingOptions);
         }
         break;
       case steps.ASK_VOTING_WEIGHT:
@@ -248,8 +246,37 @@ const ArchitectPage = () => {
           ...prevDetails,
           hybridVoteWeight: parseInt(input, 10), // Assuming input is a number
         }));
+        setCurrentStep(steps.ASK_QUADRATIC_VOTING);
+        addMessage("Weights have been set. Would you like to enable quadratic voting?");
+        setOptions(yesNoOptions);
+        setShowSelection(true);
+        break;
+      case steps.ASK_QUADRATIC_VOTING:
+        setShowSelection(false);
+        if (input.toLowerCase() === "yes") {
+          setOrgDetails((prevDetails) => ({
+            ...prevDetails,
+            quadraticVotingEnabled: true,
+          }));
+          addMessage("Quadratic voting has been enabled.");
+        } else {
+          addMessage("Quadratic voting will not be enabled.");
+        }
+        setCurrentStep(steps.ASK_VOTING_CONTRACT);
+        addMessage("Now, which voting contract would you like to control the treasury and upgrade the organization?");
+        setShowSelection(true);
+        setOptions([
+          { label: "Direct Democracy", value: "direct_democracy" },
+          { label: orgDetails.hybridVotingEnabled ? "Hybrid" : "Participation Based", value: orgDetails.hybridVotingEnabled ? "hybrid" : "participation_based" },
+        ]);
+        break;
+      case steps.ASK_VOTING_CONTRACT:
+        setOrgDetails((prevDetails) => ({
+          ...prevDetails,
+          votingControlType: input,
+        }));
         setCurrentStep(steps.ASK_ROLE);
-        addMessage("Weights have been set. Now let's talk about roles. By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
+        addMessage("Voting contract has been set. By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
@@ -279,6 +306,7 @@ const ArchitectPage = () => {
         break;
     }
   };
+  
 
   const askChatBot = async (input) => {
     setIsWaiting(true);
