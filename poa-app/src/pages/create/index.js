@@ -129,16 +129,17 @@ const ArchitectPage = () => {
 
     const introMessage = 
     ' #### Hello! I\'m **Poa**, your perpetual organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
-    '#### Examples of Organizations Poa Can Help You Create\n\n' +
-    '**Student Organizations**:\n' +
+    'Perpetual Organizations come with a custom voting system for organizational managment like deciding on projects or managing money, a task manager for determining contribution levels, various options for rasining money without giving away power, and more. Ask me if you have any questions about what features Poa offers!\n\n' +
+    '##### Examples of Organizations Poa Can Help You Create\n\n' +
+    '- **Student Organizations**:\n' +
     'Student-led groups controlled either by one of Poa\'s many voting systems.\n\n' +
-    '**Worker Cooperatives**:\n' +
+    '- **Fully Worker-owned Cooperatives**:\n' +
     'Voting power is based off a combination of contribution level and direct democracy\n\n' +
-    '**Nonprofits**:\n' +
-    'Community-driven organizations focusing on social good without profit motives.\n\n' +
-    '**Open Source Software Collectives**:\n' +
-    'Collaborative groups aiming to innovate and advance software development.\n\n' +
-    'Would you like to learn more about perpetual organizations and hear some examples, or get started?\n\n';
+    '- **Activist Groups**:\n' +
+    'Community-driven organizations focusing on social good without profit motives. Poa ensures the community stays in control at all levels.\n\n' +
+    '- **Open Source Software Collectives**:\n' +
+    'Collaborative groups aiming to innovate and advance software development through a contributor ownership model.\n\n\n' +
+    '\n#### Would you like to learn more about Perpetual Organizations and all of Poa\'s community-first voting systems or get started building your own Perpetual Organization?\n\n';
 
   addMessage(introMessage, "Poa");
   };
