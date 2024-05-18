@@ -3,25 +3,28 @@ import { VStack } from "@chakra-ui/react";
 import SpeechBubble from "./SpeechBubble";
 
 const ConversationLog = ({ messages, selectionHeight }) => {
-  const endOfMessagesRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, selectionHeight]);
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <VStack
+      ref={containerRef}
       align="stretch"
       spacing={4}
       overflowY="auto"
       pb={`${selectionHeight}px`}
+      maxHeight="80vh" // Set a maxHeight to limit the scrollable area
     >
       {messages.map((message, index) => (
-        <SpeechBubble key={index} speaker={message.speaker}>
+        <SpeechBubble key={index} speaker={message.speaker} containerRef={containerRef}>
           {message.text}
         </SpeechBubble>
       ))}
-      <div ref={endOfMessagesRef} />
     </VStack>
   );
 };

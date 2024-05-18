@@ -202,22 +202,21 @@ const ArchitectPage = () => {
         if (input.toLowerCase().includes("ready") || input.toLowerCase().includes("start")) {
           console.log("starting...");
           setCurrentStep(steps.ASK_NAME);
-          addMessage(`Great! Let's get started. What would you like to name your organization?`);
+          addMessage(`Great! Let's get started.\n\n #### What would you like to name your organization?`);
         } else {
           await askChatBot(input);
-          addMessage("Do you have any more questions about perpetual organizations, or are you ready to get started?");
+          addMessage("#### Do you have any more questions about perpetual organizations, or are you ready to get started?");
         }
         break;
       case steps.ASK_NAME:
         setOrgDetails((prevDetails) => ({ ...prevDetails, POname: input }));
         setCurrentStep(steps.ASK_DESCRIPTION);
-        addMessage(`Awesome! Now, can you describe your organization in a few words? This will be displayed on your organization's homepage.`);
+        addMessage(`#### Awesome! Now, can you describe your organization in a few words? This will be displayed on your organization's homepage.`);
         break;
       case steps.ASK_DESCRIPTION:
         setOrgDetails((prevDetails) => ({ ...prevDetails, description: input }));
         setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
-        addMessage(`Got it! Now, let's talk about voting. Direct democracy is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.`);
-        addMessage("What quorum percentage would you like? If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
+        addMessage("Got it! Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
         break;
       case steps.ASK_DIRECT_DEMOCRACY:
         setOrgDetails((prevDetails) => ({
@@ -225,8 +224,10 @@ const ArchitectPage = () => {
           democracyVoteWeight: parseInt(input, 10), // Assuming input is a number
         }));
         setCurrentStep(steps.ASK_VOTING);
-        addMessage("The Quorum percentage has been set. Now let's talk about other voting types. Hybrid and participation-based voting can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:");
-        const markdownContent = '## Voting Types for Poa\n\n'
+        
+        const markdownContent = 
+        'The Quorum percentage has been set.\n'+
+        'Now let’s talk about other voting types. **Hybrid** and **Participation-based Voting** can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:\n\n'
         + '### Participation-Based Voting\n'
         + '**Description:**\n'
         + 'Participation-based voting allocates votes based on members\' participation or contributions. Members who are more active or have contributed more to the organization have a greater influence on decisions.\n\n'
@@ -246,12 +247,14 @@ const ArchitectPage = () => {
         + '- Flexible and customizable to organizational needs\n'
         + '- Encourages participation while maintaining majority rule\n\n'
         + '**When to Use:**\n'
-        + 'Hybrid voting is best for organizations that want to balance equal representation with rewarding active contributors. It’s particularly useful in diverse teams where contributions and engagement levels vary.\n';
+        + 'Hybrid voting is best for organizations that want to balance equal representation with rewarding active contributors. It’s particularly useful in diverse teams where contributions and engagement levels vary.\n\n'
+        +`#### If you have any more questions about voting go ahead and ask! If not, select a voting type below.`;
+
 
         const markdownContentString = String(markdownContent);
 
       addMessage(markdownContentString, "Poa");
-        addMessage(`If you have any more questions about voting go ahead and ask! If not, select a voting type below.`);
+       
         setShowSelection(true);
         setOptions(votingOptions);
         break;
@@ -292,7 +295,7 @@ const ArchitectPage = () => {
         }));
         setCurrentStep(steps.ASK_QUADRATIC_VOTING);
         // need explanation of quad voting here
-        addMessage("Weights have been set. Would you like to enable quadratic voting?");
+        addMessage("Qurom has been set.\n\n #### Would you like to enable quadratic voting?");
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
@@ -303,12 +306,12 @@ const ArchitectPage = () => {
             ...prevDetails,
             quadraticVotingEnabled: true,
           }));
-          addMessage("Quadratic voting has been enabled.");
+          addMessage("Quadratic voting has been enabled.\n\n #### Now, which voting contract would you like to control the treasury, decide projects, and upgrade the organization?");
         } else {
-          addMessage("Quadratic voting will not be enabled.");
+          addMessage("Quadratic voting will not be enabled.\n\n #### Now, which voting contract would you like to control the treasury, decide projects, and upgrade the organization?");
         }
         setCurrentStep(steps.ASK_VOTING_CONTRACT);
-        addMessage("Now, which voting contract would you like to control the treasury and upgrade the organization?");
+        
         setShowSelection(true);
         setOptions([
           { label: "Direct Democracy", value: "direct_democracy" },
@@ -321,7 +324,7 @@ const ArchitectPage = () => {
           votingControlType: input,
         }));
         setCurrentStep(steps.ASK_ROLE);
-        addMessage("Voting contract has been set. By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. Would you like to add more roles?");
+        addMessage("Voting contract has been set.\n\n  By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
@@ -331,7 +334,7 @@ const ArchitectPage = () => {
           setIsMemberSpecificationModalOpen(true);
         } else {
           setCurrentStep(steps.ASK_IF_LOGO_UPLOAD);
-          addMessage("Okay, skipping role addition. Would you like to upload a logo for your organization? Click No if you don't have one.");
+          addMessage("Okay, skipping role addition.\n\n #### Would you like to upload a logo for your organization? Click No if you don't have one.");
           setOptions(yesNoOptions);
           setShowSelection(true);
         }
@@ -373,10 +376,6 @@ const ArchitectPage = () => {
     }
   };
 
-  const explainVotingTypes = async () => {
-    await askChatBot("Can you explain hybrid and participation-based voting?");
-  };
-
   const handleSaveMemberRole = (roleName) => {
     setOrgDetails((prevDetails) => ({
       ...prevDetails,
@@ -387,7 +386,7 @@ const ArchitectPage = () => {
   };
 
   const askToAddAnotherRole = () => {
-    addMessage("Would you like to add another role?");
+    addMessage("#### Would you like to add another role?");
     setOptions([
       { label: "Yes", value: "yes" },
       { label: "No", value: "no" },
@@ -410,7 +409,7 @@ const ArchitectPage = () => {
       participationVoteWeight: participationWeight,
     }));
     onClose();
-    addMessage("Weights have been set. What quorum percentage would you like?");
+    addMessage("Hybrid vote weights have been set.\n\n #### What quorum percentage would you like?");
     setCurrentStep(steps.ASK_VOTING_WEIGHT);
   };
 

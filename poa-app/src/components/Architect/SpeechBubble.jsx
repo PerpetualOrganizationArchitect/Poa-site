@@ -1,8 +1,8 @@
-import React from "react";
-import { Box, Text, Heading, Link, ListItem, OrderedList, UnorderedList, Code, Divider } from "@chakra-ui/react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
+import { Box, Text, Heading, Link, ListItem, OrderedList, UnorderedList, Code, Divider, VStack } from "@chakra-ui/react";
 
 const ChakraUIRenderer = {
   h1: ({ children }) => <Heading as="h1" size="2xl" my={4}>{children}</Heading>,
@@ -31,12 +31,46 @@ const ChakraUIRenderer = {
   ),
 };
 
-const SpeechBubble = ({ speaker, children }) => {
-  const isUser = speaker === "User";
+const TypingMarkdown = ({ text, containerRef }) => {
+  const [displayText, setDisplayText] = useState("");
 
-  console.log("speaker:", speaker);
-  console.log("children:", children);
-  console.log("children type:", typeof children);
+  useEffect(() => {
+    let currentText = "";
+    let index = 0;
+    const typingSpeed = 4; // milliseconds
+
+    const typeText = () => {
+      if (index < text.length) {
+        currentText += text[index];
+        setDisplayText(currentText);
+        index++;
+        setTimeout(typeText, typingSpeed);
+      }
+    };
+
+    typeText();
+  }, [text]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [displayText, containerRef]);
+
+  return (
+    <Box>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, remarkRehype]}
+        components={ChakraUIRenderer}
+      >
+        {displayText}
+      </ReactMarkdown>
+    </Box>
+  );
+};
+
+const SpeechBubble = ({ speaker, children, containerRef }) => {
+  const isUser = speaker === "User";
 
   return (
     <Box
@@ -53,12 +87,7 @@ const SpeechBubble = ({ speaker, children }) => {
     >
       <Text mb="2" fontWeight="bold">{speaker}</Text>
       <Box p="0" ml="2">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkRehype]}
-          components={ChakraUIRenderer}
-        >
-          {children}
-        </ReactMarkdown>
+        <TypingMarkdown text={children} containerRef={containerRef} />
       </Box>
     </Box>
   );
