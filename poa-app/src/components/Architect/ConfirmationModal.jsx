@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -23,23 +23,14 @@ const ConfirmationModal = ({
   onConnect,
   wallet
 }) => {
-
   // variable thats true if the wallet exists from wallet prop
-  const connected = wallet ? true : false
+  const connected = wallet ? true : false;
+  const [display, setDisplay] = useState(connected);
+  const { account } = useGraphContext();
 
-  const[display, setDisplay] = useState(connected)
-
-
-
-  const {account}= useGraphContext();
-
-  useEffect(() => {
-
-    
-  }, [account]);
+  useEffect(() => {}, [account]);
 
   return (
-
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
@@ -85,6 +76,22 @@ const ConfirmationModal = ({
               <strong>Logo URL:</strong>{" "}
               {orgDetails.logoURL || "No logo uploaded"}
             </Text>
+            <Text>
+              <strong>Direct Democracy Quorum:</strong>{" "}
+              {orgDetails.directDemocracyQuorum}%
+            </Text>
+            {orgDetails.hybridVotingEnabled && (
+              <Text>
+                <strong>Hybrid Voting Quorum:</strong>{" "}
+                {orgDetails.hybridVoteQuorum}%
+              </Text>
+            )}
+            {orgDetails.participationVotingEnabled && (
+              <Text>
+                <strong>Participation Voting Quorum:</strong>{" "}
+                {orgDetails.participationVoteQuorum}%
+              </Text>
+            )}
           </VStack>
         </ModalBody>
         <ModalFooter>
@@ -101,10 +108,15 @@ const ConfirmationModal = ({
 
           {/* If wallet is not connected, show connect button */}
           {!display && (
-            <Button colorScheme="gray" onClick={() => { onConnect(); setDisplay(true); }}>
+            <Button
+              colorScheme="gray"
+              onClick={() => {
+                onConnect();
+                setDisplay(true);
+              }}
+            >
               Connect Wallet Before Deploy
             </Button>
-
           )}
         </ModalFooter>
       </ModalContent>
