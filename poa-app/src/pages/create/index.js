@@ -100,12 +100,15 @@ const ArchitectPage = () => {
     participationVotingEnabled: false,
     logoURL: "",
     votingControlType: "DirectDemocracy",
+    directDemocracyQuorum: 51,
+    hybridVoteQuorum: 51,
+    participationVoteQuorum: 51,
   });
 
   useEffect(() => {
     if (!initChatBotCalled.current) {
       initChatBot();
-      initChatBotCalled.current = true; 
+      initChatBotCalled.current = true;
     }
   }, []);
 
@@ -127,27 +130,25 @@ const ArchitectPage = () => {
     setAssistant(assistant);
     setThread(thread);
 
-    const introMessage = 
-    ' #### Hello! I\'m **Poa**, your perpetual organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
-    'Perpetual Organizations come with a custom voting system for organizational managment like deciding on projects or managing money, a task manager for determining contribution levels, various options for rasining money without giving away power, and more. Ask me if you have any questions about what features Poa offers!\n\n' +
-    '##### Examples of Organizations Poa Can Help You Create\n\n' +
-    '- **Student Organizations**:\n' +
-    'Student-led groups controlled either by one of Poa\'s many voting systems.\n\n' +
-    '- **Fully Worker-owned Cooperatives**:\n' +
-    'Voting power is based off a combination of contribution level and direct democracy\n\n' +
-    '- **Activist Groups**:\n' +
-    'Community-driven organizations focusing on social good without profit motives. Poa ensures the community stays in control at all levels.\n\n' +
-    '- **Open Source Software Collectives**:\n' +
-    'Collaborative groups aiming to innovate and advance software development through a contributor ownership model.\n\n\n' +
-    '\n#### Would you like to learn more about Perpetual Organizations and all of Poa\'s community-first voting systems or get started building your own Perpetual Organization?\n\n';
+    const introMessage =
+      ' #### Hello! I\'m **Poa**, your perpetual organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
+      'Perpetual Organizations come with a custom voting system for organizational management like deciding on projects or managing money, a task manager for determining contribution levels, various options for raising money without giving away power, and more. Ask me if you have any questions about what features Poa offers!\n\n' +
+      '##### Examples of Organizations Poa Can Help You Create\n\n' +
+      '- **Student Organizations**:\n' +
+      'Student-led groups controlled either by one of Poa\'s many voting systems.\n\n' +
+      '- **Fully Worker-owned Cooperatives**:\n' +
+      'Voting power is based off a combination of contribution level and direct democracy\n\n' +
+      '- **Activist Groups**:\n' +
+      'Community-driven organizations focusing on social good without profit motives. Poa ensures the community stays in control at all levels.\n\n' +
+      '- **Open Source Software Collectives**:\n' +
+      'Collaborative groups aiming to innovate and advance software development through a contributor ownership model.\n\n\n' +
+      '\n#### Would you like to learn more about Perpetual Organizations and all of Poa\'s community-first voting systems or get started building your own Perpetual Organization?\n\n';
 
-  addMessage(introMessage, "Poa");
+    addMessage(introMessage, "Poa");
   };
 
   const addMessage = (text, speaker = "Poa") => {
-    
     setMessages((prevMessages) => [...prevMessages, { speaker, text }]);
-
   };
 
   const handleSendClick = () => {
@@ -168,6 +169,9 @@ const ArchitectPage = () => {
       quadraticVotingEnabled: false,
       democracyVoteWeight: 100,
       participationVoteWeight: 0,
+      directDemocracyQuorum: 51,
+      hybridVoteQuorum: 51,
+      participationVoteQuorum: 51,
       hybridVotingEnabled: false,
       participationVotingEnabled: false,
       logoURL: "",
@@ -196,7 +200,7 @@ const ArchitectPage = () => {
   const handleUserInput = async (input) => {
     console.log("input", input);
     addMessage(input, "User");
-  
+
     switch (currentStep) {
       case steps.ASK_INTRO:
         if (input.toLowerCase().includes("ready") || input.toLowerCase().includes("start")) {
@@ -221,40 +225,39 @@ const ArchitectPage = () => {
       case steps.ASK_DIRECT_DEMOCRACY:
         setOrgDetails((prevDetails) => ({
           ...prevDetails,
-          democracyVoteWeight: parseInt(input, 10), // Assuming input is a number
+          directDemocracyQuorum: parseInt(input, 10),
         }));
         setCurrentStep(steps.ASK_VOTING);
-        
-        const markdownContent = 
-        'The Quorum percentage has been set.\n'+
-        'Now let’s talk about other voting types. **Hybrid** and **Participation-based Voting** can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:\n\n'
-        + '### Participation-Based Voting\n'
-        + '**Description:**\n'
-        + 'Participation-based voting allocates votes based on members\' participation or contributions. Members who are more active or have contributed more to the organization have a greater influence on decisions.\n\n'
-        + '**Advantages:**\n'
-        + '- Rewards active and contributing members\n'
-        + '- Encourages greater involvement and productivity\n'
-        + '- Aligns decision-making power with effort and investment\n\n'
-        + '**When to Use:**\n'
-        + 'This method is suitable for organizations where contributions vary significantly among members, and it is important to incentivize and reward active participation.\n\n'
-        + '### Hybrid Voting\n'
-        + '**Description:**\n'
-        + 'Hybrid voting combines elements of both direct democracy and participation-based voting. Votes are weighted based on a predefined percentage of equal votes (direct democracy) and contribution-based votes (participation-based).\n\n'
-        +'**Example:**\n'
-        + 'An organization is voting on a project to work on. In a hybrid voting system, 70% of the voting power could be allocated to the participants, while the remaining 30% would be direct democracy votes. This allows for a balance between community needs (democracy) and making sure that contributors are willing to work on the project.\n\n'
-        + '**Advantages:**\n'
-        + '- Balances fairness with incentivizing contributions\n'
-        + '- Flexible and customizable to organizational needs\n'
-        + '- Encourages participation while maintaining majority rule\n\n'
-        + '**When to Use:**\n'
-        + 'Hybrid voting is best for organizations that want to balance equal representation with rewarding active contributors. It’s particularly useful in diverse teams where contributions and engagement levels vary.\n\n'
-        +`#### If you have any more questions about voting go ahead and ask! If not, select a voting type below.`;
 
+        const markdownContent =
+          'The Quorum percentage has been set.\n' +
+          'Now let’s talk about other voting types. **Hybrid** and **Participation-based Voting** can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:\n\n' +
+          '### Participation-Based Voting\n' +
+          '**Description:**\n' +
+          'Participation-based voting allocates votes based on members\' participation or contributions. Members who are more active or have contributed more to the organization have a greater influence on decisions.\n\n' +
+          '**Advantages:**\n' +
+          '- Rewards active and contributing members\n' +
+          '- Encourages greater involvement and productivity\n' +
+          '- Aligns decision-making power with effort and investment\n\n' +
+          '**When to Use:**\n' +
+          'This method is suitable for organizations where contributions vary significantly among members, and it is important to incentivize and reward active participation.\n\n' +
+          '### Hybrid Voting\n' +
+          '**Description:**\n' +
+          'Hybrid voting combines elements of both direct democracy and participation-based voting. Votes are weighted based on a predefined percentage of equal votes (direct democracy) and contribution-based votes (participation-based).\n\n' +
+          '**Example:**\n' +
+          'An organization is voting on a project to work on. In a hybrid voting system, 70% of the voting power could be allocated to the participants, while the remaining 30% would be direct democracy votes. This allows for a balance between community needs (democracy) and making sure that contributors are willing to work on the project.\n\n' +
+          '**Advantages:**\n' +
+          '- Balances fairness with incentivizing contributions\n' +
+          '- Flexible and customizable to organizational needs\n' +
+          '- Encourages participation while maintaining majority rule\n\n' +
+          '**When to Use:**\n' +
+          'Hybrid voting is best for organizations that want to balance equal representation with rewarding active contributors. It’s particularly useful in diverse teams where contributions and engagement levels vary.\n\n' +
+          `#### If you have any more questions about voting go ahead and ask! If not, select a voting type below.`;
 
         const markdownContentString = String(markdownContent);
 
-      addMessage(markdownContentString, "Poa");
-       
+        addMessage(markdownContentString, "Poa");
+
         setShowSelection(true);
         setOptions(votingOptions);
         break;
@@ -274,7 +277,7 @@ const ArchitectPage = () => {
             participationVotingEnabled: true,
           }));
           addMessage("Great! Participation based voting has been enabled. What quorum percentage would you like?");
-          setCurrentStep(steps.ASK_VOTING_WEIGHT);
+          setCurrentStep(steps.ASK_QUORUM_PERCENTAGE);
         } else if (input.toLowerCase() === "neither") {
           setCurrentStep(steps.ASK_ROLE);
           addMessage("Proceeding without additional voting types.");
@@ -288,14 +291,20 @@ const ArchitectPage = () => {
           setOptions(votingOptions);
         }
         break;
-      case steps.ASK_VOTING_WEIGHT:
-        setOrgDetails((prevDetails) => ({
-          ...prevDetails,
-          hybridVoteWeight: parseInt(input, 10), 
-        }));
+      case steps.ASK_QUORUM_PERCENTAGE:
+        if (orgDetails.hybridVotingEnabled) {
+          setOrgDetails((prevDetails) => ({
+            ...prevDetails,
+            hybridVoteQuorum: parseInt(input, 10),
+          }));
+        } else if (orgDetails.participationVotingEnabled) {
+          setOrgDetails((prevDetails) => ({
+            ...prevDetails,
+            participationVoteQuorum: parseInt(input, 10),
+          }));
+        }
         setCurrentStep(steps.ASK_QUADRATIC_VOTING);
-        // need explanation of quad voting here
-        addMessage("Qurom has been set.\n\n #### Would you like to enable quadratic voting?");
+        addMessage("Quorum percentage has been set.\n\n #### Would you like to enable quadratic voting?");
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
@@ -311,7 +320,7 @@ const ArchitectPage = () => {
           addMessage("Quadratic voting will not be enabled.\n\n #### Now, which voting contract would you like to control the treasury, decide projects, and upgrade the organization?");
         }
         setCurrentStep(steps.ASK_VOTING_CONTRACT);
-        
+
         setShowSelection(true);
         setOptions([
           { label: "Direct Democracy", value: "direct_democracy" },
@@ -354,7 +363,6 @@ const ArchitectPage = () => {
         break;
     }
   };
-  
 
   const askChatBot = async (input) => {
     setIsWaiting(true);
@@ -410,7 +418,7 @@ const ArchitectPage = () => {
     }));
     onClose();
     addMessage("Hybrid vote weights have been set.\n\n #### What quorum percentage would you like?");
-    setCurrentStep(steps.ASK_VOTING_WEIGHT);
+    setCurrentStep(steps.ASK_QUORUM_PERCENTAGE);
   };
 
   const handleSaveAllSelections = async () => {
