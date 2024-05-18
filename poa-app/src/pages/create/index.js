@@ -88,6 +88,7 @@ const ArchitectPage = () => {
   const [thread, setThread] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
   const [openai, setOpenai] = useState(null);
+  const initChatBotCalled = useRef(false);
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
@@ -102,7 +103,10 @@ const ArchitectPage = () => {
   });
 
   useEffect(() => {
-    initChatBot();
+    if (!initChatBotCalled.current) {
+      initChatBot();
+      initChatBotCalled.current = true; 
+    }
   }, []);
 
   useEffect(() => {
