@@ -1,0 +1,95 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newRegistryAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "POname",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "logoURL",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "VotingControlAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string[]",
+        "name": "contractNames",
+        "type": "string[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "contractAddresses",
+        "type": "address[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "POinfoHash",
+        "type": "string"
+      }
+    ],
+    "name": "RegistryCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_VotingControlAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "contractNames",
+        "type": "string[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "contractAddresses",
+        "type": "address[]"
+      },
+      {
+        "internalType": "string",
+        "name": "POname",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "logoURL",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "POinfoHash",
+        "type": "string"
+      }
+    ],
+    "name": "createRegistry",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
