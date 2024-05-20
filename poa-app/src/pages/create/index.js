@@ -429,6 +429,7 @@ const ArchitectPage = () => {
   };
 
   const deployOrg = async () => {
+    const quorum= orgDetails.participationVoteQuorum || orgDetails.hybridVoteQuorum
     try {
       await main(
         orgDetails.membershipTypeNames,
@@ -441,6 +442,8 @@ const ArchitectPage = () => {
         orgDetails.participationVotingEnabled,
         orgDetails.logoURL,
         orgDetails.votingControlType,
+        orgDetails.directDemocracyQuorum,
+        quorum,
         signer
       );
       setTimeout(() => setIsDeploying(true), 3000);
@@ -459,7 +462,7 @@ const ArchitectPage = () => {
     <Layout isArchitectPage>
       <Box position="fixed" top="150px" right="40" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
         <Text fontSize="md">
-          This is a working early alpha release deployed on the Sepolia testnet. AI under construction. Coming May 10th
+          This is AlphaV1. There may be some bugs. Please report in our discord.
         </Text>
       </Box>
       <motion.div variants={containerVariants} initial="hidden" animate="visible">

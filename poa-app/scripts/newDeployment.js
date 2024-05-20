@@ -15,6 +15,8 @@ export async function main(
     participationVotingEnabled,
     logoURL,
     votingControlType,
+    quorumPercentageDD,
+    quorumPercentagePV,
     wallet
   ){
 
@@ -40,9 +42,6 @@ export async function main(
           "TaskManager",
         ];
       }
-  
-      let quorumPercentageDD = 50;
-      let quorumPercentagePV = 50;
 
     const params = {
         memberTypeNames,

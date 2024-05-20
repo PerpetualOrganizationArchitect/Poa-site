@@ -54,7 +54,6 @@ contract MasterFactory {
         uint256 quorumPercentagePV;
     }
 
-
     constructor(
         address _directDemocracyTokenFactory,
         address _directDemocracyVotingFactory,
@@ -95,22 +94,19 @@ contract MasterFactory {
         address[] memory contractAddresses = new address[](7);
 
         deployStandardContracts(contractAddresses, params.memberTypeNames, params.executivePermissionNames, params.logoURL, params.POname);
-        deployConditionalContracts(contractAddresses, params)
-        ;
+        deployConditionalContracts(contractAddresses, params);
         
         address votingControlAddress = determineVotingControlAddress(params.votingControlType, contractAddresses);
 
-        // 9. Set TaskManager in particpation token contract
+        // 9. Set TaskManager in participation token contract
         IParticipationToken token = IParticipationToken(contractAddresses[2]);
         token.setTaskManagerAddress(contractAddresses[6]);
         // 10. Set Voting Contract in Treasury
         ITreasury treasury = ITreasury(contractAddresses[3]);
         treasury.setVotingContract(votingControlAddress);
 
-        
         registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, "r", "QmdkMvFTLhkR6m292MaHQ9YoHv6geJotiWCgxw4wTLvryN");
     }
-
 
     // Splitting deployment functions for clarity and reducing stack depth
     function deployNFTMembership(
@@ -145,24 +141,23 @@ contract MasterFactory {
         string memory logoURL,
         string memory POname
     ) internal {
-        contractAddresses[0] = deployNFTMembership(memberTypeNames, executivePermissionNames,"r", POname);
+        contractAddresses[0] = deployNFTMembership(memberTypeNames, executivePermissionNames, logoURL, POname);
         contractAddresses[1] = deployDirectDemocracyToken(contractAddresses[0], executivePermissionNames, POname);
         contractAddresses[2] = deployParticipationToken(POname);
         contractAddresses[3] = deployTreasury(POname);
     }
     
-
     function deployConditionalContracts(
         address[] memory contractAddresses,
         DeployParams memory params
     ) internal {
         contractAddresses[5] = params.participationVotingEnabled 
-            ? deployPartcipationVoting(contractAddresses,params.executivePermissionNames, params.quadraticVotingEnabled, params.POname, params.quorumPercentagePV) 
+            ? deployPartcipationVoting(contractAddresses, params.executivePermissionNames, params.quadraticVotingEnabled, params.POname, params.quorumPercentagePV) 
             : address(0);
         contractAddresses[4] = deployDemocracyVoting(contractAddresses, params.executivePermissionNames, params.POname, params.quorumPercentageDD);
         contractAddresses[5] = params.hybridVotingEnabled 
-             ? deployHybridVoting(contractAddresses, params)
-             : address(0);
+            ? deployHybridVoting(contractAddresses, params)
+            : address(0);
         contractAddresses[6] = taskManagerFactory.createTaskManager(contractAddresses[2], contractAddresses[0], params.executivePermissionNames, params.POname);
     }
 
@@ -173,7 +168,7 @@ contract MasterFactory {
         string memory POname, 
         uint256 quorumPercentagePV
     ) internal returns (address) {
-        return participationVotingFactory.createParticipationVoting(contractAddresses[2], contractAddresses[0], _allowedRoleNames, _quadraticVotingEnabled,contractAddresses[3], POname, quorumPercentagePV);
+        return participationVotingFactory.createParticipationVoting(contractAddresses[2], contractAddresses[0], _allowedRoleNames, _quadraticVotingEnabled, contractAddresses[3], POname, quorumPercentagePV);
     }
 
     function deployDemocracyVoting(
@@ -182,7 +177,7 @@ contract MasterFactory {
         string memory POname,
         uint256 quorumPercentageDD
     ) internal returns (address) {
-        return directDemocracyVotingFactory.createDirectDemocracyVoting(contractAddresses[1], contractAddresses[0], _allowedRoleNames,  contractAddresses[3], POname, quorumPercentageDD);
+        return directDemocracyVotingFactory.createDirectDemocracyVoting(contractAddresses[1], contractAddresses[0], _allowedRoleNames, contractAddresses[3], POname, quorumPercentageDD);
     }
 
     function deployHybridVoting(
@@ -203,7 +198,6 @@ contract MasterFactory {
         );
     }
    
-
     function determineVotingControlAddress(
         string memory votingControlType, 
         address[] memory contractAddresses
