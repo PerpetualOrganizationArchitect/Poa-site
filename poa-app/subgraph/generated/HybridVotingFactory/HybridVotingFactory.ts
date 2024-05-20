@@ -38,6 +38,14 @@ export class HybridVotingContractCreated__Params {
   get quorumPercentage(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
+
+  get DDpercent(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
+  }
+
+  get PTpercent(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
+  }
 }
 
 export class HybridVotingFactory extends ethereum.SmartContract {

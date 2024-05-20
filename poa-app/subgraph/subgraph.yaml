@@ -161,7 +161,7 @@ dataSources:
         - name: HybridVotingFactory
           file: ../abi/HybridVotingFactory.json
       eventHandlers:
-        - event: HybridVotingContractCreated(indexed address,address,string,uint256)
+        - event: HybridVotingContractCreated(indexed address,address,string,uint256,uint256,uint256)
           handler: handleVotingContractCreated
       file: ./mappings/hybridVoting/hybridVotingFactoryMapping.ts
   - kind: ethereum/contract

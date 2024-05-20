@@ -2654,6 +2654,32 @@ export class HybridVoting extends Entity {
     this.set("POname", Value.fromString(value));
   }
 
+  get percentDD(): BigInt {
+    let value = this.get("percentDD");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set percentDD(value: BigInt) {
+    this.set("percentDD", Value.fromBigInt(value));
+  }
+
+  get percentPT(): BigInt {
+    let value = this.get("percentPT");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set percentPT(value: BigInt) {
+    this.set("percentPT", Value.fromBigInt(value));
+  }
+
   get proposals(): HybridProposalLoader {
     return new HybridProposalLoader(
       "HybridVoting",

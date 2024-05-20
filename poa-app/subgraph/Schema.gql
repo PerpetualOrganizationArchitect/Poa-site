@@ -225,7 +225,6 @@ type DDVote @entity {
 }
 
 ## hybrid voting 
-## add voteWeightPT and voteWeightDD to HybridVote
 
 type HybridVotingCreated @entity {
   id: ID!
@@ -237,6 +236,8 @@ type HybridVoting @entity {
   id: ID!
   contract: HybridVotingCreated! @link
   POname: String!
+  percentDD: BigInt!
+  percentPT: BigInt!
   proposals: [HybridProposal!]! @derivedFrom(field: "voting")
   quorum: BigInt!
 }
