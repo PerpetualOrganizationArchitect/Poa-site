@@ -183,28 +183,23 @@ const ArchitectPage = () => {
     onClose();
   };
 
-  const pinLogoFile = async (file) => {
-    console.log("Pinning logo file:", file);
+  const pinLogoFile = async (ipfsUrl) => {
     try {
-      const addedData = await addToIpfs(file);
-      const ipfsUrl = `https://ipfs.infura.io/ipfs/${addedData.path}`;
       setOrgDetails((prevDetails) => ({
         ...prevDetails,
         logoURL: ipfsUrl,
       }));
       setIsLogoModalOpen(false);
       addMessage("Logo uploaded successfully. Now let's confirm your selections.");
-      // wait for .3 seconds before asking for confirmation
       setTimeout(() => {
         setIsConfirmationModalOpen(true);
       }, 300);
-  
       setCurrentStep(steps.ASK_CONFIRMATION);
     } catch (error) {
-      console.error("Error uploading logo to IPFS:", error);
+      console.error("Error setting logo URL:", error);
       toast({
         title: "Logo upload failed.",
-        description: "There was an error uploading the logo to IPFS.",
+        description: "There was an error setting the logo URL.",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -444,7 +439,7 @@ const ArchitectPage = () => {
   };
 
   const deployOrg = async () => {
-    const quorum= orgDetails.participationVoteQuorum || orgDetails.hybridVoteQuorum
+    const quorum = orgDetails.participationVoteQuorum || orgDetails.hybridVoteQuorum;
     try {
       await main(
         orgDetails.membershipTypeNames,
