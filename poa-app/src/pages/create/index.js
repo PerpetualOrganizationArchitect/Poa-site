@@ -24,6 +24,7 @@ import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
 import Deployer from "@/components/Architect/TempDeployer";
 import { useWeb3Context } from "@/context/web3Context";
+import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
 
 const steps = {
@@ -64,6 +65,7 @@ const yesNoOptions = [
 
 const ArchitectPage = () => {
   const { signer } = useWeb3Context();
+  const { addToIpfs } = useIPFScontext();
   const toast = useToast();
   const router = useRouter();
   const selectionRef = useRef(null);
@@ -181,20 +183,33 @@ const ArchitectPage = () => {
     onClose();
   };
 
-  const pinLogoFile = (file) => {
+  const pinLogoFile = async (file) => {
     console.log("Pinning logo file:", file);
-    setOrgDetails((prevDetails) => ({
-      ...prevDetails,
-      logoURL: URL.createObjectURL(file),
-    }));
-    setIsLogoModalOpen(false);
-    addMessage("Logo uploaded successfully. Now let's confirm your selections.");
-    // wait for .3 seconds before asking for confirmation
-    setTimeout(() => {
-      setIsConfirmationModalOpen(true);
-    }, 300);
-
-    setCurrentStep(steps.ASK_CONFIRMATION);
+    try {
+      const addedData = await addToIpfs(file);
+      const ipfsUrl = `https://ipfs.infura.io/ipfs/${addedData.path}`;
+      setOrgDetails((prevDetails) => ({
+        ...prevDetails,
+        logoURL: ipfsUrl,
+      }));
+      setIsLogoModalOpen(false);
+      addMessage("Logo uploaded successfully. Now let's confirm your selections.");
+      // wait for .3 seconds before asking for confirmation
+      setTimeout(() => {
+        setIsConfirmationModalOpen(true);
+      }, 300);
+  
+      setCurrentStep(steps.ASK_CONFIRMATION);
+    } catch (error) {
+      console.error("Error uploading logo to IPFS:", error);
+      toast({
+        title: "Logo upload failed.",
+        description: "There was an error uploading the logo to IPFS.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleUserInput = async (input) => {
@@ -472,7 +487,7 @@ const ArchitectPage = () => {
           </motion.div>
         </Box>
         <Box position="fixed" top="115px" bottom="60px" overflowY="auto" width="full" pt="4" px="4">
-          <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => {message.text}} />
+          <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => message.text} />
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
           <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} />
@@ -495,9 +510,7 @@ const ArchitectPage = () => {
               Access site
             </Button>
           )}
-          <Box position="fixed" bottom="0" width="full" p={4} paddingRight={10} zIndex="sticky">
-            <ArchitectInput value={userInput} onChange={(e) => setUserInput(e.target.value)} onSubmit={handleSendClick} isDisabled={isWaiting} />
-          </Box>
+          <ArchitectInput value={userInput} onChange={(e) => setUserInput(e.target.value)} onSubmit={handleSendClick} isDisabled={isWaiting} />
         </Box>
       </motion.div>
     </Layout>

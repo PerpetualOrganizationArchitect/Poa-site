@@ -344,8 +344,6 @@ type IPFSContent @entity {
 
 ## Perpetual Organization info 
 
-
-
 type PerpetualOrganization @entity {
   id: ID!
   name: String!
