@@ -6,7 +6,7 @@ dataSources:
     name: UniversalAccountRegistry
     network: sepolia
     source:
-      address: "0x70224eABe4FA11e21dc5C936B62ecc9AE090925a"
+      address: "0x206135b60728680B0eFfF13F5b202F9D9AE2aa59"
       abi: AccountManager
       startBlock: 5713300
     mapping:
@@ -28,7 +28,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: sepolia
     source:
-      address: "0x08D8d8De80ddB7Cdf19B6633E7909D5999d80E9F"
+      address: "0x1533C8C80B35e825d1Cc669bDc7c99A4E14733c8"
       abi: DirectDemocracyTokenFactory
       startBlock: 5713300
     mapping:
@@ -48,7 +48,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: sepolia
     source:
-      address: "0x911Ac62039598028851bC01a129A890f64E10d66"
+      address: "0xf63c9C77b2188Bb8FC8Cf420DEbA50C5663E944c"
       abi:  ParticipationTokenFactory
       startBlock: 5713300
     mapping:
@@ -68,7 +68,7 @@ dataSources:
     name: NFTMembershipFactory
     network: sepolia
     source:
-      address: "0x3306a792678E1677a65448281B1049c3Bd639A42"
+      address: "0xEE5Df740D0cc8014f1B60094079471d5b1F56302"
       abi: NFTMembershipFactory
       startBlock: 5713300
     mapping:
@@ -88,7 +88,7 @@ dataSources:
     name: TreasuryFactory
     network: sepolia
     source:
-      address: "0x247330FEb451955477FBeD8231c2249FD917f73c"
+      address: "0x073CaD6b203A5413f97e4e0E55eb66FeC587DBa9"
       abi: TreasuryFactory
       startBlock: 5713300
     mapping:
@@ -108,7 +108,7 @@ dataSources:
     name: ParticipationVotingFactory
     network: sepolia
     source:
-      address: "0x89ad0007ddD52cd4730E7EeffC4D4D90bf4DDC85"
+      address: "0x01457333687fA14567a67783c545947FB10E845E"
       abi: ParticipationVotingFactory
       startBlock: 5713300
     mapping:
@@ -128,7 +128,7 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: sepolia
     source:
-      address: "0xc922745822E478E37516e2F62b014e557a67d9Bf"
+      address: "0x8f206290E50Fe212fE6B871c115435Fc0279c891"
       abi: DirectDemocracyVotingFactory
       startBlock: 5713300
     mapping:
@@ -148,7 +148,7 @@ dataSources:
     name: HybridVotingFactory
     network: sepolia
     source:
-      address: "0x05D050048d26F5D510a63ea3E1244E50a4eeB1f2"
+      address: "0x5e10817aA84C95328AD1a073352Cc66C6e374219"
       abi: HybridVotingFactory
       startBlock: 5713300
     mapping:
@@ -168,7 +168,7 @@ dataSources:
     name: TaskManagerFactory
     network: sepolia
     source:
-      address: "0xfd72568FD60df59957D71FEfb1f3a12149cE064a"
+      address: "0xC9e2709d5D6c553B8Ff028679E168D28dF395cA0"
       abi: TaskManagerFactory
       startBlock: 5713300
     mapping:
@@ -188,7 +188,7 @@ dataSources:
     name: RegistryFactory
     network: sepolia
     source:
-      address: "0x858D1792C10f7F95ddB537Bcb3a0576A4B958703"
+      address: "0xDe0E40a50ab1146e0A041C9fD416426e9627CD7B"
       abi: RegistryFactory
       startBlock: 5713300
     mapping:
