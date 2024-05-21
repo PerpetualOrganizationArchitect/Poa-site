@@ -92,6 +92,9 @@ const ConfirmationModal = ({
                 {orgDetails.participationVoteQuorum}%
               </Text>
             )}
+            <Text>
+              <strong>Info IPFS Hash:</strong> {orgDetails.infoIPFSHash}
+            </Text>
           </VStack>
         </ModalBody>
         <ModalFooter>

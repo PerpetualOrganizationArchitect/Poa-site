@@ -31,7 +31,7 @@ const steps = {
   ASK_INTRO: "ASK_INTRO",
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
-  ASK_IF_LINKS: "ASK_IF_LINKS",  // Add this step
+  ASK_IF_LINKS: "ASK_IF_LINKS",
   ASK_LINKS: "ASK_LINKS",
   ASK_DIRECT_DEMOCRACY: "ASK_DIRECT_DEMOCRACY",
   ASK_QUADRATIC_VOTING: "ASK_QUADRATIC_VOTING",
@@ -94,6 +94,7 @@ const ArchitectPage = () => {
   const [openai, setOpenai] = useState(null);
   const initChatBotCalled = useRef(false);
 
+
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
     POname: "",
@@ -105,6 +106,7 @@ const ArchitectPage = () => {
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
     logoURL: "",
+    infoIPFSHash: "",
     votingControlType: "DirectDemocracy",
     directDemocracyQuorum: 51,
     hybridVoteQuorum: 51,
@@ -212,6 +214,32 @@ const ArchitectPage = () => {
     }
   };
 
+  const createAndUploadJson = async () => {
+    const jsonData = {
+      description: orgDetails.description,
+      links: orgDetails.links.map(link => ({
+        name: link.name,
+        url: link.url,
+      })),
+    };
+    try {
+      const result = await addToIpfs(JSON.stringify(jsonData));
+      setOrgDetails((prevDetails) => ({
+        ...prevDetails,
+        infoIPFSHash: result.path,
+      }));
+    } catch (error) {
+      console.error("Error uploading to IPFS:", error);
+      toast({
+        title: "IPFS upload failed.",
+        description: "There was an error uploading the data to IPFS.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
   const handleUserInput = async (input) => {
     console.log("input", input);
     addMessage(input, "User");
@@ -239,11 +267,12 @@ const ArchitectPage = () => {
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
-      case steps.ASK_IF_LINKS:  
+      case steps.ASK_IF_LINKS:
         setShowSelection(false);
         if (input.toLowerCase() === "yes") {
           setIsLinksModalOpen(true);
         } else {
+          await createAndUploadJson();  // Create and upload JSON when there are no links
           setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
           addMessage("No links will be added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
         }
@@ -379,6 +408,7 @@ const ArchitectPage = () => {
         if (input.toLowerCase().includes("yes")) {
           setIsLogoModalOpen(true);
         } else {
+          await createAndUploadJson();  // Create and upload JSON when skipping logo upload
           setCurrentStep(steps.ASK_CONFIRMATION);
           addMessage("Okay, skipping logo upload.");
           setIsConfirmationModalOpen(true);
@@ -467,6 +497,7 @@ const ArchitectPage = () => {
         orgDetails.hybridVotingEnabled,
         orgDetails.participationVotingEnabled,
         orgDetails.logoURL,
+        orgDetails.infoIPFSHash,
         orgDetails.votingControlType,
         orgDetails.directDemocracyQuorum,
         quorum,
@@ -501,7 +532,7 @@ const ArchitectPage = () => {
           <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => message.text} />
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
-          <LinksModal isOpen={isLinksModalOpen} onSave={(links) => { setOrgDetails((prevDetails) => ({...prevDetails,links,}));}} onClose={() => {setIsLinksModalOpen(false); setCurrentStep(steps.ASK_DIRECT_DEMOCRACY); addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");}}/>
+          <LinksModal isOpen={isLinksModalOpen} onSave={(links) => { setOrgDetails((prevDetails) => ({...prevDetails,links}));}} onClose={async () => {setIsLinksModalOpen(false); await createAndUploadJson(); setCurrentStep(steps.ASK_DIRECT_DEMOCRACY); addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");}}/>
           <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} />
           <Deployer signer={signer} isOpen={showDeployer} onClose={() => setShowDeployer(false)} deploymentDetails={orgDetails} />
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
