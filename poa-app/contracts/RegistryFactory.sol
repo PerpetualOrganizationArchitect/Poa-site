@@ -16,7 +16,7 @@ contract RegistryFactory {
         string memory logoURL, 
         string memory POinfoHash
     ) public returns (address) {
-        Registry newRegistry = new Registry(_VotingControlAddress, contractNames, contractAddresses, POinfoHash, POname);
+        Registry newRegistry = new Registry(_VotingControlAddress, contractNames, contractAddresses, POname, logoURL, POinfoHash);
         emit RegistryCreated(address(newRegistry), POname, logoURL, _VotingControlAddress, contractNames, contractAddresses, POinfoHash);
         return address(newRegistry);
     }

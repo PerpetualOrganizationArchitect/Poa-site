@@ -421,13 +421,14 @@ templates:
           handler: handleVotingControlAddressSet
       file: ./mappings/registry/registryMapping.ts
   - kind: file/ipfs
-    name: IpfsContent
+    name: infoIPFS
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - IPFSContent
+        - aboutLinks
+        - infoIPFS
         - PerpetualOrganization
       abis:
         - name: RegistryFactory

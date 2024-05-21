@@ -48,6 +48,7 @@ contract MasterFactory {
         bool hybridVotingEnabled;
         bool participationVotingEnabled;
         string logoURL;
+        string infoIPFSHash;
         string votingControlType;
         string[] contractNames;
         uint256 quorumPercentageDD;
@@ -89,6 +90,7 @@ contract MasterFactory {
             params.logoURL,
             params.votingControlType,
             params.contractNames
+
         );
     
         address[] memory contractAddresses = new address[](7);
@@ -105,7 +107,7 @@ contract MasterFactory {
         ITreasury treasury = ITreasury(contractAddresses[3]);
         treasury.setVotingContract(votingControlAddress);
 
-        registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, "r", "QmdkMvFTLhkR6m292MaHQ9YoHv6geJotiWCgxw4wTLvryN");
+        registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, params.logoURL, params.infoIPFSHash);
     }
 
     // Splitting deployment functions for clarity and reducing stack depth

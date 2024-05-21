@@ -3762,7 +3762,7 @@ export class ValidContract extends Entity {
   }
 }
 
-export class IPFSContent extends Entity {
+export class infoIPFS extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -3770,24 +3770,22 @@ export class IPFSContent extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save IPFSContent entity without an ID");
+    assert(id != null, "Cannot save infoIPFS entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type IPFSContent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type infoIPFS must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("IPFSContent", id.toString(), this);
+      store.set("infoIPFS", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): IPFSContent | null {
-    return changetype<IPFSContent | null>(
-      store.get_in_block("IPFSContent", id)
-    );
+  static loadInBlock(id: string): infoIPFS | null {
+    return changetype<infoIPFS | null>(store.get_in_block("infoIPFS", id));
   }
 
-  static load(id: string): IPFSContent | null {
-    return changetype<IPFSContent | null>(store.get("IPFSContent", id));
+  static load(id: string): infoIPFS | null {
+    return changetype<infoIPFS | null>(store.get("infoIPFS", id));
   }
 
   get id(): string {
@@ -3803,8 +3801,8 @@ export class IPFSContent extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get data(): string {
-    let value = this.get("data");
+  get description(): string {
+    let value = this.get("description");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -3812,8 +3810,100 @@ export class IPFSContent extends Entity {
     }
   }
 
-  set data(value: string) {
-    this.set("data", Value.fromString(value));
+  set description(value: string) {
+    this.set("description", Value.fromString(value));
+  }
+
+  get links(): Array<string> {
+    let value = this.get("links");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set links(value: Array<string>) {
+    this.set("links", Value.fromStringArray(value));
+  }
+}
+
+export class aboutLinks extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save aboutLinks entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type aboutLinks must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("aboutLinks", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): aboutLinks | null {
+    return changetype<aboutLinks | null>(store.get_in_block("aboutLinks", id));
+  }
+
+  static load(id: string): aboutLinks | null {
+    return changetype<aboutLinks | null>(store.get("aboutLinks", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get url(): string {
+    let value = this.get("url");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set url(value: string) {
+    this.set("url", Value.fromString(value));
+  }
+
+  get infoIPFS(): string {
+    let value = this.get("infoIPFS");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set infoIPFS(value: string) {
+    this.set("infoIPFS", Value.fromString(value));
   }
 }
 
@@ -3876,8 +3966,8 @@ export class PerpetualOrganization extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get description(): string | null {
-    let value = this.get("description");
+  get aboutInfo(): string | null {
+    let value = this.get("aboutInfo");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -3885,28 +3975,11 @@ export class PerpetualOrganization extends Entity {
     }
   }
 
-  set description(value: string | null) {
+  set aboutInfo(value: string | null) {
     if (!value) {
-      this.unset("description");
+      this.unset("aboutInfo");
     } else {
-      this.set("description", Value.fromString(<string>value));
-    }
-  }
-
-  get constitution(): string | null {
-    let value = this.get("constitution");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set constitution(value: string | null) {
-    if (!value) {
-      this.unset("constitution");
-    } else {
-      this.set("constitution", Value.fromString(<string>value));
+      this.set("aboutInfo", Value.fromString(<string>value));
     }
   }
 
@@ -3924,23 +3997,6 @@ export class PerpetualOrganization extends Entity {
       this.unset("logoURL");
     } else {
       this.set("logoURL", Value.fromString(<string>value));
-    }
-  }
-
-  get content(): string | null {
-    let value = this.get("content");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set content(value: string | null) {
-    if (!value) {
-      this.unset("content");
-    } else {
-      this.set("content", Value.fromString(<string>value));
     }
   }
 

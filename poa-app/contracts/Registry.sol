@@ -1,20 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// need to add ability for executives to easily update org info
+
 contract Registry {
     address public VotingControlAddress;
 
     mapping(string => address) public contracts;
     string public POname;
-    string public POinfoHash;
+    string public infoHash;
+    string public logoURL;
 
     event ContractAdded(string name, address contractAddress);
     event ContractUpgraded(string name, address newAddress);
     event VotingControlAddressSet(address newAddress);
     event Initialized(address VotingControlAddress, string[] contractNames, address[] contractAddresses);
 
-    // Ensures that only the ParticipationVoting contract can call the function
-    modifier onlyParticipationVoting() {
+
+    modifier onlyVoting() {
         require(msg.sender == VotingControlAddress, "Not authorized");
         _;
     }
@@ -23,11 +26,13 @@ contract Registry {
         address _VotingControlAddress, 
         string[] memory contractNames, 
         address[] memory contractAddresses,
-        string memory hashInfo,
-        string memory name
+        string memory name,
+        string memory logo,
+        string memory hashInfo
     ) {
         POname = name;
-        POinfoHash = hashInfo;
+        infoHash = hashInfo;
+        logoURL = logo;
         require(contractNames.length == contractAddresses.length, "Contract names and addresses must be of the same length");
         VotingControlAddress = _VotingControlAddress;
         for (uint i = 0; i < contractNames.length; i++) {
@@ -36,8 +41,7 @@ contract Registry {
 
     }
 
-
-    function setVotingControlAddress(address _address) external onlyParticipationVoting{
+    function setVotingControlAddress(address _address) external onlyVoting{
         
         VotingControlAddress = _address;
         emit VotingControlAddressSet(_address);
@@ -47,14 +51,18 @@ contract Registry {
         return contracts[name];
     }
 
-    function addContract(string memory name, address contractAddress) onlyParticipationVoting external {
+    function addContract(string memory name, address contractAddress) onlyVoting external {
         
         contracts[name] = contractAddress;
         emit ContractAdded(name, contractAddress);
     }
 
-    function upgradeContract(string memory name, address newAddress) external onlyParticipationVoting {
+    function upgradeContract(string memory name, address newAddress) external onlyVoting {
         contracts[name] = newAddress;
         emit ContractUpgraded(name, newAddress);
     }
+
+
+
+
 }
