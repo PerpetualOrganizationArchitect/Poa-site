@@ -11,7 +11,7 @@ import {
   VStack,
   Text,
 } from "@chakra-ui/react";
-
+import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import ConnectButton
 import { useGraphContext } from "@/context/graphContext";
 
 const ConfirmationModal = ({
@@ -20,15 +20,19 @@ const ConfirmationModal = ({
   onClose,
   onStartOver,
   onSave,
-  onConnect,
-  wallet
+  wallet,
 }) => {
-  // variable thats true if the wallet exists from wallet prop
+  console.log("wallet", wallet);
   const connected = wallet ? true : false;
+  console.log("connected", connected);
   const [display, setDisplay] = useState(connected);
-  const { account } = useGraphContext();
+  console.log("display", display);
 
-  useEffect(() => {}, [account]);
+  useEffect(() => {
+    if(wallet) {
+      setDisplay(true);
+    }
+  }, [wallet]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -103,23 +107,13 @@ const ConfirmationModal = ({
           </Button>
 
           {/* If wallet is connected, show confirm button */}
-          {display && (
+          {display ? (
             <Button colorScheme="blue" onClick={onSave}>
               Confirm
             </Button>
-          )}
-
-          {/* If wallet is not connected, show connect button */}
-          {!display && (
-            <Button
-              colorScheme="gray"
-              onClick={() => {
-                onConnect();
-                setDisplay(true);
-              }}
-            >
-              Connect Wallet Before Deploy
-            </Button>
+          ) : (
+            /* If wallet is not connected, show connect button */
+            <ConnectButton />
           )}
         </ModalFooter>
       </ModalContent>

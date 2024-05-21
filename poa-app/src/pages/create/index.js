@@ -532,7 +532,7 @@ const ArchitectPage = () => {
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
           <LinksModal isOpen={isLinksModalOpen} onSave={(links) => { setOrgDetails((prevDetails) => ({...prevDetails,links}));}} onClose={async () => {setIsLinksModalOpen(false); await createAndUploadJson(); setCurrentStep(steps.ASK_DIRECT_DEMOCRACY); addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");}}/>
-          <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} />
+          <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} wallet={signer} />
           <Deployer signer={signer} isOpen={showDeployer} onClose={() => setShowDeployer(false)} deploymentDetails={orgDetails} />
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
           {isDeploying && (
