@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+<url>
+  <loc>https://poa.community/</loc>
+  <lastmod>2024-05-06T18:57:05+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
+  <loc>https://poa.community/blog/AlphaV1</loc>
+  <lastmod>2024-05-06T18:57:05+00:00</lastmod>
+  <priority>0.93</priority>
+</url>
+<url>
+  <loc>https://poa.community/docs</loc>
+  <lastmod>2024-05-07T18:57:05+00:00</lastmod>
+  <priority>0.93</priority>
+</url>
+<url>
+  <loc>https://poa.community/landing/</loc>
+  <lastmod>2024-05-06T19:00:22+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://poa.community/about/</loc>
+  <lastmod>2024-05-06T19:00:22+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://poa.community/browser/</loc>
+  <lastmod>2024-05-06T19:00:22+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://poa.community/create/</loc>
+  <lastmod>2024-05-06T19:00:22+00:00</lastmod>
+  <priority>0.91</priority>
+</url>
+
+
+</urlset>

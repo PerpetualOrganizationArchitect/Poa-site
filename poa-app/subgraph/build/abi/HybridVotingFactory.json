@@ -1,0 +1,97 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "hybridVotingAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "POname",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quorumPercentage",
+        "type": "uint256"
+      }
+    ],
+    "name": "HybridVotingContractCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_ParticipationToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_DemocracyToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_nftMembership",
+        "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_allowedRoleNames",
+        "type": "string[]"
+      },
+      {
+        "internalType": "bool",
+        "name": "_quadraticVotingEnabled",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_democracyVoteWeight",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_participationVoteWeight",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_treasuryAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "POname",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quorumPercentage",
+        "type": "uint256"
+      }
+    ],
+    "name": "createHybridVoting",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
