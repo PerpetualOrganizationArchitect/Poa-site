@@ -48,9 +48,6 @@ export const Web3Provider = ({ children }) => {
 
     useEffect(() => {
         console.log("provider: ", provider )
-        
-        
-        console.log("signer1: ", signer);
         console.log("address1: ", address)
     
         setAccount(address);
