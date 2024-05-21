@@ -6,7 +6,6 @@ import {
   Box,
   useToast,
   Button,
-  useDisclosure,
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -19,6 +18,7 @@ import MemberSpecificationModal from "@/components/Architect/MemberSpecification
 import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 import ConfirmationModal from "@/components/Architect/ConfirmationModal";
+import LinksModal from "@/components/Architect/LinksModal";
 import ConversationLog from "@/components/Architect/ConversationLog";
 import Character from "@/components/Architect/Character";
 import Selection from "@/components/Architect/Selection";
@@ -31,6 +31,8 @@ const steps = {
   ASK_INTRO: "ASK_INTRO",
   ASK_NAME: "ASK_NAME",
   ASK_DESCRIPTION: "ASK_DESCRIPTION",
+  ASK_IF_LINKS: "ASK_IF_LINKS",  // Add this step
+  ASK_LINKS: "ASK_LINKS",
   ASK_DIRECT_DEMOCRACY: "ASK_DIRECT_DEMOCRACY",
   ASK_QUADRATIC_VOTING: "ASK_QUADRATIC_VOTING",
   ASK_VOTING: "ASK_VOTING",
@@ -69,12 +71,12 @@ const ArchitectPage = () => {
   const toast = useToast();
   const router = useRouter();
   const selectionRef = useRef(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] = useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
+  const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [showSelection, setShowSelection] = useState(false);
@@ -95,6 +97,8 @@ const ArchitectPage = () => {
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
     POname: "",
+    description: "",
+    links: [],
     quadraticVotingEnabled: false,
     democracyVoteWeight: 100,
     participationVoteWeight: 0,
@@ -168,6 +172,8 @@ const ArchitectPage = () => {
     setOrgDetails({
       membershipTypeNames: ["Regular", "Executive"],
       POname: "",
+      description: "",
+      links: [],
       quadraticVotingEnabled: false,
       democracyVoteWeight: 100,
       participationVoteWeight: 0,
@@ -180,7 +186,6 @@ const ArchitectPage = () => {
       votingControlType: "DirectDemocracy",
     });
     setCurrentStep(steps.ASK_NAME);
-    onClose();
   };
 
   const pinLogoFile = async (ipfsUrl) => {
@@ -229,8 +234,19 @@ const ArchitectPage = () => {
         break;
       case steps.ASK_DESCRIPTION:
         setOrgDetails((prevDetails) => ({ ...prevDetails, description: input }));
-        setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
-        addMessage("Got it! Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
+        addMessage("Got it! Do you have any links you want to add for your organization?");
+        setCurrentStep(steps.ASK_IF_LINKS);
+        setOptions(yesNoOptions);
+        setShowSelection(true);
+        break;
+      case steps.ASK_IF_LINKS:  
+        setShowSelection(false);
+        if (input.toLowerCase() === "yes") {
+          setIsLinksModalOpen(true);
+        } else {
+          setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
+          addMessage("No links will be added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
+        }
         break;
       case steps.ASK_DIRECT_DEMOCRACY:
         setOrgDetails((prevDetails) => ({
@@ -426,7 +442,7 @@ const ArchitectPage = () => {
       democracyVoteWeight: democracyWeight,
       participationVoteWeight: participationWeight,
     }));
-    onClose();
+    setIsWeightModalOpen(false);
     addMessage("Hybrid vote weights have been set.\n\n #### What quorum percentage would you like?");
     setCurrentStep(steps.ASK_QUORUM_PERCENTAGE);
   };
@@ -485,6 +501,7 @@ const ArchitectPage = () => {
           <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => message.text} />
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
+          <LinksModal isOpen={isLinksModalOpen} onSave={(links) => { setOrgDetails((prevDetails) => ({...prevDetails,links,}));}} onClose={() => {setIsLinksModalOpen(false); setCurrentStep(steps.ASK_DIRECT_DEMOCRACY); addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");}}/>
           <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} />
           <Deployer signer={signer} isOpen={showDeployer} onClose={() => setShowDeployer(false)} deploymentDetails={orgDetails} />
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
