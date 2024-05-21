@@ -49,13 +49,26 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
 
 export function handleIpfsContent(content: Bytes): void {
     let ctx = dataSource.context();
-    let poName = ctx.getString(PONAME_KEY).toString();
+    let poName = ctx.getString(PONAME_KEY);
 
     let ipfsContentString = content.toString();
     let ipfsContent = json.fromBytes(content).toObject();
 
-    let description = ipfsContent.get("description").toString();
-    let linksArray = ipfsContent.get("links").toArray();
+    if (ipfsContent == null) {
+        log.warning("IPFS content is null", []);
+        return;
+    }
+
+    let descriptionValue = ipfsContent.get("description");
+    let linksValue = ipfsContent.get("links");
+
+    if (descriptionValue == null) {
+        log.warning("Description is null", []);
+        return;
+    }
+
+    let description = descriptionValue.toString();
+    let linksArray = linksValue != null ? linksValue.toArray() : [];
 
     let ipfsEntity = new infoIPFS(poName);
     ipfsEntity.description = description;
@@ -63,8 +76,16 @@ export function handleIpfsContent(content: Bytes): void {
     let linkEntities: Array<string> = [];
     for (let i = 0; i < linksArray.length; i++) {
         let linkObject = linksArray[i].toObject();
-        let linkName = linkObject.get("name").toString();
-        let linkUrl = linkObject.get("url").toString();
+        let linkNameValue = linkObject.get("name");
+        let linkUrlValue = linkObject.get("url");
+
+        if (linkNameValue == null || linkUrlValue == null) {
+            log.warning("Link name or URL is null for index {}", [i.toString()]);
+            continue;
+        }
+
+        let linkName = linkNameValue.toString();
+        let linkUrl = linkUrlValue.toString();
 
         let linkEntity = new aboutLinks(poName + "-" + i.toString());
         linkEntity.name = linkName;
@@ -75,7 +96,7 @@ export function handleIpfsContent(content: Bytes): void {
         linkEntities.push(linkEntity.id);
     }
 
-    ipfsEntity.links = linkEntities;
+    ipfsEntity.links = linkEntities.length > 0 ? linkEntities : null;
     ipfsEntity.save();
 
     let po = PerpetualOrganization.load(poName);

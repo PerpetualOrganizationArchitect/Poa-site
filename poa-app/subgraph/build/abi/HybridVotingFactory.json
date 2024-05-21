@@ -25,6 +25,18 @@
         "internalType": "uint256",
         "name": "quorumPercentage",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "DDpercent",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "PTpercent",
+        "type": "uint256"
       }
     ],
     "name": "HybridVotingContractCreated",

@@ -3814,17 +3814,21 @@ export class infoIPFS extends Entity {
     this.set("description", Value.fromString(value));
   }
 
-  get links(): Array<string> {
+  get links(): Array<string> | null {
     let value = this.get("links");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toStringArray();
     }
   }
 
-  set links(value: Array<string>) {
-    this.set("links", Value.fromStringArray(value));
+  set links(value: Array<string> | null) {
+    if (!value) {
+      this.unset("links");
+    } else {
+      this.set("links", Value.fromStringArray(<Array<string>>value));
+    }
   }
 }
 

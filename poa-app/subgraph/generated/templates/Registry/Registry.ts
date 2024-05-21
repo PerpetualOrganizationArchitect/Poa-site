@@ -103,21 +103,6 @@ export class Registry extends ethereum.SmartContract {
     return new Registry("Registry", address);
   }
 
-  POinfoHash(): string {
-    let result = super.call("POinfoHash", "POinfoHash():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_POinfoHash(): ethereum.CallResult<string> {
-    let result = super.tryCall("POinfoHash", "POinfoHash():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
   POname(): string {
     let result = super.call("POname", "POname():(string)", []);
 
@@ -197,6 +182,36 @@ export class Registry extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
+
+  infoHash(): string {
+    let result = super.call("infoHash", "infoHash():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_infoHash(): ethereum.CallResult<string> {
+    let result = super.tryCall("infoHash", "infoHash():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  logoURL(): string {
+    let result = super.call("logoURL", "logoURL():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_logoURL(): ethereum.CallResult<string> {
+    let result = super.tryCall("logoURL", "logoURL():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
 }
 
 export class ConstructorCall extends ethereum.Call {
@@ -228,12 +243,16 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[2].value.toAddressArray();
   }
 
-  get hashInfo(): string {
+  get name(): string {
     return this._call.inputValues[3].value.toString();
   }
 
-  get name(): string {
+  get logo(): string {
     return this._call.inputValues[4].value.toString();
+  }
+
+  get hashInfo(): string {
+    return this._call.inputValues[5].value.toString();
   }
 }
 

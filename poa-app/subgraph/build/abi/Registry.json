@@ -18,12 +18,17 @@
       },
       {
         "internalType": "string",
-        "name": "hashInfo",
+        "name": "name",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "name",
+        "name": "logo",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "hashInfo",
         "type": "string"
       }
     ],
@@ -108,19 +113,6 @@
   },
   {
     "inputs": [],
-    "name": "POinfoHash",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "POname",
     "outputs": [
       {
@@ -196,6 +188,32 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "infoHash",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "logoURL",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

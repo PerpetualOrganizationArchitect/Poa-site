@@ -236,6 +236,8 @@ type HybridVoting @entity {
   id: ID!
   contract: HybridVotingCreated! @link
   POname: String!
+  percentDD: BigInt!
+  percentPT: BigInt!
   proposals: [HybridProposal!]! @derivedFrom(field: "voting")
   quorum: BigInt!
 }
@@ -333,24 +335,28 @@ type ValidContract @entity {
   name: String!
 }
 
-## ipfs
+## ipfs PO about info 
 
-type IPFSContent @entity {
+type infoIPFS @entity {
   id: ID!
-  data: String!
+  description: String!
+  links: [aboutLinks!]
+}
+
+type aboutLinks @entity {
+  id: ID!
+  name: String!
+  url: String!
+  infoIPFS: infoIPFS! @link
 }
 
 ## Perpetual Organization info 
 
-
-
 type PerpetualOrganization @entity {
   id: ID!
   name: String!
-  description: String
-  constitution: String
+  aboutInfo: infoIPFS @link
   logoURL: String
-  content: IPFSContent @link
   NFTMembership: NFTMembership! @link
   registry: Registry @link
   DirectDemocracyToken: DDToken @liknk
