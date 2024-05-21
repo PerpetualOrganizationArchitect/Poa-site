@@ -331,12 +331,12 @@ const ArchitectPage = () => {
             ...prevDetails,
             participationVotingEnabled: true,
           }));
-          addMessage("Great! Participation based voting has been enabled. What quorum percentage would you like?");
+          addMessage("Great! Participation based voting has been enabled.\n\n #### What quorum percentage would you like?");
           setCurrentStep(steps.ASK_QUORUM_PERCENTAGE);
         } else if (input.toLowerCase() === "neither") {
           setCurrentStep(steps.ASK_ROLE);
           addMessage("Proceeding without additional voting types.");
-          addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. You will be an executive by default. Would you like to add more roles?");
+          addMessage("By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls. You will be an executive by default.\n\n #### Would you like to add more roles?");
           setOptions(yesNoOptions);
           setShowSelection(true);
         } else {
@@ -388,7 +388,7 @@ const ArchitectPage = () => {
           votingControlType: input,
         }));
         setCurrentStep(steps.ASK_ROLE);
-        addMessage("Voting contract has been set.\n\n  By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
+        addMessage("Voting contract has been set.\n\n By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
