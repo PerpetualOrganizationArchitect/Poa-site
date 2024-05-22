@@ -21,6 +21,9 @@ export async function main(
     wallet
   ){
 
+    console.log("Creating new DAO...");
+    console.log("these variables", memberTypeNames, executivePermissionNames, POname, quadraticVotingEnabled, democracyVoteWeight, participationVoteWeight, hybridVotingEnabled, participationVotingEnabled, logoURL, infoIPFSHash, votingControlType, quorumPercentageDD, quorumPercentagePV, wallet)
+
     let contractNames = [];
     if (hybridVotingEnabled) {
         contractNames = [
@@ -57,8 +60,8 @@ export async function main(
         infoIPFSHash,
         votingControlType,
         contractNames,
-        quorumPercentageDD,
-        quorumPercentagePV
+        quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
+        quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
     };
 
     console.log("Deploying new DAO with the following parameters:");

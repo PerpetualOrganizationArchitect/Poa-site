@@ -97,6 +97,7 @@ const ArchitectPage = () => {
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
+    executiveRoleNames: ["Executive"],
     POname: "",
     description: "",
     links: [],
@@ -173,6 +174,7 @@ const ArchitectPage = () => {
     setOrgName("");
     setOrgDetails({
       membershipTypeNames: ["Regular", "Executive"],
+      executiveRoleNames: ["Executive"],
       POname: "",
       description: "",
       links: [],
@@ -383,15 +385,29 @@ const ArchitectPage = () => {
         ]);
         break;
       case steps.ASK_VOTING_CONTRACT:
-        setOrgDetails((prevDetails) => ({
-          ...prevDetails,
-          votingControlType: input,
-        }));
-        setCurrentStep(steps.ASK_ROLE);
-        addMessage("Voting contract has been set.\n\n By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
-        setOptions(yesNoOptions);
-        setShowSelection(true);
-        break;
+          let votingControlType;
+          switch (input) {
+            case 'hybrid':
+              votingControlType = 'Hybrid';
+              break;
+            case 'direct_democracy':
+              votingControlType = 'DirectDemocracy';
+              break;
+            case 'participation_based':
+              votingControlType = 'Participation';
+              break;
+            default:
+              votingControlType = input; // default to the input value if it doesn't match any case
+          }
+          setOrgDetails((prevDetails) => ({
+            ...prevDetails,
+            votingControlType: votingControlType,
+          }));
+          setCurrentStep(steps.ASK_ROLE);
+          addMessage("Voting contract has been set.\n\n By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
+          setOptions(yesNoOptions);
+          setShowSelection(true);
+          break;
       case steps.ASK_ROLE:
         setShowSelection(false);
         if (input.toLowerCase() === "yes") {
@@ -480,15 +496,16 @@ const ArchitectPage = () => {
     setIsConfirmationModalOpen(false);
     await deployOrg();
     setLoadingCompleted(true);
-    setShowDeployer(true);
+    //setShowDeployer(true);
   };
 
   const deployOrg = async () => {
+    console.log("Deploying organization with the following details:", orgDetails);
     const quorum = orgDetails.participationVoteQuorum || orgDetails.hybridVoteQuorum;
     try {
       await main(
         orgDetails.membershipTypeNames,
-        orgDetails.membershipTypeNames,
+        orgDetails.executiveRoleNames,
         orgDetails.POname,
         orgDetails.quadraticVotingEnabled,
         orgDetails.democracyVoteWeight,
