@@ -94,7 +94,6 @@ const ArchitectPage = () => {
   const [openai, setOpenai] = useState(null);
   const initChatBotCalled = useRef(false);
 
-
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
     executiveRoleNames: ["Executive"],
@@ -126,6 +125,18 @@ const ArchitectPage = () => {
       setSelectionHeight(selectionRef.current.offsetHeight + 20);
     }
   }, [showSelection, options]);
+
+  const handleSaveLinks = async (links) => {
+    console.log("links", links);
+    setOrgDetails((prevDetails) => ({
+      ...prevDetails,
+      links,
+    }));
+    setIsLinksModalOpen(false);
+    
+    setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
+    addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
+  };
 
   const initChatBot = async () => {
     const openai = new OpenAI({
@@ -217,6 +228,7 @@ const ArchitectPage = () => {
   };
 
   const createAndUploadJson = async () => {
+    console.log("orgDetails json", orgDetails);
     const jsonData = {
       description: orgDetails.description,
       links: orgDetails.links.map(link => ({
@@ -274,12 +286,13 @@ const ArchitectPage = () => {
         if (input.toLowerCase() === "yes") {
           setIsLinksModalOpen(true);
         } else {
-          await createAndUploadJson();  
+          await createAndUploadJson();
           setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
           addMessage("No links will be added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
         }
         break;
       case steps.ASK_DIRECT_DEMOCRACY:
+        await createAndUploadJson();
         setOrgDetails((prevDetails) => ({
           ...prevDetails,
           directDemocracyQuorum: parseInt(input, 10),
@@ -548,7 +561,7 @@ const ArchitectPage = () => {
           <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => message.text} />
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
-          <LinksModal isOpen={isLinksModalOpen} onSave={(links) => { setOrgDetails((prevDetails) => ({...prevDetails,links}));}} onClose={async () => {setIsLinksModalOpen(false); await createAndUploadJson(); setCurrentStep(steps.ASK_DIRECT_DEMOCRACY); addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");}}/>
+          <LinksModal isOpen={isLinksModalOpen} onSave={handleSaveLinks} onClose={() => setIsLinksModalOpen(false)} />
           <ConfirmationModal isOpen={isConfirmationModalOpen} orgDetails={orgDetails} onClose={() => setIsConfirmationModalOpen(false)} onStartOver={handleStartOver} onSave={handleSaveAllSelections} wallet={signer} />
           <Deployer signer={signer} isOpen={showDeployer} onClose={() => setShowDeployer(false)} deploymentDetails={orgDetails} />
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
