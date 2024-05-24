@@ -3801,17 +3801,21 @@ export class infoIPFS extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get description(): string {
+  get description(): string | null {
     let value = this.get("description");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set description(value: string) {
-    this.set("description", Value.fromString(value));
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
+    }
   }
 
   get links(): Array<string> | null {
@@ -3828,6 +3832,23 @@ export class infoIPFS extends Entity {
       this.unset("links");
     } else {
       this.set("links", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get data(): string | null {
+    let value = this.get("data");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set data(value: string | null) {
+    if (!value) {
+      this.unset("data");
+    } else {
+      this.set("data", Value.fromString(<string>value));
     }
   }
 }

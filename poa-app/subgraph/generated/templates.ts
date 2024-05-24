@@ -132,12 +132,12 @@ export class Registry extends DataSourceTemplate {
   }
 }
 
-export class infoIPFS extends DataSourceTemplate {
+export class infoIpfs extends DataSourceTemplate {
   static create(cid: string): void {
-    DataSourceTemplate.create("infoIPFS", [cid]);
+    DataSourceTemplate.create("infoIpfs", [cid]);
   }
 
   static createWithContext(cid: string, context: DataSourceContext): void {
-    DataSourceTemplate.createWithContext("infoIPFS", [cid], context);
+    DataSourceTemplate.createWithContext("infoIpfs", [cid], context);
   }
 }

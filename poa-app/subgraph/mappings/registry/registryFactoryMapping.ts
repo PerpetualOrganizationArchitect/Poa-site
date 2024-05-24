@@ -12,7 +12,6 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
 
     entity.contractAddress = event.params.newRegistryAddress;
     entity.POname = event.params.POname;
-
     entity.save();
 
     let newRegistry = new Registry(event.params.newRegistryAddress.toHex());
@@ -30,29 +29,38 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
         context.setString(PONAME_KEY, event.params.POname);
         context.setBytes("hash", Bytes.fromUTF8(event.params.POinfoHash));
 
-        DataSourceTemplate.createWithContext("IpfsContent", [event.params.POinfoHash], context);
+        log.info("Creating infoIPFS template with hash: {}", [event.params.POinfoHash]);
+        DataSourceTemplate.createWithContext("infoIpfs", [event.params.POinfoHash], context);
+        po.aboutInfo = event.params.POname;
+        po.save();
     }
 
-    // Loop through all contractNames and contractAddresses and add them to the registry as validContracts
+    // Check for array length mismatch
     let contractNames = event.params.contractNames;
     let contractAddresses = event.params.contractAddresses;
+
+    if (contractNames.length != contractAddresses.length) {
+        log.warning("Contract names and addresses arrays length mismatch", []);
+        return;
+    }
 
     for (let i = 0; i < contractNames.length; i++) {
         let validContract = new ValidContract(contractNames[i]);
         validContract.registry = newRegistry.id;
         validContract.name = contractNames[i];
         validContract.contractAddress = contractAddresses[i];
-        validContract.registry = newRegistry.id;
         validContract.save();
     }
 }
 
-export function handleIpfsContent(content: Bytes): void {
+export function handleIpfsContent(aboutInfo: Bytes): void {
+    log.info("Triggered handleIpfsContent", []);
+    
     let ctx = dataSource.context();
-    let poName = ctx.getString(PONAME_KEY);
+    let poName = ctx.getString(PONAME_KEY).toString();
 
-    let ipfsContentString = content.toString();
-    let ipfsContent = json.fromBytes(content).toObject();
+    let infoIpfs = aboutInfo.toString();
+    let ipfsContent = json.fromBytes(aboutInfo).toObject();
 
     if (ipfsContent == null) {
         log.warning("IPFS content is null", []);
@@ -71,7 +79,10 @@ export function handleIpfsContent(content: Bytes): void {
     let linksArray = linksValue != null ? linksValue.toArray() : [];
 
     let ipfsEntity = new infoIPFS(poName);
+    ipfsEntity.data = infoIpfs;
+    
     ipfsEntity.description = description;
+
 
     let linkEntities: Array<string> = [];
     for (let i = 0; i < linksArray.length; i++) {
