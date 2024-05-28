@@ -93,6 +93,7 @@ const ArchitectPage = () => {
   const [isWaiting, setIsWaiting] = useState(false);
   const [openai, setOpenai] = useState(null);
   const initChatBotCalled = useRef(false);
+  const [isInputVisible, setIsInputVisible] = useState(true);
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
@@ -133,9 +134,9 @@ const ArchitectPage = () => {
       links,
     }));
     setIsLinksModalOpen(false);
-    
+
     setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
-    addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
+    addMessage("Links have been added.\n\n Now, let's talk about voting. **Direct Democracy**, where everyone gets an equal vote. Enabled by default, this can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What approval percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a poll option to win.");
   };
 
   const initChatBot = async () => {
@@ -151,9 +152,9 @@ const ArchitectPage = () => {
     setThread(thread);
 
     const introMessage =
-      ' #### Hello! I\'m **Poa**, your perpetual organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
-      'Perpetual Organizations come with a custom voting system for organizational management like deciding on projects or managing money, a task manager for determining contribution levels, various options for raising money without giving away power, and more. Ask me if you have any questions about what features Poa offers!\n\n' +
-      '##### Examples of Organizations Poa Can Help You Create\n\n' +
+      ' #### Hello! I\'m **Poa**, your Perpetual Organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
+      '**Perpetual Organizations** come with a custom voting system for organizational management like deciding on projects or managing money, a task manager for determining contribution levels, various options for raising money without giving away power, and more. Ask me if you have any questions about what features Poa offers!\n\n' +
+      '#### Examples of Organizations Poa Can Help You Create\n\n' +
       '- **Student Organizations**:\n' +
       'Student-led groups controlled either by one of Poa\'s many voting systems.\n\n' +
       '- **Fully Worker-owned Cooperatives**:\n' +
@@ -276,19 +277,21 @@ const ArchitectPage = () => {
         break;
       case steps.ASK_DESCRIPTION:
         setOrgDetails((prevDetails) => ({ ...prevDetails, description: input }));
-        addMessage("Got it! Do you have any links you want to add for your organization?");
+        addMessage("#### Got it! Do you have any links you want to add for your organization?");
         setCurrentStep(steps.ASK_IF_LINKS);
         setOptions(yesNoOptions);
         setShowSelection(true);
+        setIsInputVisible(false);
         break;
       case steps.ASK_IF_LINKS:
         setShowSelection(false);
+        setIsInputVisible(true);
         if (input.toLowerCase() === "yes") {
           setIsLinksModalOpen(true);
         } else {
           await createAndUploadJson();
           setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
-          addMessage("No links will be added.\n\n Now, let's talk about voting. **Direct Democracy** is an option by default. This can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What quorum percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a decision to pass.");
+          addMessage("No links will be added.\n\n Now, let's talk about voting. **Direct Democracy**, where everyone gets an equal vote. Enabled by default, this can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What approval percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a option to win.");
         }
         break;
       case steps.ASK_DIRECT_DEMOCRACY:
@@ -546,8 +549,8 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
-      <Box position="fixed" top="50px" right="50px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
-        <Text fontSize="md">
+      <Box position="fixed" top="30px" right="30px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
+        <Text fontSize="sm">
           This is AlphaV1. There may be some bugs. Please report in our discord.
         </Text>
       </Box>
@@ -571,8 +574,13 @@ const ArchitectPage = () => {
             </Center>
           )}
         </Box>
-        {showSelection && options.length > 0 && (
+        {showSelection && isInputVisible && options.length > 0 && (
           <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+            <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
+          </Box>
+        )}
+        {showSelection && !isInputVisible && options.length > 0 && (
+          <Box position="fixed" bottom="0px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
             <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
           </Box>
         )}
@@ -582,7 +590,9 @@ const ArchitectPage = () => {
               Access site
             </Button>
           )}
-          <ArchitectInput value={userInput} onChange={(e) => setUserInput(e.target.value)} onSubmit={handleSendClick} isDisabled={isWaiting} />
+          {isInputVisible && (
+            <ArchitectInput value={userInput} onChange={(e) => setUserInput(e.target.value)} onSubmit={handleSendClick} isDisabled={isWaiting} />
+          )}
         </Box>
       </motion.div>
     </Layout>

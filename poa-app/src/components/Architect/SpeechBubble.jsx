@@ -37,7 +37,7 @@ const TypingMarkdown = ({ text, containerRef }) => {
   useEffect(() => {
     let currentText = "";
     let index = 0;
-    const typingSpeed = 4; // milliseconds
+    const typingSpeed = 3.9; // milliseconds
 
     const typeText = () => {
       if (index < text.length) {
@@ -76,17 +76,19 @@ const SpeechBubble = ({ speaker, children, containerRef }) => {
     <Box
       bg={isUser ? "purple.400" : "purple.600"}
       color="white"
-      p={3}
+      pt={2}
+      pl={6}
+      pr={6}
       borderRadius="lg"
       alignSelf={isUser ? "flex-end" : "flex-start"}
-      maxWidth="65%"
-      marginLeft={"14%"}
-      marginRight={"14%"}
-      marginTop={2}
+      maxWidth={["87%","80%","73%","67%"]}
+      marginLeft={["2%","5%","9.5%","13%"]}
+      marginRight={["2%","5%","9.5%","13%"]}
+      marginTop={0}
       marginBottom={2}
     >
-      <Text mb="2" fontWeight="bold">{speaker}</Text>
-      <Box p="0" ml="2">
+      <Text mb="1" fontSize={"2xl"} fontWeight="bold">{speaker}</Text>
+      <Box p="0" >
         <TypingMarkdown text={children} containerRef={containerRef} />
       </Box>
     </Box>
