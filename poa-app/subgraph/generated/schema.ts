@@ -3663,8 +3663,8 @@ export class Registry extends Entity {
     );
   }
 
-  get logoURL(): string | null {
-    let value = this.get("logoURL");
+  get logoHash(): string | null {
+    let value = this.get("logoHash");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -3672,11 +3672,11 @@ export class Registry extends Entity {
     }
   }
 
-  set logoURL(value: string | null) {
+  set logoHash(value: string | null) {
     if (!value) {
-      this.unset("logoURL");
+      this.unset("logoHash");
     } else {
-      this.set("logoURL", Value.fromString(<string>value));
+      this.set("logoHash", Value.fromString(<string>value));
     }
   }
 }
@@ -4025,8 +4025,8 @@ export class PerpetualOrganization extends Entity {
     }
   }
 
-  get logoURL(): string | null {
-    let value = this.get("logoURL");
+  get logoHash(): string | null {
+    let value = this.get("logoHash");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -4034,11 +4034,11 @@ export class PerpetualOrganization extends Entity {
     }
   }
 
-  set logoURL(value: string | null) {
+  set logoHash(value: string | null) {
     if (!value) {
-      this.unset("logoURL");
+      this.unset("logoHash");
     } else {
-      this.set("logoURL", Value.fromString(<string>value));
+      this.set("logoHash", Value.fromString(<string>value));
     }
   }
 

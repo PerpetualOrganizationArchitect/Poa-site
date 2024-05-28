@@ -17,7 +17,7 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     let newRegistry = new Registry(event.params.newRegistryAddress.toHex());
     newRegistry.contract = event.params.newRegistryAddress.toHex();
     newRegistry.POname = event.params.POname;
-    newRegistry.logoURL = event.params.logoURL;
+    newRegistry.logoHash = event.params.logoURL;
     newRegistry.votingContract = event.params.VotingControlAddress;
     newRegistry.save();
 
@@ -32,6 +32,7 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
         log.info("Creating infoIPFS template with hash: {}", [event.params.POinfoHash]);
         DataSourceTemplate.createWithContext("infoIpfs", [event.params.POinfoHash], context);
         po.aboutInfo = event.params.POname;
+        po.logoHash = event.params.logoURL;
         po.save();
     }
 

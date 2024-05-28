@@ -35,8 +35,8 @@ const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
       if (file) {
         try {
           const addedData = await addToIpfs(file);
-          const ipfsUrl = `https://ipfs.infura.io/ipfs/${addedData.path}`;
-          onSave(ipfsUrl); // Pass the IPFS URL to the onSave function
+          const ipfsUrl = `${addedData.path}`;
+          onSave(ipfsUrl); 
           setUploadStatus("success");
         } catch (error) {
           console.error("Error uploading logo to IPFS:", error);

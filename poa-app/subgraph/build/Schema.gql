@@ -325,7 +325,7 @@ type Registry @entity {
   POname: String!
   votingContract: Bytes
   validContracts: [ValidContract!] @derivedFrom(field: "registry")
-  logoURL: String
+  logoHash: String
 }
 
 type ValidContract @entity {
@@ -358,7 +358,7 @@ type PerpetualOrganization @entity {
   id: ID!
   name: String!
   aboutInfo: infoIPFS @link
-  logoURL: String
+  logoHash: String
   NFTMembership: NFTMembership! @link
   registry: Registry @link
   DirectDemocracyToken: DDToken @liknk
