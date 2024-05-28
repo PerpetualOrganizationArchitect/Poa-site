@@ -66,9 +66,8 @@ const yesNoOptions = [
 ];
 
 const startOptions = [
-  { label: "Get Started Building your Pereptual Organization", value: "get_start" },
+  { label: "Get Started Building your Perpetual Organization", value: "get_start" },
 ];
-
 
 const ArchitectPage = () => {
   const { signer } = useWeb3Context();
@@ -99,6 +98,7 @@ const ArchitectPage = () => {
   const [openai, setOpenai] = useState(null);
   const initChatBotCalled = useRef(false);
   const [isInputVisible, setIsInputVisible] = useState(true);
+  const [isTyping, setIsTyping] = useState(false); // Add isTyping state
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Regular", "Executive"],
@@ -174,11 +174,10 @@ const ArchitectPage = () => {
       '\n#### Would you like to learn more about Perpetual Organizations and all of Poa\'s community-first voting systems or get started building your own Perpetual Organization?\n\n';
 
     addMessage(introMessage, "Poa");
-
   };
 
-  const addMessage = (text, speaker = "Poa") => {
-    setMessages((prevMessages) => [...prevMessages, { speaker, text }]);
+  const addMessage = (text, speaker = "Poa", isTyping = false) => {
+    setMessages((prevMessages) => [...prevMessages, { speaker, text, isTyping }]);
   };
 
   const handleSendClick = () => {
@@ -241,7 +240,7 @@ const ArchitectPage = () => {
     console.log("orgDetails json", orgDetails);
     const jsonData = {
       description: orgDetails.description,
-      links: orgDetails.links.map(link => ({
+      links: orgDetails.links.map((link) => ({
         name: link.name,
         url: link.url,
       })),
@@ -411,29 +410,29 @@ const ArchitectPage = () => {
         ]);
         break;
       case steps.ASK_VOTING_CONTRACT:
-          let votingControlType;
-          switch (input) {
-            case 'hybrid':
-              votingControlType = 'Hybrid';
-              break;
-            case 'direct_democracy':
-              votingControlType = 'DirectDemocracy';
-              break;
-            case 'participation_based':
-              votingControlType = 'Participation';
-              break;
-            default:
-              votingControlType = input; // default to the input value if it doesn't match any case
-          }
-          setOrgDetails((prevDetails) => ({
-            ...prevDetails,
-            votingControlType: votingControlType,
-          }));
-          setCurrentStep(steps.ASK_ROLE);
-          addMessage("Voting contract has been set.\n\n By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
-          setOptions(yesNoOptions);
-          setShowSelection(true);
-          break;
+        let votingControlType;
+        switch (input) {
+          case "hybrid":
+            votingControlType = "Hybrid";
+            break;
+          case "direct_democracy":
+            votingControlType = "DirectDemocracy";
+            break;
+          case "participation_based":
+            votingControlType = "Participation";
+            break;
+          default:
+            votingControlType = input; // default to the input value if it doesn't match any case
+        }
+        setOrgDetails((prevDetails) => ({
+          ...prevDetails,
+          votingControlType: votingControlType,
+        }));
+        setCurrentStep(steps.ASK_ROLE);
+        addMessage("Voting contract has been set.\n\n By default, your organization will have two roles: Regular and Executive. Executive members can create tasks and polls.\n\n #### Would you like to add more roles?");
+        setOptions(yesNoOptions);
+        setShowSelection(true);
+        break;
       case steps.ASK_ROLE:
         setShowSelection(false);
         if (input.toLowerCase() === "yes") {
@@ -463,6 +462,7 @@ const ArchitectPage = () => {
 
   const askChatBot = async (input) => {
     setIsWaiting(true);
+    addMessage("", "Poa", true); // Add a new message with isTyping set to true
     await openai.beta.threads.messages.create(thread.id, { role: "user", content: input });
     const run = await openai.beta.threads.runs.create(thread.id, { assistant_id: assistant.id });
     let response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
@@ -477,7 +477,11 @@ const ArchitectPage = () => {
     const lastMessage = messageList.data.find((message) => message.run_id === run.id && message.role === "assistant");
 
     if (lastMessage) {
-      addMessage(lastMessage.content[0]["text"].value, "Poa");
+      setMessages((prevMessages) =>
+        prevMessages.map((msg, index) =>
+          index === prevMessages.length - 1 ? { ...msg, text: lastMessage.content[0]["text"].value, isTyping: false } : msg
+        )
+      );
     }
   };
 
@@ -571,7 +575,8 @@ const ArchitectPage = () => {
           </motion.div>
         </Box>
         <Box position="fixed" top="110px" overflowY="auto" width="full" pt="2" px="2">
-          <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => message.text} />
+          <ConversationLog messages={messages} selectionHeight={selectionHeight} />
+
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
           <LinksModal isOpen={isLinksModalOpen} onSave={handleSaveLinks} onClose={() => setIsLinksModalOpen(false)} />
@@ -585,7 +590,7 @@ const ArchitectPage = () => {
           )}
         </Box>
         {showSelection && isInputVisible && options.length > 0 && (
-          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center"bg="rgba(255, 255, 255, 0.9)" backdropFilter="blur(5px)" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="rgba(255, 255, 255, 0.9)" backdropFilter="blur(5px)" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
             <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
           </Box>
         )}

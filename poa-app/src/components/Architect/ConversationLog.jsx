@@ -5,6 +5,7 @@ import SpeechBubble from "./SpeechBubble";
 const ConversationLog = ({ messages, selectionHeight }) => {
   const containerRef = useRef(null);
 
+  
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
@@ -18,10 +19,15 @@ const ConversationLog = ({ messages, selectionHeight }) => {
       spacing={4}
       overflowY="auto"
       pb={`${selectionHeight}px`}
-      maxHeight="80vh" // Set a maxHeight to limit the scrollable area
+      maxHeight="80vh" 
     >
       {messages.map((message, index) => (
-        <SpeechBubble key={index} speaker={message.speaker} containerRef={containerRef}>
+        <SpeechBubble
+          key={index}
+          speaker={message.speaker}
+          containerRef={containerRef}
+          isTyping={message.isTyping} 
+        >
           {message.text}
         </SpeechBubble>
       ))}

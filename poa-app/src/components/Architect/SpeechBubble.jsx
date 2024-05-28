@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
-import { Box, Text, Heading, Link, ListItem, OrderedList, UnorderedList, Code, Divider, VStack } from "@chakra-ui/react";
+import { Box, Text, Heading, Link, ListItem, OrderedList, UnorderedList, Code, Divider, Spinner, VStack } from "@chakra-ui/react";
 
 const ChakraUIRenderer = {
   h1: ({ children }) => <Heading as="h1" size="2xl" my={4}>{children}</Heading>,
@@ -31,13 +31,13 @@ const ChakraUIRenderer = {
   ),
 };
 
-const TypingMarkdown = ({ text, containerRef }) => {
+const TypingMarkdown = ({ text, containerRef, onCompleted }) => {
   const [displayText, setDisplayText] = useState("");
 
   useEffect(() => {
     let currentText = "";
     let index = 0;
-    const typingSpeed = 4.3; // milliseconds
+    const typingSpeed = 6.9; 
 
     const typeText = () => {
       if (index < text.length) {
@@ -69,7 +69,7 @@ const TypingMarkdown = ({ text, containerRef }) => {
   );
 };
 
-const SpeechBubble = ({ speaker, children, containerRef }) => {
+const SpeechBubble = ({ speaker, children, containerRef, isTyping}) => {
   const isUser = speaker === "User";
 
   return (
@@ -81,15 +81,22 @@ const SpeechBubble = ({ speaker, children, containerRef }) => {
       pr={6}
       borderRadius="lg"
       alignSelf={isUser ? "flex-end" : "flex-start"}
-      maxWidth={["87%","80%","73%","67%"]}
-      marginLeft={["2%","5%","9.5%","13%"]}
-      marginRight={["2%","5%","9.5%","13%"]}
+      maxWidth={["87%", "80%", "73%", "67%"]}
+      marginLeft={["2%", "5%", "9.5%", "13%"]}
+      marginRight={["2%", "5%", "9.5%", "13%"]}
       marginTop={0}
       marginBottom={2}
     >
       <Text mb="1" fontSize={"2xl"} fontWeight="bold">{speaker}</Text>
-      <Box p="0" >
-        <TypingMarkdown text={children} containerRef={containerRef} />
+      <Box p="0">
+        {isTyping ? (
+          <VStack>
+            <Spinner />
+            <Text mb="2">Consulting Poa...</Text>
+          </VStack>
+        ) : (
+          <TypingMarkdown text={children} containerRef={containerRef} />
+        )}
       </Box>
     </Box>
   );
