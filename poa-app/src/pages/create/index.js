@@ -65,6 +65,11 @@ const yesNoOptions = [
   { label: "No", value: "no" },
 ];
 
+const startOptions = [
+  { label: "Get Started Building your Pereptual Organization", value: "get_start" },
+];
+
+
 const ArchitectPage = () => {
   const { signer } = useWeb3Context();
   const { addToIpfs } = useIPFScontext();
@@ -117,6 +122,9 @@ const ArchitectPage = () => {
   useEffect(() => {
     if (!initChatBotCalled.current) {
       initChatBot();
+      setOptions(startOptions);
+      setShowSelection(true);
+
       initChatBotCalled.current = true;
     }
   }, []);
@@ -166,6 +174,7 @@ const ArchitectPage = () => {
       '\n#### Would you like to learn more about Perpetual Organizations and all of Poa\'s community-first voting systems or get started building your own Perpetual Organization?\n\n';
 
     addMessage(introMessage, "Poa");
+
   };
 
   const addMessage = (text, speaker = "Poa") => {
@@ -261,7 +270,8 @@ const ArchitectPage = () => {
 
     switch (currentStep) {
       case steps.ASK_INTRO:
-        if (input.toLowerCase().includes("ready") || input.toLowerCase().includes("start")) {
+        if (input.toLowerCase().includes("get_start")) {
+          setShowSelection(false);
           console.log("starting...");
           setCurrentStep(steps.ASK_NAME);
           addMessage(`Great! Let's get started.\n\n #### What would you like to name your organization?`);
@@ -303,7 +313,7 @@ const ArchitectPage = () => {
         setCurrentStep(steps.ASK_VOTING);
 
         const markdownContent =
-          'The Quorum percentage has been set.\n' +
+          'The Approval percentage has been set.\n' +
           'Now let’s talk about other voting types. **Hybrid** and **Participation-based Voting** can be enabled in addition to direct democracy. You can also proceed without any additional voting types. Here is an explanation of each:\n\n' +
           '### Participation-Based Voting\n' +
           '**Description:**\n' +
@@ -349,7 +359,7 @@ const ArchitectPage = () => {
             ...prevDetails,
             participationVotingEnabled: true,
           }));
-          addMessage("Great! Participation based voting has been enabled.\n\n #### What quorum percentage would you like?");
+          addMessage("Great! Participation based voting has been enabled.\n\n #### What Approval percentage would you like?");
           setCurrentStep(steps.ASK_QUORUM_PERCENTAGE);
         } else if (input.toLowerCase() === "neither") {
           setCurrentStep(steps.ASK_ROLE);
@@ -377,7 +387,7 @@ const ArchitectPage = () => {
           }));
         }
         setCurrentStep(steps.ASK_QUADRATIC_VOTING);
-        addMessage("Quorum percentage has been set.\n\n #### Would you like to enable quadratic voting?");
+        addMessage("Approval percentage has been set.\n\n #### Would you like to enable quadratic voting?\n\n Quadratic voting allows participants to cast votes that reflect the strength of their preferences, giving more weight to stronger preferences while preventing any single participant from having too much influence. The cost of each additional vote increases quadratically, meaning that the number of votes a participant casts for an option is the square root of the amount they are willing to spend. This helps balance influence more fairly among voters.");
         setOptions(yesNoOptions);
         setShowSelection(true);
         break;
@@ -504,7 +514,7 @@ const ArchitectPage = () => {
       participationVoteWeight: participationWeight,
     }));
     setIsWeightModalOpen(false);
-    addMessage("Hybrid vote weights have been set.\n\n #### What quorum percentage would you like?");
+    addMessage("Hybrid vote weights have been set.\n\n #### What Approval percentage would you like?");
     setCurrentStep(steps.ASK_QUORUM_PERCENTAGE);
   };
 
@@ -555,12 +565,12 @@ const ArchitectPage = () => {
         </Text>
       </Box>
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <Box mt="10" position="fixed" top="0" left="0" right="0" zIndex="sticky">
+        <Box mt="8" position="fixed" top="0" left="0" right="0" zIndex="sticky">
           <motion.div variants={itemVariants}>
             <Character />
           </motion.div>
         </Box>
-        <Box position="fixed" top="115px" bottom="60px" overflowY="auto" width="full" pt="4" px="4">
+        <Box position="fixed" top="110px" overflowY="auto" width="full" pt="2" px="2">
           <ConversationLog messages={messages} selectionHeight={selectionHeight} renderMessageContent={(message) => message.text} />
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
@@ -575,12 +585,12 @@ const ArchitectPage = () => {
           )}
         </Box>
         {showSelection && isInputVisible && options.length > 0 && (
-          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center"bg="rgba(255, 255, 255, 0.9)" backdropFilter="blur(5px)" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
             <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
           </Box>
         )}
         {showSelection && !isInputVisible && options.length > 0 && (
-          <Box position="fixed" bottom="0px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="purple.50" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+          <Box position="fixed" bottom="0px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="rgba(255, 255, 255, 0.9)" backdropFilter="blur(5px)" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
             <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
           </Box>
         )}

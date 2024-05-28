@@ -37,7 +37,7 @@ const TypingMarkdown = ({ text, containerRef }) => {
   useEffect(() => {
     let currentText = "";
     let index = 0;
-    const typingSpeed = 3.9; // milliseconds
+    const typingSpeed = 4.3; // milliseconds
 
     const typeText = () => {
       if (index < text.length) {
