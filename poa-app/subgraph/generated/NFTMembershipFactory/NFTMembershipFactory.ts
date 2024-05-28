@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class ContractCreated extends ethereum.Event {
@@ -53,7 +53,7 @@ export class NFTMembershipFactory extends ethereum.SmartContract {
     memberTypeNames: Array<string>,
     _executiveRoleNames: Array<string>,
     _defaultImageURL: string,
-    POname: string
+    POname: string,
   ): Address {
     let result = super.call(
       "createNFTMembership",
@@ -62,8 +62,8 @@ export class NFTMembershipFactory extends ethereum.SmartContract {
         ethereum.Value.fromStringArray(memberTypeNames),
         ethereum.Value.fromStringArray(_executiveRoleNames),
         ethereum.Value.fromString(_defaultImageURL),
-        ethereum.Value.fromString(POname)
-      ]
+        ethereum.Value.fromString(POname),
+      ],
     );
 
     return result[0].toAddress();
@@ -73,7 +73,7 @@ export class NFTMembershipFactory extends ethereum.SmartContract {
     memberTypeNames: Array<string>,
     _executiveRoleNames: Array<string>,
     _defaultImageURL: string,
-    POname: string
+    POname: string,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createNFTMembership",
@@ -82,8 +82,8 @@ export class NFTMembershipFactory extends ethereum.SmartContract {
         ethereum.Value.fromStringArray(memberTypeNames),
         ethereum.Value.fromStringArray(_executiveRoleNames),
         ethereum.Value.fromString(_defaultImageURL),
-        ethereum.Value.fromString(POname)
-      ]
+        ethereum.Value.fromString(POname),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

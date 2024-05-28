@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class EtherWithdrawn extends ethereum.Event {
@@ -117,7 +117,7 @@ export class Treasury extends ethereum.SmartContract {
     let result = super.tryCall(
       "votingContract",
       "votingContract():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class NewProposal extends ethereum.Event {
@@ -180,7 +180,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "DirectDemocracyToken",
       "DirectDemocracyToken():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -190,7 +190,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "DirectDemocracyToken",
       "DirectDemocracyToken():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -203,7 +203,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "ParticipationToken",
       "ParticipationToken():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -213,7 +213,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "ParticipationToken",
       "ParticipationToken():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -226,7 +226,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "democracyVoteWeight",
       "democracyVoteWeight():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -236,7 +236,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "democracyVoteWeight",
       "democracyVoteWeight():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -247,34 +247,34 @@ export class HybridVoting extends ethereum.SmartContract {
 
   getOptionVotes(
     _proposalId: BigInt,
-    _optionIndex: BigInt
+    _optionIndex: BigInt,
   ): HybridVoting__getOptionVotesResult {
     let result = super.call(
       "getOptionVotes",
       "getOptionVotes(uint256,uint256):(uint256,uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(_proposalId),
-        ethereum.Value.fromUnsignedBigInt(_optionIndex)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_optionIndex),
+      ],
     );
 
     return new HybridVoting__getOptionVotesResult(
       result[0].toBigInt(),
-      result[1].toBigInt()
+      result[1].toBigInt(),
     );
   }
 
   try_getOptionVotes(
     _proposalId: BigInt,
-    _optionIndex: BigInt
+    _optionIndex: BigInt,
   ): ethereum.CallResult<HybridVoting__getOptionVotesResult> {
     let result = super.tryCall(
       "getOptionVotes",
       "getOptionVotes(uint256,uint256):(uint256,uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(_proposalId),
-        ethereum.Value.fromUnsignedBigInt(_optionIndex)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_optionIndex),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -283,8 +283,8 @@ export class HybridVoting extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new HybridVoting__getOptionVotesResult(
         value[0].toBigInt(),
-        value[1].toBigInt()
-      )
+        value[1].toBigInt(),
+      ),
     );
   }
 
@@ -292,7 +292,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "getOptionsCount",
       "getOptionsCount(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(_proposalId)]
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
     );
 
     return result[0].toBigInt();
@@ -302,7 +302,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "getOptionsCount",
       "getOptionsCount(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(_proposalId)]
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -321,7 +321,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "nftMembership",
       "nftMembership():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -334,7 +334,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "participationVoteWeight",
       "participationVoteWeight():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -344,7 +344,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "participationVoteWeight",
       "participationVoteWeight():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -357,7 +357,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "quadraticVotingEnabled",
       "quadraticVotingEnabled():(bool)",
-      []
+      [],
     );
 
     return result[0].toBoolean();
@@ -367,7 +367,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "quadraticVotingEnabled",
       "quadraticVotingEnabled():(bool)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -380,7 +380,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.call(
       "quorumPercentage",
       "quorumPercentage():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -390,7 +390,7 @@ export class HybridVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "quorumPercentage",
       "quorumPercentage():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

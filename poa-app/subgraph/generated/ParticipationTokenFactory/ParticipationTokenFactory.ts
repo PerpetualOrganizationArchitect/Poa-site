@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class TokenCreated extends ethereum.Event {
@@ -48,7 +48,7 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
   createParticipationToken(
     name: string,
     symbol: string,
-    POname: string
+    POname: string,
   ): Address {
     let result = super.call(
       "createParticipationToken",
@@ -56,8 +56,8 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
       [
         ethereum.Value.fromString(name),
         ethereum.Value.fromString(symbol),
-        ethereum.Value.fromString(POname)
-      ]
+        ethereum.Value.fromString(POname),
+      ],
     );
 
     return result[0].toAddress();
@@ -66,7 +66,7 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
   try_createParticipationToken(
     name: string,
     symbol: string,
-    POname: string
+    POname: string,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createParticipationToken",
@@ -74,8 +74,8 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
       [
         ethereum.Value.fromString(name),
         ethereum.Value.fromString(symbol),
-        ethereum.Value.fromString(POname)
-      ]
+        ethereum.Value.fromString(POname),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

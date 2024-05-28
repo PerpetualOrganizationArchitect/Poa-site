@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class ProjectCreated extends ethereum.Event {
@@ -156,7 +156,7 @@ export class TaskManager__tasksResult {
     value0: BigInt,
     value1: BigInt,
     value2: boolean,
-    value3: Address
+    value3: Address,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -220,7 +220,7 @@ export class TaskManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "nftMembership",
       "nftMembership():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -233,14 +233,14 @@ export class TaskManager extends ethereum.SmartContract {
     let result = super.call(
       "tasks",
       "tasks(uint256):(uint256,uint256,bool,address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      [ethereum.Value.fromUnsignedBigInt(param0)],
     );
 
     return new TaskManager__tasksResult(
       result[0].toBigInt(),
       result[1].toBigInt(),
       result[2].toBoolean(),
-      result[3].toAddress()
+      result[3].toAddress(),
     );
   }
 
@@ -248,7 +248,7 @@ export class TaskManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "tasks",
       "tasks(uint256):(uint256,uint256,bool,address)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      [ethereum.Value.fromUnsignedBigInt(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -259,8 +259,8 @@ export class TaskManager extends ethereum.SmartContract {
         value[0].toBigInt(),
         value[1].toBigInt(),
         value[2].toBoolean(),
-        value[3].toAddress()
-      )
+        value[3].toAddress(),
+      ),
     );
   }
 

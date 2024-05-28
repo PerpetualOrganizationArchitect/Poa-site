@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class ContractAdded extends ethereum.Event {
@@ -122,7 +122,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.call(
       "VotingControlAddress",
       "VotingControlAddress():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -132,7 +132,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.tryCall(
       "VotingControlAddress",
       "VotingControlAddress():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -143,7 +143,7 @@ export class Registry extends ethereum.SmartContract {
 
   contracts(param0: string): Address {
     let result = super.call("contracts", "contracts(string):(address)", [
-      ethereum.Value.fromString(param0)
+      ethereum.Value.fromString(param0),
     ]);
 
     return result[0].toAddress();
@@ -151,7 +151,7 @@ export class Registry extends ethereum.SmartContract {
 
   try_contracts(param0: string): ethereum.CallResult<Address> {
     let result = super.tryCall("contracts", "contracts(string):(address)", [
-      ethereum.Value.fromString(param0)
+      ethereum.Value.fromString(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -164,7 +164,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.call(
       "getContractAddress",
       "getContractAddress(string):(address)",
-      [ethereum.Value.fromString(name)]
+      [ethereum.Value.fromString(name)],
     );
 
     return result[0].toAddress();
@@ -174,7 +174,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.tryCall(
       "getContractAddress",
       "getContractAddress(string):(address)",
-      [ethereum.Value.fromString(name)]
+      [ethereum.Value.fromString(name)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

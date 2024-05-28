@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class RegistryCreated extends ethereum.Event {
@@ -63,7 +63,7 @@ export class RegistryFactory extends ethereum.SmartContract {
     contractAddresses: Array<Address>,
     POname: string,
     logoURL: string,
-    POinfoHash: string
+    POinfoHash: string,
   ): Address {
     let result = super.call(
       "createRegistry",
@@ -74,8 +74,8 @@ export class RegistryFactory extends ethereum.SmartContract {
         ethereum.Value.fromAddressArray(contractAddresses),
         ethereum.Value.fromString(POname),
         ethereum.Value.fromString(logoURL),
-        ethereum.Value.fromString(POinfoHash)
-      ]
+        ethereum.Value.fromString(POinfoHash),
+      ],
     );
 
     return result[0].toAddress();
@@ -87,7 +87,7 @@ export class RegistryFactory extends ethereum.SmartContract {
     contractAddresses: Array<Address>,
     POname: string,
     logoURL: string,
-    POinfoHash: string
+    POinfoHash: string,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createRegistry",
@@ -98,8 +98,8 @@ export class RegistryFactory extends ethereum.SmartContract {
         ethereum.Value.fromAddressArray(contractAddresses),
         ethereum.Value.fromString(POname),
         ethereum.Value.fromString(logoURL),
-        ethereum.Value.fromString(POinfoHash)
-      ]
+        ethereum.Value.fromString(POinfoHash),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

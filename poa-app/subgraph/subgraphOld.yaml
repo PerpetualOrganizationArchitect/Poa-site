@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: UniversalAccountRegistry
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0xDBE0cb6f796Cb382c058c38FEfDfb53b61a9E982"
+      address: "0x43026aEcA13b1FEc2F4D75551739Fc98d1fb6D33"
       abi: AccountManager
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -26,11 +26,11 @@ dataSources:
       file: ./mappings/AccountRegistry/accountRegistryMapping.ts
   - kind: ethereum/contract
     name: DirectDemocracyTokenFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x6cC260901121060fEeBcBB500834B2960FE61556"
+      address: "0x54eCd7004818Df061cE128C78484EF8707B7F76A"
       abi: DirectDemocracyTokenFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -46,11 +46,11 @@ dataSources:
       file: ./mappings/ddToken/ddTokenFactoryMapping.ts
   - kind: ethereum/contract
     name: ParticipationTokenFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x2b9D48C8b133079EF470F67e9D0D709E35d02340"
+      address: "0x61863caC092cB918d507DB6916a005cb14aC0E93"
       abi:  ParticipationTokenFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -66,11 +66,11 @@ dataSources:
       file: ./mappings/ptToken/ptTokenFactoryMapping.ts
   - kind: ethereum/contract
     name: NFTMembershipFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x44466163Ecc88AE1Bf5a178233e2fe559dC5b60E"
+      address: "0x4060f49c04330539418CA05f9aF631cD2d7806E2"
       abi: NFTMembershipFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -86,11 +86,11 @@ dataSources:
       file: ./mappings/nft/nftMembershipFactoryMapping.ts
   - kind: ethereum/contract
     name: TreasuryFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0xC148A78E53fF6e7A2bB029c9f7F271BCeAf3531d"
+      address: "0x1b72b6caE29147189a112e3037c5193534B71aa8"
       abi: TreasuryFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -106,11 +106,11 @@ dataSources:
       file: ./mappings/treasury/treasuryFactoryMapping.ts
   - kind: ethereum/contract
     name: ParticipationVotingFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x0cBe4009f5D41c0A5c9721558bEB697d668b25aA"
+      address: "0x50f28a7dDB37c13261A9cD1f51f4c2656b1739CF"
       abi: ParticipationVotingFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -126,11 +126,11 @@ dataSources:
       file: ./mappings/ptVoting/ptVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: DirectDemocracyVotingFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x68Ceb892808AE77f39f9A57Fee46ADb53819a473"
+      address: "0xc0338FC4C4e4e32E4b99B968Cbd44A357328Ba01"
       abi: DirectDemocracyVotingFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -146,11 +146,11 @@ dataSources:
       file: ./mappings/ddVoting/ddVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: HybridVotingFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x4B582A5D4A7FAB0Ed6e98bAeE39ba429BdD48F02"
+      address: "0x09Eb1E0c4CA13EBD46D6bB57FB3Dd3e2a15F23ac"
       abi: HybridVotingFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -166,11 +166,11 @@ dataSources:
       file: ./mappings/hybridVoting/hybridVotingFactoryMapping.ts
   - kind: ethereum/contract
     name: TaskManagerFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0xe17DF3e2f5996706e52573152e1E95798cfc01f9"
+      address: "0x07Fa3121d60d95A5b4055736cE3E8e3890D5efAA"
       abi: TaskManagerFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -186,11 +186,11 @@ dataSources:
       file: ./mappings/taskManager/taskManagerFactoryMapping.ts
   - kind: ethereum/contract
     name: RegistryFactory
-    network: polygon-amoy
+    network: sepolia
     source:
-      address: "0x9f16e77A357DF9E4F7Ae50F85602795DeD83D179"
+      address: "0x7B0aeef7b195aC96310b8600f8EdE9155Bd682df"
       abi: RegistryFactory
-      startBlock: 7605540
+      startBlock: 5713300
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -207,7 +207,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: DirectDemocracyToken
     mapping:
@@ -227,7 +227,7 @@ templates:
       file: ./mappings/ddToken/ddTokenMapping.ts
   - kind: ethereum/contract
     name: ParticipationToken
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: ParticipationToken
     mapping:
@@ -249,7 +249,7 @@ templates:
       file: ./mappings/ptToken/ptTokenMapping.ts
   - kind: ethereum/contract
     name: NFTMembership
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: NFTMembership
     mapping:
@@ -272,7 +272,7 @@ templates:
       file: ./mappings/nft/nftMembershipMapping.ts
   - kind: ethereum/contract
     name: Treasury
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: Treasury
     mapping:
@@ -290,7 +290,7 @@ templates:
       file: ./mappings/treasury/treasuryMapping.ts
   - kind: ethereum/contract
     name: ParticipationVoting
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: ParticipationVoting
     mapping:
@@ -317,7 +317,7 @@ templates:
       file: ./mappings/ptVoting/ptVotingMapping.ts
   - kind: ethereum/contract
     name: DirectDemocracyVoting
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: DirectDemocracyVoting
     mapping:
@@ -344,7 +344,7 @@ templates:
       file: ./mappings/ddVoting/ddVotingMapping.ts
   - kind: ethereum/contract
     name: HybridVoting
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: HybridVoting
     mapping:
@@ -371,7 +371,7 @@ templates:
       file: ./mappings/hybridVoting/hybridVotingMapping.ts
   - kind: ethereum/contract
     name: TaskManager
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: TaskManager
     mapping:
@@ -399,7 +399,7 @@ templates:
       file: ./mappings/taskManager/taskManagerMapping.ts
   - kind: ethereum/contract
     name: Registry
-    network: polygon-amoy
+    network: sepolia
     source:
       abi: Registry
     mapping:

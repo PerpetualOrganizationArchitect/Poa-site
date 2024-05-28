@@ -3,7 +3,7 @@
 import {
   Address,
   DataSourceTemplate,
-  DataSourceContext
+  DataSourceContext,
 } from "@graphprotocol/graph-ts";
 
 export class DirectDemocracyToken extends DataSourceTemplate {
@@ -15,7 +15,7 @@ export class DirectDemocracyToken extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "DirectDemocracyToken",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -29,7 +29,7 @@ export class ParticipationToken extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "ParticipationToken",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -43,7 +43,7 @@ export class NFTMembership extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "NFTMembership",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -57,7 +57,7 @@ export class Treasury extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "Treasury",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -71,7 +71,7 @@ export class ParticipationVoting extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "ParticipationVoting",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -85,7 +85,7 @@ export class DirectDemocracyVoting extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "DirectDemocracyVoting",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -99,7 +99,7 @@ export class HybridVoting extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "HybridVoting",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -113,7 +113,7 @@ export class TaskManager extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "TaskManager",
       [address.toHex()],
-      context
+      context,
     );
   }
 }
@@ -127,7 +127,7 @@ export class Registry extends DataSourceTemplate {
     DataSourceTemplate.createWithContext(
       "Registry",
       [address.toHex()],
-      context
+      context,
     );
   }
 }

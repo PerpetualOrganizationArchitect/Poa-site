@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class TaskManagerCreated extends ethereum.Event {
@@ -41,7 +41,7 @@ export class TaskManagerFactory extends ethereum.SmartContract {
     _token: Address,
     _nftMembership: Address,
     _allowedRoleNames: Array<string>,
-    POname: string
+    POname: string,
   ): Address {
     let result = super.call(
       "createTaskManager",
@@ -50,8 +50,8 @@ export class TaskManagerFactory extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_token),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
-        ethereum.Value.fromString(POname)
-      ]
+        ethereum.Value.fromString(POname),
+      ],
     );
 
     return result[0].toAddress();
@@ -61,7 +61,7 @@ export class TaskManagerFactory extends ethereum.SmartContract {
     _token: Address,
     _nftMembership: Address,
     _allowedRoleNames: Array<string>,
-    POname: string
+    POname: string,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createTaskManager",
@@ -70,8 +70,8 @@ export class TaskManagerFactory extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_token),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
-        ethereum.Value.fromString(POname)
-      ]
+        ethereum.Value.fromString(POname),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
