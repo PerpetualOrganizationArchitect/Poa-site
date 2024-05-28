@@ -3851,6 +3851,23 @@ export class infoIPFS extends Entity {
       this.set("data", Value.fromString(<string>value));
     }
   }
+
+  get ipfsHash(): string | null {
+    let value = this.get("ipfsHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set ipfsHash(value: string | null) {
+    if (!value) {
+      this.unset("ipfsHash");
+    } else {
+      this.set("ipfsHash", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class aboutLinks extends Entity {

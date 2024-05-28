@@ -342,6 +342,7 @@ type infoIPFS @entity {
   description: String
   links: [aboutLinks!]
   data: String
+  ipfsHash: String
 }
 
 type aboutLinks @entity {

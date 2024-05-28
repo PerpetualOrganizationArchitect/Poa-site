@@ -546,7 +546,7 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
-      <Box position="fixed" top="150px" right="40" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
+      <Box position="fixed" top="50px" right="50px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
         <Text fontSize="md">
           This is AlphaV1. There may be some bugs. Please report in our discord.
         </Text>
