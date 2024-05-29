@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import OpenAI from "openai";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
 
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
@@ -563,7 +564,20 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
-      <Box position="fixed" top="30px" right="30px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
+      <Box
+        position="fixed"
+        top="20px"
+        right={["150px", "230px"]}
+        zIndex="banner"
+
+      >
+        <Link href="/docs" passHref>
+          <Button variant="outline" p={4} colorScheme="black" _hover={{transform: "scale(1.06)"}}>
+            Docs
+          </Button>
+        </Link>
+      </Box>
+      <Box position="fixed" top="20px" right="20px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
         <Text fontSize="sm">
           This is AlphaV1. There may be some bugs. Please report in our discord.
         </Text>

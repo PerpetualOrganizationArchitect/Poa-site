@@ -42,6 +42,7 @@ const AboutPage = () => {
           Purpose
         </Text>
         <Text
+          as="a"
           fontSize={"xl"}
           textAlign={"center"}
           pr="15vh"
@@ -138,7 +139,7 @@ const AboutPage = () => {
           </HStack>
         </Box>
         <Text fontSize="xl" fontWeight="bold" color="grey.600">
-          In live Alpha stage deployed on Sepolia testnet
+          In live Alpha stage deployed on Polygon Amoy testnet
         </Text>
         <Link href="/docs" passHref>
           <Button as="a" colorScheme="green" size="lg">
