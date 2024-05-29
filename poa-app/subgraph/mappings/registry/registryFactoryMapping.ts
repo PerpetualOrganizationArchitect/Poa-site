@@ -27,7 +27,6 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
 
         let context = new DataSourceContext();
         context.setString(PONAME_KEY, event.params.POname);
-        context.setBytes("hash", Bytes.fromHexString(event.params.POinfoHash));
 
         log.info("Creating infoIPFS template with hash: {}", [event.params.POinfoHash]);
         DataSourceTemplate.createWithContext("infoIpfs", [event.params.POinfoHash], context);
@@ -59,7 +58,6 @@ export function handleIpfsContent(aboutInfo: Bytes): void {
     
     let ctx = dataSource.context();
     let poName = ctx.getString(PONAME_KEY).toString();
-    let hash = ctx.getBytes("hash");
 
     let infoIpfs = aboutInfo.toString();
     let ipfsContent = json.fromBytes(aboutInfo).toObject();
@@ -80,8 +78,6 @@ export function handleIpfsContent(aboutInfo: Bytes): void {
     let description = descriptionValue.toString();
 
     let ipfsEntity = new infoIPFS(poName);
-    ipfsEntity.data = infoIpfs;
-    ipfsEntity.ipfsHash = hash.toString();
     ipfsEntity.description = description;
 
     ipfsEntity.save();
