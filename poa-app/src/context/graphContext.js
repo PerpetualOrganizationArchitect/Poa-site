@@ -1,6 +1,6 @@
 //graphContext
 
-import React, { createContext, useReducer, useContext, useState, useEffect, use } from 'react';
+import React, { createContext, useReducer, useContext, useState, useEffect } from 'react';
 import { useIPFScontext } from './ipfsContext';
 
 const GraphContext = createContext();

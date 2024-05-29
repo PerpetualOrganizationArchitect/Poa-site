@@ -16,7 +16,8 @@ export const DashboardProvider = ({ children }) => {
     const [perpetualOrganizations, setPerpetualOrganizations] = useState([]);
 
     useEffect(() => {
-        if (!dashboardLoaded) {
+        console.log("dashboarded load", dashboardLoaded)
+        if (dashboardLoaded) {
             fetchPOs().then((data) => {
                 console.log(data);
                 setPerpetualOrganizations(data);

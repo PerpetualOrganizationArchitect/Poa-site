@@ -11,10 +11,12 @@ const BrowserPage = () => {
   const { perpetualOrganizations, setDashboardLoaded } = useDashboardContext();
 
   useEffect(() => {
+    console.log("dash")
     if(perpetualOrganizations.length === 0) {
-      return
+      setDashboardLoaded(true);
+      
     }
-    setDashboardLoaded(true);
+    
   }, [perpetualOrganizations]);
 
   return (

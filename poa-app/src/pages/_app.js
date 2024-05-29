@@ -31,7 +31,7 @@ const queryClient = new QueryClient();
 const config = getDefaultConfig({
   appName: 'Poa',
   projectId: '7dc7409d6ef96f46e91e9d5797e4deac',
-  chains: [mainnet, polygon, optimism, arbitrum, base, sepolia, polygonAmoy],
+  chains: [polygon, sepolia, polygonAmoy],
   ssr: false,
 });
 
