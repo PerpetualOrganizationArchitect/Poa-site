@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import styled, { keyframes } from 'styled-components';
@@ -16,6 +16,7 @@ import {
 import Link2 from "next/link";
 import Typist from "react-typist";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+import { useGraphContext } from "@/context/graphContext";
 
 
 // CSS for the wave animation
@@ -88,8 +89,13 @@ const FloatingBox = styled.div`
 `;
 
 const Home = () => {
+  const{setLoaded, logoHash, poDescription, poLinks} = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
+
+  useEffect(() => {
+    setLoaded(userDAO);
+  }, [userDAO]);
 
 
   return (
@@ -123,38 +129,38 @@ const Home = () => {
           </svg>
         </WaveBackground>
         <Box
-          w="60%"
+          w="70%"
           borderRadius="2xl"
           display="flex"
           flexDirection="column"
           bg="transparent"
           boxShadow="lg"
           position="relative"
-          mt="7%"
+          mt="3%"
           zIndex={1}>
           <div className="glass" style={glassLayerStyle} />
           <Container centerContent>
             
             <Heading as="h1" size="2xl" color="white" mt="8">
-              Welcome to {userDAO}
+              Welcome to {userDAO} 
             </Heading>
-            <Text fontSize="2xl" color="white" mt={8}>
-              Brief Description will go here
+            <Text fontSize="md" color="white" mt={6}>
+              A Perpetual Organization built with Poa. Fully owned and controlled by the {userDAO} community itself. Learn more about how to build your own censorship-resistant, fully worker-owned organization here. Cut out middlemen and investors with Poa.
             </Text>
 
             <Link2 href={`/user/?userDAO=${userDAO}`}>
               <Button
                 size="lg"
                 bg="green.300"
-                mt={10}
-                mb="10"
+                mt={8}
+                mb="8"
                 _hover={{
                   bg: "green.500",
                   boxShadow: "md",
                   transform: "scale(1.05)",
                 }}
               >
-                Get Started
+                Join or Login
               </Button>
             </Link2>
           </Container>
@@ -162,7 +168,7 @@ const Home = () => {
 
         <Box
           w="40%"
-          mt="4%"
+          mt="2%"
           borderRadius="2xl"
           display="flex"
           flexDirection="column"
@@ -185,32 +191,11 @@ const Home = () => {
               fontSize="lg"
               textAlign="left"
             >
-             Longer Description text will go here. long long long long long long long 
+              {poDescription}
             </Text>
+            {/* add links here */}
           </Container>
         </Box>
-        {/* <div style={ballStyle} className="div2">
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              color: "#fff",
-              fontSize: "8em",
-              fontWeight: "bolder",
-              textAlign: "center",
-            }}
-          >
-            <Typist
-              cursor={{ show: false }}
-              stdTypingDelay={300}
-              avgTypingDelay={200}
-            >
-              {userDAO}
-            </Typist>
-          </div>
-        </div> */}
       </VStack>
     </>
   );
