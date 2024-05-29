@@ -48,6 +48,11 @@ export const GraphProvider = ({ children }) => {
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
     const [votingContractAddress, setVotingContractAddress] = useState('');
 
+    //Po info 
+    const [poDescription, setPOdescription]= useState('No description provided or IPFS content still being indexed')
+    const [poLinks, setPOlinks]= useState({})
+    const [logoHash, setLogoHash] =useState('')
+
 
     
 
@@ -587,6 +592,35 @@ export const GraphProvider = ({ children }) => {
         }));
     };
 
+    async function fetchPOinfo(poName){
+        const query = `{
+            perpetualOrganization(id:"${poName}") {
+                logoHash
+                aboutInfo{
+                    description
+                    links{
+                        name
+                        url
+                    }
+                }
+            }
+          }`;
+
+          const data = await querySubgraph(query);
+
+          if(data.perpetualOrganization?.logoHash){
+            setLogoHash(data.perpetualOrganization.logoHash)
+          }
+
+          if(data.perpetualOrganization?.description){
+            setPOdescription(data.perpetualOrganization.description)
+          }
+
+          if(data.perpetualOrganization?.links){
+            setPOlinks(data.perpetualOrganization.links)
+          }
+    }
+
     async function loadContractAddress(poName) {
         console.log("loading contract address", poName);
         const query = `{
@@ -668,6 +702,7 @@ export const GraphProvider = ({ children }) => {
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         const projectData = await fetchProjectData(poName);
         const leaderboardData = await fetchLeaderboardData(poName);
+        const poInfo= await fetchPOinfo(poName);
 
         console.log("setting user data", userInfo);
         setClaimedTasks(claimedTasks);
@@ -692,6 +727,7 @@ export const GraphProvider = ({ children }) => {
 
     //function that loads all graph data like last function but without any function that relies on account
     async function loadGraphDataNoAccount(poName) {
+        const poInfo= await fetchPOinfo(poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
