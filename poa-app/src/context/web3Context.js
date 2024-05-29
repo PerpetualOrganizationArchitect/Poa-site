@@ -58,7 +58,7 @@ export const Web3Provider = ({ children }) => {
     
 
     
-    const AccountManagerAddress = "0x70224eABe4FA11e21dc5C936B62ecc9AE090925a";
+    const AccountManagerAddress = "0xDBE0cb6f796Cb382c058c38FEfDfb53b61a9E982";
     const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
     const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
     const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
