@@ -581,7 +581,7 @@ const ArchitectPage = () => {
       </Box>
       <Box position="fixed" top="20px" right="20px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
         <Text fontSize="sm">
-          This is AlphaV1. There may be some bugs. Please report in our discord.
+          This is AlphaV1 on Polygon Amoy. There may be some bugs. Please report in our discord.
         </Text>
       </Box>
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
