@@ -2,7 +2,8 @@ const MasterDeployfactory = require("../abi/MasterFactory.json");
 
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0xDB17BF0Df75C6B3BAba83bF14dC00d4732431732";
+// sepoila const masterDeployFactoryAddress = "0xDBdf5B0532827917eFFd55439c05B4dB0e471205";
+const masterDeployFactoryAddress = "0x9571921FbEe792A7172c6037DaC4607390158e72";
 
 export async function main(
     memberTypeNames,
@@ -14,9 +15,15 @@ export async function main(
     hybridVotingEnabled,
     participationVotingEnabled,
     logoURL,
+    infoIPFSHash,
     votingControlType,
+    quorumPercentageDD,
+    quorumPercentagePV,
     wallet
   ){
+
+    console.log("Creating new DAO...");
+    console.log("these variables", memberTypeNames, executivePermissionNames, POname, quadraticVotingEnabled, democracyVoteWeight, participationVoteWeight, hybridVotingEnabled, participationVotingEnabled, logoURL, infoIPFSHash, votingControlType, quorumPercentageDD, quorumPercentagePV, wallet)
 
     let contractNames = [];
     if (hybridVotingEnabled) {
@@ -40,9 +47,6 @@ export async function main(
           "TaskManager",
         ];
       }
-  
-      let quorumPercentageDD = 50;
-      let quorumPercentagePV = 50;
 
     const params = {
         memberTypeNames,
@@ -54,10 +58,11 @@ export async function main(
         hybridVotingEnabled,
         participationVotingEnabled,
         logoURL,
+        infoIPFSHash,
         votingControlType,
         contractNames,
-        quorumPercentageDD,
-        quorumPercentagePV
+        quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
+        quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
     };
 
     console.log("Deploying new DAO with the following parameters:");

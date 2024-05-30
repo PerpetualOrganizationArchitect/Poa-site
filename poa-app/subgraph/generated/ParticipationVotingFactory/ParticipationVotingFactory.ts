@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class VotingContractCreated extends ethereum.Event {
@@ -40,7 +40,7 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
   static bind(address: Address): ParticipationVotingFactory {
     return new ParticipationVotingFactory(
       "ParticipationVotingFactory",
-      address
+      address,
     );
   }
 
@@ -51,7 +51,7 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
     _quadraticVotingEnabled: boolean,
     _treasuryAddress: Address,
     POname: string,
-    _quorumPercentage: BigInt
+    _quorumPercentage: BigInt,
   ): Address {
     let result = super.call(
       "createParticipationVoting",
@@ -63,8 +63,8 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
         ethereum.Value.fromBoolean(_quadraticVotingEnabled),
         ethereum.Value.fromAddress(_treasuryAddress),
         ethereum.Value.fromString(POname),
-        ethereum.Value.fromUnsignedBigInt(_quorumPercentage)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_quorumPercentage),
+      ],
     );
 
     return result[0].toAddress();
@@ -77,7 +77,7 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
     _quadraticVotingEnabled: boolean,
     _treasuryAddress: Address,
     POname: string,
-    _quorumPercentage: BigInt
+    _quorumPercentage: BigInt,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createParticipationVoting",
@@ -89,8 +89,8 @@ export class ParticipationVotingFactory extends ethereum.SmartContract {
         ethereum.Value.fromBoolean(_quadraticVotingEnabled),
         ethereum.Value.fromAddress(_treasuryAddress),
         ethereum.Value.fromString(POname),
-        ethereum.Value.fromUnsignedBigInt(_quorumPercentage)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_quorumPercentage),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

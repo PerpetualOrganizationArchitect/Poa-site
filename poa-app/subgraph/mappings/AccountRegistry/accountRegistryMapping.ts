@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, log } from "@graphprotocol/graph-ts"
 import {
   AccountManager,
   UserRegistered,
@@ -7,6 +7,7 @@ import {
 import { Account } from "../../generated/schema"
 
 export function handleUserRegistered(event: UserRegistered): void {
+  log.info("Triggered UserRegistered: {}", [event.params.username])
   let account = new Account(event.params.accountAddress.toHex())
   account.address = event.params.accountAddress
   account.userName = event.params.username

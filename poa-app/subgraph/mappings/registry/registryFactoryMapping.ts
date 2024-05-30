@@ -1,7 +1,7 @@
-import { Address, dataSource,json, log, ipfs , Bytes, DataSourceTemplate} from "@graphprotocol/graph-ts";
+import { Address, dataSource, json, log, ipfs, Bytes, DataSourceTemplate } from "@graphprotocol/graph-ts";
 import { RegistryCreated as RegistryContractCreatedEvent } from "../../generated/RegistryFactory/RegistryFactory";
-import {IPFSContent, RegistryCreated, Registry, ValidContract, PerpetualOrganization} from "../../generated/schema";
-import {DataSourceContext} from "@graphprotocol/graph-ts";
+import { infoIPFS, aboutLinks, RegistryCreated, Registry, ValidContract, PerpetualOrganization } from "../../generated/schema";
+import { DataSourceContext } from "@graphprotocol/graph-ts";
 
 let PONAME_KEY = "PONAME";
 
@@ -12,61 +12,79 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
 
     entity.contractAddress = event.params.newRegistryAddress;
     entity.POname = event.params.POname;
-    
     entity.save();
 
     let newRegistry = new Registry(event.params.newRegistryAddress.toHex());
     newRegistry.contract = event.params.newRegistryAddress.toHex();
     newRegistry.POname = event.params.POname;
-    newRegistry.logoURL = event.params.logoURL;
+    newRegistry.logoHash = event.params.logoURL;
     newRegistry.votingContract = event.params.VotingControlAddress;
     newRegistry.save();
 
     let po = PerpetualOrganization.load(newRegistry.POname);
     if (po != null) {
-      po.registry = newRegistry.id;
+        po.registry = newRegistry.id;
 
+        let context = new DataSourceContext();
+        context.setString(PONAME_KEY, event.params.POname);
 
-      let context = new DataSourceContext();
-      context.setString(PONAME_KEY, event.params.POname);
-
-      context.setBytes("hash", Bytes.fromUTF8(event.params.POinfoHash));
-        
-      DataSourceTemplate.createWithContext("IpfsContent", [event.params.POinfoHash], context);
-
-      po.content = event.params.POname;
-
-      po.save();
+        log.info("Creating infoIPFS template with hash: {}", [event.params.POinfoHash]);
+        DataSourceTemplate.createWithContext("infoIpfs", [event.params.POinfoHash], context);
+        po.aboutInfo = event.params.POname;
+        po.logoHash = event.params.logoURL;
+        po.save();
     }
-    
-    //loop through all contractNames and ConttractAddresses and add them to the registry as validContracts
+
+    // Check for array length mismatch
     let contractNames = event.params.contractNames;
     let contractAddresses = event.params.contractAddresses;
+
+    if (contractNames.length != contractAddresses.length) {
+        log.warning("Contract names and addresses arrays length mismatch", []);
+        return;
+    }
 
     for (let i = 0; i < contractNames.length; i++) {
         let validContract = new ValidContract(contractNames[i]);
         validContract.registry = newRegistry.id;
         validContract.name = contractNames[i];
         validContract.contractAddress = contractAddresses[i];
-        validContract.registry = newRegistry.id;
         validContract.save();
     }
+}
 
-  }
-
-  export function handleIpfsContent(content: Bytes): void {
+export function handleIpfsContent(aboutInfo: Bytes): void {
+    log.info("Triggered handleIpfsContent", []);
+    
     let ctx = dataSource.context();
     let poName = ctx.getString(PONAME_KEY).toString();
 
-    let ipfsContent = content.toString();
+    let infoIpfs = aboutInfo.toString();
+    let ipfsContent = json.fromBytes(aboutInfo).toObject();
 
-    let i = new IPFSContent(poName);
-    i.data = ipfsContent;
-    i.save();
+    if (ipfsContent == null) {
+        log.info("IPFS content is null", []);
+        return;
+    }
+
+    let descriptionValue = ipfsContent.get("description");
+    let linksValue = ipfsContent.get("links");
+
+    if (descriptionValue == null) {
+        log.warning("Description is null", []);
+        return;
+    }
+
+    let description = descriptionValue.toString();
+
+    let ipfsEntity = new infoIPFS(poName);
+    ipfsEntity.description = description;
+
+    ipfsEntity.save();
 
     let po = PerpetualOrganization.load(poName);
     if (po != null) {
-      po.description = ipfsContent;
-      po.save();
+        po.aboutInfo = ipfsEntity.id;
+        po.save();
     }
 }

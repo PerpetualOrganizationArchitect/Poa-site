@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class UserRegistered extends ethereum.Event {
@@ -63,7 +63,7 @@ export class AccountManager extends ethereum.SmartContract {
     let result = super.call(
       "addressToUsername",
       "addressToUsername(address):(string)",
-      [ethereum.Value.fromAddress(param0)]
+      [ethereum.Value.fromAddress(param0)],
     );
 
     return result[0].toString();
@@ -73,7 +73,7 @@ export class AccountManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "addressToUsername",
       "addressToUsername(address):(string)",
-      [ethereum.Value.fromAddress(param0)]
+      [ethereum.Value.fromAddress(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -84,7 +84,7 @@ export class AccountManager extends ethereum.SmartContract {
 
   getUsername(accountAddress: Address): string {
     let result = super.call("getUsername", "getUsername(address):(string)", [
-      ethereum.Value.fromAddress(accountAddress)
+      ethereum.Value.fromAddress(accountAddress),
     ]);
 
     return result[0].toString();
@@ -92,7 +92,7 @@ export class AccountManager extends ethereum.SmartContract {
 
   try_getUsername(accountAddress: Address): ethereum.CallResult<string> {
     let result = super.tryCall("getUsername", "getUsername(address):(string)", [
-      ethereum.Value.fromAddress(accountAddress)
+      ethereum.Value.fromAddress(accountAddress),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();

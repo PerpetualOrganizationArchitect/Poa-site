@@ -18,25 +18,7 @@ function Deployer({ isOpen, onClose, deploymentDetails }) {
   const toast = useToast();
   const router = useRouter();
 
-  useEffect(() => {
-    // Simulate deployment progress
-    const deploy = async () => {
-      console.log("Deploying...");
-      try {
-    
-      } catch (error) {
-        toast({
-          title: "Deployment failed.",
-          description: "There was an error during the deployment process.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    };
 
-    deploy();
-  }, [toast]);
 
   const handleAccessOrganization = () => {
     const formattedOrgName = encodeURIComponent(

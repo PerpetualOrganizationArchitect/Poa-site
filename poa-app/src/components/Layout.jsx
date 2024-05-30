@@ -1,12 +1,13 @@
 import React from "react";
 import Navigation from "./Navigation";
-import { Box, Flex, Image, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Image, IconButton, Button } from "@chakra-ui/react";
 import Link from "next/link";
 
 const Layout = ({ children, isArchitectPage }) => {
   return (
     <>
       {isArchitectPage ? (
+        <>
         <Flex
           padding="1rem"
           position="fixed"
@@ -16,12 +17,14 @@ const Layout = ({ children, isArchitectPage }) => {
         >
           <Link href="/landing" passHref>
             <IconButton
+              _hover={{transform:"scale(1.06)"}}
               icon={
                 <Image
+                  mt="2"
                   src="/images/poa_logo.png"
                   alt="Home"
                   width="auto"
-                  height="8"
+                  height="60px"
                 />
               }
               variant="ghost"
@@ -29,6 +32,7 @@ const Layout = ({ children, isArchitectPage }) => {
             />
           </Link>
         </Flex>
+          </>
       ) : (
         <Box>
           <Navigation />

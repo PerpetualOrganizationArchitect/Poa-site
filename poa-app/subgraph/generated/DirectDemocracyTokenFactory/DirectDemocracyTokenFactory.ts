@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class TokenCreated extends ethereum.Event {
@@ -48,7 +48,7 @@ export class DirectDemocracyTokenFactory extends ethereum.SmartContract {
   static bind(address: Address): DirectDemocracyTokenFactory {
     return new DirectDemocracyTokenFactory(
       "DirectDemocracyTokenFactory",
-      address
+      address,
     );
   }
 
@@ -57,7 +57,7 @@ export class DirectDemocracyTokenFactory extends ethereum.SmartContract {
     symbol: string,
     _nftMembership: Address,
     _allowedRoleNames: Array<string>,
-    _POname: string
+    _POname: string,
   ): Address {
     let result = super.call(
       "createDirectDemocracyToken",
@@ -67,8 +67,8 @@ export class DirectDemocracyTokenFactory extends ethereum.SmartContract {
         ethereum.Value.fromString(symbol),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
-        ethereum.Value.fromString(_POname)
-      ]
+        ethereum.Value.fromString(_POname),
+      ],
     );
 
     return result[0].toAddress();
@@ -79,7 +79,7 @@ export class DirectDemocracyTokenFactory extends ethereum.SmartContract {
     symbol: string,
     _nftMembership: Address,
     _allowedRoleNames: Array<string>,
-    _POname: string
+    _POname: string,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createDirectDemocracyToken",
@@ -89,8 +89,8 @@ export class DirectDemocracyTokenFactory extends ethereum.SmartContract {
         ethereum.Value.fromString(symbol),
         ethereum.Value.fromAddress(_nftMembership),
         ethereum.Value.fromStringArray(_allowedRoleNames),
-        ethereum.Value.fromString(_POname)
-      ]
+        ethereum.Value.fromString(_POname),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

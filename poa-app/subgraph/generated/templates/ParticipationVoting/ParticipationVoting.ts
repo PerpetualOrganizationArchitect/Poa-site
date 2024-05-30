@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class NewProposal extends ethereum.Event {
@@ -176,7 +176,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.call(
       "ParticipationToken",
       "ParticipationToken():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -186,7 +186,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "ParticipationToken",
       "ParticipationToken():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -201,8 +201,8 @@ export class ParticipationVoting extends ethereum.SmartContract {
       "getOptionVotes(uint256,uint256):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(_proposalId),
-        ethereum.Value.fromUnsignedBigInt(_optionIndex)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_optionIndex),
+      ],
     );
 
     return result[0].toBigInt();
@@ -210,15 +210,15 @@ export class ParticipationVoting extends ethereum.SmartContract {
 
   try_getOptionVotes(
     _proposalId: BigInt,
-    _optionIndex: BigInt
+    _optionIndex: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getOptionVotes",
       "getOptionVotes(uint256,uint256):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(_proposalId),
-        ethereum.Value.fromUnsignedBigInt(_optionIndex)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_optionIndex),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -231,7 +231,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.call(
       "getOptionsCount",
       "getOptionsCount(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(_proposalId)]
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
     );
 
     return result[0].toBigInt();
@@ -241,7 +241,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "getOptionsCount",
       "getOptionsCount(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(_proposalId)]
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -252,22 +252,22 @@ export class ParticipationVoting extends ethereum.SmartContract {
 
   getWinner(_proposalId: BigInt): ParticipationVoting__getWinnerResult {
     let result = super.call("getWinner", "getWinner(uint256):(uint256,bool)", [
-      ethereum.Value.fromUnsignedBigInt(_proposalId)
+      ethereum.Value.fromUnsignedBigInt(_proposalId),
     ]);
 
     return new ParticipationVoting__getWinnerResult(
       result[0].toBigInt(),
-      result[1].toBoolean()
+      result[1].toBoolean(),
     );
   }
 
   try_getWinner(
-    _proposalId: BigInt
+    _proposalId: BigInt,
   ): ethereum.CallResult<ParticipationVoting__getWinnerResult> {
     let result = super.tryCall(
       "getWinner",
       "getWinner(uint256):(uint256,bool)",
-      [ethereum.Value.fromUnsignedBigInt(_proposalId)]
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -276,8 +276,8 @@ export class ParticipationVoting extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new ParticipationVoting__getWinnerResult(
         value[0].toBigInt(),
-        value[1].toBoolean()
-      )
+        value[1].toBoolean(),
+      ),
     );
   }
 
@@ -291,7 +291,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "nftMembership",
       "nftMembership():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -304,7 +304,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.call(
       "quadraticVotingEnabled",
       "quadraticVotingEnabled():(bool)",
-      []
+      [],
     );
 
     return result[0].toBoolean();
@@ -314,7 +314,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "quadraticVotingEnabled",
       "quadraticVotingEnabled():(bool)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -327,7 +327,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.call(
       "quorumPercentage",
       "quorumPercentage():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -337,7 +337,7 @@ export class ParticipationVoting extends ethereum.SmartContract {
     let result = super.tryCall(
       "quorumPercentage",
       "quorumPercentage():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

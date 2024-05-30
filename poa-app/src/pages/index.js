@@ -70,6 +70,8 @@ export default function Home() {
           Perpetual Organization Architect
         </Text>
 
+  
+
         <Text
         ml="1%"
         mr="1%"

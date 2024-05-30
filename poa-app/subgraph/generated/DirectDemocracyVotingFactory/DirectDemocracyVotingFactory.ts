@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class VotingContractCreated extends ethereum.Event {
@@ -44,7 +44,7 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
   static bind(address: Address): DirectDemocracyVotingFactory {
     return new DirectDemocracyVotingFactory(
       "DirectDemocracyVotingFactory",
-      address
+      address,
     );
   }
 
@@ -54,7 +54,7 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
     _allowedRoleNames: Array<string>,
     _treasuryAddress: Address,
     POname: string,
-    quorumPercentage: BigInt
+    quorumPercentage: BigInt,
   ): Address {
     let result = super.call(
       "createDirectDemocracyVoting",
@@ -65,8 +65,8 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
         ethereum.Value.fromStringArray(_allowedRoleNames),
         ethereum.Value.fromAddress(_treasuryAddress),
         ethereum.Value.fromString(POname),
-        ethereum.Value.fromUnsignedBigInt(quorumPercentage)
-      ]
+        ethereum.Value.fromUnsignedBigInt(quorumPercentage),
+      ],
     );
 
     return result[0].toAddress();
@@ -78,7 +78,7 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
     _allowedRoleNames: Array<string>,
     _treasuryAddress: Address,
     POname: string,
-    quorumPercentage: BigInt
+    quorumPercentage: BigInt,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createDirectDemocracyVoting",
@@ -89,8 +89,8 @@ export class DirectDemocracyVotingFactory extends ethereum.SmartContract {
         ethereum.Value.fromStringArray(_allowedRoleNames),
         ethereum.Value.fromAddress(_treasuryAddress),
         ethereum.Value.fromString(POname),
-        ethereum.Value.fromUnsignedBigInt(quorumPercentage)
-      ]
+        ethereum.Value.fromUnsignedBigInt(quorumPercentage),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

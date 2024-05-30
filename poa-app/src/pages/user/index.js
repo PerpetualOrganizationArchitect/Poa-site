@@ -28,7 +28,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-// import KubixButton from "@/components/userPage/KubixButton";
 
 
 const glassLayerStyle = {

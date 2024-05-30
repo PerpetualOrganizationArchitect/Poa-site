@@ -5,6 +5,8 @@ import { useIPFScontext } from './ipfsContext';
 
 const GraphContext = createContext();
 
+import {useAccount } from 'wagmi';
+
 export const useGraphContext = () => {
     return useContext(GraphContext);
     }
@@ -17,8 +19,9 @@ export const GraphProvider = ({ children }) => {
     const[poName, setPoName] = useState('1');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
-    const[account, setAccountGraph] = useState("0x00".toLocaleLowerCase());
-    console.log("account", account);
+    
+    const {address}= useAccount();
+
 
     const[graphUsername, setGraphUsername] = useState(false);
 
@@ -45,12 +48,18 @@ export const GraphProvider = ({ children }) => {
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
     const [votingContractAddress, setVotingContractAddress] = useState('');
 
+    //Po info 
+    const [poDescription, setPOdescription]= useState('No description provided or IPFS content still being indexed')
+    const [poLinks, setPOlinks]= useState({})
+    const [logoHash, setLogoHash] =useState('')
+
 
     
 
 
 
     useEffect(() => {
+        
         async function init() {
             await loadContractAddress(loaded);
             await loadGraphData(loaded);
@@ -60,7 +69,7 @@ export const GraphProvider = ({ children }) => {
             await loadContractAddress(loaded);
             await loadGraphDataNoAccount(loaded);
         }
-        if (loaded !== undefined && loaded !== '' && account !== '0x00') {
+        if (loaded !== undefined && loaded !== '' && address !== '0x00') {
             if (loaded === poName) {
                 console.log('loaded')
             }
@@ -71,10 +80,10 @@ export const GraphProvider = ({ children }) => {
                 init();
             }
 
-        }else if (loaded !== undefined && loaded !== '' && account === '0x00'){
+        }else if (loaded !== undefined && loaded !== '' && address === '0x00'){
             noAccountInit();
         }
-    }, [account, loaded]);
+    }, [address, loaded]);
 
 
 
@@ -97,6 +106,38 @@ export const GraphProvider = ({ children }) => {
         }
 
         return data.data;
+    }
+
+    async function fetchRules(id){
+        const query = `
+        {
+            perpetualOrganization(id: "TreeHouse"){
+              HybridVoting{
+                id
+                quorum
+              }
+              DirectDemocracyVoting{
+                id
+                quorum
+              }
+              ParticipationVoting{
+                id 
+                quorum
+              }
+              NFTMembership{
+                executiveRoles
+                memberTypeNames
+              }
+              Treasury{
+                votingContract
+              }
+            }
+          }`;
+
+        const data = await querySubgraph(query);
+
+        return data;
+
     }
 
     async function fetchUserClaimedTasks(id, org) {
@@ -551,6 +592,35 @@ export const GraphProvider = ({ children }) => {
         }));
     };
 
+    async function fetchPOinfo(poName){
+        const query = `{
+            perpetualOrganization(id:"${poName}") {
+                logoHash
+                aboutInfo{
+                    description
+                    links{
+                        name
+                        url
+                    }
+                }
+            }
+          }`;
+
+          const data = await querySubgraph(query);
+
+          if(data.perpetualOrganization?.logoHash){
+            setLogoHash(data.perpetualOrganization.logoHash)
+          }
+
+          if(data.perpetualOrganization?.description){
+            setPOdescription(data.perpetualOrganization.description)
+          }
+
+          if(data.perpetualOrganization?.links){
+            setPOlinks(data.perpetualOrganization.links)
+          }
+    }
+
     async function loadContractAddress(poName) {
         console.log("loading contract address", poName);
         const query = `{
@@ -620,10 +690,10 @@ export const GraphProvider = ({ children }) => {
 
     async function loadGraphData(poName) {
 
-        const username = await fetchUsername(account.toLocaleLowerCase());
+        const username = await fetchUsername(address.toLocaleLowerCase());
         setGraphUsername(username);
-        const claimedTasks = await fetchUserClaimedTasks(account.toLocaleLowerCase(), poName);
-        const userInfo = await fetchUserData(account.toLocaleLowerCase(),poName);
+        const claimedTasks = await fetchUserClaimedTasks(address.toLocaleLowerCase(), poName);
+        const userInfo = await fetchUserData(address.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -632,6 +702,7 @@ export const GraphProvider = ({ children }) => {
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         const projectData = await fetchProjectData(poName);
         const leaderboardData = await fetchLeaderboardData(poName);
+        const poInfo= await fetchPOinfo(poName);
 
         console.log("setting user data", userInfo);
         setClaimedTasks(claimedTasks);
@@ -648,14 +719,15 @@ export const GraphProvider = ({ children }) => {
         console.log("leaderboard", leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
-        console.log(await execNFTcheck(poName,account.toLocaleLowerCase()));
-        console.log(await memberNFTcheck(poName,account.toLocaleLowerCase()));
+        console.log(await execNFTcheck(poName,address.toLocaleLowerCase()));
+        console.log(await memberNFTcheck(poName,address.toLocaleLowerCase()));
 
 
     }
 
     //function that loads all graph data like last function but without any function that relies on account
     async function loadGraphDataNoAccount(poName) {
+        const poInfo= await fetchPOinfo(poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -689,7 +761,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setAccountGraph, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, account, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername}}>
+        <GraphContext.Provider value={{poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );

@@ -51,7 +51,6 @@ function Deployer({ isOpen, onClose, deploymentDetails, signer}) {
   };
 
   async function run(){
-    await deploy(deploymentDetails);
 
 
     setIsDeployed(true);
@@ -67,7 +66,7 @@ function Deployer({ isOpen, onClose, deploymentDetails, signer}) {
     const formattedOrgName = encodeURIComponent(
       deploymentDetails.POname.trim().replace(/\s+/g, "-")
     );
-    router.push(`/user/?userDAO=${formattedOrgName}`);
+    router.push(`/home/?userDAO=${formattedOrgName}`);
   };
 
   return (

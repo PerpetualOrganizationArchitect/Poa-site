@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class ContractAdded extends ethereum.Event {
@@ -103,21 +103,6 @@ export class Registry extends ethereum.SmartContract {
     return new Registry("Registry", address);
   }
 
-  POinfoHash(): string {
-    let result = super.call("POinfoHash", "POinfoHash():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_POinfoHash(): ethereum.CallResult<string> {
-    let result = super.tryCall("POinfoHash", "POinfoHash():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
   POname(): string {
     let result = super.call("POname", "POname():(string)", []);
 
@@ -137,7 +122,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.call(
       "VotingControlAddress",
       "VotingControlAddress():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -147,7 +132,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.tryCall(
       "VotingControlAddress",
       "VotingControlAddress():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -158,7 +143,7 @@ export class Registry extends ethereum.SmartContract {
 
   contracts(param0: string): Address {
     let result = super.call("contracts", "contracts(string):(address)", [
-      ethereum.Value.fromString(param0)
+      ethereum.Value.fromString(param0),
     ]);
 
     return result[0].toAddress();
@@ -166,7 +151,7 @@ export class Registry extends ethereum.SmartContract {
 
   try_contracts(param0: string): ethereum.CallResult<Address> {
     let result = super.tryCall("contracts", "contracts(string):(address)", [
-      ethereum.Value.fromString(param0)
+      ethereum.Value.fromString(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -179,7 +164,7 @@ export class Registry extends ethereum.SmartContract {
     let result = super.call(
       "getContractAddress",
       "getContractAddress(string):(address)",
-      [ethereum.Value.fromString(name)]
+      [ethereum.Value.fromString(name)],
     );
 
     return result[0].toAddress();
@@ -189,13 +174,43 @@ export class Registry extends ethereum.SmartContract {
     let result = super.tryCall(
       "getContractAddress",
       "getContractAddress(string):(address)",
-      [ethereum.Value.fromString(name)]
+      [ethereum.Value.fromString(name)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  infoHash(): string {
+    let result = super.call("infoHash", "infoHash():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_infoHash(): ethereum.CallResult<string> {
+    let result = super.tryCall("infoHash", "infoHash():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  logoURL(): string {
+    let result = super.call("logoURL", "logoURL():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_logoURL(): ethereum.CallResult<string> {
+    let result = super.tryCall("logoURL", "logoURL():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
   }
 }
 
@@ -228,12 +243,16 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[2].value.toAddressArray();
   }
 
-  get hashInfo(): string {
+  get name(): string {
     return this._call.inputValues[3].value.toString();
   }
 
-  get name(): string {
+  get logo(): string {
     return this._call.inputValues[4].value.toString();
+  }
+
+  get hashInfo(): string {
+    return this._call.inputValues[5].value.toString();
   }
 }
 

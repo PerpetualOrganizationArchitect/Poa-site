@@ -1,5 +1,5 @@
 // web3context 
-import React, { createContext, useState, useReducer, useEffect, useContext } from 'react';
+import React, { createContext, useState, useReducer, useEffect, useContext, use } from 'react';
 
 import { ethers, providers } from 'ethers';
 import { useIPFScontext } from './ipfsContext';
@@ -14,6 +14,16 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
 import { useMetaMask } from '@/components/Metamask';
+
+import {
+    useAccount,
+    useConnect,
+    useContract,
+    useNetwork,
+    useWaitForTransaction,
+  } from "wagmi";
+  
+import { useEthersProvider, useEthersSigner } from '@/components/ProviderConverter';
 
 
 
@@ -30,13 +40,25 @@ export const useWeb3Context = () => {
 
 export const Web3Provider = ({ children }) => {
 
-    const [signer, setSigner] = useState({});
     const [account, setAccount] = useState("0x00");
+
+    const {address}= useAccount();
+    const provider = useEthersProvider();
+    const signer = useEthersSigner();
+
+    useEffect(() => {
+        console.log("provider: ", provider )
+        console.log("address1: ", address)
+    
+        setAccount(address);
+    }, [address]);
+
+    
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
     
 
     
-    const AccountManagerAddress = "0x70224eABe4FA11e21dc5C936B62ecc9AE090925a";
+    const AccountManagerAddress = "0xDBE0cb6f796Cb382c058c38FEfDfb53b61a9E982";
     const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
     const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
     const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
@@ -220,7 +242,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, setSigner, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
+        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
     );

@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class TreasuryCreated extends ethereum.Event {
@@ -41,7 +41,7 @@ export class TreasuryFactory extends ethereum.SmartContract {
     let result = super.call(
       "createTreasury",
       "createTreasury(string):(address)",
-      [ethereum.Value.fromString(POname)]
+      [ethereum.Value.fromString(POname)],
     );
 
     return result[0].toAddress();
@@ -51,7 +51,7 @@ export class TreasuryFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "createTreasury",
       "createTreasury(string):(address)",
-      [ethereum.Value.fromString(POname)]
+      [ethereum.Value.fromString(POname)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

@@ -16,9 +16,11 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
+import { useIPFScontext } from "@/context/ipfsContext";
 
 const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
   const [uploadStatus, setUploadStatus] = useState(null); // null, 'success', or 'error'
+  const { addToIpfs } = useIPFScontext();
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -27,15 +29,19 @@ const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
       "image/gif": [],
       "image/webp": [],
     },
-    onDrop: (acceptedFiles) => {
+    onDrop: async (acceptedFiles) => {
       console.log(acceptedFiles);
-      // Simulate file upload process
       const file = acceptedFiles[0]; // Assuming single file upload
       if (file) {
-        // Simulate a successful upload
-        setUploadStatus("success");
-        // If there was an error during the upload process, you might set it to 'error' instead
-        // setUploadStatus('error');
+        try {
+          const addedData = await addToIpfs(file);
+          const ipfsUrl = `${addedData.path}`;
+          onSave(ipfsUrl); 
+          setUploadStatus("success");
+        } catch (error) {
+          console.error("Error uploading logo to IPFS:", error);
+          setUploadStatus("error");
+        }
       }
     },
   });
@@ -44,7 +50,7 @@ const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
     setUploadStatus(null);
     if (typeof onClose === "function") {
       onClose(); // Close the modal
-    } // Close the modal
+    }
   };
 
   return (

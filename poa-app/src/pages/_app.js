@@ -4,6 +4,38 @@ import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
 import { DashboardProvider } from "@/context/dashboardContext";
+import '@rainbow-me/rainbowkit/styles.css';
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import {
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  sepolia,
+  polygonAmoy,
+} from 'wagmi/chains';
+import {
+  QueryClientProvider,
+  QueryClient,
+} from "@tanstack/react-query";
+
+
+
+
+const queryClient = new QueryClient();
+const config = getDefaultConfig({
+  appName: 'Poa',
+  projectId: '7dc7409d6ef96f46e91e9d5797e4deac',
+  chains: [polygon, sepolia, polygonAmoy],
+  ssr: false,
+});
+
+
 const theme = extendTheme({
   fonts: {
     heading: "'Roboto Mono', monospace", // Use Roboto Mono for headings
@@ -22,20 +54,25 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }) {
   return (
-
-    <IPFSprovider>
-      <DashboardProvider>
-      <GraphProvider>
-        <Web3Provider>
-          <DataBaseProvider>
-            <ChakraProvider theme={theme}>
-              <Component {...pageProps} />
-            </ChakraProvider>
-          </DataBaseProvider>
-        </Web3Provider>
-      </GraphProvider>
-      </DashboardProvider>
-    </IPFSprovider>
+    <WagmiProvider config={config}>
+    <QueryClientProvider client={queryClient}>
+    <RainbowKitProvider>
+      <IPFSprovider>
+        <DashboardProvider>
+        <GraphProvider>
+          <Web3Provider>
+            <DataBaseProvider>
+              <ChakraProvider theme={theme}>
+                <Component {...pageProps} />
+              </ChakraProvider>
+            </DataBaseProvider>
+          </Web3Provider>
+        </GraphProvider>
+        </DashboardProvider>
+      </IPFSprovider>
+    </RainbowKitProvider>
+    </QueryClientProvider>
+    </WagmiProvider>
   );
 }
 

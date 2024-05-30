@@ -10,17 +10,18 @@ const Character = () => {
       top="0"
       left="0"
       right="0"
-      height="115px"
+      height="110px"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
       zIndex="sticky"
     >
-      <Box position="absolute" left="50%" transform="translateX(-50%)">
-        <Image
-          src="/images/poa_character.png"
-          alt="Character"
-          width={115}
-          height={115}
-        />
-      </Box>
+      <Image
+        src="/images/high_res_poa.png"
+        alt="Character"
+        width={110}
+        height={110}
+      />
     </Box>
   );
 };

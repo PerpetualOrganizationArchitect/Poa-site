@@ -5,6 +5,7 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
+  Box
 } from "@chakra-ui/react";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 
@@ -15,6 +16,7 @@ const ArchitectInput = ({ value, onChange, onSubmit, isDisabled }) => {
     }
   };
   return (
+    <Box ml="13%" mr="13%">
     <InputGroup>
       <Input
         value={value}
@@ -33,6 +35,7 @@ const ArchitectInput = ({ value, onChange, onSubmit, isDisabled }) => {
         />
       </InputRightElement>
     </InputGroup>
+    </Box>
   );
 };
 
