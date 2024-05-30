@@ -527,12 +527,13 @@ const ArchitectPage = () => {
     setIsConfirmationModalOpen(false);
     await deployOrg();
     setLoadingCompleted(true);
-    //setShowDeployer(true);
+    setShowDeployer(true);
   };
 
   const deployOrg = async () => {
     console.log("Deploying organization with the following details:", orgDetails);
     const quorum = orgDetails.participationVoteQuorum || orgDetails.hybridVoteQuorum;
+    setIsDeploying(true);
     try {
       await main(
         orgDetails.membershipTypeNames,
@@ -550,8 +551,9 @@ const ArchitectPage = () => {
         quorum,
         signer
       );
-      setTimeout(() => setIsDeploying(true), 3000);
+    
     } catch (error) {
+      console.error("Error deploying organization:", error);
       toast({
         title: "Deployment failed.",
         description: "There was an error during the deployment process.",
@@ -599,7 +601,7 @@ const ArchitectPage = () => {
           <LogoDropzoneModal isOpen={isLogoModalOpen} onSave={pinLogoFile} />
           {isDeploying && (
             <Center>
-              <Spinner size="xl" />
+              <Spinner mb="4" size="xl" />
             </Center>
           )}
         </Box>
