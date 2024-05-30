@@ -56,7 +56,7 @@ export const DashboardProvider = ({ children }) => {
         {
         perpetualOrganizations {
               id
-              logoURL
+              logoHash
               }
             }`;
 
