@@ -53,6 +53,7 @@ const BrowserPage = () => {
         >
           <VStack>
             <Text fontSize="24px">{po.id}</Text>
+            <Text fontSize="16px">{po.aboutInfo?.description}</Text>
             <img width="100px" src="/images/poa_logo.png" alt={po.id} />
           </VStack>
         </Box>
