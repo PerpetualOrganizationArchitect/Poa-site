@@ -431,6 +431,7 @@ templates:
       language: wasm/assemblyscript
       entities:
         - infoIPFS
+        - aboutLink
         - PerpetualOrganization
       abis:
         - name: RegistryFactory
