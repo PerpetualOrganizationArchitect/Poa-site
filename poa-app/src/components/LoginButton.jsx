@@ -20,7 +20,7 @@ const LoginButton = () => {
     useEffect(() => {
 
         if (hasMemberNFT) {
-            setText("Dashboard");
+            setText("Profile Hub");
         } else {
           
             setText("Join or Connect");

@@ -69,7 +69,8 @@ export const GraphProvider = ({ children }) => {
             await loadContractAddress(loaded);
             await loadGraphDataNoAccount(loaded);
         }
-        if (loaded !== undefined && loaded !== '' && address !== '0x00') {
+        console.log("graph info", loaded, address)
+        if (loaded !== undefined && loaded !== '' && address !== undefined) {
             if (loaded === poName) {
                 console.log('loaded')
             }
@@ -80,7 +81,7 @@ export const GraphProvider = ({ children }) => {
                 init();
             }
 
-        }else if (loaded !== undefined && loaded !== '' && address === '0x00'){
+        }else if (loaded !== undefined && loaded !== '' && address === undefined){
             noAccountInit();
         }
     }, [address, loaded]);

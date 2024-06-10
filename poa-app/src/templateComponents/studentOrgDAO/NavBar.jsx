@@ -60,7 +60,6 @@ const Navbar = () => {
           >
             Voting
           </Link>
-          <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address"/>
           <LoginButton />
         </Flex>
       </Flex>
