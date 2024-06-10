@@ -18,6 +18,7 @@ import {
   
 } from '@chakra-ui/react';
 import { SettingsIcon } from '@chakra-ui/icons';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 // import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
 
 import { useWeb3Context } from '@/context/web3Context';
@@ -264,6 +265,7 @@ const UserDashboard= () => {
         <HStack  pt={4} pb= {4} position="relative" borderTopRadius="2xl" >
         <div style={glassLayerStyle} />
           <Text  pl={4}  fontSize="3xl" fontWeight="extrabold">{userInfo.username} </Text>
+          
           <Text pt={2} pl={2} fontSize="lg" > {userInfo.memberStatus}</Text>
         </HStack>
           <IconButton
@@ -284,11 +286,14 @@ const UserDashboard= () => {
         isOpen={isSettingsModalOpen}
         onClose={closeSettingsModal}
       /> */}
+      
         <HStack pb={4} pt={2}  spacing="27%">
+
             <VStack align={'flex-start'} ml="6%" spacing={1}>
                 <Text  fontWeight="bold"  fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
             </VStack>
             <VStack align={'center'} spacing={2}>
+            <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
                 {hasExecNFT && (
                 <Button colorScheme="green" onClick={toggleDevMenu} size="sm">Developer Menu</Button>
                 )}
