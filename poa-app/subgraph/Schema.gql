@@ -340,7 +340,7 @@ type ValidContract @entity {
 type infoIPFS @entity {
   id: ID!
   description: String
-  links: [aboutLink!]
+  links: [aboutLink!] @derivedFrom(field: "infoIPFS")
 }
 
 type aboutLink @entity {
@@ -349,6 +349,7 @@ type aboutLink @entity {
   url: String!
   infoIPFS: infoIPFS! @link
 }
+
 
 ## Perpetual Organization info 
 

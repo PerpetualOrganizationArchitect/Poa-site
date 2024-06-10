@@ -3818,21 +3818,8 @@ export class infoIPFS extends Entity {
     }
   }
 
-  get links(): Array<string> | null {
-    let value = this.get("links");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set links(value: Array<string> | null) {
-    if (!value) {
-      this.unset("links");
-    } else {
-      this.set("links", Value.fromStringArray(<Array<string>>value));
-    }
+  get links(): aboutLinkLoader {
+    return new aboutLinkLoader("infoIPFS", this.get("id")!.toString(), "links");
   }
 }
 
@@ -4707,6 +4694,24 @@ export class ValidContractLoader extends Entity {
   load(): ValidContract[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<ValidContract[]>(value);
+  }
+}
+
+export class aboutLinkLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): aboutLink[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<aboutLink[]>(value);
   }
 }
 

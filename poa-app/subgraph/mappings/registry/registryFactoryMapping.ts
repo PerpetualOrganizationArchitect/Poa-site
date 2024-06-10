@@ -53,62 +53,54 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     }
 }
 
-
 export function handleIpfsContent(aboutInfo: Bytes): void {
-  log.info("Triggered handleIpfsContent", []);
+    log.info("Triggered handleIpfsContent", []);
   
-  let ctx = dataSource.context();
-  let poHash = ctx.getString(POHASH_KEY).toString();
+    let ctx = dataSource.context();
+    let poHash = ctx.getString(POHASH_KEY).toString();
 
-  let ipfsContent = json.fromBytes(aboutInfo).toObject();
-  if (ipfsContent == null) {
-      log.info("IPFS content is null", []);
-      return;
-  }
+    let ipfsContent = json.fromBytes(aboutInfo).toObject();
+    if (ipfsContent == null) {
+        log.info("IPFS content is null", []);
+        return;
+    }
 
-  let descriptionValue = ipfsContent.get("description");
-  let linksValue = ipfsContent.get("links");
-  if (descriptionValue === null) {
-      log.warning("Description is null", []);
-      return;
-  }
+    let descriptionValue = ipfsContent.get("description");
+    let linksValue = ipfsContent.get("links");
+    if (descriptionValue === null) {
+        log.warning("Description is null", []);
+        return;
+    }
 
-  let description = descriptionValue.toString();
-  let ipfsEntity = new infoIPFS(poHash);
-  ipfsEntity.description = description;
-  
-  let tempArray: string[] = [];
+    let description = descriptionValue.toString();
+    let ipfsEntity = new infoIPFS(poHash);
+    ipfsEntity.description = description;
 
-  if (linksValue !== null && linksValue.kind === JSONValueKind.ARRAY) {
-      let linksArray = linksValue.toArray();
-      for (let i = 0; i < linksArray.length; i++) {
-          let link = linksArray[i].toObject();
-          let linkNameValue = link.get("name");
-          if (linkNameValue === null) continue;  
-          let linkName = linkNameValue.toString();
-          let linkUrlValue = link.get("url");
-          if (linkUrlValue === null) continue;  
-          let linkUrl = linkUrlValue.toString();
-          
-          let linkId = poHash + "-" + linkName;
-          let linkEntity = new aboutLink(linkId);
-          linkEntity.name = linkName;
-          linkEntity.url = linkUrl;
-          linkEntity.infoIPFS = ipfsEntity.id;
-          linkEntity.save();
-          tempArray.push(linkEntity.id);
-          
-      }
-  }
-  ipfsEntity.links = tempArray;
+    ipfsEntity.save();
 
-  ipfsEntity.save();
+    if (linksValue !== null && linksValue.kind === JSONValueKind.ARRAY) {
+        let linksArray = linksValue.toArray();
+        for (let i = 0; i < linksArray.length; i++) {
+            let link = linksArray[i].toObject();
+            let linkNameValue = link.get("name");
+            if (linkNameValue === null) continue;  
+            let linkName = linkNameValue.toString();
+            let linkUrlValue = link.get("url");
+            if (linkUrlValue === null) continue;  
+            let linkUrl = linkUrlValue.toString();
+            
+            let linkId = poHash + "-" + linkName;
+            let linkEntity = new aboutLink(linkId);
+            linkEntity.name = linkName;
+            linkEntity.url = linkUrl;
+            linkEntity.infoIPFS = ipfsEntity.id;
+            linkEntity.save();
+        }
+    }
 
-  let po = PerpetualOrganization.load(poHash);
-  if (po != null) {
-      po.aboutInfo = ipfsEntity.id;
-      po.save();
-  }
+    let po = PerpetualOrganization.load(poHash);
+    if (po != null) {
+        po.aboutInfo = ipfsEntity.id;
+        po.save();
+    }
 }
-
-
