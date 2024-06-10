@@ -340,12 +340,10 @@ type ValidContract @entity {
 type infoIPFS @entity {
   id: ID!
   description: String
-  links: [aboutLinks!]
-  data: String
-  ipfsHash: String
+  links: [aboutLink!]
 }
 
-type aboutLinks @entity {
+type aboutLink @entity {
   id: ID!
   name: String!
   url: String!

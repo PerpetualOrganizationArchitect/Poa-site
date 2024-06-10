@@ -3834,43 +3834,9 @@ export class infoIPFS extends Entity {
       this.set("links", Value.fromStringArray(<Array<string>>value));
     }
   }
-
-  get data(): string | null {
-    let value = this.get("data");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set data(value: string | null) {
-    if (!value) {
-      this.unset("data");
-    } else {
-      this.set("data", Value.fromString(<string>value));
-    }
-  }
-
-  get ipfsHash(): string | null {
-    let value = this.get("ipfsHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set ipfsHash(value: string | null) {
-    if (!value) {
-      this.unset("ipfsHash");
-    } else {
-      this.set("ipfsHash", Value.fromString(<string>value));
-    }
-  }
 }
 
-export class aboutLinks extends Entity {
+export class aboutLink extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -3878,22 +3844,22 @@ export class aboutLinks extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save aboutLinks entity without an ID");
+    assert(id != null, "Cannot save aboutLink entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type aboutLinks must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+        `Entities of type aboutLink must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("aboutLinks", id.toString(), this);
+      store.set("aboutLink", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): aboutLinks | null {
-    return changetype<aboutLinks | null>(store.get_in_block("aboutLinks", id));
+  static loadInBlock(id: string): aboutLink | null {
+    return changetype<aboutLink | null>(store.get_in_block("aboutLink", id));
   }
 
-  static load(id: string): aboutLinks | null {
-    return changetype<aboutLinks | null>(store.get("aboutLinks", id));
+  static load(id: string): aboutLink | null {
+    return changetype<aboutLink | null>(store.get("aboutLink", id));
   }
 
   get id(): string {
