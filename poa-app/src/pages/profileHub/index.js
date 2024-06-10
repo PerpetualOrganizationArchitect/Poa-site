@@ -43,7 +43,7 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 
 
-const UserDashboard= () => {
+const UserprofileHub= () => {
     const { userData, setLoaded} = useGraphContext();
     const router = useRouter();
     const [username, setUsername] = useState("");
@@ -369,4 +369,4 @@ const UserDashboard= () => {
   );
 };
 
-export default UserDashboard;
+export default UserprofileHub;

@@ -5,7 +5,7 @@ export const organizations = [
     status: "Verified",
     dateJoined: "1/1/2024",
     logoUrl: "/images/poa_logo.png",
-    href: "/dashboard",
+    href: "/profileHub",
   },
   {
     title: "Organization B",

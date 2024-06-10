@@ -108,7 +108,7 @@ const ConstitutionPage = () => {
                         fontWeight="bold"
                         textColor="black"
                     >
-                        Dashboard
+                        profileHub
                     </Button>
                 </Link>
             </VStack>

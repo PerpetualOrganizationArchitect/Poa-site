@@ -1,23 +1,23 @@
-//DashboardContext
+//profileHubContext
 
 import React, { createContext, useReducer, useContext, useState, useEffect } from 'react';
 
 
-const DashboardContext = createContext();
+const profileHubContext = createContext();
 
-export const useDashboardContext = () => {
-    return useContext(DashboardContext);
+export const useprofileHubContext = () => {
+    return useContext(profileHubContext);
     }
 
 
-export const DashboardProvider = ({ children }) => {
+export const profileHubProvider = ({ children }) => {
     
-    const [dashboardLoaded, setDashboardLoaded] = useState(false);
+    const [profileHubLoaded, setprofileHubLoaded] = useState(false);
     const [perpetualOrganizations, setPerpetualOrganizations] = useState([]);
 
     useEffect(() => {
-        console.log("dashboarded load", dashboardLoaded)
-        if (dashboardLoaded) {
+        console.log("profileHubed load", profileHubLoaded)
+        if (profileHubLoaded) {
             fetchPOs().then((data) => {
                 console.log(data);
                 setPerpetualOrganizations(data);
@@ -25,7 +25,7 @@ export const DashboardProvider = ({ children }) => {
             
         }
     }
-    , [dashboardLoaded]);
+    , [profileHubLoaded]);
 
 
 
@@ -74,9 +74,9 @@ export const DashboardProvider = ({ children }) => {
 
 
     return (
-        <DashboardContext.Provider value={{perpetualOrganizations, setDashboardLoaded}}>
+        <profileHubContext.Provider value={{perpetualOrganizations, setprofileHubLoaded}}>
         {children}
-        </DashboardContext.Provider>
+        </profileHubContext.Provider>
     );
 }
 

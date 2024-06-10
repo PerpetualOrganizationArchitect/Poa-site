@@ -2,15 +2,15 @@ import React from "react";
 import { Box, Flex, VStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Layout from "../../components/Layout";
-import AboutPreview from "@/components/Dashboard/AboutPreview";
-import YourPerpetualOrganizations from "@/components/Dashboard/YourPerpetualOrganizations";
-import PoaPreview from "@/components/Dashboard/PoaPreview";
+import AboutPreview from "@/components/profileHub/AboutPreview";
+import YourPerpetualOrganizations from "@/components/profileHub/YourPerpetualOrganizations";
+import PoaPreview from "@/components/profileHub/PoaPreview";
 
 // Convert Chakra UI components to motion components
 const MotionBox = motion(Box);
 const MotionFlex = motion(Flex);
 
-const DashboardPage = () => {
+const profileHubPage = () => {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -84,4 +84,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default profileHubPage;

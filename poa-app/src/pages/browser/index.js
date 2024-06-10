@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import { useDashboardContext } from "../../context/dashboardContext";
+import { useprofileHubContext } from "../../context/profileHubContext";
 import { useIPFScontext } from "@/context/ipfsContext";
 import Link from "next/link";
 import { Flex, VStack, Box, Text, Image } from "@chakra-ui/react";
 
 const BrowserPage = () => {
-  const { perpetualOrganizations, setDashboardLoaded } = useDashboardContext();
+  const { perpetualOrganizations, setprofileHubLoaded } = useprofileHubContext();
   const { fetchImageFromIpfs } = useIPFScontext();
   const [images, setImages] = useState({});
 
   useEffect(() => {
     console.log("dash");
     if (perpetualOrganizations.length === 0) {
-      setDashboardLoaded(true);
+      setprofileHubLoaded(true);
     } else {
       perpetualOrganizations.forEach(async (po) => {
         if (po.logoHash) {

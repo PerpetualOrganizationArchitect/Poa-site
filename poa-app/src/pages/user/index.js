@@ -45,14 +45,14 @@ const User = () => {
 
   useEffect(() => {
     if (hasMemberNFT) {
-      router.push(`/dashboard/?userDAO=${userDAO}`);
+      router.push(`/profileHub/?userDAO=${userDAO}`);
     }
   }, [hasMemberNFT, address]);
 
   const setDispalyHandle = async () => {
     setLoading(true);
     await mintAssets(nftMembershipContractAddress, ddTokenContractAddress);
-    router.push(`/dashboard/?userDAO=${userDAO}`);
+    router.push(`/profileHub/?userDAO=${userDAO}`);
     setLoading(false);
   };
 
@@ -64,7 +64,7 @@ const User = () => {
       console.error(error);
     }
     await mintAssets(nftMembershipContractAddress, ddTokenContractAddress);
-    router.push(`/dashboard/?userDAO=${userDAO}`);
+    router.push(`/profileHub/?userDAO=${userDAO}`);
     setLoading(false);
   };
 
@@ -94,7 +94,7 @@ const User = () => {
         <>
           <Box position="relative">
             <Flex justify="flex-end" p="4">
-              <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
+              <ConnectButton showBalance={false} chainStatus="icon"  />
             </Flex>
           </Box>
           {dispaly && username ? (

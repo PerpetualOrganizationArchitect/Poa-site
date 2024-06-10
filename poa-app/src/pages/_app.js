@@ -3,7 +3,7 @@ import { IPFSprovider } from "@/context/ipfsContext";
 import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
-import { DashboardProvider } from "@/context/dashboardContext";
+import { profileHubProvider } from "@/context/profileHubContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -58,7 +58,7 @@ function MyApp({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
     <RainbowKitProvider>
       <IPFSprovider>
-        <DashboardProvider>
+        <profileHubProvider>
         <GraphProvider>
           <Web3Provider>
             <DataBaseProvider>
@@ -68,7 +68,7 @@ function MyApp({ Component, pageProps }) {
             </DataBaseProvider>
           </Web3Provider>
         </GraphProvider>
-        </DashboardProvider>
+        </profileHubProvider>
       </IPFSprovider>
     </RainbowKitProvider>
     </QueryClientProvider>
