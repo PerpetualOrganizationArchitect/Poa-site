@@ -592,34 +592,39 @@ export const GraphProvider = ({ children }) => {
         }));
     };
 
-    async function fetchPOinfo(poName){
+    async function fetchPOinfo(poName) {
+        console.log("running fetch po info");
         const query = `{
             perpetualOrganization(id:"${poName}") {
                 logoHash
-                aboutInfo{
+                aboutInfo {
                     description
-                    links{
+                    links {
                         name
                         url
                     }
                 }
             }
-          }`;
-
-          const data = await querySubgraph(query);
-
-          if(data.perpetualOrganization?.logoHash){
-            setLogoHash(data.perpetualOrganization.logoHash)
-          }
-
-          if(data.perpetualOrganization?.description){
-            setPOdescription(data.perpetualOrganization.description)
-          }
-
-          if(data.perpetualOrganization?.links){
-            setPOlinks(data.perpetualOrganization.links)
-          }
+        }`;
+    
+        const data = await querySubgraph(query);
+        console.log("po info data", data);
+    
+        if (data.perpetualOrganization?.logoHash) {
+            setLogoHash(data.perpetualOrganization.logoHash);
+        }
+    
+        if (data.perpetualOrganization?.aboutInfo?.description) {
+            console.log("description", data.perpetualOrganization.aboutInfo.description);
+            setPOdescription(data.perpetualOrganization.aboutInfo.description);
+        }
+    
+        if (data.perpetualOrganization?.aboutInfo?.links) {
+            console.log("links", data.perpetualOrganization.aboutInfo.links);
+            setPOlinks(data.perpetualOrganization.aboutInfo.links);
+        }
     }
+    
 
     async function loadContractAddress(poName) {
         console.log("loading contract address", poName);
@@ -692,6 +697,7 @@ export const GraphProvider = ({ children }) => {
 
         const username = await fetchUsername(address.toLocaleLowerCase());
         setGraphUsername(username);
+        const poInfo= await fetchPOinfo(poName);
         const claimedTasks = await fetchUserClaimedTasks(address.toLocaleLowerCase(), poName);
         const userInfo = await fetchUserData(address.toLocaleLowerCase(),poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
@@ -702,7 +708,7 @@ export const GraphProvider = ({ children }) => {
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         const projectData = await fetchProjectData(poName);
         const leaderboardData = await fetchLeaderboardData(poName);
-        const poInfo= await fetchPOinfo(poName);
+        
 
         console.log("setting user data", userInfo);
         setClaimedTasks(claimedTasks);

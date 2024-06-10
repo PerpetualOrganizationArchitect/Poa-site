@@ -31,6 +31,7 @@ export const IPFSprovider = ({children}) => {
         }
     }
     
+
     const ipfs = create({
         host: 'api.thegraph.com',
         port: 443,
