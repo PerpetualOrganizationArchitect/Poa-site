@@ -58,7 +58,7 @@ export const IPFSprovider = ({children}) => {
             binaryData.push(chunk);
         }
         try {
-            const blob = new Blob(binaryData, { type: 'image/png' });  // Adjust MIME type as needed
+            const blob = new Blob(binaryData, { type: 'image/png' });  
             return URL.createObjectURL(blob);
         } catch (error) {
             console.error("Error creating blob from IPFS data:", error);
