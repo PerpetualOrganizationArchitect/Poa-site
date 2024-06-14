@@ -2,6 +2,7 @@ import { log } from "@graphprotocol/graph-ts"
 import { TaskCreated as TaskCreatedEvent, TaskClaimed as TaskClaimedEvent, TaskUpdated as TaskUpdatedEvent, TaskCompleted as TaskCompletedEvent, ProjectCreated as ProjectCreatedEvent, ProjectDeleted as ProjectDeletedEvent } from "../../generated/templates/TaskManager/TaskManager"
 import { TaskManager, Task, Project } from "../../generated/schema"
 import { dataSource } from '@graphprotocol/graph-ts'
+import { DataSourceContext } from "@graphprotocol/graph-ts";
 
 export function handleTaskCreated(event: TaskCreatedEvent): void {
   log.info("Triggered handleTaskCreated", [])
@@ -14,7 +15,7 @@ export function handleTaskCreated(event: TaskCreatedEvent): void {
   task.taskManager = event.address.toHex()
 
 
-    task.save()
+  task.save()
 
 }
 
@@ -35,6 +36,23 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
     task.claimer = event.params.claimer
     task.user = taskManager.POname + '-' + event.params.claimer.toHex()
     task.save()
+}
+
+export function handleTaskIPFS(taskInfo: Bytes): void {
+    log.info("Triggered handleTaskIPFS", [])
+  
+    let ctx = dataSource.context();
+    let taskId= ctx.getString("taskId").toString();
+    let taskManagerAddress = ctx.getString("taskManagerAddress").toString();
+
+    let task = Task.load(taskId+"-"+taskManagerAddress)
+    if (!task) {
+      log.error("Task not found: {}", [taskId])
+      return
+    }
+    task.ipfsHash = taskInfo
+    task.save()
+  
 }
 
 
