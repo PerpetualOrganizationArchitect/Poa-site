@@ -1,8 +1,9 @@
-import { log } from "@graphprotocol/graph-ts"
+import { log,json, DataSourceTemplate, Bytes } from "@graphprotocol/graph-ts"
 import { TaskCreated as TaskCreatedEvent, TaskClaimed as TaskClaimedEvent, TaskUpdated as TaskUpdatedEvent, TaskCompleted as TaskCompletedEvent, ProjectCreated as ProjectCreatedEvent, ProjectDeleted as ProjectDeletedEvent } from "../../generated/templates/TaskManager/TaskManager"
-import { TaskManager, Task, Project } from "../../generated/schema"
+import {TaskInfo, TaskManager, Task, Project } from "../../generated/schema"
 import { dataSource } from '@graphprotocol/graph-ts'
 import { DataSourceContext } from "@graphprotocol/graph-ts";
+
 
 export function handleTaskCreated(event: TaskCreatedEvent): void {
   log.info("Triggered handleTaskCreated", [])
@@ -36,23 +37,54 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
     task.claimer = event.params.claimer
     task.user = taskManager.POname + '-' + event.params.claimer.toHex()
     task.save()
+
+    let context = new DataSourceContext();
+    context.setString("taskId", event.params.id.toHex());
+    context.setString("taskManagerAddress", event.address.toHex());
+    task.taskInfo = task.ipfsHash
+
+    log.info("Creating infoIPFS template with hash: {}", [task.ipfsHash]);
+    DataSourceTemplate.createWithContext("infoIpfs", [task.ipfsHash], context);
 }
 
 export function handleTaskIPFS(taskInfo: Bytes): void {
-    log.info("Triggered handleTaskIPFS", [])
-  
-    let ctx = dataSource.context();
-    let taskId= ctx.getString("taskId").toString();
-    let taskManagerAddress = ctx.getString("taskManagerAddress").toString();
+  log.info("Triggered handleTaskIPFS", []);
 
-    let task = Task.load(taskId+"-"+taskManagerAddress)
-    if (!task) {
-      log.error("Task not found: {}", [taskId])
-      return
-    }
-    task.ipfsHash = taskInfo
-    task.save()
-  
+  // Obtain context values
+  let ctx = dataSource.context();
+  let taskId = ctx.getString("taskId");
+  let taskManagerAddress = ctx.getString("taskManagerAddress");
+
+  // Load the task using the ID constructed from taskId and taskManagerAddress
+  let task = Task.load(taskId + "-" + taskManagerAddress);
+  if (!task) {
+      log.error("Task not found: {}", [taskId]);
+      return;
+  }
+
+  // Deserialize the IPFS content to JSON
+  let ipfsContent = json.fromBytes(taskInfo).toObject();
+  if (!ipfsContent) {
+      log.error("Failed to parse IPFS content for task", []);
+      return;
+  }
+
+  // Create or update TaskInfo from the IPFS data
+  let taskInfoEntity = TaskInfo.load(taskId);
+  if (!taskInfoEntity) {
+      taskInfoEntity = new TaskInfo(taskId);
+  }
+
+  // Populate the TaskInfo fields from IPFS JSON data
+  taskInfoEntity.name = ipfsContent.get("name").isNull() ? "" : ipfsContent.get("name").toString();
+  taskInfoEntity.description = ipfsContent.get("description").isNull() ? "" : ipfsContent.get("description").toString();
+  taskInfoEntity.location = ipfsContent.get("location").isNull() ? "" : ipfsContent.get("location").toString();
+  taskInfoEntity.difficulty = ipfsContent.get("difficulty").isNull() ? "" : ipfsContent.get("difficulty").toString();
+  taskInfoEntity.estimatedHours = ipfsContent.get("estimatedHours").isNull() ? "" : ipfsContent.get("estimatedHours").toString();
+  taskInfoEntity.submissionContent = ipfsContent.get("submissionContent").isNull() ? "" : ipfsContent.get("submissionContent").toString();
+
+  taskInfoEntity.save();
+  log.info("Task IPFS data updated successfully for {}", [task.id]);
 }
 
 

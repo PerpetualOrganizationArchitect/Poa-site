@@ -3322,6 +3322,19 @@ export class Task extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get taskInfo(): string {
+    let value = this.get("taskInfo");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set taskInfo(value: string) {
+    this.set("taskInfo", Value.fromString(value));
+  }
+
   get taskManager(): string {
     let value = this.get("taskManager");
     if (!value || value.kind == ValueKind.NULL) {
@@ -3418,6 +3431,128 @@ export class Task extends Entity {
       this.unset("user");
     } else {
       this.set("user", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class TaskInfo extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TaskInfo entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TaskInfo must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("TaskInfo", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TaskInfo | null {
+    return changetype<TaskInfo | null>(store.get_in_block("TaskInfo", id));
+  }
+
+  static load(id: string): TaskInfo | null {
+    return changetype<TaskInfo | null>(store.get("TaskInfo", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get description(): string {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string) {
+    this.set("description", Value.fromString(value));
+  }
+
+  get location(): string {
+    let value = this.get("location");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set location(value: string) {
+    this.set("location", Value.fromString(value));
+  }
+
+  get difficulty(): string {
+    let value = this.get("difficulty");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set difficulty(value: string) {
+    this.set("difficulty", Value.fromString(value));
+  }
+
+  get estimatedHours(): string {
+    let value = this.get("estimatedHours");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set estimatedHours(value: string) {
+    this.set("estimatedHours", Value.fromString(value));
+  }
+
+  get submissionContent(): string | null {
+    let value = this.get("submissionContent");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set submissionContent(value: string | null) {
+    if (!value) {
+      this.unset("submissionContent");
+    } else {
+      this.set("submissionContent", Value.fromString(<string>value));
     }
   }
 }
