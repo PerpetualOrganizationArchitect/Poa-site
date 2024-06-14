@@ -27,7 +27,7 @@ const NetworkSwitchModal = ({ isOpen, onClose }) => {
         <ModalContent zIndex="1500">
           <ModalHeader>Wrong Network</ModalHeader>
           <ModalBody>
-            <Text>Please switch to the Polygon Amoy network to continue.</Text>
+            <Text>Please switch to the Polygon Amoy network to continue and then try again.</Text>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={handleNetworkSwitch}>
