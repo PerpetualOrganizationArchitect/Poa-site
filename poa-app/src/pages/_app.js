@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <WagmiProvider config={config}>
     <QueryClientProvider client={queryClient}>
-    <RainbowKitProvider>
+    <RainbowKitProvider initialChain={polygonAmoy}>
       <IPFSprovider>
         <profileHubProvider>
         <GraphProvider>
