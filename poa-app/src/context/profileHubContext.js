@@ -3,14 +3,14 @@
 import React, { createContext, useReducer, useContext, useState, useEffect } from 'react';
 
 
-const profileHubContext = createContext();
+const ProfileHubContext = createContext();
 
 export const useprofileHubContext = () => {
-    return useContext(profileHubContext);
+    return useContext(ProfileHubContext);
     }
 
 
-export const profileHubProvider = ({ children }) => {
+export const ProfileHubProvider = ({ children }) => {
     
     const [profileHubLoaded, setprofileHubLoaded] = useState(false);
     const [perpetualOrganizations, setPerpetualOrganizations] = useState([]);
@@ -74,9 +74,9 @@ export const profileHubProvider = ({ children }) => {
 
 
     return (
-        <profileHubContext.Provider value={{perpetualOrganizations, setprofileHubLoaded}}>
+        <ProfileHubContext.Provider value={{perpetualOrganizations, setprofileHubLoaded}}>
         {children}
-        </profileHubContext.Provider>
+        </ProfileHubContext.Provider>
     );
 }
 

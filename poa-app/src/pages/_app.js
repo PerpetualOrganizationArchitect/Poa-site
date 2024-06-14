@@ -3,7 +3,7 @@ import { IPFSprovider } from "@/context/ipfsContext";
 import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
-import { profileHubProvider } from "@/context/profileHubContext";
+import { ProfileHubProvider } from "@/context/profileHubContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -24,6 +24,9 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
+import NetworkModalControl from "@/components/NetworkModalControl";
+
+
 
 
 
@@ -38,8 +41,8 @@ const config = getDefaultConfig({
 
 const theme = extendTheme({
   fonts: {
-    heading: "'Roboto Mono', monospace", // Use Roboto Mono for headings
-    body: "'Roboto Mono', monospace", // Use Roboto Mono for body text
+    heading: "'Roboto Mono', monospace", 
+    body: "'Roboto Mono', monospace", 
   },
   styles: {
     global: {
@@ -48,6 +51,7 @@ const theme = extendTheme({
         bgGradient: "linear(to-r, orange.200, pink.200)",
         color: "#001443",
       },
+      
     },
   },
 });
@@ -55,23 +59,25 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }) {
   return (
     <WagmiProvider config={config}>
-    <QueryClientProvider client={queryClient}>
-    <RainbowKitProvider initialChain={polygonAmoy}>
-      <IPFSprovider>
-        <profileHubProvider>
-        <GraphProvider>
-          <Web3Provider>
-            <DataBaseProvider>
-              <ChakraProvider theme={theme}>
-                <Component {...pageProps} />
-              </ChakraProvider>
-            </DataBaseProvider>
-          </Web3Provider>
-        </GraphProvider>
-        </profileHubProvider>
-      </IPFSprovider>
-    </RainbowKitProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider initialChain={polygonAmoy}>
+          <IPFSprovider>
+            <ProfileHubProvider>
+              <GraphProvider>
+                <Web3Provider>
+                  
+                  <DataBaseProvider>
+                    <ChakraProvider theme={theme}>
+                      <NetworkModalControl />  
+                      <Component {...pageProps} />
+                    </ChakraProvider>
+                  </DataBaseProvider>
+                </Web3Provider>
+              </GraphProvider>
+            </ProfileHubProvider>
+          </IPFSprovider>
+        </RainbowKitProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }

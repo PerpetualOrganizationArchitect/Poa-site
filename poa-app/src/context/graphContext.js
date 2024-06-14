@@ -5,7 +5,7 @@ import { useIPFScontext } from './ipfsContext';
 
 const GraphContext = createContext();
 
-import {useAccount, useChainId } from 'wagmi';
+import {useAccount} from 'wagmi';
 
 export const useGraphContext = () => {
     return useContext(GraphContext);
