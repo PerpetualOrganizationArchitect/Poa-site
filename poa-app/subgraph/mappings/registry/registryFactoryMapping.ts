@@ -4,7 +4,7 @@ import { infoIPFS, aboutLink, RegistryCreated, Registry, ValidContract, Perpetua
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 import { JSONValueKind } from "@graphprotocol/graph-ts";
 
-let POHASH_KEY = "POHASH";
+let PONAME_KEY = "PONAME";
 
 export function handleRegistryContractCreated(event: RegistryContractCreatedEvent): void {
     log.info("Triggered handleRegistryContractCreated", []);
@@ -27,7 +27,7 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
         po.registry = newRegistry.id;
 
         let context = new DataSourceContext();
-        context.setString(POHASH_KEY, event.params.POinfoHash);
+        context.setString(PONAME_KEY, event.params.POname);
 
         log.info("Creating infoIPFS template with hash: {}", [event.params.POinfoHash]);
         DataSourceTemplate.createWithContext("infoIpfs", [event.params.POinfoHash], context);
@@ -55,41 +55,62 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
 
 export function handleIpfsContent(aboutInfo: Bytes): void {
     log.info("Triggered handleIpfsContent", []);
-  
-    let ctx = dataSource.context();
-    let poHash = ctx.getString(POHASH_KEY).toString();
 
-    let ipfsContent = json.fromBytes(aboutInfo).toObject();
-    if (ipfsContent == null) {
-        log.info("IPFS content is null", []);
+    // Fetch context and check for null
+    let ctx = dataSource.context();
+    let poHash = ctx.getString(PONAME_KEY);
+    if (poHash === null) {
+        log.error("POHASH_KEY is missing in context", []);
+        return;
+    }
+    let poHashString = poHash.toString();
+
+    // Ensure aboutInfo is not empty
+    if (aboutInfo.length === 0) {
+        log.error("aboutInfo is empty", []);
         return;
     }
 
-    let descriptionValue = ipfsContent.get("description");
-    let linksValue = ipfsContent.get("links");
+    // Safe parsing of JSON
+    let ipfsContent = json.try_fromBytes(aboutInfo).value;
+    if (ipfsContent === null) {
+        log.error("Failed to parse IPFS content as JSON", []);
+        return;
+    }
+
+    let descriptionValue = ipfsContent.toObject().get("description");
     if (descriptionValue === null) {
         log.warning("Description is null", []);
         return;
     }
-
     let description = descriptionValue.toString();
-    let ipfsEntity = new infoIPFS(poHash);
+    let ipfsEntity = new infoIPFS(poHashString);
     ipfsEntity.description = description;
 
+    // Save the ipfsEntity early to reference it in link entities
     ipfsEntity.save();
 
+    let linksValue = ipfsContent.toObject().get("links");
     if (linksValue !== null && linksValue.kind === JSONValueKind.ARRAY) {
         let linksArray = linksValue.toArray();
         for (let i = 0; i < linksArray.length; i++) {
             let link = linksArray[i].toObject();
+            if (link === null) {
+                log.error("Link element is not an object", []);
+                continue;
+            }
             let linkNameValue = link.get("name");
-            if (linkNameValue === null) continue;  
+            if (linkNameValue === null) {
+                continue;  // Skip this link if the name is null
+            }
             let linkName = linkNameValue.toString();
             let linkUrlValue = link.get("url");
-            if (linkUrlValue === null) continue;  
+            if (linkUrlValue === null) {
+                continue;  // Skip this link if the url is null
+            }
             let linkUrl = linkUrlValue.toString();
-            
-            let linkId = poHash + "-" + linkName;
+
+            let linkId = poHashString + "-" + linkName;
             let linkEntity = new aboutLink(linkId);
             linkEntity.name = linkName;
             linkEntity.url = linkUrl;
@@ -98,9 +119,12 @@ export function handleIpfsContent(aboutInfo: Bytes): void {
         }
     }
 
-    let po = PerpetualOrganization.load(poHash);
+    // Load PerpetualOrganization to update aboutInfo
+    let po = PerpetualOrganization.load(poHashString);
     if (po != null) {
         po.aboutInfo = ipfsEntity.id;
         po.save();
+    } else {
+        log.error("PerpetualOrganization not found for given poHash", [poHashString]);
     }
 }

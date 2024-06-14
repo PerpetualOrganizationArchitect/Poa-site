@@ -3,6 +3,7 @@ import { TaskCreated as TaskCreatedEvent, TaskClaimed as TaskClaimedEvent, TaskU
 import {TaskInfo, TaskManager, Task, Project } from "../../generated/schema"
 import { dataSource } from '@graphprotocol/graph-ts'
 import { DataSourceContext } from "@graphprotocol/graph-ts";
+import { JSONValueKind } from "@graphprotocol/graph-ts";
 
 
 export function handleTaskCreated(event: TaskCreatedEvent): void {
@@ -16,9 +17,19 @@ export function handleTaskCreated(event: TaskCreatedEvent): void {
   task.taskManager = event.address.toHex()
 
 
-  task.save()
+  let context = new DataSourceContext();
+  context.setString("taskId", event.params.id.toHex());
+  context.setString("taskManagerAddress", event.address.toHex());
 
+  
+  log.info("Creating infoIPFS template with hash: {}", [task.ipfsHash]);
+  DataSourceTemplate.createWithContext("infoIpfs", [task.ipfsHash], context);
+  
+  task.taskInfo = task.ipfsHash
+
+  task.save()
 }
+
 
 export function handleTaskClaimed(event: TaskClaimedEvent): void {
     log.info("Triggered handleTaskClaimed", [])
@@ -36,15 +47,17 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
     }
     task.claimer = event.params.claimer
     task.user = taskManager.POname + '-' + event.params.claimer.toHex()
-    task.save()
+    
 
     let context = new DataSourceContext();
     context.setString("taskId", event.params.id.toHex());
     context.setString("taskManagerAddress", event.address.toHex());
-    task.taskInfo = task.ipfsHash
+
 
     log.info("Creating infoIPFS template with hash: {}", [task.ipfsHash]);
     DataSourceTemplate.createWithContext("infoIpfs", [task.ipfsHash], context);
+    task.taskInfo = task.ipfsHash
+    task.save()
 }
 
 export function handleTaskIPFS(taskInfo: Bytes): void {
@@ -58,30 +71,41 @@ export function handleTaskIPFS(taskInfo: Bytes): void {
   // Load the task using the ID constructed from taskId and taskManagerAddress
   let task = Task.load(taskId + "-" + taskManagerAddress);
   if (!task) {
-      log.error("Task not found: {}", [taskId]);
-      return;
+    log.error("Task not found: {}", [taskId]);
+    return;
   }
 
   // Deserialize the IPFS content to JSON
   let ipfsContent = json.fromBytes(taskInfo).toObject();
   if (!ipfsContent) {
-      log.error("Failed to parse IPFS content for task", []);
-      return;
+    log.error("Failed to parse IPFS content for task", []);
+    return;
   }
 
   // Create or update TaskInfo from the IPFS data
   let taskInfoEntity = TaskInfo.load(taskId);
   if (!taskInfoEntity) {
-      taskInfoEntity = new TaskInfo(taskId);
+    taskInfoEntity = new TaskInfo(taskId);
   }
 
-  // Populate the TaskInfo fields from IPFS JSON data
-  taskInfoEntity.name = ipfsContent.get("name").isNull() ? "" : ipfsContent.get("name").toString();
-  taskInfoEntity.description = ipfsContent.get("description").isNull() ? "" : ipfsContent.get("description").toString();
-  taskInfoEntity.location = ipfsContent.get("location").isNull() ? "" : ipfsContent.get("location").toString();
-  taskInfoEntity.difficulty = ipfsContent.get("difficulty").isNull() ? "" : ipfsContent.get("difficulty").toString();
-  taskInfoEntity.estimatedHours = ipfsContent.get("estimatedHours").isNull() ? "" : ipfsContent.get("estimatedHours").toString();
-  taskInfoEntity.submissionContent = ipfsContent.get("submissionContent").isNull() ? "" : ipfsContent.get("submissionContent").toString();
+  // Populate the TaskInfo fields from IPFS JSON data, with correct null checks
+  let name = ipfsContent.get("name");
+  taskInfoEntity.name = name && !name.isNull() ? name.toString() : "";
+
+  let description = ipfsContent.get("description");
+  taskInfoEntity.description = description && !description.isNull() ? description.toString() : "";
+
+  let location = ipfsContent.get("location");
+  taskInfoEntity.location = location && !location.isNull() ? location.toString() : "";
+
+  let difficulty = ipfsContent.get("difficulty");
+  taskInfoEntity.difficulty = difficulty && !difficulty.isNull() ? difficulty.toString() : "";
+
+  let estimatedHours = ipfsContent.get("estimatedHours");
+  taskInfoEntity.estimatedHours = estimatedHours && !estimatedHours.isNull() ? estimatedHours.toString() : "";
+
+  let submissionContent = ipfsContent.get("submissionContent");
+  taskInfoEntity.submissionContent = submissionContent && !submissionContent.isNull() ? submissionContent.toString() : "";
 
   taskInfoEntity.save();
   log.info("Task IPFS data updated successfully for {}", [task.id]);

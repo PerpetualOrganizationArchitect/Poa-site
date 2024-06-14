@@ -294,6 +294,7 @@ type TaskManager @entity {
 
 type Task @entity {
   id: ID!
+  taskInfo: TaskInfo! @link
   taskManager: TaskManager! @link
   ipfsHash: String!
   payout: BigInt!
@@ -301,6 +302,17 @@ type Task @entity {
   claimer: Bytes
   completed: Boolean!
   user: User @link
+}
+
+type TaskInfo @entity {
+  id: ID!
+  name: String!
+  description: String!
+  location: String!
+  difficulty: String!
+  estimatedHours: String!
+  submissionContent: String
+  
 }
 
 type Project @entity {

@@ -440,3 +440,17 @@ templates:
           file: abi/RegistryFactory.json
       handler: handleIpfsContent
       file: RegistryFactory/RegistryFactory.wasm
+  - kind: file/ipfs
+    name: TaskInfo
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TaskInfo
+        - Task
+      abis:
+        - name: TaskManager
+          file: abi/TaskManager.json
+      handler: handleTaskIPFS
+      file: templates/TaskManager/TaskManager.wasm
