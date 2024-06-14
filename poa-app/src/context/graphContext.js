@@ -63,16 +63,14 @@ export const GraphProvider = ({ children }) => {
     useEffect(() => {
         
         async function init() {
-            await loadContractAddress(loaded);
+            await fetchPOdata(loaded);
             await loadGraphData(loaded);
         }
 
         async function noAccountInit(){
-            await loadContractAddress(loaded);
+            await fetchPOdata(loaded);
             await loadGraphDataNoAccount(loaded);
         }
-        console.log("graph info", loaded, address)
-        console.log("chain id", chainId)
 
         if (loaded !== undefined && loaded !== '' && address !== undefined) {
             if (loaded === poName) {
@@ -145,55 +143,6 @@ export const GraphProvider = ({ children }) => {
 
     }
 
-    async function fetchUserClaimedTasks(id, org) {
-
-        const query = `
-        {
-            user(id: "${org}-${id}") {
-                id
-                tasks(where:{completed: false}) {
-                id
-                ipfsHash
-                payout
-                completed
-                }
-            }
-            }`;
-
-        const data = await querySubgraph(query);
-        console.log("claimed tasks", data);
-    
-        return data?.user?.tasks;
-    }
-
-    async function fetchUserData(id, org) {
-        const query = `
-        {
-        user(id: "${org}-${id}") {
-            id
-            ptTokenBalance
-            ddTokenBalance
-            memberType {
-            memberTypeName
-            imageURL
-            }
-            tasks {
-                id
-                ipfsHash
-                payout
-                completed
-            }
-        }
-        }`;
-
-        const data = await querySubgraph(query);
-        console.log("user data", data.user);
-
-        return data?.user;
-
-
-    }
-    
 
 
     async function fetchParticpationVotingOngoing(id) {
@@ -382,90 +331,105 @@ export const GraphProvider = ({ children }) => {
 
         return data
     }
-    async function execNFTcheck(poName,id){
-        if (poName === undefined){
+
+    async function fetchUserDetails(poName, id) {
+        if (!poName || !id) {
+            console.error("Organization name or user ID is undefined");
             return false;
         }
-
-
+    
+        // Normalize the id to lowercase as per previous usage
+        const normalizedId = id.toLowerCase();
+    
         const query = `{
             perpetualOrganization(id: "${poName}") {
-              NFTMembership {
-                executiveRoles
-              }
-              Users(where: {id: "${poName}-${id}"}){
-                      memberType{
-                  memberTypeName
+                NFTMembership {
+                    executiveRoles
                 }
+                Users(where: {id: "${poName}-${normalizedId}"}) {
+                    id
+                    memberType {
+                        memberTypeName
                     }
+                }
             }
-      }`;
-
-      console.log("execNFTcheck",query);
-
-        const data = await querySubgraph(query);
-
-        // see if memberTypeName is in executiveRoles
-        //loop through executive roles 
+            account(id: "${normalizedId}") {
+                id
+                userName
+            }
+            user(id: "${poName}-${normalizedId}") {
+                id
+                ptTokenBalance
+                ddTokenBalance
+                memberType {
+                    memberTypeName
+                    imageURL
+                }
+                tasks {
+                    id
+                    ipfsHash
+                    payout
+                    completed
+                }
+            }
+        }`;
     
-        for (let i = 0; i < data.perpetualOrganization.NFTMembership.executiveRoles.length; i++){
-            if (data.perpetualOrganization.Users[0]?.memberType.memberTypeName === data.perpetualOrganization.NFTMembership.executiveRoles[i]){
-                setHasExecNFT(true);
-                return true;
-            }
+        console.log("Fetching user details with query:", query);
+        const data = await querySubgraph(query);
+    
+        // Handle data received from the query
+        if (data) {
+            const { perpetualOrganization, account, user } = data;
+    
+            // Set user details based on fetched data
+            const hasExecNFT = perpetualOrganization.Users.some(u =>
+                perpetualOrganization.NFTMembership.executiveRoles.includes(u.memberType.memberTypeName)
+            );
+            const hasMemberNFT = perpetualOrganization.Users.length > 0;
+            const username = account?.userName || false;
+            const userTasks = user?.tasks || [];
+            
+            // Log and set states (assuming state-setting functions are available in scope)
+            console.log("Executive NFT:", hasExecNFT);
+            console.log("Member NFT:", hasMemberNFT);
+            console.log("Username:", username);
+            console.log("User tasks:", userTasks);
+            console.log("User data:", user);
+    
+            // Assuming setGraphUsername, setHasExecNFT, setHasMemberNFT, setClaimedTasks, and setUserData are defined
+            setGraphUsername(username);
+            setHasExecNFT(hasExecNFT);
+            setHasMemberNFT(hasMemberNFT);
+            setClaimedTasks(userTasks.filter(task => !task.completed));
+    
+            // Set user data details
+            setUserData({
+                id: user.id,
+                ptTokenBalance: user.ptTokenBalance,
+                ddTokenBalance: user.ddTokenBalance,
+                memberType: user.memberType.memberTypeName,
+                imageURL: user.memberType.imageURL,
+            });
+    
+            return {
+                username,
+                hasExecNFT,
+                hasMemberNFT,
+                userTasks,
+                userData: {
+                    ptTokenBalance: user.ptTokenBalance,
+                    ddTokenBalance: user.ddTokenBalance,
+                    memberType: user.memberType,
+                    imageURL: user.memberType.imageURL
+                }
+            };
         }
-        setHasExecNFT(false);
+    
         return false;
- 
-        }
-
-        async function memberNFTcheck(poName,id){   
-            console.log("memberNFTcheck",poName,id);
-            if (poName === undefined){
-                return false;
-            }
-            const query = `{
-                perpetualOrganization(id: "${poName}") {
-
-                  Users(where: {id: "${poName}-${id}"}){
-                    id
-                    }
-                      
-                }
-            }`;
-            const data = await querySubgraph(query);
-            //check if user id returns a value
-            console.log("memberNFTcheck",data);
-
-            if (data.perpetualOrganization.Users.length > 0){
-                setHasMemberNFT(true);
-                return true;
-            }
-            setHasMemberNFT(false);
-            return false;
-        }
+    }
+    
 
 
-
-        async function fetchUsername(id) {
-            const query = `{
-                account(id: "${id}") {
-                    id
-                    userName
-                }
-            }`;
-        
-            const data = await querySubgraph(query);
-
-            console.log("fetchUsername", data);
-        
-            // Check if 'account' exists and has a 'username' property
-            if (data && data.account && data.account.userName) {
-                console.log("fetchUsername", data.account.userName);
-                return data.account.userName;
-            }
-            return false;
-        }
         
 
     async function fetchLeaderboardData(id) {
@@ -505,12 +469,101 @@ export const GraphProvider = ({ children }) => {
 
     }
 
+    async function fetchPOdata(poName) {
+        console.log("Fetching Perpetual Organization data for:", poName);
+    
+        const query = `{
+            perpetualOrganization(id: "${poName}") {
+                logoHash
+                aboutInfo {
+                    description
+                    links {
+                        name
+                        url
+                    }
+                }
+                TaskManager {
+                    id
+                }
+                HybridVoting {
+                    id
+                }
+                ParticipationVoting {
+                    id
+                }
+                DirectDemocracyVoting {
+                    id
+                }
+                DirectDemocracyToken {
+                    id
+                }
+                ParticipationToken {
+                    id
+                }
+                NFTMembership {
+                    id
+                }
+            }
+        }`;
+    
+        const data = await querySubgraph(query);
+        console.log("Fetched data:", data);
+    
+        const po = data.perpetualOrganization;
+    
+        if (po.logoHash) {
+            setLogoHash(po.logoHash);
+        }
+    
+        if (data.perpetualOrganization.aboutInfo?.description) {
+            console.log("Description:", po.aboutInfo.description);
+            setPOdescription(po.aboutInfo.description);
+        }
+    
+        if (data.perpetualOrganization.aboutInfo?.links) {
+            console.log("Links:", po.aboutInfo.links);
+            setPOlinks(po.aboutInfo.links);
+        }
+    
+        if (data.perpetualOrganization.TaskManager?.id) {
+            setTaskManagerContractAddress(po.TaskManager.id);
+        }
+    
+        if (data.perpetualOrganization.HybridVoting?.id) {
+            console.log("Hybrid Voting Contract Address:", po.HybridVoting.id);
+            setHybridVotingContractAddress(po.HybridVoting.id);
+            setVotingContractAddress(po.HybridVoting.id);
+        }
+    
+        if (data.perpetualOrganization.ParticipationVoting?.id) {
+            setParticipationVotingContractAddress(po.ParticipationVoting.id);
+            setVotingContractAddress(po.ParticipationVoting.id);
+        }
+    
+        if (data.perpetualOrganization.DirectDemocracyVoting?.id) {
+            setDirectDemocracyVotingContractAddress(po.DirectDemocracyVoting.id);
+        }
+    
+        if (data.perpetualOrganization.DirectDemocracyToken?.id) {
+            setDDTokenContractAddress(po.DirectDemocracyToken.id);
+        }
+    
+        if (data.perpetualOrganization.ParticipationToken?.id) {
+            setPartcipationTokenContractAddress(po.ParticipationToken.id);
+        }
+    
+        if (data.perpetualOrganization.NFTMembership?.id) {
+            setNFTMembershipContractAddress(po.NFTMembership.id);
+        }
+    }
+
     const transformProjects = async (perpetualOrganization) => {
         console.log("transform");
 
         console.log(perpetualOrganization.perpetualOrganization);
 
         const projects = perpetualOrganization?.perpetualOrganization?.TaskManager?.projects;
+        console.log("projects", projects);
         
         if (!Array.isArray(projects) || projects.length === 0) {
             const defaultProject = {
@@ -545,6 +598,7 @@ export const GraphProvider = ({ children }) => {
             const tasksData = project.tasks || [];
     
             const taskPromises = tasksData.map(async (task) => {
+                console.log("task", task);
                 const ipfsData = await fetchFromIpfs(task.ipfsHash); 
                 console.log("task", ipfsData);
                 return {
@@ -596,115 +650,14 @@ export const GraphProvider = ({ children }) => {
             return transformedProject;
         }));
     };
-
-    async function fetchPOinfo(poName) {
-        console.log("running fetch po info");
-        const query = `{
-            perpetualOrganization(id:"${poName}") {
-                logoHash
-                aboutInfo {
-                    description
-                    links {
-                        name
-                        url
-                    }
-                }
-            }
-        }`;
-    
-        const data = await querySubgraph(query);
-        console.log("po info data", data);
-    
-        if (data.perpetualOrganization?.logoHash) {
-            setLogoHash(data.perpetualOrganization.logoHash);
-        }
-    
-        if (data.perpetualOrganization?.aboutInfo?.description) {
-            console.log("description", data.perpetualOrganization.aboutInfo.description);
-            setPOdescription(data.perpetualOrganization.aboutInfo.description);
-        }
-    
-        if (data.perpetualOrganization?.aboutInfo?.links) {
-            console.log("links", data.perpetualOrganization.aboutInfo.links);
-            setPOlinks(data.perpetualOrganization.aboutInfo.links);
-        }
-    }
-    
-
-    async function loadContractAddress(poName) {
-        console.log("loading contract address", poName);
-        const query = `{
-            perpetualOrganization(id:"${poName}") {
-                TaskManager {
-                    id
-                }
-                HybridVoting {
-                    id
-                }
-                ParticipationVoting {
-                    id
-                }
-                DirectDemocracyVoting {
-                    id
-                }
-                DirectDemocracyToken {
-                    id
-                }
-                ParticipationToken {
-                    id
-                }
-                NFTMembership {
-                    id
-                }
-
-            }
-          }`;
-        const data = await querySubgraph(query);
-
-        // set the data reuslts to contract address
-        console.log("contract address", data);
-        if (data.perpetualOrganization.TaskManager?.id) {
-            setTaskManagerContractAddress(data.perpetualOrganization.TaskManager.id);
-        }
-        if (data.perpetualOrganization.HybridVoting?.id) {
-            console.log("hybrid voting contract address", data.perpetualOrganization.HybridVoting.id);
-            setHybridVotingContractAddress(data.perpetualOrganization.HybridVoting.id);
-            setVotingContractAddress(data.perpetualOrganization.HybridVoting.id);
-        }
-        if (data.perpetualOrganization.ParticipationVoting?.id) {
-           
-            setParticipationVotingContractAddress(data.perpetualOrganization.ParticipationVoting.id);
-            setVotingContractAddress(data.perpetualOrganization.ParticipationVoting.id);
-        }
-        if (data.perpetualOrganization.DirectDemocracyVoting?.id) {
-            setDirectDemocracyVotingContractAddress(data.perpetualOrganization.DirectDemocracyVoting.id);
-
-        }
-        if (data.perpetualOrganization.DirectDemocracyToken?.id) {
-            setDDTokenContractAddress(data.perpetualOrganization.DirectDemocracyToken.id);
-        }
-        if (data.perpetualOrganization.ParticipationToken?.id) {
-            setPartcipationTokenContractAddress(data.perpetualOrganization.ParticipationToken.id);
-        }
-        if (data.perpetualOrganization.NFTMembership?.id) {
-            setNFTMembershipContractAddress(data.perpetualOrganization.NFTMembership.id);
-        }
-        
-
-    }
-    
-      
-
       
       
 
     async function loadGraphData(poName) {
 
-        const username = await fetchUsername(address.toLocaleLowerCase());
-        setGraphUsername(username);
-        const poInfo= await fetchPOinfo(poName);
-        const claimedTasks = await fetchUserClaimedTasks(address.toLocaleLowerCase(), poName);
-        const userInfo = await fetchUserData(address.toLocaleLowerCase(),poName);
+        const userInfo = await fetchUserDetails(poName, address.toLocaleLowerCase());
+        
+       
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -716,8 +669,6 @@ export const GraphProvider = ({ children }) => {
         
 
         console.log("setting user data", userInfo);
-        setClaimedTasks(claimedTasks);
-        setUserData(userInfo);
         setParticipationVotingOngoing(participationVotingOngoing);
         setParticipationVotingCompleted(participationVotingCompleted);
         setHybridVotingOngoing(hybridVotingOngoing);
@@ -730,15 +681,12 @@ export const GraphProvider = ({ children }) => {
         console.log("leaderboard", leaderboardData);
         console.log(projectData);
         setProjectsData( await transformProjects(projectData));
-        console.log(await execNFTcheck(poName,address.toLocaleLowerCase()));
-        console.log(await memberNFTcheck(poName,address.toLocaleLowerCase()));
 
 
     }
 
     //function that loads all graph data like last function but without any function that relies on account
     async function loadGraphDataNoAccount(poName) {
-        const poInfo= await fetchPOinfo(poName);
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
@@ -772,7 +720,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchUsername, fetchRules}}>
+        <GraphContext.Provider value={{chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );

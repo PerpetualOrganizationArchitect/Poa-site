@@ -39,11 +39,14 @@ export const IPFSprovider = ({children}) => {
     }
 
     async function fetchFromIpfs(ipfsHash) {
+        console.log("fetching from IPFS", ipfsHash);
         let stringData = '';
         for await (const chunk of fetchIpfs.cat(ipfsHash)) {
+            console.log("chunk:", chunk);
             stringData += new TextDecoder().decode(chunk);
         }
         try {
+            console.log("stringData:", stringData);
             return JSON.parse(stringData);
         } catch (error) {
             console.error("Error parsing JSON from IPFS via Infura:", error, "stringData:", stringData);

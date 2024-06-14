@@ -46,7 +46,6 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 const UserprofileHub= () => {
     const { userData, setLoaded} = useGraphContext();
     const router = useRouter();
-    const [username, setUsername] = useState("");
     
     const { userDAO } = router.query;
     useEffect(() => {
@@ -88,18 +87,6 @@ const UserprofileHub= () => {
 
     const { web3, account,KUBIXbalance, hasExecNFT} = useWeb3Context();
 
-    useEffect(() => {
-          async function fetchUserDetails() {
-            const userName = await fetchUsername(account);
-            console.log("username", userName);
-            setUsername(userName);
-      }
-
-      if (account!= null) {
-        fetchUserDetails();
-
-      }
-    }, [account]);
 
         
 
@@ -178,7 +165,7 @@ const UserprofileHub= () => {
             let userInfo = {
                 username: graphUsername,
                 ptBalance: Number(userData.ptTokenBalance),
-                memberStatus: userData.memberType?.memberTypeName,
+                memberStatus: userData.memberType,
                 accountAddress: userData.id,
             };
             setUserInfo(userInfo);

@@ -14,13 +14,13 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const User = () => {
-  const { address, nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress, fetchUsername } = useGraphContext();
+  const { address, nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress, graphUsername } = useGraphContext();
   const { mintDDtokens, createNewUser, mintDefaultNFT } = useWeb3Context();
   const router = useRouter();
   const { userDAO } = router.query;
 
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState(false);
+
   const [newUsername, setNewUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [dispaly, setDispaly] = useState(true);
@@ -31,17 +31,7 @@ const User = () => {
     setIsSSR(false);
   }, [userDAO]);
 
-  useEffect(() => {
-    async function fetchUserDetails() {
-      const userName = await fetchUsername(address);
-      console.log("username", userName);
-      setUsername(userName);
-    }
 
-    if (address) {
-      fetchUserDetails();
-    }
-  }, [address]);
 
   useEffect(() => {
     if (hasMemberNFT) {
@@ -97,7 +87,7 @@ const User = () => {
               <ConnectButton showBalance={false} chainStatus="icon"  />
             </Flex>
           </Box>
-          {dispaly && username ? (
+          {dispaly && graphUsername ? (
             <VStack mt="8" spacing="6">
               <Text align={"center"} fontWeight="bold" maxW="60%" fontSize="2xl" textColor="black">
                 Join to become a Member of {userDAO} and access the Profile Hub.
