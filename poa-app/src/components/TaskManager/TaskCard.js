@@ -40,7 +40,7 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
     easy: 'green',
     medium: 'yellow',
     hard: 'orange',
-    veryHard: 'red'
+    veryhard: 'red'
   };
 
   return (
