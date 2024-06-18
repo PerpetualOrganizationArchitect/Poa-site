@@ -438,7 +438,7 @@ templates:
       handler: handleIpfsContent
       file: ./mappings/registry/registryFactoryMapping.ts
   - kind: file/ipfs
-    name: TaskInfo
+    name: taskInfo
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

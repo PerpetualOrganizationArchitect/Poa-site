@@ -317,7 +317,13 @@ export const GraphProvider = ({ children }) => {
                 name
                 tasks {
                     id
-                    ipfsHash
+                    taskInfo{
+                        name
+                        description
+                        difficulty
+                        estimatedHours
+                        location
+                    }
                     payout
                     claimer
                     completed
@@ -549,9 +555,9 @@ export const GraphProvider = ({ children }) => {
 
     const transformProjects = async (perpetualOrganization) => {
         console.log("transform");
-
+    
         console.log(perpetualOrganization.perpetualOrganization);
-
+    
         const projects = perpetualOrganization?.perpetualOrganization?.TaskManager?.projects;
         console.log("projects", projects);
         
@@ -571,8 +577,7 @@ export const GraphProvider = ({ children }) => {
             return [defaultProject];
         }
     
-
-        return Promise.all(perpetualOrganization.perpetualOrganization.TaskManager.projects.map(async (project) => {
+        return projects.map((project) => {
             const transformedProject = {
                 id: project.id,
                 name: project.name,
@@ -586,60 +591,44 @@ export const GraphProvider = ({ children }) => {
             };
     
             const tasksData = project.tasks || [];
-    
-            const taskPromises = tasksData.map(async (task) => {
-                console.log("task", task);
-                const ipfsData = await fetchFromIpfs(task.ipfsHash); 
-                console.log("task", ipfsData);
-                return {
+            
+            tasksData.forEach((task) => {
+                const taskInfo = task.taskInfo || {};
+                const transformedTask = {
                     id: task.id,
-                    name: ipfsData.name,
-                    description: ipfsData.description,
-                    difficulty: ipfsData.difficulty,
-                    estHours: ipfsData.estHours,
-                    submission: ipfsData.submission,
+                    name: taskInfo.name || '',
+                    description: taskInfo.description || '',
+                    difficulty: taskInfo.difficulty || '',
+                    estHours: taskInfo.estimatedHours || '',
                     claimedBy: task.claimer || '',
                     Payout: parseInt(task.payout, 10),
                     projectId: project.id,
-                    location: ipfsData.location,
-                    completed: task.completed
+                    location: taskInfo.location || 'Open',
+                    completed: task.completed,
                 };
-            });
     
-            const tasks = await Promise.all(taskPromises);
-            tasks.forEach((task) => {
-                console.log("pposcfvrvrgfvfrvrftask", task);
-                // Determine the appropriate column for the task
-                let columnTitle = task.location;
-                // Check if the task has a claimer and its location is 'Open', then move it to 'In Progress'
-                console.log("claimedBy", task.claimedBy);
-                console.log("columnTitle", columnTitle);
-                if (task.claimedBy && columnTitle === 'Open') {
-                    console.log("claimedBy", task.claimedBy);
+                let columnTitle = transformedTask.location;
+    
+                if (transformedTask.claimedBy && columnTitle === 'Open') {
                     columnTitle = 'In Progress';
                 }
-
-                console.log("ssssssscompleted", task.completed);
-
-                if(task.completed){
+    
+                if (transformedTask.completed) {
                     columnTitle = 'Completed';
-                    console.log("completed", task.completed);
                 }
-
-                
-                // Find the column by title
+    
                 const column = transformedProject.columns.find(c => c.title === columnTitle);
                 if (column) {
-                    column.tasks.push(task);
+                    column.tasks.push(transformedTask);
                 } else {
-                    console.error(`Task location '${task.location}' does not match any column title`);
+                    console.error(`Task location '${transformedTask.location}' does not match any column title`);
                 }
             });
-            
     
             return transformedProject;
-        }));
+        });
     };
+    
       
       
 

@@ -142,12 +142,12 @@ export class infoIpfs extends DataSourceTemplate {
   }
 }
 
-export class TaskInfo extends DataSourceTemplate {
+export class taskInfo extends DataSourceTemplate {
   static create(cid: string): void {
-    DataSourceTemplate.create("TaskInfo", [cid]);
+    DataSourceTemplate.create("taskInfo", [cid]);
   }
 
   static createWithContext(cid: string, context: DataSourceContext): void {
-    DataSourceTemplate.createWithContext("TaskInfo", [cid], context);
+    DataSourceTemplate.createWithContext("taskInfo", [cid], context);
   }
 }
