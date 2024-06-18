@@ -403,26 +403,16 @@ export const GraphProvider = ({ children }) => {
             setClaimedTasks(userTasks.filter(task => !task.completed));
     
             // Set user data details
-            setUserData({
-                id: user.id,
-                ptTokenBalance: user.ptTokenBalance,
-                ddTokenBalance: user.ddTokenBalance,
-                memberType: user.memberType.memberTypeName,
-                imageURL: user.memberType.imageURL,
-            });
-    
-            return {
-                username,
-                hasExecNFT,
-                hasMemberNFT,
-                userTasks,
-                userData: {
+            if(hasMemberNFT){
+                setUserData({
+                    id: user.id,
                     ptTokenBalance: user.ptTokenBalance,
                     ddTokenBalance: user.ddTokenBalance,
-                    memberType: user.memberType,
-                    imageURL: user.memberType.imageURL
-                }
-            };
+                    memberType: user.memberType.memberTypeName,
+                    imageURL: user.memberType.imageURL,
+                });
+            }
+    
         }
     
         return false;
