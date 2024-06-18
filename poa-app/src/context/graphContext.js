@@ -635,44 +635,39 @@ export const GraphProvider = ({ children }) => {
     async function loadGraphData(poName) {
 
         const userInfo = await fetchUserDetails(poName, address.toLocaleLowerCase());
-        
-       
-        const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
-        const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
-        const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
-        const hybridVotingCompleted = await fetchHybridVotingCompleted(poName);
-        const democracyVotingOngoing = await fetchDemocracyVotingOngoing(poName);
-        const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         const projectData = await fetchProjectData(poName);
-        const leaderboardData = await fetchLeaderboardData(poName);
-        
-
-        console.log("setting user data", userInfo);
-        setParticipationVotingOngoing(participationVotingOngoing);
-        setParticipationVotingCompleted(participationVotingCompleted);
-        setHybridVotingOngoing(hybridVotingOngoing);
-        setHybridVotingCompleted(hybridVotingCompleted);
-        setDemocracyVotingOngoing(democracyVotingOngoing);
-        console.log("democracy voting ongoing", democracyVotingOngoing);
-        setDemocracyVotingCompleted(democracyVotingCompleted);
-        console.log("democracy voting completed", democracyVotingCompleted);
-        setLeaderboardData(leaderboardData);
-        console.log("leaderboard", leaderboardData);
-        console.log(projectData);
         setProjectsData( await transformProjects(projectData));
+        const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
+        setParticipationVotingOngoing(participationVotingOngoing);
+        const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
+        setParticipationVotingCompleted(participationVotingCompleted);
+        const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
+        setHybridVotingOngoing(hybridVotingOngoing);
+        const hybridVotingCompleted = await fetchHybridVotingCompleted(poName);
+        setHybridVotingCompleted(hybridVotingCompleted);
+        const democracyVotingOngoing = await fetchDemocracyVotingOngoing(poName);
+        setDemocracyVotingOngoing(democracyVotingOngoing);
+        const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
+        setDemocracyVotingCompleted(democracyVotingCompleted);
+        const leaderboardData = await fetchLeaderboardData(poName);
+        setLeaderboardData(leaderboardData);
+        
 
 
     }
 
     //function that loads all graph data like last function but without any function that relies on account
     async function loadGraphDataNoAccount(poName) {
+
+        const projectData = await fetchProjectData(poName);
+        setProjectsData( await transformProjects(projectData));
         const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
         const hybridVotingCompleted = await fetchHybridVotingCompleted(poName);
         const democracyVotingOngoing = await fetchDemocracyVotingOngoing(poName);
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
-        const projectData = await fetchProjectData(poName);
+       
         const leaderboardData = await fetchLeaderboardData(poName);
 
 
@@ -691,7 +686,7 @@ export const GraphProvider = ({ children }) => {
         setDemocracyVotingOngoing(democracyVotingOngoing);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
-        setProjectsData( await transformProjects(projectData));
+        
 
         
 
