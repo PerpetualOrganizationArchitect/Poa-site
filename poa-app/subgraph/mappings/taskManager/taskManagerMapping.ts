@@ -43,13 +43,14 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
   task.claimer = event.params.claimer;
   task.user = taskManager.POname + '-' + event.params.claimer.toHex();
 
-  let context = new DataSourceContext();
+  let taskInfo = TaskInfo.load(task.ipfsHash);
+  if (!taskInfo) {
+    log.error("TaskInfo not found: {}", [task.ipfsHash]);
+    return;
+  }
 
-  context.setString("hash", task.ipfsHash);
-
-  log.info("Creating infoIPFS template with hash: {}", [task.ipfsHash]);
-  DataSourceTemplate.createWithContext("infoIpfs", [task.ipfsHash], context);
-  task.taskInfo = task.ipfsHash;
+  taskInfo.location = "claimed";
+  taskInfo.save();
   task.save();
 }
 
@@ -58,12 +59,10 @@ export function handleTaskIPFS(taskInfo: Bytes): void {
 
   // Obtain context values
   let ctx = dataSource.context();
-  let taskId = ctx.getString("taskId");
-
-  // Update TaskInfo from the IPFS data
+  let hash = ctx.getString("hash");
 
 
-  let taskInfoEntity = new TaskInfo(taskId);
+  let taskInfoEntity = new TaskInfo(hash);
 
   // Deserialize the IPFS content to JSON
   let ipfsContent = json.fromBytes(taskInfo).toObject();
@@ -85,14 +84,14 @@ export function handleTaskIPFS(taskInfo: Bytes): void {
   let difficulty = ipfsContent.get("difficulty");
   taskInfoEntity.difficulty = difficulty && !difficulty.isNull() ? difficulty.toString() : "";
 
-  let estimatedHours = ipfsContent.get("estimatedHours");
+  let estimatedHours = ipfsContent.get("estHours");
   taskInfoEntity.estimatedHours = estimatedHours && !estimatedHours.isNull() ? estimatedHours.toString() : "";
 
   let submissionContent = ipfsContent.get("submissionContent");
   taskInfoEntity.submissionContent = submissionContent && !submissionContent.isNull() ? submissionContent.toString() : "";
 
   taskInfoEntity.save();
-  log.info("Task IPFS data updated successfully for TaskInfo ID: {}", [taskId]);
+  log.info("Task IPFS data updated successfully for TaskInfo ID: {}", [hash]);
 }
 
 export function handleTaskUpdated(event: TaskUpdatedEvent): void {
@@ -106,6 +105,14 @@ export function handleTaskUpdated(event: TaskUpdatedEvent): void {
 
   task.payout = event.params.payout;
   task.ipfsHash = event.params.ipfsHash;
+  
+  let context = new DataSourceContext();
+  context.setString("hash", event.params.ipfsHash);
+
+  log.info("Creating TaskInfo template with hash: {}", [task.ipfsHash]);
+  DataSourceTemplate.createWithContext("TaskInfo", [task.ipfsHash], context);
+  task.taskInfo= event.params.ipfsHash;
+ 
   task.save();
 }
 
@@ -119,6 +126,15 @@ export function handleTaskCompleted(event: TaskCompletedEvent): void {
   }
 
   task.completed = true;
+
+  let taskInfo = TaskInfo.load(task.ipfsHash);
+  if (!taskInfo) {
+    log.error("TaskInfo not found: {}", [task.ipfsHash]);
+    return;
+  }
+
+  taskInfo.location = "completed";
+  taskInfo.save();
   task.save();
 }
 

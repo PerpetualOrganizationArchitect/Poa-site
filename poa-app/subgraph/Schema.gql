@@ -312,7 +312,6 @@ type TaskInfo @entity {
   difficulty: String!
   estimatedHours: String!
   submissionContent: String
-  
 }
 
 type Project @entity {
