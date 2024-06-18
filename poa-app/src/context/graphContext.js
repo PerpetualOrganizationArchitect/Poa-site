@@ -323,10 +323,16 @@ export const GraphProvider = ({ children }) => {
                         difficulty
                         estimatedHours
                         location
+                        submissionContent
                     }
                     payout
                     claimer
                     completed
+                    user{
+                        Account{
+                            userName
+                        }
+                    }
                 }
                 }
             }
@@ -554,12 +560,9 @@ export const GraphProvider = ({ children }) => {
     }
 
     const transformProjects = async (perpetualOrganization) => {
-        console.log("transform");
     
-        console.log(perpetualOrganization.perpetualOrganization);
     
         const projects = perpetualOrganization?.perpetualOrganization?.TaskManager?.projects;
-        console.log("projects", projects);
         
         if (!Array.isArray(projects) || projects.length === 0) {
             const defaultProject = {
@@ -605,6 +608,8 @@ export const GraphProvider = ({ children }) => {
                     projectId: project.id,
                     location: taskInfo.location || 'Open',
                     completed: task.completed,
+                    claimerUsername: task.user?.Account?.userName || '',
+                    submission: taskInfo.submissionContent || '',
                 };
     
                 let columnTitle = transformedTask.location;

@@ -90,8 +90,7 @@ export function handleTaskIPFS(taskInfo: Bytes): void {
     if (estimatedHours.kind == JSONValueKind.NUMBER) {
       taskInfoEntity.estimatedHours = estimatedHours.toF64().toString();
     } else {
-      log.error("Expected estHours to be a number, but got a different type.", []);
-      taskInfoEntity.estimatedHours = "";
+      taskInfoEntity.estimatedHours = estimatedHours.toString();
     }
   } else {
     taskInfoEntity.estimatedHours = "";
@@ -137,15 +136,6 @@ export function handleTaskCompleted(event: TaskCompletedEvent): void {
 
   task.completed = true;
   task.save();
-
-  let taskInfo = TaskInfo.load(task.taskInfo.toString());
-  if (!taskInfo) {
-    log.error("TaskInfo not found: {}", [task.taskInfo]);
-    return;
-  }
-
-  taskInfo.location = "completed";
-  taskInfo.save();
 
 }
 

@@ -2,7 +2,7 @@ specVersion: 1.0.0
 schema:
   file: Schema.gql
 indexerHints:
-  prune: auto
+  prune: never
 dataSources:
   - kind: ethereum/contract
     name: UniversalAccountRegistry
