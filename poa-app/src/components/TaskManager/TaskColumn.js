@@ -108,6 +108,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
         difficulty: updatedTask.difficulty, 
         estHours: updatedTask.estHours, 
       };
+      
       await editTask(updatedTask, columnId, taskIndex, projectName);
 
       toast ({

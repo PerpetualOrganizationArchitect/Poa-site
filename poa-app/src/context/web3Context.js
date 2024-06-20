@@ -229,7 +229,6 @@ export const Web3Provider = ({ children }) => {
 
         const tx = await contract.updateTask(newTaskID, payout,ipfsHashString);
         await tx.wait();
-        console.log("Task updated");
     }
 
 

@@ -150,6 +150,7 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
 
   const handleCloseEditTaskModal = () => {
     setIsEditTaskModalOpen(false);
+    router.push({ pathname: `/tasks/`, query: { userDAO: userDAO } }, undefined, { shallow: true });
   };
 
   const copyLinkToClipboard = () => {
