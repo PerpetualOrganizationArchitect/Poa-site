@@ -30,6 +30,7 @@ import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '@/context/dataBaseContext';
 import { useGraphContext } from '@/context/graphContext';
 import { useRouter } from 'next/router';
+import { to } from 'react-spring';
 
 const glassLayerStyle = {
   position: "absolute",
@@ -74,9 +75,31 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
   };
 
   const handleButtonClick = async () => {
+    handleCloseModal();
     if (columnId === 'open') {
       if (hasMemberNFT) {
-        moveTask(task, columnId, 'inProgress', 0, " ", account);
+        try {
+          console.log("start1")
+          await moveTask(task, columnId, 'inProgress', 0, " ", account);
+          
+          toast({
+            title: "Task claimed.",
+            description: "Your task was successfully claimed.",
+            stas: "success",
+            duration: 3000,
+            isClosable: true
+          });
+        }
+        catch (error) {
+          toast({
+            title: "Error",
+            description: "There was an error claiming the task.",
+            status: "error",
+            duration: 3500,
+            isClosable: true
+          });
+          console.error("Error moving task:", error);
+        }
       } else {
         alert('You must own an NFT to claim this task. Go to user to join ');
       }
@@ -92,8 +115,26 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
         });
         return;
       } else if (hasMemberNFT) {
-        moveTask(task, columnId, 'inReview', 0, submission);
-        onClose();
+        try {
+          await moveTask(task, columnId, 'inReview', 0, submission);
+          toast({
+            title: "Task submitted.",
+            description: "Your task was successfully submitted.",
+            status: "success",
+            duration: 3000,
+            isClosable: true
+          });
+        }
+        catch (error) {
+          toast({
+            title: "Error",
+            description: "There was an error submitting your task.",
+            status: "error",
+            duration: 3500,
+            isClosable: true
+          });
+          console.error("Error moving task:", error);
+        }
       } else {
         alert('You must own an NFT to submit. Go to user to join');
       }
@@ -101,25 +142,56 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
     if (columnId === 'inReview') {
       if (hasExecNFT) {
         try {
-          onClose();
           await moveTask(task, columnId, 'completed', 0);
-          console.log(task.claimedBy);
+          toast({
+            title: "Task reviewed.",
+            description: "Your task was successfully reviewed.",
+            status: "success",
+            duration: 3000,
+            isClosable: true
+          });
         } catch (error) {
           console.error("Error moving task:", error);
+          toast({
+            title: "Error",
+            description: "There was an error completing the review.",
+            status: "error",
+            duration: 3500,
+            isClosable: true
+          });
         }
       } else {
         alert('You must be an executive to complete the review');
       }
     }
-
     if (columnId === 'completed') {
       if (hasExecNFT) {
-        deleteTask(task.id, columnId);
+        try {
+          await deleteTask(task.id, columnId);
+          toast({
+            title: "Task deleted.",
+            description: "Your task was successfully deleted.",
+            status: "success",
+            duration: 3000,
+            isClosable: true
+          });
+        }
+        catch (error) {
+          console.error("Error deleting task:", error);
+          toast({
+            title: "Error",
+            description: "There was an error deleting the task.",
+            status: "error",
+            duration: 3500,
+            isClosable: true
+          });
+        }
       } else {
         alert('You must be an executive to delete task');
       }
     }
   };
+
 
   const buttonText = () => {
     switch (columnId) {

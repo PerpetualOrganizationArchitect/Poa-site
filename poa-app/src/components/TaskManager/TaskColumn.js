@@ -9,6 +9,7 @@ import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '../../context/dataBaseContext';
 import { useGraphContext } from '@/context/graphContext';
 import { useToast } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 // ... inside TaskColumn component, before return statement
 const glassLayerStyle = {
@@ -28,6 +29,7 @@ const glassLayerStyle = {
 
 
 const TaskColumn = ({ title, tasks, columnId, projectName }) => {
+  const router = useRouter();
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask } = useWeb3Context();
@@ -94,9 +96,9 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
           submission: "",
           Payout: Payout
         };
-
         await createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
         moveTask(newTask, 'open', 'open', 0, " ", 0);
+       
       }
     };
     
@@ -145,11 +147,8 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
           alert('You cannot move tasks from the Completed column.');
           return;
         }
-
-
   
         if (item.columnId !== columnId) {
-          console.log("maybe this one")
           const newIndex = tasks.length;
           console.log(item.claimerUsername)
           const claimedByValue = title === 'In Progress' ? account : item.claimedBy;
@@ -165,7 +164,16 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
             claimedBy: claimedByValue,
             claimerUsername: claimerUserValue,
           };
-          moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
+          router.push({ pathname: `/tasks/`, query: { userDAO: account } }, undefined, { shallow: true });
+          await moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
+          toast({
+            title: "Task moved.",
+            description: "Your task was successfully moved.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          
         }
       },
       collect: (monitor) => ({

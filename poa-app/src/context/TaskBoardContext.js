@@ -67,7 +67,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
     };
 
     if (destColumnId === 'inProgress') {
-        claimTask(taskManagerContractAddress, draggedTask.id);
+        await claimTask(taskManagerContractAddress, draggedTask.id);
     }
     if (destColumnId === 'inReview') {
       console.log("in review triggger")
@@ -76,11 +76,11 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
         console.log("ipfsHashString: ", ipfsHashString);
         console.log("draggedTask.id: ", draggedTask.id);
         console.log("draggedTask.Payout: ", draggedTask.Payout);
-      updateTask(taskManagerContractAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
+      await updateTask(taskManagerContractAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
     }
 
     if (destColumnId === 'completed') {
-        completeTask(taskManagerContractAddress, draggedTask.id);
+        await completeTask(taskManagerContractAddress, draggedTask.id);
 
     }
 
