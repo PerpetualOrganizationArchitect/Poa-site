@@ -104,11 +104,10 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
     const handleEditTask = (updatedTask, taskIndex) => {
       updatedTask = {
         ...updatedTask,
-        id: `task-${Date.now()}`,
         difficulty: updatedTask.difficulty, 
         estHours: updatedTask.estHours, 
       };
-      editTask(updatedTask, columnId, taskIndex);
+      editTask(updatedTask, columnId, taskIndex, projectName);
     };
   
     const [{ isOver }, drop] = useDrop(() => ({

@@ -214,6 +214,25 @@ export const Web3Provider = ({ children }) => {
         console.log("Task updated");
     }
 
+    async function editTaskWeb3(contractAddress,payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName, taskID) {
+        if (!checkNetwork()) {
+            return;
+          }
+        console.log("all params: ", payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName)
+        let ipfsHash= await ipfsAddTask( taskName, taskDescription, taskLocation, difficulty, estHours, "");
+        let ipfsHashString = ipfsHash.path;
+
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+
+        let newTaskID = taskID.split("-")[0];
+
+
+        const tx = await contract.updateTask(newTaskID, payout,ipfsHashString);
+        await tx.wait();
+        console.log("Task updated");
+    }
+
+
     // NFT Membership
     async function mintNFT(contractAddress, membershipType) {
         if (!checkNetwork()) {
@@ -286,7 +305,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{signer, isNetworkModalOpen,
+        <Web3Context.Provider value={{editTaskWeb3, signer, isNetworkModalOpen,
             closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
