@@ -54,7 +54,7 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
         mb={4}
         cursor="grab"
         style={cardStyle}
-        onClick={onOpen}
+        onClick={openTask}
       >
         <Box fontWeight="900">{name}</Box>
         <Box fontSize="xs">{truncateDescription(description, 40)}</Box>

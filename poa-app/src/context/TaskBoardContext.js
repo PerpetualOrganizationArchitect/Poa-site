@@ -50,8 +50,10 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
     const sourceColumn = newTaskColumns.find((column) => column.id === sourceColumnId);
     const destColumn = newTaskColumns.find((column) => column.id === destColumnId);
 
-    const sourceTaskIndex = sourceColumn.tasks.findIndex((task) => task.id === draggedTask.id);
-    sourceColumn.tasks.splice(sourceTaskIndex, 1);
+    if(destColumnId!=='open'){
+      const sourceTaskIndex = sourceColumn.tasks.findIndex((task) => task.id === draggedTask.id);
+      sourceColumn.tasks.splice(sourceTaskIndex, 1);
+    }
 
     
     const updatedTask = {
@@ -82,14 +84,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
 
     }
 
-
-
-
-    
-
-
-    destColumn.tasks.splice(newIndex, 0, updatedTask);
-
+    destColumn.tasks = [...destColumn.tasks, updatedTask];
     setTaskColumns(newTaskColumns);
 
     // Call the onColumnChange prop when the columns are updated

@@ -31,7 +31,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask } = useWeb3Context();
-  const { taskManagerContractAddress } = useGraphContext();
+  const { taskManagerContractAddress, taskCount } = useGraphContext();
 
   let hasExecNFT= true;
   let hasMemberNFT= true;
@@ -66,9 +66,8 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       setIsAddTaskModalOpen(false);
     };
   
-    const handleAddTask = (updatedTask) => {
-      console.log("updatedTask: ", updatedTask)
-
+    const handleAddTask =  async (updatedTask) => {
+      
       const calculatePayout = (difficulty, estimatedHours) => {
     
         const difficulties = {
@@ -86,7 +85,17 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       if (title === 'Open') {
         let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
-        createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+        let newTask = {
+          ...updatedTask,
+          id: `0x${taskCount}-${taskManagerContractAddress}`,
+          claimedBy: "",
+          claimerUsername: "",
+          submission: "",
+          Payout: Payout
+        };
+
+        await createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+        moveTask(newTask, 'open', 'open', 0, " ", 0);
       }
     };
     

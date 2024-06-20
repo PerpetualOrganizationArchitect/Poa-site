@@ -17,7 +17,11 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
+
 const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
+
+
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [difficulty, setDifficulty] = useState('easy');
@@ -29,21 +33,25 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
 
   const handleSubmit = () => {
 
-    setLoading(true)
-    onAddTask({ name, description, difficulty, estHours });
+    const handleAddTask = async () => {
+      setLoading(true);
+      await onAddTask({ name, description, difficulty, estHours });
 
-    // Show a toast notification when a task is successfully added
-    toast({
-      title: "Task added.",
-      description: "Your task was successfully added.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+      // Show a toast notification when a task is successfully added
+      toast({
+        title: "Task added.",
+        description: "Your task was successfully added.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
 
-    setLoading(false)
-    setDescription('');
-    setName('');
+      setLoading(false);
+      setDescription('');
+      setName('');
+    };
+
+    handleAddTask();
     setDifficulty('easy');
     setEstHours(.5);
     onClose();

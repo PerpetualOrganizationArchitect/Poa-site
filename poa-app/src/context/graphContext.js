@@ -19,6 +19,7 @@ export const GraphProvider = ({ children }) => {
     const[poName, setPoName] = useState('1');
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
+    const [taskCount, setTaskCount] = useState(0);
     
     const {address, chainId}= useAccount();
 
@@ -338,11 +339,23 @@ export const GraphProvider = ({ children }) => {
             }
             }
         }`;
-
+    
         const data = await querySubgraph(query);
-
+    
+        // Initialize a variable to count all tasks
+        let taskCount = 0;
+    
+        // Loop through projects and count the tasks
+        if (data.perpetualOrganization && data.perpetualOrganization.TaskManager && data.perpetualOrganization.TaskManager.projects) {
+            data.perpetualOrganization.TaskManager.projects.forEach(project => {
+                taskCount += project.tasks.length;
+            });
+        }
+    
+        setTaskCount(taskCount);
         return data
     }
+    
 
     async function fetchUserDetails(poName, id) {
         if (!poName || !id) {
@@ -699,7 +712,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );

@@ -41,7 +41,8 @@ const glassLayerStyle = {
   backgroundColor: "rgba(33, 33, 33, 0.97)",
 };
 
-const TaskCardModal = ({ isOpen, onClose, task, columnId, onEditTask }) => {
+const TaskCardModal = ({ task, columnId, onEditTask }) => {
+  console.log("task", task);
   const [submission, setSubmission] = useState('');
   const { moveTask, deleteTask } = useTaskBoard();
   const { hasExecNFT, hasMemberNFT, account } = useGraphContext();
@@ -49,22 +50,23 @@ const TaskCardModal = ({ isOpen, onClose, task, columnId, onEditTask }) => {
   const router = useRouter();
   const { userDAO } = router.query;
   const toast = useToast();
-  const { isOpen: isEditTaskModalOpen, onOpen: onOpenEditTaskModal, onClose: onCloseEditTaskModal } = useDisclosure();
+  const { isOpen, onOpen, onClose} = useDisclosure();
 
   useEffect(() => {
     console.log("this", router.query);
+    // Using optional chaining to safely access nested properties
     const taskId = router.query.task;
     const projectId = taskId?.projectId;
 
     if (taskId === task.id) {
-      onOpen();
-      if (projectId) {
-        setSelectedProjectId(projectId);
-      }
+        onOpen();
+        if (projectId) {
+            setSelectedProjectId(projectId);
+        }
     } else {
-      onClose();
+        onClose();
     }
-  }, [router.query, task.id, onClose]);
+}, [router.query, task.id, onOpen]);
 
   const handleCloseModal = () => {
     onClose();
@@ -134,12 +136,20 @@ const TaskCardModal = ({ isOpen, onClose, task, columnId, onEditTask }) => {
     }
   };
 
+  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+
   const handleOpenEditTaskModal = () => {
+    
     if (hasExecNFT) {
-      onOpenEditTaskModal();
+      setIsEditTaskModalOpen(true);
     } else {
-      alert('You must be an executive to edit.');
+       alert('You must be an executive to edit.');
     }
+    
+  };
+
+  const handleCloseEditTaskModal = () => {
+    setIsEditTaskModalOpen(false);
   };
 
   const copyLinkToClipboard = () => {
@@ -247,7 +257,7 @@ const TaskCardModal = ({ isOpen, onClose, task, columnId, onEditTask }) => {
       {columnId === 'open' && (
         <EditTaskModal
           isOpen={isEditTaskModalOpen}
-          onClose={onCloseEditTaskModal}
+          onClose={handleCloseEditTaskModal}
           onEditTask={onEditTask}
           task={task}
           onDeleteTask={(taskId) => deleteTask(taskId, columnId)}
