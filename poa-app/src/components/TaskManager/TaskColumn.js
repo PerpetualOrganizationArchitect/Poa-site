@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Heading, IconButton} from '@chakra-ui/react';
+import { Box, Heading, IconButton, Toast} from '@chakra-ui/react';
 import { useDrop } from 'react-dnd';
 import TaskCard from './TaskCard';
 import { useTaskBoard } from '../../context/TaskBoardContext';
@@ -8,7 +8,7 @@ import AddTaskModal from './AddTaskModal';
 import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '../../context/dataBaseContext';
 import { useGraphContext } from '@/context/graphContext';
-// ... other imports
+import { useToast } from '@chakra-ui/react';
 
 // ... inside TaskColumn component, before return statement
 const glassLayerStyle = {
@@ -32,6 +32,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask } = useWeb3Context();
   const { taskManagerContractAddress, taskCount } = useGraphContext();
+  const toast = useToast();
 
   let hasExecNFT= true;
   let hasMemberNFT= true;
@@ -101,13 +102,22 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
     
     
 
-    const handleEditTask = (updatedTask, taskIndex) => {
+    const handleEditTask = async (updatedTask, taskIndex) => {
       updatedTask = {
         ...updatedTask,
         difficulty: updatedTask.difficulty, 
         estHours: updatedTask.estHours, 
       };
-      editTask(updatedTask, columnId, taskIndex, projectName);
+      await editTask(updatedTask, columnId, taskIndex, projectName);
+
+      toast ({
+        title: "Task edited.",
+        description: "Your task was successfully edited.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
     };
   
     const [{ isOver }, drop] = useDrop(() => ({

@@ -172,7 +172,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
     await editTaskWeb3(taskManagerContractAddress,  Payout, updatedTask.description, projectName, updatedTask.estHours, updatedTask.difficulty, "Open", updatedTask.name, updatedTask.id);
     destColumn.tasks.splice(destTaskIndex, 1, newTask);
 
-    destColumn.tasks.push(newTask);
+    //destColumn.tasks.push(newTask);
 
 
     setTaskColumns(newTaskColumns);
