@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId, submission, claimedBy, claimerUsername, onEditTask, moveTask, projectId, Payout }) => {
   const router = useRouter();
-  const {userDAO} = router.query;
+  const { userDAO } = router.query;
 
   const openTask = () => {
     console.log("projectId: ", projectId);
@@ -54,7 +54,7 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
         mb={4}
         cursor="grab"
         style={cardStyle}
-        onClick={openTask}
+        onClick={onOpen}
       >
         <Box fontWeight="900">{name}</Box>
         <Box fontSize="xs">{truncateDescription(description, 40)}</Box>
@@ -70,6 +70,7 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
           {difficulty && (
             <Badge colorScheme={difficultyColorScheme[difficulty.toLowerCase().replace(" ", "")]}>{difficulty}</Badge>
           )}
+          <Badge colorScheme="blue">{estHours} hrs</Badge>
         </HStack>
       </Box>
       <TaskCardModal

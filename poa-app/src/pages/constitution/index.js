@@ -76,6 +76,7 @@ const ConstitutionPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             let poData = await fetchRules(userDAO);
+            console.log("rules",poData);
             setDescriptionElements(generatePODetails(poData));
         };
         if (userDAO) {

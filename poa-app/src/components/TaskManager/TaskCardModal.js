@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import {
   Button,
   FormControl,
@@ -18,9 +17,11 @@ import {
   Spacer,
   Toast,
   useToast,
-  Textarea, 
+  Textarea,
   useDisclosure,
-  Text
+  Text,
+  Badge,
+  HStack
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import EditTaskModal from './EditTaskModal';
@@ -40,80 +41,67 @@ const glassLayerStyle = {
   backgroundColor: "rgba(33, 33, 33, 0.97)",
 };
 
-const TaskCardModal = ({task, columnId, onEditTask }) => {
+const TaskCardModal = ({ isOpen, onClose, task, columnId, onEditTask }) => {
   const [submission, setSubmission] = useState('');
-  const { moveTask, deleteTask} = useTaskBoard();
-  const { hasExecNFT,hasMemberNFT, account} = useGraphContext();
-
-
-
-  const { getUsernameByAddress,setSelectedProjectId } = useDataBaseContext();
-
+  const { moveTask, deleteTask } = useTaskBoard();
+  const { hasExecNFT, hasMemberNFT, account } = useGraphContext();
+  const { getUsernameByAddress, setSelectedProjectId } = useDataBaseContext();
   const router = useRouter();
-  const {userDAO} = router.query;
-  
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { userDAO } = router.query;
+  const toast = useToast();
+  const { isOpen: isEditTaskModalOpen, onOpen: onOpenEditTaskModal, onClose: onCloseEditTaskModal } = useDisclosure();
 
   useEffect(() => {
     console.log("this", router.query);
-    // Using optional chaining to safely access nested properties
     const taskId = router.query.task;
     const projectId = taskId?.projectId;
 
     if (taskId === task.id) {
-        onOpen();
-        if (projectId) {
-            setSelectedProjectId(projectId);
-        }
+      onOpen();
+      if (projectId) {
+        setSelectedProjectId(projectId);
+      }
     } else {
-        onClose();
+      onClose();
     }
-}, [router.query, task.id, onOpen]);
+  }, [router.query, task.id, onClose]);
 
-  
   const handleCloseModal = () => {
     onClose();
-      router.push({ pathname: `/tasks/`, query: { userDAO: userDAO} }, undefined, { shallow: true });
+    router.push({ pathname: `/tasks/`, query: { userDAO: userDAO } }, undefined, { shallow: true });
   };
 
-
-  const toast= useToast();
-
-  const handleButtonClick =  async() => {
+  const handleButtonClick = async () => {
     if (columnId === 'open') {
-      
       if (hasMemberNFT) {
         moveTask(task, columnId, 'inProgress', 0, " ", account);
       } else {
-         alert('You must own an NFT to claim this task. Go to user to join ');
+        alert('You must own an NFT to claim this task. Go to user to join ');
       }
     }
     if (columnId === 'inProgress') {
-      if(submission===""){
+      if (submission === "") {
         toast({
-          title:"Invalid Submission",
+          title: "Invalid Submission",
           description: "Please Enter a submission",
           status: "error",
           duration: 3500,
           isClosable: true
         });
         return;
-      }
-      else if (hasMemberNFT) {
+      } else if (hasMemberNFT) {
         moveTask(task, columnId, 'inReview', 0, submission);
         onClose();
-      }
-      else {
-         alert('You must own an NFT to submit. Go to user to join');
+      } else {
+        alert('You must own an NFT to submit. Go to user to join');
       }
     }
     if (columnId === 'inReview') {
       if (hasExecNFT) {
         try {
           onClose();
-          await moveTask(task, columnId, 'completed', 0)
-          console.log(task.claimedBy)
-          
+          await moveTask(task, columnId, 'completed', 0);
+          console.log(task.claimedBy);
         } catch (error) {
           console.error("Error moving task:", error);
         }
@@ -121,16 +109,16 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
         alert('You must be an executive to complete the review');
       }
     }
-    
+
     if (columnId === 'completed') {
       if (hasExecNFT) {
         deleteTask(task.id, columnId);
       } else {
         alert('You must be an executive to delete task');
       }
-      
     }
   };
+
   const buttonText = () => {
     switch (columnId) {
       case 'open':
@@ -146,25 +134,15 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
     }
   };
 
-  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
-
   const handleOpenEditTaskModal = () => {
-    
     if (hasExecNFT) {
-      setIsEditTaskModalOpen(true);
+      onOpenEditTaskModal();
     } else {
-       alert('You must be an executive to edit.');
+      alert('You must be an executive to edit.');
     }
-    
-  };
-
-  const handleCloseEditTaskModal = () => {
-    setIsEditTaskModalOpen(false);
   };
 
   const copyLinkToClipboard = () => {
-    // You can construct the link based on your application's routing structure.
-    // Here, I'm assuming that the link structure is /tasks/[task-id]
     const link = `${window.location.origin}/tasks/?task=${task.id}`;
     navigator.clipboard.writeText(link).then(() => {
       toast({
@@ -184,41 +162,50 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
       });
       console.error('Failed to copy link: ', err);
     });
-  }
-  
-  
+  };
 
-  return  task ? (
+  const difficultyColorScheme = {
+    easy: 'green',
+    medium: 'yellow',
+    hard: 'orange',
+    veryhard: 'red'
+  };
+
+  return task ? (
     <>
-      <Modal  isOpen={isOpen} onClose={handleCloseModal} size="3xl">
-      <ModalOverlay />
-      <ModalContent bg="transparent" textColor="white" >
-      <div className="glass" style={glassLayerStyle} />
-        <ModalCloseButton />
-
-          <Box  pt={4} borderTopRadius="2xl" bg="transparent" boxShadow="lg" position="relative" zIndex={-1}>
+      <Modal isOpen={isOpen} onClose={handleCloseModal} size="3xl">
+        <ModalOverlay />
+        <ModalContent bg="transparent" textColor="white">
           <div className="glass" style={glassLayerStyle} />
-           <Text ml="6" fontSize="2xl" fontWeight="bold">{task.name}</Text>
+          <ModalCloseButton />
+          <Box pt={4} borderTopRadius="2xl" bg="transparent" boxShadow="lg" position="relative" zIndex={-1}>
+            <div className="glass" style={glassLayerStyle} />
+            <Text ml="6" fontSize="2xl" fontWeight="bold">{task.name}</Text>
           </Box>
-
-          <ModalBody >
+          <ModalBody>
             <VStack spacing={4} align="start">
               <Box>
                 <Text mb="4" mt="4" lineHeight="6" fontSize="md" fontWeight="bold" style={{ whiteSpace: 'pre-wrap' }}>{task.description}</Text>
               </Box>
-              <Flex alignItems="center" justifyContent="space-between">
-          {task.claimedBy && (
-            <Text fontSize="sm" mr={12}>
-              Claimed By: {task.claimerUsername}
-            </Text>
-          )}
-        </Flex>
+              <HStack width="100%">
+                <Badge colorScheme={difficultyColorScheme[task.difficulty.toLowerCase().replace(" ", "")]}>
+                  {task.difficulty}
+                </Badge>
+                <Badge colorScheme="blue">{task.estHours} hrs</Badge>
+                <Spacer />
+                {task.claimedBy && (
+                  <Text fontSize="sm" mr={4}>
+                    Claimed By: {task.claimerUsername}
+                  </Text>
+                )}
+              </HStack>
               {columnId === 'inProgress' && (
-                <FormControl >
+                <FormControl>
                   <FormLabel fontWeight="bold" fontSize="lg">
                     Submission:
                   </FormLabel>
-                  <Textarea  height="200px"
+                  <Textarea
+                    height="200px"
                     placeholder="Type your submission here"
                     value={submission}
                     onChange={(e) => setSubmission(e.target.value)}
@@ -254,15 +241,13 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
                 {buttonText()}
               </Button>
             </Box>
-
           </ModalFooter>
-
         </ModalContent>
       </Modal>
       {columnId === 'open' && (
         <EditTaskModal
           isOpen={isEditTaskModalOpen}
-          onClose={handleCloseEditTaskModal}
+          onClose={onCloseEditTaskModal}
           onEditTask={onEditTask}
           task={task}
           onDeleteTask={(taskId) => deleteTask(taskId, columnId)}
@@ -270,8 +255,6 @@ const TaskCardModal = ({task, columnId, onEditTask }) => {
       )}
     </>
   ) : null;
-  
-  
 };
 
 export default TaskCardModal;

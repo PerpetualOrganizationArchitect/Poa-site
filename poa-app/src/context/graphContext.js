@@ -114,7 +114,7 @@ export const GraphProvider = ({ children }) => {
     async function fetchRules(id){
         const query = `
         {
-            perpetualOrganization(id: "TreeHouse"){
+            perpetualOrganization(id: "${id}"){
               HybridVoting{
                 id
                 quorum
