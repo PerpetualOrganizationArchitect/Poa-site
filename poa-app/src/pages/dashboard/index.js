@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Button,
   VStack,
   Grid,
   GridItem,
   Text,
-  IconButton,
   HStack,
   keyframes,
   usePrefersReducedMotion,
-  chakra,
-  Image,
   Badge,
 } from '@chakra-ui/react';
-import { SettingsIcon } from '@chakra-ui/icons';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
-import { useSpring, animated } from 'react-spring';
+import { useSpring } from 'react-spring';
 import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import { useRouter } from 'next/router';
@@ -35,10 +29,6 @@ const PerpetualOrgDashboard = () => {
 
   const { claimedTasks, democracyVotingOngoing, graphUsername } = useGraphContext();
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [countFinished, setCountFinished] = useState(false);
-  const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
-  const openSettingsModal = () => setSettingsModalOpen(true);
-  const closeSettingsModal = () => setSettingsModalOpen(false);
   const [reccomendedTasks, setReccomendedTasks] = useState([]);
   const { web3, account, hasExecNFT } = useWeb3Context();
   const [userInfo, setUserInfo] = useState({});
@@ -55,11 +45,10 @@ const PerpetualOrgDashboard = () => {
     }
   }, [userData, graphUsername]);
 
-  const animatedPT = useSpring({ 
-    pt: userInfo.ptBalance, 
+  const animatedPT = useSpring({
+    pt: userInfo.ptBalance,
     from: { pt: 0 },
     config: { duration: 1700 },
-    onRest: () => setCountFinished(true),
   });
 
   const glassLayerStyle = {
@@ -90,8 +79,8 @@ const PerpetualOrgDashboard = () => {
         <Grid
           color="white"
           templateAreas={[
-            `'orgInfo orgInfo' 'tasks polls'`,
-            `'orgInfo orgInfo' 'tasks polls'`
+            `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`,
+            `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`
           ]}
           templateColumns="repeat(2, 1fr)"
           gap={4}
@@ -106,11 +95,20 @@ const PerpetualOrgDashboard = () => {
               zIndex={2}
             >
               <div style={glassLayerStyle} />
-              <VStack position="relative" borderTopRadius="2xl" align="flex-start" p={4}>
-                <Text letterSpacing="-1%" mt={2} fontSize="4xl" fontWeight="bold">
-                  Perpetual Organization
-                </Text>
-                <Text fontSize="lg" mt={2}>
+              <VStack pb={1} position="relative" borderTopRadius="2xl" align="flex-start">
+                <div style={glassLayerStyle} />
+                <HStack spacing={4} >
+                  <Text  pl={6} fontWeight="bold" fontSize="xl">
+                    Welcome to
+                  </Text>
+                  <Text  letterSpacing="-1%"  fontSize="4xl" fontWeight="bold">
+                  {userDAO} 
+                  </Text>
+                </HStack>
+                
+              </VStack>
+              <VStack pl={6} position="relative" borderTopRadius="2xl" align="flex-start">
+              <Text fontSize="lg" mt={2}>
                   Information about the Perpetual Organization, its goals, and mission statement.
                 </Text>
                 <Text fontSize="lg" mt={2}>
@@ -130,10 +128,10 @@ const PerpetualOrgDashboard = () => {
               zIndex={2}
             >
               <div style={glassLayerStyle} />
-              <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
+              <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
                 <div style={glassLayerStyle} />
                 <Text pl={6} fontWeight="bold" fontSize="2xl">
-                  {claimedTasks && claimedTasks.length > 0 ? 'Claimed Tasks' : 'Recommended Tasks'}
+                  {claimedTasks && claimedTasks.length > 0 ? 'Your Claimed Tasks' : 'Recommended Tasks'}
                 </Text>
               </VStack>
               <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
@@ -164,16 +162,57 @@ const PerpetualOrgDashboard = () => {
               boxShadow="lg"
               position="relative"
               zIndex={2}
-              pt={8}
             >
               <div style={glassLayerStyle} />
-              <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
+              <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
                 <div style={glassLayerStyle} />
                 <Text pl={6} fontWeight="bold" fontSize="2xl">
                   Ongoing Polls
                 </Text>
               </VStack>
               <OngoingPolls OngoingPolls={democracyVotingOngoing} />
+            </Box>
+          </GridItem>
+
+          <GridItem area={'leaderboard'}>
+            <Box
+              w="100%"
+              borderRadius="2xl"
+              bg="transparent"
+              boxShadow="lg"
+              position="relative"
+              zIndex={2}
+            >
+              <div style={glassLayerStyle} />
+              <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
+                <div style={glassLayerStyle} />
+                <Text pl={6} fontWeight="bold" fontSize="2xl">
+                  Leaderboard
+                </Text>
+                
+              </VStack>
+              <Text pl={6} fontSize="lg" mt={2}> Test </Text>
+            </Box>
+          </GridItem>
+
+          <GridItem area={'constitution'}>
+            <Box
+              w="100%"
+              borderRadius="2xl"
+              bg="transparent"
+              boxShadow="lg"
+              position="relative"
+              zIndex={2}
+            >
+              <div style={glassLayerStyle} />
+              <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
+                <div style={glassLayerStyle} />
+                <Text pl={6} fontWeight="bold" fontSize="2xl">
+                  Constitution
+                </Text>
+                
+              </VStack>
+              <Text pl={6} fontSize="lg" mt={2}> Test </Text>
             </Box>
           </GridItem>
         </Grid>
@@ -183,4 +222,3 @@ const PerpetualOrgDashboard = () => {
 };
 
 export default PerpetualOrgDashboard;
-
