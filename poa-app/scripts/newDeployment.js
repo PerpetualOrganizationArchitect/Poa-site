@@ -45,7 +45,16 @@ export async function main(
           "DirectDemocracyVoting",
           "ParticipationVoting",
           "TaskManager",
-        ];
+        ]
+        } else {
+          contractNames = [
+            "NFTMembership",
+            "DirectDemocracyToken",
+            "ParticipationToken",
+            "Treasury",
+            "DirectDemocracyVoting",
+            "TaskManager",
+          ];
       }
 
     const params = {
