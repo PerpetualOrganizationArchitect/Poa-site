@@ -299,7 +299,7 @@ const ArchitectPage = () => {
         if (input.toLowerCase() === "yes") {
           setIsLinksModalOpen(true);
         } else {
-          await createAndUploadJson();
+          //await createAndUploadJson();
           setCurrentStep(steps.ASK_DIRECT_DEMOCRACY);
           addMessage("No links will be added.\n\n Now, let's talk about voting. **Direct Democracy**, where everyone gets an equal vote. Enabled by default, this can be used for informal polling or controlling the organization itself. I'll ask you about other voting types in a moment.\n\n #### What approval percentage would you like?\n\n If you're not sure, 51% is a good default. This is the minimum percentage of votes required for a option to win.");
         }

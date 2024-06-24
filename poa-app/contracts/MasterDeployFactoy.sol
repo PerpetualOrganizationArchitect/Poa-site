@@ -160,7 +160,13 @@ contract MasterFactory {
         contractAddresses[5] = params.hybridVotingEnabled 
             ? deployHybridVoting(contractAddresses, params)
             : address(0);
-        contractAddresses[6] = taskManagerFactory.createTaskManager(contractAddresses[2], contractAddresses[0], params.executivePermissionNames, params.POname);
+        if(!params.hybridVotingEnabled && !params.participationVotingEnabled) {
+             contractAddresses[5] = taskManagerFactory.createTaskManager(contractAddresses[2], contractAddresses[0], params.executivePermissionNames, params.POname);
+        }
+        else {
+            contractAddresses[6] = taskManagerFactory.createTaskManager(contractAddresses[2], contractAddresses[0], params.executivePermissionNames, params.POname);
+        }
+       
     }
 
     function deployPartcipationVoting(
