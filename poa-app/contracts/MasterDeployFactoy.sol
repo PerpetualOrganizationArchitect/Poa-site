@@ -144,7 +144,7 @@ contract MasterFactory {
         string memory POname
     ) internal {
         contractAddresses[0] = deployNFTMembership(memberTypeNames, executivePermissionNames, logoURL, POname);
-        contractAddresses[1] = deployDirectDemocracyToken(contractAddresses[0], executivePermissionNames, POname);
+        contractAddresses[1] = deployDirectDemocracyToken(contractAddresses[0], memberTypeNames, POname);
         contractAddresses[2] = deployParticipationToken(POname);
         contractAddresses[3] = deployTreasury(POname);
     }
