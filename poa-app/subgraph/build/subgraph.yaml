@@ -30,7 +30,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: polygon-amoy
     source:
-      address: "0xfd72568FD60df59957D71FEfb1f3a12149cE064a"
+      address: "0xf63c9C77b2188Bb8FC8Cf420DEbA50C5663E944c"
       abi: DirectDemocracyTokenFactory
       startBlock: 7605540
     mapping:
@@ -50,7 +50,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: polygon-amoy
     source:
-      address: "0x858D1792C10f7F95ddB537Bcb3a0576A4B958703"
+      address: "0x073CaD6b203A5413f97e4e0E55eb66FeC587DBa9"
       abi: ParticipationTokenFactory
       startBlock: 7605540
     mapping:
@@ -70,7 +70,7 @@ dataSources:
     name: NFTMembershipFactory
     network: polygon-amoy
     source:
-      address: "0x05D050048d26F5D510a63ea3E1244E50a4eeB1f2"
+      address: "0x1533C8C80B35e825d1Cc669bDc7c99A4E14733c8"
       abi: NFTMembershipFactory
       startBlock: 7605540
     mapping:
@@ -90,7 +90,7 @@ dataSources:
     name: TreasuryFactory
     network: polygon-amoy
     source:
-      address: "0xDB17BF0Df75C6B3BAba83bF14dC00d4732431732"
+      address: "0x01457333687fA14567a67783c545947FB10E845E"
       abi: TreasuryFactory
       startBlock: 7605540
     mapping:
@@ -110,7 +110,7 @@ dataSources:
     name: ParticipationVotingFactory
     network: polygon-amoy
     source:
-      address: "0x131e4329EE6A0E7CD99A45e83f1B4E8294494b42"
+      address: "0x8f206290E50Fe212fE6B871c115435Fc0279c891"
       abi: ParticipationVotingFactory
       startBlock: 7605540
     mapping:
@@ -130,7 +130,7 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: polygon-amoy
     source:
-      address: "0x13a89881c7F25CC66157bfCcAE03e1d6456FBd94"
+      address: "0x5e10817aA84C95328AD1a073352Cc66C6e374219"
       abi: DirectDemocracyVotingFactory
       startBlock: 7605540
     mapping:
@@ -150,7 +150,7 @@ dataSources:
     name: HybridVotingFactory
     network: polygon-amoy
     source:
-      address: "0xCb35f875450F5Df0c7e12EDC3Fb318d2E4c96Dc7"
+      address: "0xC9e2709d5D6c553B8Ff028679E168D28dF395cA0"
       abi: HybridVotingFactory
       startBlock: 7605540
     mapping:
@@ -170,7 +170,7 @@ dataSources:
     name: TaskManagerFactory
     network: polygon-amoy
     source:
-      address: "0x796c290c3C59eA225c680d49c2dbF2D2c81d62B6"
+      address: "0xDe0E40a50ab1146e0A041C9fD416426e9627CD7B"
       abi: TaskManagerFactory
       startBlock: 7605540
     mapping:
@@ -190,7 +190,7 @@ dataSources:
     name: RegistryFactory
     network: polygon-amoy
     source:
-      address: "0x97b2E5e4E0062B86a74c5fb43C0BD154F72d9eDE"
+      address: "0xEb550A40678687E5294708781Aa9ccCd29F8b78f"
       abi: RegistryFactory
       startBlock: 7605540
     mapping:

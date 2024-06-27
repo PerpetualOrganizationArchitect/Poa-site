@@ -54,7 +54,7 @@ export function handleVoted(event: Voted): void {
     let votePT = event.params.voteWeightPT;
     let voteDD = event.params.voteWeightDDT;
 
-    let scalingFactor = BigInt.fromI32(1e9); // Use a smaller scaling factor
+    let scalingFactor = BigInt.fromI32(1000000000);
 
     let normalizedVotePT = votePT.times(scalingFactor).div(proposal.totalVotesPT);
     let normalizedVoteDD = voteDD.times(scalingFactor).div(proposal.totalVotesDD);
