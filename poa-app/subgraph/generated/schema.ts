@@ -2782,8 +2782,8 @@ export class HybridProposal extends Entity {
     this.set("description", Value.fromString(value));
   }
 
-  get totalVotes(): BigInt {
-    let value = this.get("totalVotes");
+  get totalVotesDD(): BigInt {
+    let value = this.get("totalVotesDD");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -2791,8 +2791,21 @@ export class HybridProposal extends Entity {
     }
   }
 
-  set totalVotes(value: BigInt) {
-    this.set("totalVotes", Value.fromBigInt(value));
+  set totalVotesDD(value: BigInt) {
+    this.set("totalVotesDD", Value.fromBigInt(value));
+  }
+
+  get totalVotesPT(): BigInt {
+    let value = this.get("totalVotesPT");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalVotesPT(value: BigInt) {
+    this.set("totalVotesPT", Value.fromBigInt(value));
   }
 
   get timeInMinutes(): BigInt {

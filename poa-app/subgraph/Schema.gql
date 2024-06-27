@@ -247,7 +247,8 @@ type HybridProposal @entity {
   name: String!
   voting: HybridVoting! @link
   description: String!
-  totalVotes: BigInt!
+  totalVotesDD: BigInt!
+  totalVotesPT: BigInt!
   timeInMinutes: BigInt!
   creationTimestamp: BigInt!
   experationTimestamp: BigInt!

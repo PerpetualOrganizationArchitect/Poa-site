@@ -16,7 +16,8 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.transferRecipient = event.params.transferRecipient;
     newProposal.transferEnabled = event.params.transferEnabled;
     newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes.times(BigInt.fromI32(60)));
-    newProposal.totalVotes = BigInt.fromI32(0);
+    newProposal.totalVotesDD = BigInt.fromI32(0);
+    newProposal.totalVotesPT = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
     newProposal.validWinner = false;
     newProposal.save();
@@ -25,14 +26,14 @@ export function handleNewProposal(event: NewProposal): void {
 
 export function handleVoted(event: Voted): void {
     log.info("Triggered handleVoted for proposalId {}", [event.params.proposalId.toString()]);
-  
-    let proposalId = event.params.proposalId.toString()+'-'+event.address.toHex();
+
+    let proposalId = event.params.proposalId.toString() + '-' + event.address.toHex();
     let proposal = HybridProposal.load(proposalId);
     if (!proposal) {
       log.error("Proposal not found: {}", [proposalId]);
       return;
     }
-  
+
     let voteId = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
     let vote = new HybridVote(voteId);
     vote.proposal = proposalId;
@@ -43,25 +44,39 @@ export function handleVoted(event: Voted): void {
       return;
     }
 
-    vote.voter = contract.POname+'-' + event.params.voter.toHex();
+    vote.voter = contract.POname + '-' + event.params.voter.toHex();
     vote.optionIndex = event.params.optionIndex;
-    vote.voteWeightPT = event.params.voteWeightPT;
-    vote.voteWeightDD = event.params.voteWeightDDT;
-    vote.save();
-  
-    proposal.totalVotes = proposal.totalVotes.plus(event.params.voteWeightPT).plus(event.params.voteWeightDDT);
+
+    proposal.totalVotesDD = proposal.totalVotesDD.plus(event.params.voteWeightDDT);
+    proposal.totalVotesPT = proposal.totalVotesPT.plus(event.params.voteWeightPT);
     proposal.save();
 
-    //update option votes
+    let votePT = event.params.voteWeightPT;
+    let voteDD = event.params.voteWeightDDT;
+
+    let scalingFactor = BigInt.fromI32(1e9); // Use a smaller scaling factor
+
+    let normalizedVotePT = votePT.times(scalingFactor).div(proposal.totalVotesPT);
+    let normalizedVoteDD = voteDD.times(scalingFactor).div(proposal.totalVotesDD);
+
+    let weightedVotePT = normalizedVotePT.times(BigInt.fromI32(80)).div(scalingFactor); // PT weight is 80
+    let weightedVoteDD = normalizedVoteDD.times(BigInt.fromI32(20)).div(scalingFactor); // DD weight is 20
+
+    vote.voteWeightPT = weightedVotePT;
+    vote.voteWeightDD = weightedVoteDD;
+    vote.save();
+
+    // Update option votes
     let optionId = proposalId + "-" + event.params.optionIndex.toString();
     let option = HybridPollOption.load(optionId);
     if (!option) {
       log.error("Option not found: {}", [optionId]);
       return;
     }
-    option.votes = option.votes.plus(event.params.voteWeightPT).plus(event.params.voteWeightDDT);
+    option.votes = option.votes.plus(weightedVotePT.plus(weightedVoteDD));
     option.save();
   }
+
   
   export function handlePollOptionNames(event: PollOptionNames): void {
     log.info("Triggered handlePollOptionNames for proposalId {}", [event.params.proposalId.toString()]);
