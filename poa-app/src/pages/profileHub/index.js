@@ -53,10 +53,6 @@ const UserprofileHub= () => {
       }, [userDAO]);
 
 
-
-
-    // const {setLeaderboardLoaded,userPercentage} = useLeaderboard();
-
     const {claimedTasks,democracyVotingOngoing, graphUsername} = useGraphContext();
     
 
@@ -85,6 +81,8 @@ const UserprofileHub= () => {
 
 
 
+
+
     const { web3, account,KUBIXbalance, hasExecNFT} = useWeb3Context();
 
 
@@ -107,59 +105,11 @@ const UserprofileHub= () => {
   `;
 
 
-  const determineTier = (kubixBalance) => {
-    if (kubixBalance >= 2500) return "Diamond";
-    else if (kubixBalance >= 1000) return "Ruby";
-    else if (kubixBalance >= 500) return "Gold";
-    else if (kubixBalance >= 250) return "Silver";
-    else if (kubixBalance >= 100) return "Bronze";
-    else return "New"; 
-  };
-
-  const tierInfo = {
-    Diamond: {
-        nextTier: "Double Diamond",
-        nextTierKUBIX: "5000",
-        nextTierReward: "Flex",
-        image: "/images/diamondMember.png"
-    },
-    Ruby: {
-        nextTier: "Diamond",
-        nextTierKUBIX: 2500,
-        nextTierReward: "Choice of Any Item",
-        image: "/images/rubyMember.png"
-    },
-    Gold: {
-        nextTier: "Ruby",
-        nextTierKUBIX: 1000,
-        nextTierReward: "Choice of Shirt, Hat, or Pullover",
-        image: "/images/goldMember.png"
-    },
-    Silver: {
-        nextTier: "Gold",
-        nextTierKUBIX: 500,
-        nextTierReward: "Choice of Shirt or Hat",
-        image: "/images/silverMember.png"
-    },
-    Bronze: {
-        nextTier: "Silver",
-        nextTierKUBIX: 250,
-        nextTierReward: "Choice of Shirt",
-        image: "/images/bronzeMember.png"
-    },
-    New: {
-        nextTier: "Bronze",
-        nextTierKUBIX: 100,
-        nextTierReward: "T-shirt and Trip Eligibility",
-        image:"/images/newMember.png",
-    },
-    };
-
 
     const [userInfo, setUserInfo] = useState({});
 
     useEffect(() => {
-        console.log("checking user data", userData)
+        
         if(userData){
             console.log(userData);
             let userInfo = {
@@ -167,6 +117,7 @@ const UserprofileHub= () => {
                 ptBalance: Number(userData.ptTokenBalance),
                 memberStatus: userData.memberType,
                 accountAddress: userData.id,
+                tasksCompleted: userData.tasksCompleted
             };
             setUserInfo(userInfo);
         }
@@ -312,11 +263,11 @@ const UserprofileHub= () => {
                         <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
                             <VStack textColor="white" align="stretch" spacing={3}>
                                 <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
-                                    {task.id}
+                                    {task.taskInfo.name}
                                 </Text>
                                 <HStack justify="space-between">
-                                    <Badge colorScheme="yellow">{task.difficulty}</Badge>
-                                    <Text fontWeight="bold">Tokens {task.payout}</Text>
+                                    <Badge colorScheme="yellow">{task.taskInfo.difficulty}</Badge>
+                                    <Text fontWeight="bold">Payout {task.payout}</Text>
                                 </HStack>
                             </VStack>
                         </Link2>

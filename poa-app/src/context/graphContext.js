@@ -392,7 +392,12 @@ export const GraphProvider = ({ children }) => {
                 }
                 tasks {
                     id
-                    ipfsHash
+                    taskInfo {
+                        name
+                        description
+                        difficulty
+                        estimatedHours
+                    }
                     payout
                     completed
                 }
@@ -414,14 +419,18 @@ export const GraphProvider = ({ children }) => {
             const username = account?.userName || false;
             const userTasks = user?.tasks || [];
             
-            // Log and set states (assuming state-setting functions are available in scope)
-            console.log("Executive NFT:", hasExecNFT);
-            console.log("Member NFT:", hasMemberNFT);
-            console.log("Username:", username);
-            console.log("User tasks:", userTasks);
-            console.log("User data:", user);
-    
-            // Assuming setGraphUsername, setHasExecNFT, setHasMemberNFT, setClaimedTasks, and setUserData are defined
+            // count amount of tasks completed
+            let taskCount = 0;
+            userTasks.forEach(task => {
+                if (task.completed) {
+                    taskCount++;
+                }
+            });
+
+            console.log("tasks completed", taskCount)
+
+
+
             setGraphUsername(username);
             setHasExecNFT(hasExecNFT);
             setHasMemberNFT(hasMemberNFT);
@@ -435,6 +444,7 @@ export const GraphProvider = ({ children }) => {
                     ddTokenBalance: user.ddTokenBalance,
                     memberType: user.memberType.memberTypeName,
                     imageURL: user.memberType.imageURL,
+                    tasksCompleted: taskCount,
                 });
             }
     
