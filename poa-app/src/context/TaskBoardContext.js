@@ -19,7 +19,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   const toast=useToast();
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
-  const{claimTask, updateTask, ipfsAddTask, completeTask, editTaskWeb3} = useWeb3Context();
+  const{claimTask, updateTask, ipfsAddTask, completeTask, editTaskWeb3, submitTask} = useWeb3Context();
   const {taskManagerContractAddress} = useGraphContext();
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
         console.log("ipfsHashString: ", ipfsHashString);
         console.log("draggedTask.id: ", draggedTask.id);
         console.log("draggedTask.Payout: ", draggedTask.Payout);
-      await updateTask(taskManagerContractAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
+      await submitTask(taskManagerContractAddress, draggedTask.id, ipfsHashString);
     }
 
     if (destColumnId === 'completed') {
