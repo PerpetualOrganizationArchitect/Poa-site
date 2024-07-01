@@ -22,11 +22,7 @@ import {
   
 import { useEthersProvider, useEthersSigner } from '@/components/ProviderConverter';
 
-
-
 const Web3Context = createContext();
-
-
 
 export const useWeb3Context = () => {
     return useContext(Web3Context);
@@ -51,12 +47,8 @@ export const Web3Provider = ({ children }) => {
 
     
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
-    
 
-    
-    const AccountManagerAddress = "0x66Ff0EF18bB3c0cAcB8be2B33fbb6553fF26B6F3";
-
-
+    const AccountManagerAddress = "0x30C7f04127861c3246C00ED84BC3246B76fe5c04";
 
     const getContractInstance = (contractAddress, contractABI) => {
         return new ethers.Contract(contractAddress, contractABI, signer);

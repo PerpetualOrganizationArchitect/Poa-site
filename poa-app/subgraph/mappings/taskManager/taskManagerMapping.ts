@@ -1,5 +1,5 @@
 import { log, json, DataSourceTemplate, Bytes } from "@graphprotocol/graph-ts";
-import { TaskCreated as TaskCreatedEvent, TaskClaimed as TaskClaimedEvent, TaskUpdated as TaskUpdatedEvent, TaskCompleted as TaskCompletedEvent, ProjectCreated as ProjectCreatedEvent, ProjectDeleted as ProjectDeletedEvent } from "../../generated/templates/TaskManager/TaskManager";
+import {TaskSubmitted as TaskSubmittedEvent, TaskCreated as TaskCreatedEvent, TaskClaimed as TaskClaimedEvent, TaskUpdated as TaskUpdatedEvent, TaskCompleted as TaskCompletedEvent, ProjectCreated as ProjectCreatedEvent, ProjectDeleted as ProjectDeletedEvent, TaskSubmitted } from "../../generated/templates/TaskManager/TaskManager";
 import { TaskInfo, TaskManager, Task, Project } from "../../generated/schema";
 import { dataSource } from '@graphprotocol/graph-ts';
 import { DataSourceContext } from "@graphprotocol/graph-ts";
@@ -45,15 +45,6 @@ export function handleTaskClaimed(event: TaskClaimedEvent): void {
   task.user = taskManager.POname + '-' + event.params.claimer.toHex();
 
   task.save();
-
-  let taskInfo = TaskInfo.load(task.taskInfo.toString());
-  if (!taskInfo) {
-    log.error("TaskInfo not found: {}", [task.taskInfo]);
-    return;
-  }
-
-  taskInfo.location = "claimed";
-  taskInfo.save();
 }
 
 export function handleTaskIPFS(taskInfo: Bytes): void {
@@ -125,7 +116,7 @@ export function handleTaskUpdated(event: TaskUpdatedEvent): void {
   task.save();
 }
 
-export function handleTaskSubmitted(event: TaskUpdatedEvent): void {
+export function handleTaskSubmitted(event: TaskSubmittedEvent): void {
   log.info("Triggered handleTaskSubmitted", []);
 
   let task = Task.load(event.params.id.toHex() + "-" + event.address.toHex());

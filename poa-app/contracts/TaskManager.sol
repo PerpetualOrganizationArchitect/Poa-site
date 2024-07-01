@@ -83,7 +83,6 @@ contract TaskManager {
     function completeTask(uint256 _taskId) external canTask {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
-        require(task.claimer == msg.sender, "Not the claimer");
         require(task.claimer != address(0), "Task not claimed");
         task.isCompleted = true;
         token.mint(task.claimer, task.payout);
