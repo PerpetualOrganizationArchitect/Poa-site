@@ -125,6 +125,27 @@ export function handleTaskUpdated(event: TaskUpdatedEvent): void {
   task.save();
 }
 
+export function handleTaskSubmitted(event: TaskUpdatedEvent): void {
+  log.info("Triggered handleTaskSubmitted", []);
+
+  let task = Task.load(event.params.id.toHex() + "-" + event.address.toHex());
+  if (!task) {
+    log.error("Task not found: {}", [event.params.id.toHex() + "-" + event.address.toHex()]);
+    return;
+  }
+
+  task.ipfsHash = event.params.ipfsHash;
+
+  let context = new DataSourceContext();
+  context.setString("hash", event.params.ipfsHash);
+
+  log.info("Creating TaskInfo template with hash: {}", [task.ipfsHash]);
+  DataSourceTemplate.createWithContext("taskInfo", [task.ipfsHash], context);
+  task.taskInfo= event.params.ipfsHash;
+  
+  task.save();
+}
+
 export function handleTaskCompleted(event: TaskCompletedEvent): void {
   log.info("Triggered handleTaskCompleted", []);
 

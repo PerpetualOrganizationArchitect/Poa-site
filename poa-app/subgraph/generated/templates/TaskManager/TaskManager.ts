@@ -120,6 +120,28 @@ export class TaskCreated__Params {
   }
 }
 
+export class TaskSubmitted extends ethereum.Event {
+  get params(): TaskSubmitted__Params {
+    return new TaskSubmitted__Params(this);
+  }
+}
+
+export class TaskSubmitted__Params {
+  _event: TaskSubmitted;
+
+  constructor(event: TaskSubmitted) {
+    this._event = event;
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get ipfsHash(): string {
+    return this._event.parameters[1].value.toString();
+  }
+}
+
 export class TaskUpdated extends ethereum.Event {
   get params(): TaskUpdated__Params {
     return new TaskUpdated__Params(this);
@@ -472,6 +494,40 @@ export class DeleteProjectCall__Outputs {
   _call: DeleteProjectCall;
 
   constructor(call: DeleteProjectCall) {
+    this._call = call;
+  }
+}
+
+export class SubmitTaskCall extends ethereum.Call {
+  get inputs(): SubmitTaskCall__Inputs {
+    return new SubmitTaskCall__Inputs(this);
+  }
+
+  get outputs(): SubmitTaskCall__Outputs {
+    return new SubmitTaskCall__Outputs(this);
+  }
+}
+
+export class SubmitTaskCall__Inputs {
+  _call: SubmitTaskCall;
+
+  constructor(call: SubmitTaskCall) {
+    this._call = call;
+  }
+
+  get _taskId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get ipfsHash(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class SubmitTaskCall__Outputs {
+  _call: SubmitTaskCall;
+
+  constructor(call: SubmitTaskCall) {
     this._call = call;
   }
 }

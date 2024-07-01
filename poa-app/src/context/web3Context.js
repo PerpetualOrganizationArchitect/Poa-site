@@ -212,6 +212,17 @@ export const Web3Provider = ({ children }) => {
         await tx.wait();
         console.log("Task updated");
     }
+    
+    async function submitTask(contractAddress, taskID, ipfsHash) {
+        if (!checkNetwork()) {
+            return;
+          }
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const newTaskID = taskID.split("-")[0];
+        const tx = await contract.submitTask(newTaskID, ipfsHash);
+        await tx.wait();
+        console.log("Task submitted");
+    }
 
     async function editTaskWeb3(contractAddress,payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName, taskID) {
         if (!checkNetwork()) {
