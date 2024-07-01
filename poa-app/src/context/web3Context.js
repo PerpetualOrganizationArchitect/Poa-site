@@ -54,9 +54,8 @@ export const Web3Provider = ({ children }) => {
     
 
     
-    const AccountManagerAddress = "0xDBE0cb6f796Cb382c058c38FEfDfb53b61a9E982";
-    const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
-    const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
+    const AccountManagerAddress = "0x66Ff0EF18bB3c0cAcB8be2B33fbb6553fF26B6F3";
+
 
 
     const getContractInstance = (contractAddress, contractABI) => {

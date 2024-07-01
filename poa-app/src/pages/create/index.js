@@ -102,7 +102,7 @@ const ArchitectPage = () => {
   const [isTyping, setIsTyping] = useState(false); // Add isTyping state
 
   const [orgDetails, setOrgDetails] = useState({
-    membershipTypeNames: ["Regular", "Executive"],
+    membershipTypeNames: ["Default", "Executive"],
     executiveRoleNames: ["Executive"],
     POname: "",
     description: "",
