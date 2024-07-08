@@ -362,7 +362,6 @@ export const GraphProvider = ({ children }) => {
             .sort(() => Math.random() - 0.5);
     
         setReccomendedTasks(recommendedTasks);
-        console.log("Recommended tasks:", recommendedTasks);
         return data;
     }
     
@@ -466,8 +465,6 @@ export const GraphProvider = ({ children }) => {
     }
     
 
-
-        
 
     async function fetchLeaderboardData(id) {
         const query =

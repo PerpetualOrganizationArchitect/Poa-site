@@ -46,7 +46,6 @@ const PerpetualOrgDashboard = () => {
   }, [logoHash]);
 
   const { reccommendedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
-  console.log("reccomendedTasks", reccommendedTasks);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const { web3, account, hasExecNFT } = useWeb3Context();
@@ -73,17 +72,6 @@ const PerpetualOrgDashboard = () => {
     backdropFilter: 'blur(20px)',
     backgroundColor: 'rgba(0, 0, 0, .7)',
   };
-
-  const glowAnimation = keyframes`
-    from { text-shadow: 0 0 0px white; }
-    to { text-shadow: 0 0 20px gold;  }
-  `;
-
-  const animationProps = prefersReducedMotion
-    ? {}
-    : {
-        animation: `${glowAnimation} alternate 2.1s ease-in-out`,
-      };
 
       return (
         <>
@@ -195,12 +183,12 @@ const PerpetualOrgDashboard = () => {
                       Recommended Tasks
                     </Text>
                   </VStack>
-                  <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
+                  <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={2}>
                     {reccommendedTasks?.slice(0, 3).map((task) => (
                       <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                         <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
                           <VStack textColor="white" align="stretch" spacing={3}>
-                            <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
+                            <Text mt="-2"fontSize="md" lineHeight="99%" fontWeight="extrabold">
                               {task.taskInfo.name}
                             </Text>
                             <HStack justify="space-between">
@@ -217,22 +205,26 @@ const PerpetualOrgDashboard = () => {
       
               <GridItem area={'polls'}>
                 <Box
-                  w="100%"
-                  borderRadius="2xl"
-                  bg="transparent"
-                  boxShadow="lg"
-                  position="relative"
-                  zIndex={2}
-                >
+                w="100%"
+                borderRadius="2xl"
+                bg="transparent"
+                boxShadow="lg"
+                position="relative"
+                zIndex={2}
+              >
+                <div style={glassLayerStyle} />
+                <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
                   <div style={glassLayerStyle} />
-                  <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
-                    <div style={glassLayerStyle} />
-                    <Text pl={6} fontWeight="bold" fontSize="2xl">
-                      Ongoing Polls
-                    </Text>
-                  </VStack>
+                  <Text pl={6} fontWeight="bold" fontSize="2xl">
+                    Ongoing Polls
+                  </Text>
+                </VStack>
+                
+                <Box w="100%" p={4}>
                   <OngoingPolls OngoingPolls={democracyVotingOngoing} />
                 </Box>
+              </Box>
+              
               </GridItem>
       
               <GridItem area={'leaderboard'}>

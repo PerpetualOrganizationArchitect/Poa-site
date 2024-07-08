@@ -282,7 +282,7 @@ const UserprofileHub= () => {
             pt={8}
             borderRadius="2xl"
             bg="transparent"
-            
+        
             position="relative"
             zIndex={2}>
         <div style={glassLayerStyle} />
@@ -293,8 +293,9 @@ const UserprofileHub= () => {
             
 
         </VStack>
-
+        <Box  mt="4">
         <OngoingPolls  OngoingPolls={democracyVotingOngoing}/>
+        </Box>
 
             
         </Box>
