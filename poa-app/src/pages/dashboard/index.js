@@ -8,26 +8,45 @@ import {
   HStack,
   keyframes,
   usePrefersReducedMotion,
+  Icon,
   Badge,
+  Link, 
+  Image,
+
 } from '@chakra-ui/react';
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
-import { useSpring } from 'react-spring';
 import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+import { FaLink, FaInfoCircle } from 'react-icons/fa';
+import { useIPFScontext } from "@/context/ipfsContext";
 
 const PerpetualOrgDashboard = () => {
-  const { userData, setLoaded } = useGraphContext();
+  const { userData, setLoaded, logoHash } = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
+  const [imageURL, setImageURL] = useState({});
+  const [imageFetched, setImageFetched] = useState(false);
+  const { fetchImageFromIpfs } = useIPFScontext();
 
   useEffect(() => {
     setLoaded(userDAO);
   }, [userDAO]);
 
-  const { claimedTasks, democracyVotingOngoing, graphUsername } = useGraphContext();
+  useEffect(() => {
+    const fetchImage = async () => {
+      if (logoHash && !imageFetched) {
+        const imageUrlFetch = await fetchImageFromIpfs(logoHash);
+        setImageURL(imageUrlFetch);
+        setImageFetched(true);
+      }
+    };
+    fetchImage();
+  }, [logoHash]);
+
+  const { claimedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [reccomendedTasks, setReccomendedTasks] = useState([]);
   const { web3, account, hasExecNFT } = useWeb3Context();
@@ -44,12 +63,6 @@ const PerpetualOrgDashboard = () => {
       setUserInfo(userInfo);
     }
   }, [userData, graphUsername]);
-
-  const animatedPT = useSpring({
-    pt: userInfo.ptBalance,
-    from: { pt: 0 },
-    config: { duration: 1700 },
-  });
 
   const glassLayerStyle = {
     position: 'absolute',
@@ -97,24 +110,54 @@ const PerpetualOrgDashboard = () => {
               <div style={glassLayerStyle} />
               <VStack pb={1} position="relative" borderTopRadius="2xl" align="flex-start">
                 <div style={glassLayerStyle} />
-                <HStack spacing={4} >
-                  <Text  pl={6} fontWeight="bold" fontSize="xl">
-                    Welcome to
-                  </Text>
-                  <Text  letterSpacing="-1%"  fontSize="4xl" fontWeight="bold">
-                  {userDAO} 
+                <HStack spacing={4}>
+                  <Text pl={6} letterSpacing="-1%" fontSize="4xl" fontWeight="bold">
+                    {userDAO}'s Dashboard 
                   </Text>
                 </HStack>
+              </VStack>
+              <Grid templateColumns="repeat(2, 1fr)" w="100%" gap={6}>
+                <Box>
+                <VStack  align="flex-start" ml="4">
+                <Image src={imageURL} alt="Organization Logo" width="150px" />
                 
-              </VStack>
-              <VStack pl={6} position="relative" borderTopRadius="2xl" align="flex-start">
-              <Text fontSize="lg" mt={2}>
-                  Information about the Perpetual Organization, its goals, and mission statement.
-                </Text>
-                <Text fontSize="lg" mt={2}>
-                  Additional details about the organization.
-                </Text>
-              </VStack>
+                <VStack spacing={2} align="flex-start">
+                  <HStack ml="4" spacing={2} align="center">
+                    <Icon as={FaInfoCircle} boxSize={5} />
+                    <Text fontWeight={"bold"} fontSize="2xl" mt={2}>
+                      Description: 
+                    </Text>
+                  </HStack>
+                  <Text mt="-1"fontSize="lg" ml="10">
+                    {poDescription}
+                  </Text>
+                </VStack>
+                
+                </VStack>
+                </Box>
+                <Box>
+                <HStack spacing={2} align="center">
+                    <Icon as={FaLink} boxSize={5} />
+                    <Text fontSize="2xl" fontWeight="bold">
+                      About Links
+                    </Text>
+                </HStack>
+                
+                <VStack mb="4" ml="6">
+                {poLinks && poLinks.length > 0 ? (
+                  poLinks.map((link, index) => (
+                    <Text key={index} fontSize="lg">
+                      <Link fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
+                        {link.name}
+                      </Link>
+                    </Text>
+                  ))
+                ) : (
+                  <Text fontSize="lg" mt={2}>No links available</Text>
+                )}
+                </VStack>
+                </Box>
+                </Grid>
             </Box>
           </GridItem>
 
@@ -189,7 +232,6 @@ const PerpetualOrgDashboard = () => {
                 <Text pl={6} fontWeight="bold" fontSize="2xl">
                   Leaderboard
                 </Text>
-                
               </VStack>
               <Text pl={6} fontSize="lg" mt={2}> Test </Text>
             </Box>
@@ -210,7 +252,6 @@ const PerpetualOrgDashboard = () => {
                 <Text pl={6} fontWeight="bold" fontSize="2xl">
                   Constitution
                 </Text>
-                
               </VStack>
               <Text pl={6} fontSize="lg" mt={2}> Test </Text>
             </Box>
