@@ -45,9 +45,10 @@ const PerpetualOrgDashboard = () => {
     fetchImage();
   }, [logoHash]);
 
-  const { claimedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
+  const { reccommendedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
+  console.log("reccomendedTasks", reccommendedTasks);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [reccomendedTasks, setReccomendedTasks] = useState([]);
+
   const { web3, account, hasExecNFT } = useWeb3Context();
   const [userInfo, setUserInfo] = useState({});
 
@@ -92,7 +93,7 @@ const PerpetualOrgDashboard = () => {
               color="white"
               templateAreas={[
                 `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`,
-                `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`
+                `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`,
               ]}
               templateColumns="repeat(2, 1fr)"
               gap={4}
@@ -115,13 +116,13 @@ const PerpetualOrgDashboard = () => {
                       </Text>
                     </HStack>
                   </VStack>
-                  <Grid templateColumns="repeat(3, 1fr)" w="100%" gap={6} >
+                  <Grid templateColumns="repeat(3, 1fr)" w="100%" gap={6}>
                     <Box>
-                      <VStack mt="4" spacing={2} >
-                      <Image src={imageURL} alt="Organization Logo" width="170px" />
+                      <VStack mt="4" spacing={2}>
+                        <Image src={imageURL} alt="Organization Logo" width="170px" />
                         <HStack spacing={2} align="center">
                           <Text fontWeight={"bold"} fontSize="2xl" mt={0}>
-                            Description: 
+                            Description:
                           </Text>
                         </HStack>
                         <Text mb="2" mt="-1" fontSize="lg" ml="2">
@@ -129,7 +130,6 @@ const PerpetualOrgDashboard = () => {
                         </Text>
                       </VStack>
                     </Box>
-                    
                     <Box mt="2">
                       <VStack mb="4" mt="2">
                         <HStack spacing={2} align="center">
@@ -141,7 +141,7 @@ const PerpetualOrgDashboard = () => {
                         {poLinks && poLinks.length > 0 ? (
                           poLinks.map((link, index) => (
                             <Text key={index} fontSize="lg">
-                              <Link  fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
+                              <Link fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
                                 {link.name}
                               </Link>
                             </Text>
@@ -153,7 +153,7 @@ const PerpetualOrgDashboard = () => {
                     </Box>
                     <Box mt="2">
                       <VStack spacing={2} align="flex-start">
-                        <HStack  spacing={2} align="center">
+                        <HStack spacing={2} align="center">
                           <Text fontWeight="bold" fontSize="2xl" mt={2}>
                             Organization Stats:
                           </Text>
@@ -192,19 +192,19 @@ const PerpetualOrgDashboard = () => {
                   <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
                     <div style={glassLayerStyle} />
                     <Text pl={6} fontWeight="bold" fontSize="2xl">
-                      {claimedTasks && claimedTasks.length > 0 ? 'Your Claimed Tasks' : 'Recommended Tasks'}
+                      Recommended Tasks
                     </Text>
                   </VStack>
                   <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
-                    {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccomendedTasks)?.slice(0, 3).map((task) => (
+                    {reccommendedTasks?.slice(0, 3).map((task) => (
                       <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                         <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
                           <VStack textColor="white" align="stretch" spacing={3}>
                             <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
-                              {task.id}
+                              {task.taskInfo.name}
                             </Text>
                             <HStack justify="space-between">
-                              <Badge colorScheme="yellow">{task.difficulty}</Badge>
+                              <Badge colorScheme="yellow">{task.taskInfo.difficulty}</Badge>
                               <Text fontWeight="bold">Tokens {task.payout}</Text>
                             </HStack>
                           </VStack>
@@ -277,7 +277,8 @@ const PerpetualOrgDashboard = () => {
             </Grid>
           </Box>
         </>
-      );      
+      );
+            
 };
 
 export default PerpetualOrgDashboard;

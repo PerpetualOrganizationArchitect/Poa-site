@@ -39,6 +39,7 @@ export const GraphProvider = ({ children }) => {
     const[leaderboardData, setLeaderboardData] = useState({});
 
     const [claimedTasks, setClaimedTasks] = useState([]);
+    const[reccommendedTasks, setReccomendedTasks] = useState([]);
     const { fetchFromIpfs } = useIPFScontext();
 
     //contract address state 
@@ -312,31 +313,31 @@ export const GraphProvider = ({ children }) => {
         const query = `
         {
             perpetualOrganization(id: "${id}") {
-            TaskManager {
-                projects(where: {deleted: false}) {
-                id
-                name
-                tasks {
-                    id
-                    taskInfo{
+                TaskManager {
+                    projects(where: {deleted: false}) {
+                        id
                         name
-                        description
-                        difficulty
-                        estimatedHours
-                        location
-                        submissionContent
-                    }
-                    payout
-                    claimer
-                    completed
-                    user{
-                        Account{
-                            userName
+                        tasks {
+                            id
+                            taskInfo {
+                                name
+                                description
+                                difficulty
+                                estimatedHours
+                                location
+                                submissionContent
+                            }
+                            payout
+                            claimer
+                            completed
+                            user {
+                                Account {
+                                    userName
+                                }
+                            }
                         }
                     }
                 }
-                }
-            }
             }
         }`;
     
@@ -353,8 +354,18 @@ export const GraphProvider = ({ children }) => {
         }
     
         setTaskCount(taskCount);
-        return data
+    
+        // Filter out completed tasks and order the remaining tasks randomly
+        const recommendedTasks = data.perpetualOrganization.TaskManager.projects
+            .flatMap(project => project.tasks)
+            .filter(task => !task.completed)
+            .sort(() => Math.random() - 0.5);
+    
+        setReccomendedTasks(recommendedTasks);
+        console.log("Recommended tasks:", recommendedTasks);
+        return data;
     }
+    
     
 
     async function fetchUserDetails(poName, id) {
@@ -435,6 +446,7 @@ export const GraphProvider = ({ children }) => {
             setHasExecNFT(hasExecNFT);
             setHasMemberNFT(hasMemberNFT);
             setClaimedTasks(userTasks.filter(task => !task.completed));
+            
     
             // Set user data details
             if(hasMemberNFT){
@@ -722,7 +734,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );
