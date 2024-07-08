@@ -57,17 +57,26 @@ export const IPFSprovider = ({children}) => {
     async function fetchImageFromIpfs(ipfsHash) {
         console.log("fetching image from IPFS", ipfsHash);
         let binaryData = [];
-        for await (const chunk of fetchIpfs.cat(ipfsHash)) {
-            binaryData.push(chunk);
-        }
+    
         try {
+            for await (const chunk of addIpfs.cat(ipfsHash)) {
+                binaryData.push(chunk);
+            }
+           
+            // Convert binary data to Blob
             const blob = new Blob(binaryData, { type: 'image/png' });  
-            return URL.createObjectURL(blob);
+    
+            // Create Object URL from Blob
+            const imageUrl = URL.createObjectURL(blob);
+            console.log("Image URL:", imageUrl);
+    
+            return imageUrl;
         } catch (error) {
             console.error("Error creating blob from IPFS data:", error);
             throw error;
         }
     }
+    
 
     return (
         <IPFScontext.Provider value={{

@@ -55,10 +55,10 @@ const BrowserPage = () => {
                 w="220px" 
               >
                 <VStack>
-                  <Text fontSize="24px">{po.id}</Text>
+                  <Text fontWeight={"bold"} fontSize="24px">{po.id}</Text>
                   <Text fontSize="16px">{po.aboutInfo?.description}</Text>
                   <Image 
-                    width="100px" 
+                    width="150px" 
                     src={images[po.id] || '/images/poa_logo.png'} 
                     alt={po.id} 
                   />
