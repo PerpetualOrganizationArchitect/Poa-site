@@ -173,45 +173,43 @@ const PerpetualOrgDashboard = () => {
                   </Text>
                 </HStack>
               </VStack>
-              <Grid templateColumns="repeat(3, 1fr)" w="100%" gap={6}>
-                <Box>
-                  <VStack mt="4" spacing={2}>
-                    <Image src={imageURL} alt="Organization Logo" width="170px" />
-                    <HStack spacing={2} align="center">
-                      <Text fontWeight={"bold"} fontSize="2xl" mt={0}>
-                        Description:
-                      </Text>
-                    </HStack>
-                    <Text mb="2" mt="-1" fontSize="lg" ml="2">
-                      {poDescription}
-                    </Text>
-                  </VStack>
-                </Box>
-                <Box mt="2">
-                  <VStack mb="4" mt="2">
-                    <HStack spacing={2} align="center">
-                      <Icon as={FaLink} boxSize={5} />
-                      <Text fontSize="2xl" fontWeight="bold">
-                        About Links
-                      </Text>
-                    </HStack>
-                    {poLinks && poLinks.length > 0 ? (
-                      poLinks.map((link, index) => (
-                        <Text key={index} fontSize="lg">
-                          <Link fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
-                            {link.name}
-                          </Link>
+              <Grid templateColumns="repeat(2, 1fr)" w="100%" gap={6}>
+                <Box ml="10%">
+                  <HStack mt="4"  align="justifyContent">
+                    <Image mb="2" src={imageURL} alt="Organization Logo" width="180px" />
+                    <VStack ml="6" mb="4" mt="0">
+                      <HStack spacing={2} >
+                        <Text fontWeight={"bold"} fontSize="xl" mt={0}>
+                          Description:
                         </Text>
-                      ))
-                    ) : (
-                      <Text fontSize="lg" mt={2}>No links available</Text>
-                    )}
-                  </VStack>
+                      </HStack>
+                      <Text mb="0" mt="-2" fontSize="lg" ml="2">
+                        {poDescription}
+                      </Text>
+                      <HStack spacing={2} align="center">
+                        <Icon as={FaLink} boxSize={4} />
+                        <Text fontSize="lg" fontWeight="bold">
+                          About Links
+                        </Text>
+                      </HStack>
+                      {poLinks && poLinks.length > 0 ? (
+                        poLinks.map((link, index) => (
+                          <Text mt="-2" key={index} fontSize="md">
+                            <Link fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
+                              {link.name}
+                            </Link>
+                          </Text>
+                        ))
+                      ) : (
+                        <Text fontSize="lg" mt={2}>No links available</Text>
+                      )}
+                    </VStack>
+                  </HStack>
                 </Box>
-                <Box mt="2">
+                <Box ml="8" mt="2">
                   <VStack spacing={2} align="flex-start">
                     <HStack spacing={2} align="center">
-                      <Text fontWeight="bold" fontSize="2xl" mt={2}>
+                      <Text fontWeight="bold" fontSize="2xl" mt={0}>
                         Organization Stats:
                       </Text>
                     </HStack>
@@ -353,22 +351,24 @@ const PerpetualOrgDashboard = () => {
                 </Text>
               </VStack>
               <Box pl={6} pr={6} pb={4}>
-              <HStack spacing={2} align="center">
-              <Text fontSize="sm" mb={0} ml="2" color="gray.500">
-                 See the full constitution for explanations and full rules.
-                </Text>
+              <HStack spacing={4} align="center">
+  
                 <Link2 href={`/constitution?userDAO=${userDAO}`} passHref>
                   <Button
-                    mt={4}
+                    mt={2}
                     colorScheme="teal"
                     size="sm"
+                    ml="2"
                   >
                     View Full Constitution
                   </Button>
                 </Link2>
+                <Text fontSize="sm" mb={0} mt="2" ml="6" color="gray.500">
+                   See the full constitution for explanations and full rules.
+                </Text>
               </HStack>
                 {constitutionElements}
-
+  
               </Box>
             </Box>
           </GridItem>
@@ -376,6 +376,7 @@ const PerpetualOrgDashboard = () => {
       </Box>
     </>
   );
+  
 };
 
 export default PerpetualOrgDashboard;
