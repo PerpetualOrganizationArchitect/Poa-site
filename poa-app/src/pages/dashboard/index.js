@@ -264,14 +264,14 @@ const PerpetualOrgDashboard = () => {
                     const medalColor = getMedalColor(index);
                     return(
                     <HStack  ml="6" key={entry.id} spacing={4} alignItems="center">
-                      <Text fontSize="lg" fontWeight={medalColor ? 'extrabold' : null} color={medalColor}>
+                      <Text fontSize="xl" fontWeight={medalColor ? 'extrabold' : null} color={medalColor}>
                         {index + 1}
                       </Text>
-                      <Text  fontWeight={medalColor ? 'extrabold' : null} fontSize="2xl">{entry.name}</Text>
-                      <Badge fontSize={"md"} colorScheme="green">{1000} Tokens</Badge>
+                      <Text   fontWeight={medalColor ? 'extrabold' : null} fontSize="2xl">{entry.name}</Text>
+                      <Badge ml="2" fontSize={"md"} colorScheme="blue">{entry.token} Tokens</Badge>
                     </HStack>
                     );
-    })
+                   })
                 ) : (
                   <Text pl={6} fontSize="lg" mt={2}>No leaderboard data available</Text>
                 )}
