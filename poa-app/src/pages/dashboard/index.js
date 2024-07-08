@@ -12,6 +12,7 @@ import {
   Badge,
   Link, 
   Image,
+  Button
 } from '@chakra-ui/react';
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
@@ -22,12 +23,57 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { FaLink, FaInfoCircle } from 'react-icons/fa';
 import { useIPFScontext } from "@/context/ipfsContext";
 
+function generateAbbreviatedConstitution(poData) {
+    const {
+        HybridVoting = null,
+        DirectDemocracyVoting = null,
+        ParticipationVoting = null,
+        NFTMembership = null,
+        Treasury = null
+    } = poData.perpetualOrganization;
+
+    let descriptions = [];
+
+    const addVotingSystemDescription = (name, system) => {
+        if (system) {
+            descriptions.push(<Text key={name} ml="2">{name}: {system.quorum}% approval</Text>);
+        }
+    };
+
+    descriptions.push(<Text  fontWeight="bold" fontSize="lg" key="voting-types" ml="2" mt="2">Voting Types</Text>);
+    addVotingSystemDescription("Hybrid Voting", HybridVoting);
+    addVotingSystemDescription("Direct Democracy Voting", DirectDemocracyVoting);
+    addVotingSystemDescription("Participation Voting", ParticipationVoting);
+
+    if (NFTMembership) {
+        descriptions.push(<Text fontWeight={"bold"} fontSize={"lg"} key="member-types" ml="2" mt="2">Member Types</Text>);
+        descriptions.push(<Text key="member-type-names" ml="2" mt="2">All Member Types: {NFTMembership.memberTypeNames.join(', ')}</Text>);
+        descriptions.push(<Text key="executive-roles" ml="2" mt="0">Executive Roles: {NFTMembership.executiveRoles.join(', ')}</Text>);
+    }
+
+    if (Treasury) {
+        let treasuryControl = "an unidentified voting system";
+        if (HybridVoting && Treasury.votingContract === HybridVoting.id) {
+            treasuryControl = "Hybrid Voting";
+        } else if (DirectDemocracyVoting && Treasury.votingContract === DirectDemocracyVoting.id) {
+            treasuryControl = "Direct Democracy Voting";
+        } else if (ParticipationVoting && Treasury.votingContract === ParticipationVoting.id) {
+            treasuryControl = "Participation Voting";
+        }
+        descriptions.push(<Text fontSize={"lg"} fontWeight={"bold"} key="treasury-control" ml="2" mt="2">Treasury and Upgrade Control</Text>);
+        descriptions.push(<Text key="treasury-control" ml="2" mt="2">Controlled by: {treasuryControl}</Text>);
+    }
+
+    return descriptions;
+}
+
 const PerpetualOrgDashboard = () => {
-  const { userData, setLoaded, logoHash } = useGraphContext();
+  const { userData, setLoaded, logoHash, fetchRules } = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
   const [imageURL, setImageURL] = useState({});
   const [imageFetched, setImageFetched] = useState(false);
+  const [constitutionElements, setConstitutionElements] = useState([]);
   const { fetchImageFromIpfs } = useIPFScontext();
 
   useEffect(() => {
@@ -44,6 +90,16 @@ const PerpetualOrgDashboard = () => {
     };
     fetchImage();
   }, [logoHash]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        let poData = await fetchRules(userDAO);
+        setConstitutionElements(generateAbbreviatedConstitution(poData));
+    };
+    if (userDAO) {
+        fetchData();
+    }
+  }, [userDAO]);
 
   const { leaderboardData, reccommendedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -296,16 +352,30 @@ const PerpetualOrgDashboard = () => {
                   Constitution
                 </Text>
               </VStack>
-              <Text pl={6} fontSize="lg" mt={2}> Test </Text>
+              <Box pl={6} pr={6} pb={4}>
+              <HStack spacing={2} align="center">
+              <Text fontSize="sm" mb={0} ml="2" color="gray.500">
+                 See the full constitution for explanations and full rules.
+                </Text>
+                <Link2 href={`/constitution?userDAO=${userDAO}`} passHref>
+                  <Button
+                    mt={4}
+                    colorScheme="teal"
+                    size="sm"
+                  >
+                    View Full Constitution
+                  </Button>
+                </Link2>
+              </HStack>
+                {constitutionElements}
+
+              </Box>
             </Box>
           </GridItem>
         </Grid>
       </Box>
     </>
   );
-  
-  
-            
 };
 
 export default PerpetualOrgDashboard;
