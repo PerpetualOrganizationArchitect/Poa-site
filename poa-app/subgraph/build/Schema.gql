@@ -56,6 +56,7 @@ type PTToken @entity {
   POname: String!
   mintEvents: [PTTokenMintEvent!]! @derivedFrom(field: "token")
   taskManagerAddress: Bytes
+  supply: BigInt!
 }
 
 type PTTokenMintEvent @entity {
@@ -291,6 +292,8 @@ type TaskManager @entity {
   contract: TaskManagerCreated! @link
   POname: String!
   projects: [Project!] @derivedFrom(field: "taskManager")
+  activeTaskAmount: BigInt!
+  completedTaskAmount: BigInt!
 }
 
 type Task @entity {
@@ -380,6 +383,7 @@ type PerpetualOrganization @entity {
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
   Users: [User!] @derivedFrom(field: "organization")
+  totalMembers: BigInt!
 }
 
 type User @entity {
