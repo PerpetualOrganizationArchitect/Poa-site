@@ -4312,6 +4312,19 @@ export class PerpetualOrganization extends Entity {
       "Users",
     );
   }
+
+  get totalMembers(): BigInt {
+    let value = this.get("totalMembers");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalMembers(value: BigInt) {
+    this.set("totalMembers", Value.fromBigInt(value));
+  }
 }
 
 export class User extends Entity {

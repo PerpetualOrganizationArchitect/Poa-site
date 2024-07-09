@@ -18,12 +18,19 @@ export function handleMintedNFT(event: MintEvent): void {
   let nft = NFTMembership.load(event.address.toHex());
 
 
-
-
   if (nft == null) {
     log.error("NFTMembership not found: {}", [event.address.toHex()]);
     return;
   }
+
+  let po = PerpetualOrganization.load(nft.POname);
+  if (po == null) {
+    log.error("PerpetualOrganization not found: {}", [nft.POname]);
+    return;
+  }
+  po.totalMembers = po.totalMembers.plus(BigInt.fromI32(1));
+  po.save();
+
   let user = new User(nft.POname+'-'+event.params.recipient.toHex());
   if (user != null && nft != null) {
     user.address = event.params.recipient;
