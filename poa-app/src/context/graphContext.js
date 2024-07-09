@@ -23,8 +23,6 @@ export const GraphProvider = ({ children }) => {
     
     const {address, chainId}= useAccount();
 
-   
-
 
     const[graphUsername, setGraphUsername] = useState(false);
 
@@ -51,14 +49,15 @@ export const GraphProvider = ({ children }) => {
     const [directDemocracyVotingContractAddress, setDirectDemocracyVotingContractAddress] = useState('');
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
     const [votingContractAddress, setVotingContractAddress] = useState('');
-    
+
     //Po info 
     const [poDescription, setPOdescription]= useState('No description provided or IPFS content still being indexed')
     const [poLinks, setPOlinks]= useState({})
     const [logoHash, setLogoHash] =useState('')
-
-
-    
+    const [poMembers, setPoMembers] = useState(0);
+    const [activeTaskAmount, setActiveTaskAmount] = useState(0);
+    const [completedTaskAmount, setCompletedTaskAmount] = useState(0);
+    const [ptTokenBalance, setPtTokenBalance] = useState(0);
 
 
 
@@ -509,6 +508,7 @@ export const GraphProvider = ({ children }) => {
         const query = `{
             perpetualOrganization(id: "${poName}") {
                 logoHash
+                totalMembers
                 aboutInfo {
                     description
                     links {
@@ -518,6 +518,8 @@ export const GraphProvider = ({ children }) => {
                 }
                 TaskManager {
                     id
+                    activeTaskAmount
+                    completedTaskAmount
                 }
                 HybridVoting {
                     id
@@ -533,6 +535,7 @@ export const GraphProvider = ({ children }) => {
                 }
                 ParticipationToken {
                     id
+                    supply
                 }
                 NFTMembership {
                     id
@@ -552,6 +555,26 @@ export const GraphProvider = ({ children }) => {
         if (data.perpetualOrganization.aboutInfo?.description) {
             console.log("Description:", po.aboutInfo.description);
             setPOdescription(po.aboutInfo.description);
+        }
+
+        if (data.perpetualOrganization.totalMembers) {
+            console.log("Total Members:", po.totalMembers);
+            setPoMembers(po.totalMembers);
+        }
+
+        if (data.perpetualOrganization.TaskManager?.activeTaskAmount) {
+            console.log("Active Task Amount:", po.TaskManager.activeTaskAmount);
+            setActiveTaskAmount(po.TaskManager.activeTaskAmount);
+        }
+
+        if (data.perpetualOrganization.TaskManager?.completedTaskAmount) {
+            console.log("Completed Task Amount:", po.TaskManager.completedTaskAmount);
+            setCompletedTaskAmount(po.TaskManager.completedTaskAmount);
+        }
+
+        if (data.perpetualOrganization.ParticipationToken?.supply) {
+            console.log("Participation Token Supply:", po.ParticipationToken.supply);
+            setPtTokenBalance(po.ParticipationToken.supply);
         }
     
         if (data.perpetualOrganization.aboutInfo?.links) {
@@ -723,15 +746,12 @@ export const GraphProvider = ({ children }) => {
         setDemocracyVotingOngoing(democracyVotingOngoing);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
-        
-
-        
 
 
     }
 
     return (
-        <GraphContext.Provider value={{reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );

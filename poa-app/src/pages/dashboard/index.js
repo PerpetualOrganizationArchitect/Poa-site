@@ -66,7 +66,7 @@ function generateAbbreviatedConstitution(poData) {
 }
 
 const PerpetualOrgDashboard = () => {
-  const { userData, setLoaded, logoHash, fetchRules } = useGraphContext();
+  const { userData, setLoaded, logoHash, fetchRules, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers } = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
   const [imageURL, setImageURL] = useState({});
@@ -240,7 +240,7 @@ const PerpetualOrgDashboard = () => {
                     Members:
                   </Text>
                   <Text mt="-1" fontSize="lg">
-                    123
+                    {poMembers}
                   </Text>
                 </HStack>
 
@@ -249,7 +249,7 @@ const PerpetualOrgDashboard = () => {
                     Total Participation Tokens:
                   </Text>
                   <Text mt="-1" fontSize="lg">
-                    45678
+                    {ptTokenBalance}
                   </Text>
                 </HStack>
 
@@ -258,7 +258,7 @@ const PerpetualOrgDashboard = () => {
                     Active Tasks:
                   </Text>
                   <Text mt="-1" fontSize="lg">
-                    12
+                    {activeTaskAmount}
                   </Text>
                 </HStack>
 
@@ -267,7 +267,7 @@ const PerpetualOrgDashboard = () => {
                     Completed Tasks:
                   </Text>
                   <Text mt="-1" fontSize="lg">
-                    34
+                   {completedTaskAmount}
                   </Text>
                 </HStack>
 
