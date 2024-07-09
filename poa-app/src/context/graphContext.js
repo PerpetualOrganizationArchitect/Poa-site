@@ -51,7 +51,7 @@ export const GraphProvider = ({ children }) => {
     const [directDemocracyVotingContractAddress, setDirectDemocracyVotingContractAddress] = useState('');
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
     const [votingContractAddress, setVotingContractAddress] = useState('');
-
+    
     //Po info 
     const [poDescription, setPOdescription]= useState('No description provided or IPFS content still being indexed')
     const [poLinks, setPOlinks]= useState({})

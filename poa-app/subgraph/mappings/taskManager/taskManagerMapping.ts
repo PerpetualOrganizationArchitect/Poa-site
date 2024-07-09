@@ -1,4 +1,4 @@
-import { log, json, DataSourceTemplate, Bytes } from "@graphprotocol/graph-ts";
+import { log, json, DataSourceTemplate, Bytes, BigInt } from "@graphprotocol/graph-ts";
 import {TaskSubmitted as TaskSubmittedEvent, TaskCreated as TaskCreatedEvent, TaskClaimed as TaskClaimedEvent, TaskUpdated as TaskUpdatedEvent, TaskCompleted as TaskCompletedEvent, ProjectCreated as ProjectCreatedEvent, ProjectDeleted as ProjectDeletedEvent, TaskSubmitted } from "../../generated/templates/TaskManager/TaskManager";
 import { TaskInfo, TaskManager, Task, Project } from "../../generated/schema";
 import { dataSource } from '@graphprotocol/graph-ts';
@@ -14,6 +14,14 @@ export function handleTaskCreated(event: TaskCreatedEvent): void {
   task.project = event.params.projectName + "-" + event.address.toHex();
   task.completed = false;
   task.taskManager = event.address.toHex();
+
+  let taskManager = TaskManager.load(event.address.toHex());
+  if (!taskManager) {
+    log.error("TaskManager not found: {}", [event.address.toHex()]);
+    return;
+  }
+  taskManager.activeTaskAmount = taskManager.activeTaskAmount.plus(BigInt.fromI32(1));
+  taskManager.save();
 
 
   let context = new DataSourceContext();
@@ -148,6 +156,15 @@ export function handleTaskCompleted(event: TaskCompletedEvent): void {
 
   task.completed = true;
   task.save();
+
+  let taskManager = TaskManager.load(event.address.toHex());
+  if (!taskManager) {
+    log.error("TaskManager not found: {}", [event.address.toHex()]);
+    return;
+  }
+  taskManager.activeTaskAmount = taskManager.activeTaskAmount.minus(BigInt.fromI32(1));
+  taskManager.completedTaskAmount = taskManager.completedTaskAmount.plus(BigInt.fromI32(1));
+  taskManager.save();
 
 }
 

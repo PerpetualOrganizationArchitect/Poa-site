@@ -403,7 +403,8 @@ const PerpetualOrgDashboard = () => {
                 </Text>
               </VStack>
               <Box pl={6} pr={6} pb={4}>
-                <HStack spacing={4} align="center">
+                {constitutionElements}
+                <HStack mt="2" spacing={4} align="center">
                   <Link2 href={`/constitution?userDAO=${userDAO}`} passHref>
                     <Button
                       mt={2}
@@ -418,7 +419,6 @@ const PerpetualOrgDashboard = () => {
                      See the full constitution for explanations and full rules.
                   </Text>
                 </HStack>
-                {constitutionElements}
               </Box>
             </Box>
           </GridItem>

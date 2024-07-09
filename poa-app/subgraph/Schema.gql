@@ -292,6 +292,8 @@ type TaskManager @entity {
   contract: TaskManagerCreated! @link
   POname: String!
   projects: [Project!] @derivedFrom(field: "taskManager")
+  activeTaskAmount: BigInt!
+  completedTaskAmount: BigInt!
 }
 
 type Task @entity {

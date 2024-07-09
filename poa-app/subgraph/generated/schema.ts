@@ -3307,6 +3307,32 @@ export class TaskManager extends Entity {
       "projects",
     );
   }
+
+  get activeTaskAmount(): BigInt {
+    let value = this.get("activeTaskAmount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set activeTaskAmount(value: BigInt) {
+    this.set("activeTaskAmount", Value.fromBigInt(value));
+  }
+
+  get completedTaskAmount(): BigInt {
+    let value = this.get("completedTaskAmount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set completedTaskAmount(value: BigInt) {
+    this.set("completedTaskAmount", Value.fromBigInt(value));
+  }
 }
 
 export class Task extends Entity {
