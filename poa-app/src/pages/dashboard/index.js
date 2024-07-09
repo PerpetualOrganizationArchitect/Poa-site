@@ -6,11 +6,9 @@ import {
   GridItem,
   Text,
   HStack,
-  keyframes,
-  usePrefersReducedMotion,
   Icon,
   Badge,
-  Link, 
+  Link,
   Image,
   Button
 } from '@chakra-ui/react';
@@ -20,51 +18,51 @@ import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
-import { FaLink, FaInfoCircle } from 'react-icons/fa';
+import { FaLink } from 'react-icons/fa';
 import { useIPFScontext } from "@/context/ipfsContext";
 
 function generateAbbreviatedConstitution(poData) {
-    const {
-        HybridVoting = null,
-        DirectDemocracyVoting = null,
-        ParticipationVoting = null,
-        NFTMembership = null,
-        Treasury = null
-    } = poData.perpetualOrganization;
+  const {
+    HybridVoting = null,
+    DirectDemocracyVoting = null,
+    ParticipationVoting = null,
+    NFTMembership = null,
+    Treasury = null
+  } = poData.perpetualOrganization;
 
-    let descriptions = [];
+  let descriptions = [];
 
-    const addVotingSystemDescription = (name, system) => {
-        if (system) {
-            descriptions.push(<Text key={name} ml="2">{name}: {system.quorum}% approval</Text>);
-        }
-    };
-
-    descriptions.push(<Text  fontWeight="bold" fontSize="lg" key="voting-types" ml="2" mt="2">Voting Types</Text>);
-    addVotingSystemDescription("Hybrid Voting", HybridVoting);
-    addVotingSystemDescription("Direct Democracy Voting", DirectDemocracyVoting);
-    addVotingSystemDescription("Participation Voting", ParticipationVoting);
-
-    if (NFTMembership) {
-        descriptions.push(<Text fontWeight={"bold"} fontSize={"lg"} key="member-types" ml="2" mt="2">Member Types</Text>);
-        descriptions.push(<Text key="member-type-names" ml="2" mt="2">All Member Types: {NFTMembership.memberTypeNames.join(', ')}</Text>);
-        descriptions.push(<Text key="executive-roles" ml="2" mt="0">Executive Roles: {NFTMembership.executiveRoles.join(', ')}</Text>);
+  const addVotingSystemDescription = (name, system) => {
+    if (system) {
+      descriptions.push(<Text key={name} ml="2">{name}: {system.quorum}% approval</Text>);
     }
+  };
 
-    if (Treasury) {
-        let treasuryControl = "an unidentified voting system";
-        if (HybridVoting && Treasury.votingContract === HybridVoting.id) {
-            treasuryControl = "Hybrid Voting";
-        } else if (DirectDemocracyVoting && Treasury.votingContract === DirectDemocracyVoting.id) {
-            treasuryControl = "Direct Democracy Voting";
-        } else if (ParticipationVoting && Treasury.votingContract === ParticipationVoting.id) {
-            treasuryControl = "Participation Voting";
-        }
-        descriptions.push(<Text fontSize={"lg"} fontWeight={"bold"} key="treasury-control" ml="2" mt="2">Treasury and Upgrade Control</Text>);
-        descriptions.push(<Text key="treasury-control" ml="2" mt="2">Controlled by: {treasuryControl}</Text>);
+  descriptions.push(<Text fontWeight="bold" fontSize="lg" key="voting-types" ml="2" mt="2">Voting Types</Text>);
+  addVotingSystemDescription("Hybrid Voting", HybridVoting);
+  addVotingSystemDescription("Direct Democracy Voting", DirectDemocracyVoting);
+  addVotingSystemDescription("Participation Voting", ParticipationVoting);
+
+  if (NFTMembership) {
+    descriptions.push(<Text fontWeight={"bold"} fontSize={"lg"} key="member-types" ml="2" mt="2">Member Types</Text>);
+    descriptions.push(<Text key="member-type-names" ml="2" mt="2">All Member Types: {NFTMembership.memberTypeNames.join(', ')}</Text>);
+    descriptions.push(<Text key="executive-roles" ml="2" mt="0">Executive Roles: {NFTMembership.executiveRoles.join(', ')}</Text>);
+  }
+
+  if (Treasury) {
+    let treasuryControl = "an unidentified voting system";
+    if (HybridVoting && Treasury.votingContract === HybridVoting.id) {
+      treasuryControl = "Hybrid Voting";
+    } else if (DirectDemocracyVoting && Treasury.votingContract === DirectDemocracyVoting.id) {
+      treasuryControl = "Direct Democracy Voting";
+    } else if (ParticipationVoting && Treasury.votingContract === ParticipationVoting.id) {
+      treasuryControl = "Participation Voting";
     }
+    descriptions.push(<Text fontSize={"lg"} fontWeight={"bold"} key="treasury-control" ml="2" mt="2">Treasury and Upgrade Control</Text>);
+    descriptions.push(<Text key="treasury-control" ml="2" mt="2">Controlled by: {treasuryControl}</Text>);
+  }
 
-    return descriptions;
+  return descriptions;
 }
 
 const PerpetualOrgDashboard = () => {
@@ -93,16 +91,15 @@ const PerpetualOrgDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        let poData = await fetchRules(userDAO);
-        setConstitutionElements(generateAbbreviatedConstitution(poData));
+      let poData = await fetchRules(userDAO);
+      setConstitutionElements(generateAbbreviatedConstitution(poData));
     };
     if (userDAO) {
-        fetchData();
+      fetchData();
     }
   }, [userDAO]);
 
   const { leaderboardData, reccommendedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   const { web3, account, hasExecNFT } = useWeb3Context();
   const [userInfo, setUserInfo] = useState({});
@@ -138,8 +135,15 @@ const PerpetualOrgDashboard = () => {
     width: '100%',
     zIndex: -1,
     borderRadius: 'inherit',
-    backdropFilter: 'blur(20px)',
-    backgroundColor: 'rgba(0, 0, 0, .7)',
+    backdropFilter: 'blur(70px)',
+    backgroundColor: 'rgba(0, 0, 0, .8)',
+  };
+
+  const difficultyColorScheme = {
+    easy: 'green',
+    medium: 'yellow',
+    hard: 'orange',
+    veryhard: 'red'
   };
 
   return (
@@ -147,17 +151,17 @@ const PerpetualOrgDashboard = () => {
       <Navbar />
       <Box p={4}>
         <Grid
-          color="white"
+          color="whitesmoke"
           templateAreas={[
-            `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`,
-            `'orgInfo orgInfo' 'tasks polls' 'leaderboard constitution'`,
+            `'orgInfo orgStats' 'tasks polls' 'leaderboard constitution'`,
+            `'orgInfo orgStats' 'tasks polls' 'leaderboard constitution'`,
           ]}
           templateColumns="repeat(2, 1fr)"
           gap={4}
         >
           <GridItem area={'orgInfo'}>
             <Box
-              w="100%"
+              w="125%"
               borderRadius="2xl"
               bg="transparent"
               boxShadow="lg"
@@ -169,73 +173,90 @@ const PerpetualOrgDashboard = () => {
                 <div style={glassLayerStyle} />
                 <HStack spacing={4}>
                   <Text pl={6} letterSpacing="-1%" fontSize="4xl" fontWeight="bold">
-                    {userDAO}'s Dashboard 
+                    {userDAO}'s Dashboard
                   </Text>
                 </HStack>
               </VStack>
-              <Grid templateColumns="repeat(2, 1fr)" w="100%" gap={6}>
-                <Box ml="10%">
-                  <HStack mt="4"  align="justifyContent">
-                    <Image mb="2" src={imageURL} alt="Organization Logo" width="180px" />
-                    <VStack ml="6" mb="4" mt="0">
-                      <HStack spacing={2} >
-                        <Text fontWeight={"bold"} fontSize="xl" mt={0}>
-                          Description:
-                        </Text>
-                      </HStack>
-                      <Text mb="0" mt="-2" fontSize="lg" ml="2">
-                        {poDescription}
-                      </Text>
-                      <HStack spacing={2} align="center">
-                        <Icon as={FaLink} boxSize={4} />
-                        <Text fontSize="lg" fontWeight="bold">
-                          About Links
-                        </Text>
-                      </HStack>
-                      {poLinks && poLinks.length > 0 ? (
-                        poLinks.map((link, index) => (
-                          <Text mt="-2" key={index} fontSize="md">
-                            <Link fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
-                              {link.name}
-                            </Link>
-                          </Text>
-                        ))
-                      ) : (
-                        <Text fontSize="lg" mt={2}>No links available</Text>
-                      )}
-                    </VStack>
-                  </HStack>
+              <HStack spacing={4} justify="space-between" w="100%" p="2">
+                <Box pl="12px">
+                  <Image mb="0" src={imageURL} alt="Organization Logo" width="220px" />
                 </Box>
-                <Box ml="8" mt="2">
-                  <VStack spacing={2} align="flex-start">
+                <VStack ml="2" align="flex-start" pr="10px" spacing={2} w="100%">
+                  <Box>
+                    <Text fontWeight={"bold"} fontSize="xl" mt={0}>
+                      Description:
+                    </Text>
+                    <Text mt="-1" fontSize="md" ml="2">
+                      this is a pretty long description lets see what happens when i do this because im just curiopus how it goes to see a long description in the box here 
+                    </Text>
+                  </Box>
+                  <Box>
                     <HStack spacing={2} align="center">
-                      <Text fontWeight="bold" fontSize="2xl" mt={0}>
-                        Organization Stats:
+                      <Icon as={FaLink} boxSize={4} />
+                      <Text fontSize="lg" fontWeight="bold">
+                        Links
                       </Text>
                     </HStack>
-                    <Text mt="-1" fontSize="lg" ml="8">
-                      Members: 123
-                    </Text>
-                    <Text mt="-1" fontSize="lg" ml="8">
-                      Total Participation Tokens: 45678
-                    </Text>
-                    <Text mt="-1" fontSize="lg" ml="8">
-                      Active Tasks: 7
-                    </Text>
-                    <Text mt="-1" fontSize="lg" ml="8">
-                      Completed Tasks: 12
-                    </Text>
-                    <Text mt="-1" fontSize="lg" ml="8">
-                      Treasury Balance: 12345
-                    </Text>
-                  </VStack>
-                </Box>
-              </Grid>
+                    <HStack ml="4" mt="1" spacing={2} align="center">
+                    {poLinks && poLinks.length > 0 ? (
+                      poLinks.map((link, index) => (
+                        <Text mt="-2" key={index} fontSize="md">
+                          <Link fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
+                            {link.name}
+                          </Link>
+                        </Text>
+                      ))
+                    ) : (
+                      <Text fontSize="lg" mt={2}>No links available</Text>
+                    )}
+                    </HStack>
+                  </Box>
+                </VStack>
+              </HStack>
+            </Box>
+          </GridItem>
+  
+          <GridItem area={'orgStats'}>
+            <Box
+              h="100%"
+              ml="25%"
+              w="75%"
+              borderRadius="2xl"
+              bg="transparent"
+              boxShadow="lg"
+              position="relative"
+              zIndex={2}
+            >
+              <div style={glassLayerStyle} />
+              <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
+                <div style={glassLayerStyle} />
+                <Text pl={6} fontWeight="bold" fontSize="2xl">
+                  Organization Stats
+                </Text>
+              </VStack>
+              <VStack spacing={2} align="flex-start" ml="6">
+                <Text mt="-1" fontSize="lg">
+                  Members: 123
+                </Text>
+                <Text mt="-1" fontSize="lg">
+                  Total Participation Tokens: 45678
+                </Text>
+                <Text mt="-1" fontSize="lg">
+                  Active Tasks: 7
+                </Text>
+                <Text mt="-1" fontSize="lg">
+                  Completed Tasks: 12
+                </Text>
+                <Text mt="-1" fontSize="lg">
+                  Treasury Balance: 12345
+                </Text>
+              </VStack>
             </Box>
           </GridItem>
   
           <GridItem area={'tasks'}>
             <Box
+              h="100%"
               w="100%"
               borderRadius="2xl"
               bg="transparent"
@@ -259,7 +280,7 @@ const PerpetualOrgDashboard = () => {
                           {task.taskInfo.name}
                         </Text>
                         <HStack justify="space-between">
-                          <Badge colorScheme="yellow">{task.taskInfo.difficulty}</Badge>
+                          <Badge colorScheme={difficultyColorScheme[task.taskInfo.difficulty.toLowerCase().replace(" ", "")]}>{task.taskInfo.difficulty}</Badge>
                           <Text fontWeight="bold">Tokens {task.payout}</Text>
                         </HStack>
                       </VStack>
@@ -272,6 +293,7 @@ const PerpetualOrgDashboard = () => {
   
           <GridItem area={'polls'}>
             <Box
+             h="100%"
               w="100%"
               borderRadius="2xl"
               bg="transparent"
@@ -287,16 +309,16 @@ const PerpetualOrgDashboard = () => {
                 </Text>
               </VStack>
               
-              <Box w="100%" p={4}>
+              <Box  w="100%" p={4}>
                 <OngoingPolls OngoingPolls={democracyVotingOngoing} />
               </Box>
             </Box>
-            
           </GridItem>
   
           <GridItem area={'leaderboard'}>
             <Link2 href="/leaderboard">
             <Box
+              h="100%"
               w="100%"
               borderRadius="2xl"
               bg="transparent"
@@ -317,11 +339,11 @@ const PerpetualOrgDashboard = () => {
                   leaderboardData.slice(0, 5).map((entry, index) => {
                     const medalColor = getMedalColor(index);
                     return(
-                    <HStack  ml="6" key={entry.id} spacing={4} alignItems="center">
+                    <HStack ml="6" key={entry.id} spacing={4} alignItems="center">
                       <Text fontSize="xl" fontWeight={medalColor ? 'extrabold' : null} color={medalColor}>
                         {index + 1}
                       </Text>
-                      <Text   fontWeight={medalColor ? 'extrabold' : null} fontSize="2xl">{entry.name}</Text>
+                      <Text fontWeight={medalColor ? 'extrabold' : null} fontSize="2xl">{entry.name}</Text>
                       <Badge ml="2" fontSize={"md"} colorScheme="blue">{entry.token} Tokens</Badge>
                     </HStack>
                     );
@@ -351,31 +373,29 @@ const PerpetualOrgDashboard = () => {
                 </Text>
               </VStack>
               <Box pl={6} pr={6} pb={4}>
-              <HStack spacing={4} align="center">
-  
-                <Link2 href={`/constitution?userDAO=${userDAO}`} passHref>
-                  <Button
-                    mt={2}
-                    colorScheme="teal"
-                    size="sm"
-                    ml="2"
-                  >
-                    View Full Constitution
-                  </Button>
-                </Link2>
-                <Text fontSize="sm" mb={0} mt="2" ml="6" color="gray.500">
-                   See the full constitution for explanations and full rules.
-                </Text>
-              </HStack>
+                <HStack spacing={4} align="center">
+                  <Link2 href={`/constitution?userDAO=${userDAO}`} passHref>
+                    <Button
+                      mt={2}
+                      colorScheme="teal"
+                      size="sm"
+                      ml="2"
+                    >
+                      View Full Constitution
+                    </Button>
+                  </Link2>
+                  <Text fontSize="sm" mb={0} mt="2" ml="6" color="gray.500">
+                     See the full constitution for explanations and full rules.
+                  </Text>
+                </HStack>
                 {constitutionElements}
-  
               </Box>
             </Box>
           </GridItem>
         </Grid>
       </Box>
     </>
-  );
+  );  
   
 };
 

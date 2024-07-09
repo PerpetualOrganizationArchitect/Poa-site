@@ -47,8 +47,8 @@ const Navbar = () => {
           >
             Tasks
           </Link>
-          <Link as={NextLink} href={`/leaderboard/?userDAO=${userDAO}`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
-            Leaderboard
+          <Link as={NextLink} href={`/dashboard/?userDAO=${userDAO}`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
+            Dashboard
           </Link>
           <Link
             as={NextLink}
