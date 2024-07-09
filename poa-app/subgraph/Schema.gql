@@ -56,6 +56,7 @@ type PTToken @entity {
   POname: String!
   mintEvents: [PTTokenMintEvent!]! @derivedFrom(field: "token")
   taskManagerAddress: Bytes
+  supply: BigInt!
 }
 
 type PTTokenMintEvent @entity {
@@ -380,6 +381,7 @@ type PerpetualOrganization @entity {
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
   Users: [User!] @derivedFrom(field: "organization")
+  totalMembers: BigInt!
 }
 
 type User @entity {

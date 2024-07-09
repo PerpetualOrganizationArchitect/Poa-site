@@ -653,6 +653,19 @@ export class PTToken extends Entity {
       this.set("taskManagerAddress", Value.fromBytes(<Bytes>value));
     }
   }
+
+  get supply(): BigInt {
+    let value = this.get("supply");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set supply(value: BigInt) {
+    this.set("supply", Value.fromBigInt(value));
+  }
 }
 
 export class PTTokenMintEvent extends Entity {
