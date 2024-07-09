@@ -234,23 +234,53 @@ const PerpetualOrgDashboard = () => {
                   Organization Stats
                 </Text>
               </VStack>
-              <VStack spacing={2} align="flex-start" ml="6">
-                <Text mt="-1" fontSize="lg">
-                  Members: 123
-                </Text>
-                <Text mt="-1" fontSize="lg">
-                  Total Participation Tokens: 45678
-                </Text>
-                <Text mt="-1" fontSize="lg">
-                  Active Tasks: 7
-                </Text>
-                <Text mt="-1" fontSize="lg">
-                  Completed Tasks: 12
-                </Text>
-                <Text mt="-1" fontSize="lg">
-                  Treasury Balance: 12345
-                </Text>
+              <VStack mt="2" spacing={1.5} align="flex-start" ml="8">
+                <HStack spacing={2}>
+                  <Text mt="-1" fontSize="lg" fontWeight="bold">
+                    Members:
+                  </Text>
+                  <Text mt="-1" fontSize="lg">
+                    123
+                  </Text>
+                </HStack>
+
+                <HStack spacing={2}>
+                  <Text mt="-1" fontSize="lg" fontWeight="bold">
+                    Total Participation Tokens:
+                  </Text>
+                  <Text mt="-1" fontSize="lg">
+                    45678
+                  </Text>
+                </HStack>
+
+                <HStack spacing={2}>
+                  <Text mt="-1" fontSize="lg" fontWeight="bold">
+                    Active Tasks:
+                  </Text>
+                  <Text mt="-1" fontSize="lg">
+                    12
+                  </Text>
+                </HStack>
+
+                <HStack spacing={2}>
+                  <Text mt="-1" fontSize="lg" fontWeight="bold">
+                    Completed Tasks:
+                  </Text>
+                  <Text mt="-1" fontSize="lg">
+                    34
+                  </Text>
+                </HStack>
+
+                <HStack spacing={2}>
+                  <Text mt="-1" fontSize="lg" fontWeight="bold">
+                    Treasury Balance:
+                  </Text>
+                  <Text mt="-1" fontSize="lg">
+                    $12345
+                  </Text>
+                </HStack>
               </VStack>
+
             </Box>
           </GridItem>
   
