@@ -43,7 +43,7 @@ const UserprofileHub= () => {
       }, [userDAO]);
 
 
-    const {claimedTasks,democracyVotingOngoing, graphUsername} = useGraphContext();
+    const {claimedTasks,democracyVotingOngoing, graphUsername, reccommendedTasks} = useGraphContext();
     
     
     
@@ -80,13 +80,21 @@ const UserprofileHub= () => {
     zIndex: -1,
     borderRadius: 'inherit',
     backdropFilter: 'blur(20px)',
-    backgroundColor: 'rgba(0, 0, 0, .7)',
+    backgroundColor: 'rgba(0, 0, 0, .73)',
   };
 
   const glowAnimation = keyframes`
     from { text-shadow: 0 0 0px white; }
     to { text-shadow: 0 0 20px gold;  }
   `;
+
+  const difficultyColorScheme = {
+    easy: 'green',
+    medium: 'yellow',
+    hard: 'orange',
+    veryhard: 'red'
+  };
+
 
 
 
@@ -235,7 +243,7 @@ const UserprofileHub= () => {
 
             </VStack>
             <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
-                {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccomendedTasks)?.slice(0, 3).map((task) => (
+                {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccommendedTasks)?.slice(0, 3).map((task) => (
                     <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                         <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
                             <VStack textColor="white" align="stretch" spacing={3}>
@@ -243,7 +251,7 @@ const UserprofileHub= () => {
                                     {task.taskInfo.name}
                                 </Text>
                                 <HStack justify="space-between">
-                                    <Badge colorScheme="yellow">{task.taskInfo.difficulty}</Badge>
+                                    <Badge colorScheme={difficultyColorScheme[task.taskInfo.difficulty.toLowerCase().replace(" ", "")]}>{task.taskInfo.difficulty}</Badge>
                                     <Text fontWeight="bold">Payout {task.payout}</Text>
                                 </HStack>
                             </VStack>
