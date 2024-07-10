@@ -8,6 +8,12 @@ export function handleNewProposal(event: NewProposal): void {
 
     let newProposal = new PTProposal(event.params.proposalId.toString()+'-'+event.address.toHex());
     newProposal.name = event.params.name;
+    let contract = PTVoting.load(event.address.toHex());
+    if (!contract) {
+      log.error("Voting contract not found: {}", [event.address.toHex()]);
+      return;
+    }
+    newProposal.creator = contract.POname + '-' + event.transaction.from.toHex();
     newProposal.description = event.params.description;
     newProposal.creationTimestamp = event.params.creationTimestamp;
     newProposal.timeInMinutes = event.params.timeInMinutes;
@@ -16,11 +22,10 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.transferRecipient = event.params.transferRecipient;
     newProposal.transferEnabled = event.params.transferEnabled;
     newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes.times(BigInt.fromI32(60)));
-  newProposal.totalVotes = BigInt.fromI32(0);
-  newProposal.voting = event.address.toHex();
-  newProposal.validWinner = false;
-  newProposal.save();
-  
+    newProposal.totalVotes = BigInt.fromI32(0);
+    newProposal.voting = event.address.toHex();
+    newProposal.validWinner = false;
+    newProposal.save();
 }
 
 

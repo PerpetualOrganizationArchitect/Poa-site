@@ -144,6 +144,7 @@ type PTVoting @entity {
 type PTProposal @entity {
   id: ID!
   name: String!
+  creator: User @link
   voting: PTVoting! @link
   description: String!
   totalVotes: BigInt!
@@ -194,6 +195,7 @@ type DDVoting @entity {
 type DDProposal @entity {
   id: ID!
   name: String!
+  creator: User @link
   voting: DDVoting! @link
   description: String!
   totalVotes: BigInt!
@@ -246,6 +248,7 @@ type HybridVoting @entity {
 type HybridProposal @entity {
   id: ID!
   name: String!
+  creator: User @link
   voting: HybridVoting! @link
   description: String!
   totalVotesDD: BigInt!
@@ -397,6 +400,9 @@ type User @entity {
   ptVotes: [PTVote!] @derivedFrom(field: "voter")
   ddVotes: [DDVote!] @derivedFrom(field: "voter")
   hybridVotes: [HybridVote!] @derivedFrom(field: "voter")
+  ptProposals: [PTProposal!] @derivedFrom(field: "creator")
+  ddProposals: [DDProposal!] @derivedFrom(field: "creator")
+  hybridProposals: [HybridProposal!] @derivedFrom(field: "creator")
   Account: Account @link
   totalVotes: BigInt!
   dateJoined: BigInt!

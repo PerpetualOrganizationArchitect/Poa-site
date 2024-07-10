@@ -3,11 +3,18 @@ import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/HybridVoting/HybridVoting"
 import { HybridProposal, HybridPollOption,HybridVote, HybridVoting, User } from "../../generated/schema"
 
+
 export function handleNewProposal(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
 
     let newProposal = new HybridProposal(event.params.proposalId.toString()+'-'+event.address.toHex());
     newProposal.name = event.params.name;
+    let contract = HybridVoting.load(event.address.toHex());
+    if (!contract) {
+      log.error("Voting contract not found: {}", [event.address.toHex()]);
+      return;
+    }
+    newProposal.creator = contract.POname + '-' + event.transaction.from.toHex();
     newProposal.description = event.params.description;
     newProposal.creationTimestamp = event.params.creationTimestamp;
     newProposal.timeInMinutes = event.params.timeInMinutes;

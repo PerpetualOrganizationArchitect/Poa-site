@@ -1599,6 +1599,23 @@ export class PTProposal extends Entity {
     this.set("name", Value.fromString(value));
   }
 
+  get creator(): string | null {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set creator(value: string | null) {
+    if (!value) {
+      this.unset("creator");
+    } else {
+      this.set("creator", Value.fromString(<string>value));
+    }
+  }
+
   get voting(): string {
     let value = this.get("voting");
     if (!value || value.kind == ValueKind.NULL) {
@@ -2166,6 +2183,23 @@ export class DDProposal extends Entity {
 
   set name(value: string) {
     this.set("name", Value.fromString(value));
+  }
+
+  get creator(): string | null {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set creator(value: string | null) {
+    if (!value) {
+      this.unset("creator");
+    } else {
+      this.set("creator", Value.fromString(<string>value));
+    }
   }
 
   get voting(): string {
@@ -2767,6 +2801,23 @@ export class HybridProposal extends Entity {
 
   set name(value: string) {
     this.set("name", Value.fromString(value));
+  }
+
+  get creator(): string | null {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set creator(value: string | null) {
+    if (!value) {
+      this.unset("creator");
+    } else {
+      this.set("creator", Value.fromString(<string>value));
+    }
   }
 
   get voting(): string {
@@ -4478,6 +4529,30 @@ export class User extends Entity {
       "User",
       this.get("id")!.toString(),
       "hybridVotes",
+    );
+  }
+
+  get ptProposals(): PTProposalLoader {
+    return new PTProposalLoader(
+      "User",
+      this.get("id")!.toString(),
+      "ptProposals",
+    );
+  }
+
+  get ddProposals(): DDProposalLoader {
+    return new DDProposalLoader(
+      "User",
+      this.get("id")!.toString(),
+      "ddProposals",
+    );
+  }
+
+  get hybridProposals(): HybridProposalLoader {
+    return new HybridProposalLoader(
+      "User",
+      this.get("id")!.toString(),
+      "hybridProposals",
     );
   }
 

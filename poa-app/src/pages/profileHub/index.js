@@ -259,10 +259,7 @@ const UserprofileHub= () => {
                     </Box>
                 ))}
             </HStack>
-
-
         </Box>
-
             <Box w="100%"
             pt={8}
             borderRadius="2xl"
@@ -275,8 +272,6 @@ const UserprofileHub= () => {
         <VStack pb={2}  align="flex-start" position="relative" borderTopRadius="2xl">
         <div style={glassLayerStyle} />
             <Text pl={6} fontWeight="bold" fontSize="2xl" >Ongoing Polls {' '}</Text>
-            
-
         </VStack>
         <Box  mt="4">
         <OngoingPolls  OngoingPolls={democracyVotingOngoing}/>
