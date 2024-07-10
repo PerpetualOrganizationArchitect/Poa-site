@@ -225,27 +225,18 @@ const UserprofileHub= () => {
         onClose={closeSettingsModal}
       /> */}
       
-        <HStack pb={4} pt={2}  spacing="27%">
-
-            <VStack align={'flex-start'} ml="6%" spacing={1}>
-                <Text  fontWeight="bold"  fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
-            </VStack>
-            <VStack align={'center'} spacing={2}>
+        <HStack pb={4} pt={2} spacing="10%">
+          <VStack align={'flex-start'} ml="4%" spacing={1}>
+            <Text fontWeight="bold" fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
+            <Text fontWeight="bold" fontSize="md">Total Votes: {}</Text>
+            <Text fontWeight="bold" fontSize="md">Date Joined: {}</Text>
+          </VStack>
+          <Spacer />
+          <Box alignSelf="flex-start" mr="4">
             <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
-                {hasExecNFT && (
-                <Button colorScheme="green" onClick={toggleDevMenu} size="sm">Developer Menu</Button>
-                )}
-                {!hasExecNFT &&(<Button colorScheme="red" size="sm">Become Developer</Button>)}
-                {showDevMenu && (
-                <>
-                    <DeployMenu />
-                    <MintMenu />
-                    <DataMenu />
-                </>
-            )}
-               
-            </VStack>
-            </HStack>
+          </Box>
+        </HStack>
+
         </Box>
         <Box w="100%" pt={4} borderRadius="2xl" bg="transparent"  position="relative" zIndex={2} >
             <div style={glassLayerStyle} />

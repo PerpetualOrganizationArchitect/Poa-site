@@ -8,6 +8,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
   RainbowKitProvider,
+  darkTheme,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
@@ -60,7 +61,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider initialChain={polygonAmoy}>
+        <RainbowKitProvider  initialChain={polygonAmoy}>
           <IPFSprovider>
             <ProfileHubProvider>
               <GraphProvider>

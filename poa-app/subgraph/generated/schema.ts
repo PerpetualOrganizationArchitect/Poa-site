@@ -4497,6 +4497,32 @@ export class User extends Entity {
       this.set("Account", Value.fromString(<string>value));
     }
   }
+
+  get totalVotes(): BigInt {
+    let value = this.get("totalVotes");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalVotes(value: BigInt) {
+    this.set("totalVotes", Value.fromBigInt(value));
+  }
+
+  get dateJoined(): BigInt {
+    let value = this.get("dateJoined");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set dateJoined(value: BigInt) {
+    this.set("dateJoined", Value.fromBigInt(value));
+  }
 }
 
 export class Account extends Entity {

@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/DirectDemocracyVoting/DirectDemocracyVoting"
-import { DDProposal, DDPollOption,DDVote, DDVoting } from "../../generated/schema"
+import { DDProposal, DDPollOption,DDVote, DDVoting, User } from "../../generated/schema"
 
 export function handlePollCreated(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
@@ -50,6 +50,12 @@ export function handleVoted(event: Voted): void {
     vote.optionIndex = event.params.optionIndex;
     vote.voteWeight = BigInt.fromI32(100);
     vote.save();
+
+    let user = User.load(contract.POname+'-' + event.params.voter.toHex());
+    if (user != null) {
+      user.totalVotes = user.totalVotes.plus(BigInt.fromI32(1));
+      user.save();
+    }
   
     proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(100));
     proposal.save();

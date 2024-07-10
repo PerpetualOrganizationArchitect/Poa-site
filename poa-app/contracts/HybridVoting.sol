@@ -198,9 +198,9 @@ contract HybridVoting {
             uint256 votesPT = proposal.options[i].votesPT;
             uint256 votesDDT = proposal.options[i].votesDDT;
 
-            // Properly calculate the weighted votes for each option
-            uint256 weightedVotesPT = (votesPT * participationVoteWeight * scalingFactor) / totalVotesPT;
-            uint256 weightedVotesDDT = (votesDDT * democracyVoteWeight * scalingFactor) / totalVotesDDT;
+            // Properly calculate the weighted votes for each option checking for 0
+            uint256 weightedVotesPT = totalVotesPT > 0 ? (votesPT * participationVoteWeight * scalingFactor) / totalVotesPT : 0;
+            uint256 weightedVotesDDT = totalVotesDDT > 0 ? (votesDDT * democracyVoteWeight * scalingFactor) / totalVotesDDT : 0;
 
             uint256 totalVotesWeighted = weightedVotesPT + weightedVotesDDT;
             optionWeights[i] = totalVotesWeighted;

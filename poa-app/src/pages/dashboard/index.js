@@ -136,7 +136,7 @@ const PerpetualOrgDashboard = () => {
     zIndex: -1,
     borderRadius: 'inherit',
     backdropFilter: 'blur(70px)',
-    backgroundColor: 'rgba(0, 0, 0, .8)',
+    backgroundColor: 'rgba(0, 0, 0, .79)',
   };
 
   const difficultyColorScheme = {

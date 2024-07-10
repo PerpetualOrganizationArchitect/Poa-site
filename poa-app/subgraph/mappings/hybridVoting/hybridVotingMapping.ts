@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/HybridVoting/HybridVoting"
-import { HybridProposal, HybridPollOption,HybridVote, HybridVoting } from "../../generated/schema"
+import { HybridProposal, HybridPollOption,HybridVote, HybridVoting, User } from "../../generated/schema"
 
 export function handleNewProposal(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
@@ -23,7 +23,7 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.save();
 }
 
-
+// needs work
 export function handleVoted(event: Voted): void {
     log.info("Triggered handleVoted for proposalId {}", [event.params.proposalId.toString()]);
 
@@ -47,9 +47,7 @@ export function handleVoted(event: Voted): void {
     vote.voter = contract.POname + '-' + event.params.voter.toHex();
     vote.optionIndex = event.params.optionIndex;
 
-    proposal.totalVotesDD = proposal.totalVotesDD.plus(event.params.voteWeightDDT);
-    proposal.totalVotesPT = proposal.totalVotesPT.plus(event.params.voteWeightPT);
-    proposal.save();
+
 
     let votePT = event.params.voteWeightPT;
     let voteDD = event.params.voteWeightDDT;
@@ -59,12 +57,20 @@ export function handleVoted(event: Voted): void {
     let normalizedVotePT = votePT.times(scalingFactor).div(proposal.totalVotesPT);
     let normalizedVoteDD = voteDD.times(scalingFactor).div(proposal.totalVotesDD);
 
-    let weightedVotePT = normalizedVotePT.times(BigInt.fromI32(80)).div(scalingFactor); // PT weight is 80
-    let weightedVoteDD = normalizedVoteDD.times(BigInt.fromI32(20)).div(scalingFactor); // DD weight is 20
+    let weightedVotePT = normalizedVotePT.times(BigInt.fromI32(contract.percentPT)).div(scalingFactor); 
+    let weightedVoteDD = normalizedVoteDD.times(BigInt.fromI32(contract.percentDD)).div(scalingFactor); 
 
     vote.voteWeightPT = weightedVotePT;
     vote.voteWeightDD = weightedVoteDD;
+    proposal.totalVotesPT = proposal.totalVotesPT.plus(weightedVotePT);
+    proposal.totalVotesDD = proposal.totalVotesDD.plus(weightedVoteDD);
     vote.save();
+
+    let user = User.load(contract.POname + '-' + event.params.voter.toHex());
+    if (user != null) {
+      user.totalVotes = user.totalVotes.plus(BigInt.fromI32(1));
+      user.save();
+    }
 
     // Update option votes
     let optionId = proposalId + "-" + event.params.optionIndex.toString();
