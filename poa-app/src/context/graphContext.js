@@ -755,7 +755,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );

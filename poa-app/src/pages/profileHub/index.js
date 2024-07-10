@@ -19,28 +19,18 @@ import {
 } from '@chakra-ui/react';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-// import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
+import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
 
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
 
-
-// import DeployMenu from "@/components/userPage/DeployMenu";
-// import MintMenu from "@/components/userPage/MintMenu";
-// import DataMenu from "@/components/userPage/DataMenu";
-
-
 import { useSpring, animated } from 'react-spring';
-
 
 import Link2 from 'next/link';
 import { set } from 'lodash';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
-
-
-
 
 
 const UserprofileHub= () => {
@@ -55,7 +45,6 @@ const UserprofileHub= () => {
 
     const {claimedTasks,democracyVotingOngoing, graphUsername} = useGraphContext();
     
-
     
     
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -80,13 +69,8 @@ const UserprofileHub= () => {
 
 
 
-
-
-
     const { web3, account,KUBIXbalance, hasExecNFT} = useWeb3Context();
 
-
-        
 
 
   const glassLayerStyle = {
@@ -222,10 +206,10 @@ const UserprofileHub= () => {
           color="black"
         />
         
-        {/* <AccountSettingsModal
+        <AccountSettingsModal
         isOpen={isSettingsModalOpen}
         onClose={closeSettingsModal}
-      /> */}
+        />
       
         <HStack pb={4} pt={2} spacing="10%">
           <VStack align={'flex-start'} ml="4%" spacing={1}>
@@ -290,7 +274,6 @@ const UserprofileHub= () => {
         <OngoingPolls  OngoingPolls={democracyVotingOngoing}/>
         </Box>
 
-            
         </Box>
 
         </GridItem>

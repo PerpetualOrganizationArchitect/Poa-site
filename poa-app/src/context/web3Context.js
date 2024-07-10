@@ -67,7 +67,7 @@ export const Web3Provider = ({ children }) => {
     };
 
 
-    // Hybrid Voting
+    
 
     async function createNewUser(username) {
         if (!checkNetwork()) {
@@ -77,6 +77,18 @@ export const Web3Provider = ({ children }) => {
         const contract = getContractInstance(address, AccountManager.abi);
         const tx = await contract.registerAccount(username);
     }
+
+    async function changeUsername(username) {
+        if (!checkNetwork()) {
+            return;
+          }
+        const address = AccountManagerAddress;
+        const contract = getContractInstance(address, AccountManager.abi);
+        const tx = await contract.changeUsername(username);
+    }
+
+
+    // Hybrid Voting
 
     async function createProposalHybridVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend) {
         const contract = getContractInstance(contractAddress, HybridVoting.abi);
@@ -306,7 +318,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{submitTask, editTaskWeb3, signer, isNetworkModalOpen,
+        <Web3Context.Provider value={{changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
             closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
