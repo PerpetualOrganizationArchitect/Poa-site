@@ -144,6 +144,42 @@ export const GraphProvider = ({ children }) => {
 
     }
 
+    async function fetchUsersProposals(poName, address){
+        const query =
+        `{
+            user(id:"${poName}-${address.toLocaleLowerCase()}"){
+              ptProposals(orderBy: experationTimestamp, orderDirection: desc){
+                id
+                name
+                experationTimestamp
+                creationTimestamp
+              }
+              ddProposals(orderBy: experationTimestamp, orderDirection: desc){
+                name
+                experationTimestamp
+                creationTimestamp
+              }
+              hybridProposals(orderBy: experationTimestamp, orderDirection: desc){
+                name
+                experationTimestamp
+                creationTimestamp
+              }
+            }
+          }`
+
+        const data = await querySubgraph(query);
+        
+        // combine all proposals into one array but keep the type of proposal
+        const proposals = [
+            ...data.user.ptProposals.map(proposal => ({...proposal, type: 'pt'})),
+            ...data.user.ddProposals.map(proposal => ({...proposal, type: 'dd'})),
+            ...data.user.hybridProposals.map(proposal => ({...proposal, type: 'hybrid'})),
+        ];
+
+        return proposals;
+
+    }
+
 
 
     async function fetchParticpationVotingOngoing(id) {
@@ -713,6 +749,8 @@ export const GraphProvider = ({ children }) => {
         setDemocracyVotingOngoing(democracyVotingOngoing);
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         setDemocracyVotingCompleted(democracyVotingCompleted);
+        const userProposalData = await fetchUsersProposals(poName, address);
+
         const leaderboardData = await fetchLeaderboardData(poName);
         setLeaderboardData(leaderboardData);
         
