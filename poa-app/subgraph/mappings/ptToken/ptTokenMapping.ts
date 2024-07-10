@@ -17,6 +17,8 @@ export function handleTokenMint(event: MintEvent): void {
     log.error("PTToken not found: {}", [event.address.toHex()])
     return
   }
+  token.supply = token.supply.plus(event.params.amount)
+  token.save()
 
   let user = User.load(token.POname+'-'+event.params.to.toHex())
   if (user != null) {

@@ -6,7 +6,7 @@ This type of organization is structured to operate indefinitely without the need
 
 By placing ownership and control in the hands of its members, a PO adapts and evolves over time to meet the changing needs and contributions of its community, embodying a truly democratic and open system.
 
-## Beneifts of Perpetual Organizations
+## Benefits of Perpetual Organizations
 
 ### **Decentralized Governance**
 Perpetual organizations are founded on the principle of decentralized governance, ensuring that no single entity or group can centralize power. Decision-making is distributed among all members

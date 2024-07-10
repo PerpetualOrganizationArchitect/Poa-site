@@ -18,14 +18,14 @@ const Countdown = ({ duration }) => {
   const seconds = remainingTime % 60;
 
   return (
-    <div style={{ position: "relative" }}>
-      <Text fontWeight="bold" fontSize="lg">
+
+      <Text fontWeight="bold" fontSize="md">
         {days > 0 ? `${days}d ` : ""}
         {hours > 0 ? `${hours}h ` : ""}
         {minutes > 0 ? `${minutes}m ` : ""}
         {seconds > 0 ? `${seconds}s` : ""}
       </Text>
-    </div>
+
   );
 };
 

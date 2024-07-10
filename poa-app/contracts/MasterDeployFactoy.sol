@@ -144,7 +144,7 @@ contract MasterFactory {
         string memory POname
     ) internal {
         contractAddresses[0] = deployNFTMembership(memberTypeNames, executivePermissionNames, logoURL, POname);
-        contractAddresses[1] = deployDirectDemocracyToken(contractAddresses[0], executivePermissionNames, POname);
+        contractAddresses[1] = deployDirectDemocracyToken(contractAddresses[0], memberTypeNames, POname);
         contractAddresses[2] = deployParticipationToken(POname);
         contractAddresses[3] = deployTreasury(POname);
     }
@@ -160,7 +160,12 @@ contract MasterFactory {
         contractAddresses[5] = params.hybridVotingEnabled 
             ? deployHybridVoting(contractAddresses, params)
             : address(0);
+        if(!params.hybridVotingEnabled && !params.participationVotingEnabled) {
+             contractAddresses[5] = address(0);
+        }
         contractAddresses[6] = taskManagerFactory.createTaskManager(contractAddresses[2], contractAddresses[0], params.executivePermissionNames, params.POname);
+        
+       
     }
 
     function deployPartcipationVoting(

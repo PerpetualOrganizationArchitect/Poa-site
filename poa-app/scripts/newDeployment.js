@@ -3,7 +3,7 @@ const MasterDeployfactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
 // sepoila const masterDeployFactoryAddress = "0xDBdf5B0532827917eFFd55439c05B4dB0e471205";
-const masterDeployFactoryAddress = "0x9571921FbEe792A7172c6037DaC4607390158e72";
+const masterDeployFactoryAddress = "0x75d19e9f9A9F4012897ec1f7C38Bb38e7B29BA3B";
 
 export async function main(
     memberTypeNames,
@@ -45,7 +45,17 @@ export async function main(
           "DirectDemocracyVoting",
           "ParticipationVoting",
           "TaskManager",
-        ];
+        ]
+        } else {
+          contractNames = [
+            "NFTMembership",
+            "DirectDemocracyToken",
+            "ParticipationToken",
+            "Treasury",
+            "DirectDemocracyVoting",
+            "NoVoting",
+            "TaskManager",
+          ];
       }
 
     const params = {
@@ -70,7 +80,7 @@ export async function main(
 
 
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(14500000); 
+    const gasLimit = ethers.utils.hexlify(14700000); 
 
     const options = {
         gasLimit: gasLimit,

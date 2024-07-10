@@ -182,35 +182,48 @@ contract HybridVoting {
         require(_proposalId < proposals.length, "Invalid proposal ID");
         Proposal storage proposal = proposals[_proposalId];
 
-        uint256 winningVotes = 0; 
-        uint256 winningOptionIndex = 0; 
+        uint256 winningVotes = 0;
+        uint256 winningOptionIndex = 0;
         bool hasValidWinner = false;
 
-        uint256 quorumThreshold = (proposal.totalVotesPT + proposal.totalVotesDDT) * quorumPercentage;
+        uint256 totalVotesPT = proposal.totalVotesPT;
+        uint256 totalVotesDDT = proposal.totalVotesDDT;
 
-        uint256 totalVotesWeighted;
+        uint256 scalingFactor = 1e9; 
+
+        uint256 totalWeightedVotes = 0;
+        uint256[] memory optionWeights = new uint256[](proposal.options.length);
 
         for (uint256 i = 0; i < proposal.options.length; i++) {
             uint256 votesPT = proposal.options[i].votesPT;
             uint256 votesDDT = proposal.options[i].votesDDT;
 
-            
-            uint256 weightedVotesPT = votesPT * participationVoteWeight;
-            uint256 weightedVotesDDT = votesDDT * democracyVoteWeight;
+            // Properly calculate the weighted votes for each option checking for 0
+            uint256 weightedVotesPT = totalVotesPT > 0 ? (votesPT * participationVoteWeight * scalingFactor) / totalVotesPT : 0;
+            uint256 weightedVotesDDT = totalVotesDDT > 0 ? (votesDDT * democracyVoteWeight * scalingFactor) / totalVotesDDT : 0;
 
-            
-            totalVotesWeighted = weightedVotesPT + weightedVotesDDT;
+            uint256 totalVotesWeighted = weightedVotesPT + weightedVotesDDT;
+            optionWeights[i] = totalVotesWeighted;
+            totalWeightedVotes += totalVotesWeighted;
+        }
 
-            
+        // Calculate the quorum threshold as a percentage of total weighted votes
+        uint256 quorumThreshold = (totalWeightedVotes * quorumPercentage) / 100;
+
+        for (uint256 i = 0; i < proposal.options.length; i++) {
+            uint256 totalVotesWeighted = optionWeights[i];
+
+            // Compare and determine the winning option
             if (totalVotesWeighted > winningVotes) {
                 winningVotes = totalVotesWeighted;
                 winningOptionIndex = i;
-                hasValidWinner = winningVotes*100 >= quorumThreshold;
+                hasValidWinner = totalWeightedVotes >= quorumThreshold; 
             }
         }
 
         return (winningOptionIndex, hasValidWinner);
     }
+
 
 
 

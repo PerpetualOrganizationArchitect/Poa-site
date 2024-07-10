@@ -1,4 +1,4 @@
-import { Address, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, dataSource, log, BigInt } from "@graphprotocol/graph-ts";
 import { TaskManagerCreated as TaskManagerCreatedEvent } from "../../generated/TaskManagerFactory/TaskManagerFactory";
 import { TaskManagerCreated, TaskManager,PerpetualOrganization } from "../../generated/schema";
 import {DataSourceContext} from "@graphprotocol/graph-ts";
@@ -22,6 +22,8 @@ export function handleTaskManagerCreated(event: TaskManagerCreatedEvent): void {
     let newTaskManager = new TaskManager(event.params.TaskManager.toHex());
     newTaskManager.contract = event.params.TaskManager.toHex();
     newTaskManager.POname = event.params.POname;
+    newTaskManager.activeTaskAmount = BigInt.fromI32(0);
+    newTaskManager.completedTaskAmount = BigInt.fromI32(0);
     newTaskManager.save();
 
     taskManagerTemplate.create(event.params.TaskManager);

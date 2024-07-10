@@ -24,10 +24,7 @@ const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
-      "image/png": [],
-      "image/jpeg": [],
-      "image/gif": [],
-      "image/webp": [],
+      "image/png": []
     },
     onDrop: async (acceptedFiles) => {
       console.log(acceptedFiles);
@@ -73,7 +70,7 @@ const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
                 Drag 'n' drop some files here, or click to select files
               </Text>
               <Text fontSize="sm" color="gray.500">
-                Supports PNG, JPEG, GIF, and WebP formats
+                Supports PNG files only
               </Text>
             </VStack>
           </Box>

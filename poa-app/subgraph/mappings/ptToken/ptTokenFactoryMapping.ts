@@ -1,4 +1,4 @@
-import { Address, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, dataSource, log, BigInt } from "@graphprotocol/graph-ts";
 import { TokenCreated } from "../../generated/ParticipationTokenFactory/ParticipationTokenFactory";
 import { PTTokenCreated, PTToken, PerpetualOrganization } from "../../generated/schema";
 import { DataSourceContext } from "@graphprotocol/graph-ts";
@@ -26,8 +26,8 @@ export function handleTokenCreated(event: TokenCreated): void {
     newToken.name = event.params.name;
     newToken.symbol = event.params.symbol;
     newToken.POname = event.params.POname;
+    newToken.supply = BigInt.fromI32(0);
     newToken.save();
-  
   
     tokenTemplate.create(event.params.tokenAddress);
   }

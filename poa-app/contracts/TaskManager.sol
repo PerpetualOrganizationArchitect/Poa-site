@@ -24,10 +24,6 @@ contract TaskManager {
     IParticipationToken public token;
     INFTMembership4 public nftMembership;
 
-
-
-
-
     mapping(uint256 => Task) public tasks;
     uint256 public nextTaskId;
 
@@ -35,6 +31,7 @@ contract TaskManager {
     event TaskClaimed(uint256 indexed id, address indexed claimer);
     event TaskUpdated(uint256 indexed id, uint256 payout, string ipfsHash);
     event TaskCompleted(uint256 indexed id, address indexed completer);
+    event TaskSubmitted(uint256 indexed id, string ipfsHash);
     event ProjectCreated(string projectName);
     event ProjectDeleted(string projectName);
 
@@ -75,9 +72,18 @@ contract TaskManager {
         emit TaskUpdated(_taskId, _payout, ipfsHash);
     }
 
+    function submitTask(uint256 _taskId, string calldata ipfsHash) external isMember {
+        Task storage task = tasks[_taskId];
+        require(!task.isCompleted, "Task already completed");
+        require(task.claimer == msg.sender, "Not the claimer");
+        require(task.claimer != address(0), "Task not claimed");
+        emit TaskSubmitted(_taskId, ipfsHash);
+    }
+
     function completeTask(uint256 _taskId) external canTask {
         Task storage task = tasks[_taskId];
         require(!task.isCompleted, "Task already completed");
+        require(task.claimer != address(0), "Task not claimed");
         task.isCompleted = true;
         token.mint(task.claimer, task.payout);
         emit TaskCompleted(_taskId, msg.sender);

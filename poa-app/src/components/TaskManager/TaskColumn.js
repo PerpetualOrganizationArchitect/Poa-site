@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Heading, IconButton} from '@chakra-ui/react';
+import { Box, Heading, IconButton, Toast} from '@chakra-ui/react';
 import { useDrop } from 'react-dnd';
 import TaskCard from './TaskCard';
 import { useTaskBoard } from '../../context/TaskBoardContext';
@@ -8,7 +8,8 @@ import AddTaskModal from './AddTaskModal';
 import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '../../context/dataBaseContext';
 import { useGraphContext } from '@/context/graphContext';
-// ... other imports
+import { useToast } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 // ... inside TaskColumn component, before return statement
 const glassLayerStyle = {
@@ -28,10 +29,12 @@ const glassLayerStyle = {
 
 
 const TaskColumn = ({ title, tasks, columnId, projectName }) => {
+  const router = useRouter();
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask } = useWeb3Context();
-  const { taskManagerContractAddress } = useGraphContext();
+  const { taskManagerContractAddress, taskCount } = useGraphContext();
+  const toast = useToast();
 
   let hasExecNFT= true;
   let hasMemberNFT= true;
@@ -66,9 +69,8 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       setIsAddTaskModalOpen(false);
     };
   
-    const handleAddTask = (updatedTask) => {
-      console.log("updatedTask: ", updatedTask)
-
+    const handleAddTask =  async (updatedTask) => {
+      
       const calculatePayout = (difficulty, estimatedHours) => {
     
         const difficulties = {
@@ -86,20 +88,39 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       if (title === 'Open') {
         let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
-        createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+        let newTask = {
+          ...updatedTask,
+          id: `0x${taskCount}-${taskManagerContractAddress}`,
+          claimedBy: "",
+          claimerUsername: "",
+          submission: "",
+          Payout: Payout
+        };
+        await createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+        moveTask(newTask, 'open', 'open', 0, " ", 0);
+       
       }
     };
     
     
 
-    const handleEditTask = (updatedTask, taskIndex) => {
+    const handleEditTask = async (updatedTask, taskIndex) => {
       updatedTask = {
         ...updatedTask,
-        id: `task-${Date.now()}`,
         difficulty: updatedTask.difficulty, 
         estHours: updatedTask.estHours, 
       };
-      editTask(updatedTask, columnId, taskIndex);
+      
+      await editTask(updatedTask, columnId, taskIndex, projectName);
+
+      toast ({
+        title: "Task edited.",
+        description: "Your task was successfully edited.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
     };
   
     const [{ isOver }, drop] = useDrop(() => ({
@@ -126,11 +147,8 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
           alert('You cannot move tasks from the Completed column.');
           return;
         }
-
-
   
         if (item.columnId !== columnId) {
-          console.log("maybe this one")
           const newIndex = tasks.length;
           console.log(item.claimerUsername)
           const claimedByValue = title === 'In Progress' ? account : item.claimedBy;
@@ -146,7 +164,16 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
             claimedBy: claimedByValue,
             claimerUsername: claimerUserValue,
           };
-          moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
+          router.push({ pathname: `/tasks/`, query: { userDAO: account } }, undefined, { shallow: true });
+          await moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
+          toast({
+            title: "Task moved.",
+            description: "Your task was successfully moved.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          
         }
       },
       collect: (monitor) => ({

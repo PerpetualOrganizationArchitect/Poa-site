@@ -62,9 +62,10 @@ const OngoingPolls = ({OngoingPolls}) => {
                                 key={poll.id}
                                 bg="transparent"
                                 borderRadius="2xl"
-                                p={4}
+                                p={2}
                                 position="relative"
                                 w="31%"
+                                mt="-4"
                             >
                                 
                                 <div style={glassLayerStyle}/>
@@ -72,7 +73,7 @@ const OngoingPolls = ({OngoingPolls}) => {
                                 <Link2  href={`/voting/?poll=${poll.id}`}>
                                 <VStack textColor="white"  spacing={3}>
 
-                                    <Heading pt={2} ml={4} fontWeight="extrabold" mt={2} size="sm">{poll.name}</Heading>
+                                    <Heading  ml={4} fontWeight="extrabold" mt={2} size="sm">{poll.name}</Heading>
                                     
                                     <Box pl="4" mt="2"><CountDown duration={calculateRemainingTime(poll?.experationTimestamp)}/></Box>
                                 </VStack>

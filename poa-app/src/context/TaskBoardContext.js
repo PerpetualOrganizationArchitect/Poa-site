@@ -19,7 +19,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   const toast=useToast();
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
-  const{claimTask, updateTask, ipfsAddTask, completeTask} = useWeb3Context();
+  const{claimTask, updateTask, ipfsAddTask, completeTask, editTaskWeb3, submitTask} = useWeb3Context();
   const {taskManagerContractAddress} = useGraphContext();
 
   useEffect(() => {
@@ -50,8 +50,10 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
     const sourceColumn = newTaskColumns.find((column) => column.id === sourceColumnId);
     const destColumn = newTaskColumns.find((column) => column.id === destColumnId);
 
-    const sourceTaskIndex = sourceColumn.tasks.findIndex((task) => task.id === draggedTask.id);
-    sourceColumn.tasks.splice(sourceTaskIndex, 1);
+    if(destColumnId!=='open'){
+      const sourceTaskIndex = sourceColumn.tasks.findIndex((task) => task.id === draggedTask.id);
+      sourceColumn.tasks.splice(sourceTaskIndex, 1);
+    }
 
     
     const updatedTask = {
@@ -65,7 +67,7 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
     };
 
     if (destColumnId === 'inProgress') {
-        claimTask(taskManagerContractAddress, draggedTask.id);
+        await claimTask(taskManagerContractAddress, draggedTask.id);
     }
     if (destColumnId === 'inReview') {
       console.log("in review triggger")
@@ -74,22 +76,15 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
         console.log("ipfsHashString: ", ipfsHashString);
         console.log("draggedTask.id: ", draggedTask.id);
         console.log("draggedTask.Payout: ", draggedTask.Payout);
-      updateTask(taskManagerContractAddress, draggedTask.id, draggedTask.Payout, ipfsHashString);
+      await submitTask(taskManagerContractAddress, draggedTask.id, ipfsHashString);
     }
 
     if (destColumnId === 'completed') {
-        completeTask(taskManagerContractAddress, draggedTask.id);
+        await completeTask(taskManagerContractAddress, draggedTask.id);
 
     }
 
-
-
-
-    
-
-
-    destColumn.tasks.splice(newIndex, 0, updatedTask);
-
+    destColumn.tasks = [...destColumn.tasks, updatedTask];
     setTaskColumns(newTaskColumns);
 
     // Call the onColumnChange prop when the columns are updated
@@ -142,41 +137,40 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   };
 
   //a function to edit a task
-  const editTask = async(updatedTask, destColumnId, destTaskIndex) => {
+  const editTask = async(updatedTask, destColumnId, destTaskIndex, projectName) => {
     
     
     
     const newTaskColumns = [...taskColumns];
     const destColumn = newTaskColumns.find((column) => column.id === destColumnId);
 
-    const calculateKubixPayout = (difficulty, estimatedHours) => {
+    const calculatePayout = (difficulty, estimatedHours) => {
     
       const difficulties = {
-        easy: { baseKubix: 1, multiplier: 16.5 },
-        medium: { baseKubix: 4, multiplier: 24 },
-        hard: { baseKubix: 10, multiplier: 30 },
-        veryHard: { baseKubix: 25, multiplier: 37.5 },
+        easy: { base: 1, multiplier: 16.5 },
+        medium: { base: 4, multiplier: 24 },
+        hard: { base: 10, multiplier: 30 },
+        veryHard: { base: 25, multiplier: 37.5 },
       };
       
-      const { baseKubix, multiplier } = difficulties[difficulty];
-      const totalKubix = Math.round(baseKubix + (multiplier * estimatedHours));
-      return totalKubix;
+      const { base, multiplier } = difficulties[difficulty];
+      const total = Math.round(base + (multiplier * estimatedHours));
+      return total;
   
     };
   
-    const kubixPayout = calculateKubixPayout(updatedTask.difficulty, updatedTask.estHours);
+    let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
 
 
 
     const newTask = {
       ...updatedTask,
-      projectId: selectedProject.id,
-      kubixPayout: kubixPayout,
+      Payout: Payout,
     };
-    destColumn.tasks.splice(destTaskIndex, 1, newTask);
 
-    destColumn.tasks.push(newTask);
+    await editTaskWeb3(taskManagerContractAddress,  Payout, updatedTask.description, projectName, updatedTask.estHours, updatedTask.difficulty, "Open", updatedTask.name, updatedTask.id);
+    destColumn.tasks.splice(destTaskIndex, 1, newTask);
 
 
     setTaskColumns(newTaskColumns);

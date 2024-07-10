@@ -36,7 +36,9 @@ const Navbar = () => {
           mr={4}
           alignItems="center"
         >
-          
+          <Link as={NextLink} href={`/dashboard/?userDAO=${userDAO}`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
+            Dashboard
+          </Link>
           <Link
             as={NextLink}
             href={`/tasks/?userDAO=${userDAO}`}
@@ -47,9 +49,7 @@ const Navbar = () => {
           >
             Tasks
           </Link>
-          <Link as={NextLink} href={`/leaderboard/?userDAO=${userDAO}`} color="white" fontWeight="extrabold" fontSize="xl" mx={"2%"}>
-            Leaderboard
-          </Link>
+          
           <Link
             as={NextLink}
             href={`/voting/?userDAO=${userDAO}`}
@@ -60,7 +60,6 @@ const Navbar = () => {
           >
             Voting
           </Link>
-          <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address"/>
           <LoginButton />
         </Flex>
       </Flex>

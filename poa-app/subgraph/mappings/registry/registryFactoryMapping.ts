@@ -5,6 +5,7 @@ import { DataSourceContext } from "@graphprotocol/graph-ts";
 import { JSONValueKind } from "@graphprotocol/graph-ts";
 
 let POHASH_KEY = "POHASH";
+let PONAME_KEY = "PONAME";
 
 export function handleRegistryContractCreated(event: RegistryContractCreatedEvent): void {
     log.info("Triggered handleRegistryContractCreated", []);
@@ -25,15 +26,19 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     let po = PerpetualOrganization.load(event.params.POname);
     if (po != null) {
         po.registry = newRegistry.id;
+        po.logoHash = event.params.logoURL;
+    
 
         let context = new DataSourceContext();
+        log.info("Setting context for PO: {}", [event.params.POname]);
         context.setString(POHASH_KEY, event.params.POinfoHash);
+        context.setString(PONAME_KEY, event.params.POname);
 
         log.info("Creating infoIPFS template with hash: {}", [event.params.POinfoHash]);
         DataSourceTemplate.createWithContext("infoIpfs", [event.params.POinfoHash], context);
-        po.aboutInfo = event.params.POinfoHash;  // Updated to use hash as ID
-        po.logoHash = event.params.logoURL;
+        po.aboutInfo = event.params.POinfoHash;
         po.save();
+       
     }
 
     let contractNames = event.params.contractNames;
@@ -53,62 +58,81 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     }
 }
 
-
 export function handleIpfsContent(aboutInfo: Bytes): void {
-  log.info("Triggered handleIpfsContent", []);
+    log.info("Triggered handleIpfsContent", []);
   
-  let ctx = dataSource.context();
-  let poHash = ctx.getString(POHASH_KEY).toString();
+    let ctx = dataSource.context();
+    let poHash = ctx.getString(POHASH_KEY).toString();
+    log.info("PO hash is", [poHash]);
+    if (poHash === null) {
+        log.warning("PO hash is null", []);
+        return;
+    }
+    
 
-  let ipfsContent = json.fromBytes(aboutInfo).toObject();
-  if (ipfsContent == null) {
-      log.info("IPFS content is null", []);
-      return;
-  }
+    let poName = ctx.getString(PONAME_KEY).toString();
+    log.info("PO name is", [poName]);
+    if (poName === null) {
+        log.warning("PO name is null", []);
+        return;
+    }
 
-  let descriptionValue = ipfsContent.get("description");
-  let linksValue = ipfsContent.get("links");
-  if (descriptionValue === null) {
-      log.warning("Description is null", []);
-      return;
-  }
+    let ipfsContent = json.fromBytes(aboutInfo).toObject();
+    if (ipfsContent == null) {
+        log.warning("IPFS content is null", []);
+        return;
+    }
 
-  let description = descriptionValue.toString();
-  let ipfsEntity = new infoIPFS(poHash);
-  ipfsEntity.description = description;
-  
-  let tempArray: string[] = [];
+    let descriptionValue = ipfsContent.get("description");
 
-  if (linksValue !== null && linksValue.kind === JSONValueKind.ARRAY) {
-      let linksArray = linksValue.toArray();
-      for (let i = 0; i < linksArray.length; i++) {
-          let link = linksArray[i].toObject();
-          let linkNameValue = link.get("name");
-          if (linkNameValue === null) continue;  
-          let linkName = linkNameValue.toString();
-          let linkUrlValue = link.get("url");
-          if (linkUrlValue === null) continue;  
-          let linkUrl = linkUrlValue.toString();
-          
-          let linkId = poHash + "-" + linkName;
-          let linkEntity = new aboutLink(linkId);
-          linkEntity.name = linkName;
-          linkEntity.url = linkUrl;
-          linkEntity.infoIPFS = ipfsEntity.id;
-          linkEntity.save();
-          tempArray.push(linkEntity.id);
-          
-      }
-  }
-  ipfsEntity.links = tempArray;
+    if (descriptionValue === null) {
+        log.warning("Description is null", []);
+        return;
+    }
 
-  ipfsEntity.save();
+    let description = descriptionValue.toString();
 
-  let po = PerpetualOrganization.load(poHash);
-  if (po != null) {
-      po.aboutInfo = ipfsEntity.id;
-      po.save();
-  }
+
+   let ipfsEntity = infoIPFS.load(poHash);
+    if (ipfsEntity == null) {
+        ipfsEntity = new infoIPFS(poHash);
+    }
+
+    ipfsEntity.description = description;
+
+    let linksValue = ipfsContent.get("links");
+
+    if (linksValue !== null && linksValue.kind === JSONValueKind.ARRAY) {
+        let linksArray = linksValue.toArray();
+        for (let i = 0; i < linksArray.length; i++) {
+            let link = linksArray[i].toObject();
+            let linkNameValue = link.get("name");
+            if (linkNameValue === null) continue;  
+            let linkName = linkNameValue.toString();
+            let linkUrlValue = link.get("url");
+            if (linkUrlValue === null) continue;  
+            let linkUrl = linkUrlValue.toString();
+            
+            let linkId = poHash + "-" + linkName;
+            let linkEntity = new aboutLink(linkId);
+            linkEntity.name = linkName;
+            linkEntity.url = linkUrl;
+            linkEntity.infoIPFS = ipfsEntity.id;
+            linkEntity.save();
+        }
+    }
+   
+
+    ipfsEntity.save();
+
+    let po = PerpetualOrganization.load(poName);
+    if (po != null) {
+        log.warning("PO about info is", [poName]);
+        po.aboutInfo = ipfsEntity.id;
+        po.save();
+    }
+    else {
+        log.warning("PO is null", [poName]);
+    }
+
 }
-
-

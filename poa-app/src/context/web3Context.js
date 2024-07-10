@@ -14,24 +14,15 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
 import { useMetaMask } from '@/components/Metamask';
+import NetworkSwitchModal from '@/components/NetworkSwitchModal';
 
 import {
-    useAccount,
-    useConnect,
-    useContract,
-    useNetwork,
-    useWaitForTransaction,
+    useAccount
   } from "wagmi";
   
 import { useEthersProvider, useEthersSigner } from '@/components/ProviderConverter';
 
-
-
-
-
 const Web3Context = createContext();
-
-
 
 export const useWeb3Context = () => {
     return useContext(Web3Context);
@@ -39,10 +30,11 @@ export const useWeb3Context = () => {
 
 
 export const Web3Provider = ({ children }) => {
+    const [isNetworkModalOpen, setNetworkModalOpen] = useState(false);
 
     const [account, setAccount] = useState("0x00");
 
-    const {address}= useAccount();
+    const {address, chainId}= useAccount();
     const provider = useEthersProvider();
     const signer = useEthersSigner();
 
@@ -55,22 +47,32 @@ export const Web3Provider = ({ children }) => {
 
     
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
-    
 
-    
-    const AccountManagerAddress = "0xDBE0cb6f796Cb382c058c38FEfDfb53b61a9E982";
-    const ddVotingAddress = "0xe193ef132bc89b004cf7557493d83abcd218ad10";
-    const ptVotingAddress = "0x10f1677c1c66a9b4bb46ffdad8decc8778368305";
-    const hybridVotingAddress = "0x8c528f90ab80bd317bc2ddbd447adf7ad99b22a9";
-
+    const AccountManagerAddress = "0x30C7f04127861c3246C00ED84BC3246B76fe5c04";
 
     const getContractInstance = (contractAddress, contractABI) => {
         return new ethers.Contract(contractAddress, contractABI, signer);
     };
 
+    const checkNetwork = () => {
+        if (chainId !== 80002) {
+          setNetworkModalOpen(true);
+          return false;
+        }
+        return true;
+      };
+
+    const closeNetworkModal = () => {
+        setNetworkModalOpen(false);
+    };
+
+
     // Hybrid Voting
 
     async function createNewUser(username) {
+        if (!checkNetwork()) {
+            return;
+          }
         const address = AccountManagerAddress;
         const contract = getContractInstance(address, AccountManager.abi);
         const tx = await contract.registerAccount(username);
@@ -93,6 +95,9 @@ export const Web3Provider = ({ children }) => {
 
     // DD Voting
     async function createProposalDDVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
         const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend);
         await tx.wait();
@@ -100,6 +105,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function ddVote(contractAddress,proposalID, optionIndex) {
+        if (!checkNetwork()) {
+            return;
+          }
         const voterAddress = account;
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
         const tx = await contract.vote(proposalID, voterAddress, optionIndex);
@@ -108,6 +116,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function getWinnerDDVoting(contractAddress, proposalID) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
         const winner = await contract.announceWinner(proposalID);
         console.log("Winner: ", winner);
@@ -131,6 +142,9 @@ export const Web3Provider = ({ children }) => {
 
     // Task Manager
     async function createProject(contractAddress, projectName) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const tx = await contract.createProject(projectName);
         await tx.wait();
@@ -138,6 +152,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function createTask(contractAddress,payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName) {
+        if (!checkNetwork()) {
+            return;
+          }
         console.log("all params: ", payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName)
         let ipfsHash= await ipfsAddTask( taskName, taskDescription, taskLocation, difficulty, estHours, "");
         let ipfsHashString = ipfsHash.path;
@@ -150,6 +167,9 @@ export const Web3Provider = ({ children }) => {
     
 
     async function claimTask(contractAddress, taskID) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         //taskid in formar of 0x0-0xaddress need to get before dash id
         const newTaskID = taskID.split("-")[0];
@@ -163,6 +183,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function completeTask(contractAddress, taskID) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
         const tx = await contract.completeTask(newTaskID);
@@ -171,6 +194,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function updateTask(contractAddress, taskID, payout, ipfsHash) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
 
         const newTaskID = taskID.split("-")[0];
@@ -178,9 +204,41 @@ export const Web3Provider = ({ children }) => {
         await tx.wait();
         console.log("Task updated");
     }
+    
+    async function submitTask(contractAddress, taskID, ipfsHash) {
+        if (!checkNetwork()) {
+            return;
+          }
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const newTaskID = taskID.split("-")[0];
+        const tx = await contract.submitTask(newTaskID, ipfsHash);
+        await tx.wait();
+        console.log("Task submitted");
+    }
+
+    async function editTaskWeb3(contractAddress,payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName, taskID) {
+        if (!checkNetwork()) {
+            return;
+          }
+        console.log("all params: ", payout, taskDescription, projectName, estHours, difficulty, taskLocation, taskName)
+        let ipfsHash= await ipfsAddTask( taskName, taskDescription, taskLocation, difficulty, estHours, "");
+        let ipfsHashString = ipfsHash.path;
+
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+
+        let newTaskID = taskID.split("-")[0];
+
+
+        const tx = await contract.updateTask(newTaskID, payout,ipfsHashString);
+        await tx.wait();
+    }
+
 
     // NFT Membership
     async function mintNFT(contractAddress, membershipType) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
         
         const tx = await contract.mintNFT(account, membershipType);
@@ -189,6 +247,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     async function mintDefaultNFT(contractAddress,) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
         const tx = await contract.mintDefaultNFT();
         await tx.wait();
@@ -219,6 +280,9 @@ export const Web3Provider = ({ children }) => {
 
     // dd token 
     async function mintDDtokens(contractAddress) {
+        if (!checkNetwork()) {
+            return;
+          }
         const contract = getContractInstance(contractAddress, DirectDemocracyToken.abi);
         const tx = await contract.mint();
         await tx.wait();
@@ -242,7 +306,8 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{signer, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote, ddVotingAddress, getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
+        <Web3Context.Provider value={{submitTask, editTaskWeb3, signer, isNetworkModalOpen,
+            closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
     );

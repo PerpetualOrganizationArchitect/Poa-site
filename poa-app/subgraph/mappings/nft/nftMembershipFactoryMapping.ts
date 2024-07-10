@@ -1,4 +1,4 @@
-import { Address, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, dataSource, log, BigInt } from "@graphprotocol/graph-ts";
 import { ContractCreated } from "../../generated/NFTMembershipFactory/NFTMembershipFactory";
 import { NFTMembershipCreated, NFTMembership, NFTMemberType, PerpetualOrganization } from "../../generated/schema";
 import { DataSourceContext } from "@graphprotocol/graph-ts";
@@ -28,6 +28,7 @@ export function handleContractCreated(event: ContractCreated): void {
   if( po != null) {
     po.name = event.params.POname;
     po.NFTMembership = newMembership.id;
+    po.totalMembers = BigInt.fromI32(0);
     po.save();
   }
 

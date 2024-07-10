@@ -11,7 +11,7 @@ import {
   VStack,
   Text,
 } from "@chakra-ui/react";
-import { ConnectButton } from "@rainbow-me/rainbowkit"; // Import ConnectButton
+import { ConnectButton, useChainModal} from "@rainbow-me/rainbowkit";
 import { useGraphContext } from "@/context/graphContext";
 
 const ConfirmationModal = ({
@@ -22,14 +22,17 @@ const ConfirmationModal = ({
   onSave,
   wallet,
 }) => {
-  console.log("wallet", wallet);
   const connected = wallet ? true : false;
-  console.log("connected", connected);
   const [display, setDisplay] = useState(connected);
-  console.log("display", display);
+
+  const { chainId } = useGraphContext();
+  console.log(chainId);
+
+
+  const { openChainModal } = useChainModal();
 
   useEffect(() => {
-    if(wallet) {
+    if (wallet) {
       setDisplay(true);
     }
   }, [wallet]);
@@ -53,8 +56,7 @@ const ConfirmationModal = ({
               {orgDetails.membershipTypeNames.join(", ")}
             </Text>
             <Text>
-              <strong>Voting Control Type:</strong>{" "}
-              {orgDetails.votingControlType}
+              <strong>Voting Control Type:</strong> {orgDetails.votingControlType}
             </Text>
             <Text>
               <strong>Quadratic Voting Enabled:</strong>{" "}
@@ -77,8 +79,7 @@ const ConfirmationModal = ({
               {orgDetails.participationVotingEnabled ? "Yes" : "No"}
             </Text>
             <Text>
-              <strong>Logo URL:</strong>{" "}
-              {orgDetails.logoURL || "No logo uploaded"}
+              <strong>Logo URL:</strong> {orgDetails.logoURL || "No logo uploaded"}
             </Text>
             <Text>
               <strong>Direct Democracy Quorum:</strong>{" "}
@@ -106,13 +107,17 @@ const ConfirmationModal = ({
             Start Over
           </Button>
 
-          {/* If wallet is connected, show confirm button */}
           {display ? (
-            <Button colorScheme="blue" onClick={onSave}>
-              Confirm
-            </Button>
+            chainId === 80002 ? (
+              <Button colorScheme="blue" onClick={onSave} >
+                Confirm
+              </Button>
+            ) : (
+              <Button colorScheme="blue" onClick={openChainModal}>
+                Switch to Polygon Amoy
+              </Button>
+            )
           ) : (
-            /* If wallet is not connected, show connect button */
             <ConnectButton />
           )}
         </ModalFooter>

@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/ParticipationVoting/ParticipationVoting"
-import { PTProposal, PTPollOption,PTVote , PTVoting} from "../../generated/schema"
+import { PTProposal, PTPollOption,PTVote , PTVoting, User} from "../../generated/schema"
 
 export function handleNewProposal(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
@@ -45,6 +45,11 @@ export function handleVoted(event: Voted): void {
     }
     
     vote.voter = contract.POname+'-' + event.params.voter.toHex();
+    let user = User.load(contract.POname+'-' + event.params.voter.toHex());
+    if (user != null) {
+      user.totalVotes = user.totalVotes.plus(BigInt.fromI32(1));
+      user.save();
+    }
     vote.optionIndex = event.params.optionIndex;
     vote.voteWeight = event.params.voteWeight;
     vote.save();

@@ -38,8 +38,6 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
   let hasExecNFT= true;
   const { handleDeleteProject } = useDataBaseContext();
 
-  console.log('projects', projects);
-
 
   
   const handleCreateProject = () => {
