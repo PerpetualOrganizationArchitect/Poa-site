@@ -187,7 +187,7 @@ const PerpetualOrgDashboard = () => {
                       Description:
                     </Text>
                     <Text mt="-1" fontSize="md" ml="2">
-                      this is a pretty long description lets see what happens when i do this because im just curiopus how it goes to see a long description in the box here 
+                      {poDescription}
                     </Text>
                   </Box>
                   <Box>

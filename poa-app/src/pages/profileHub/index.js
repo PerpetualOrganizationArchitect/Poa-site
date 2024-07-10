@@ -117,7 +117,9 @@ const UserprofileHub= () => {
                 ptBalance: Number(userData.ptTokenBalance),
                 memberStatus: userData.memberType,
                 accountAddress: userData.id,
-                tasksCompleted: userData.tasksCompleted
+                tasksCompleted: userData.tasksCompleted,
+                totalVotes: userData.totalVotes,
+                dateJoined: userData.dateJoined
             };
             setUserInfo(userInfo);
         }
@@ -228,8 +230,8 @@ const UserprofileHub= () => {
         <HStack pb={4} pt={2} spacing="10%">
           <VStack align={'flex-start'} ml="4%" spacing={1}>
             <Text fontWeight="bold" fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
-            <Text fontWeight="bold" fontSize="md">Total Votes: {}</Text>
-            <Text fontWeight="bold" fontSize="md">Date Joined: {}</Text>
+            <Text fontWeight="bold" fontSize="md">Total Votes: {userInfo.totalVotes}</Text>
+            <Text fontWeight="bold" fontSize="md">Date Joined: {userInfo.dateJoined}</Text>
           </VStack>
           <Spacer />
           <Box alignSelf="flex-start" mr="4">

@@ -395,6 +395,8 @@ export const GraphProvider = ({ children }) => {
                 id
                 ptTokenBalance
                 ddTokenBalance
+                totalVotes
+                dateJoined
                 memberType {
                     memberTypeName
                     imageURL
@@ -455,6 +457,8 @@ export const GraphProvider = ({ children }) => {
                     memberType: user.memberType.memberTypeName,
                     imageURL: user.memberType.imageURL,
                     tasksCompleted: taskCount,
+                    totalVotes: user.totalVotes,
+                    dateJoined: user.dateJoined,
                 });
             }
     
