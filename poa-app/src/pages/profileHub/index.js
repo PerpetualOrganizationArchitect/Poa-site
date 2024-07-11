@@ -261,25 +261,30 @@ const UserprofileHub= () => {
                 ))}
             </HStack>
         </Box>
-            <Box w="100%"
-            pt={8}
-            borderRadius="2xl"
-            bg="transparent"
-        
-            position="relative"
-            zIndex={2}>
-        <div style={glassLayerStyle} />
+        <Box
+          w="100%"
+          pt={8}
+          borderRadius="2xl"
+          bg="transparent"
+          position="relative"
+          zIndex={2}
+        >
+          <div style={glassLayerStyle} />
 
-        <VStack pb={2}  align="flex-start" position="relative" borderTopRadius="2xl">
-        <div style={glassLayerStyle} />
-            <Text pl={6} fontWeight="bold" fontSize="2xl" >Ongoing Polls {' '}</Text>
-        </VStack>
-        <Box  mt="4">
-        <OngoingPolls  OngoingPolls={democracyVotingOngoing}/>
+          <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
+            <div style={glassLayerStyle} />
+            <Text pl={6} fontWeight="bold" fontSize="2xl">
+              {userProposals && userProposals.length > 0 ? 'My Proposals' : 'Ongoing Polls'} {' '}
+            </Text>
+          </VStack>
+          <Box mt="4">
+            {userProposals && userProposals.length > 0 ? (
+              <UserProposals userProposals={userProposals} />
+            ) : (
+              <OngoingPolls OngoingPolls={democracyVotingOngoing} />
+            )}
+          </Box>
         </Box>
-
-        </Box>
-
         </GridItem>
         
       </Grid>

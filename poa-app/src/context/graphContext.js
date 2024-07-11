@@ -172,9 +172,9 @@ export const GraphProvider = ({ children }) => {
         
         // combine all proposals into one array but keep the type of proposal
         const proposals = [
-            ...data.user.ptProposals.map(proposal => ({...proposal, type: 'pt'})),
-            ...data.user.ddProposals.map(proposal => ({...proposal, type: 'dd'})),
-            ...data.user.hybridProposals.map(proposal => ({...proposal, type: 'hybrid'})),
+            ...data.user.ptProposals.map(proposal => ({...proposal, type: 'Participation'})),
+            ...data.user.ddProposals.map(proposal => ({...proposal, type: 'Direct Democracy'})),
+            ...data.user.hybridProposals.map(proposal => ({...proposal, type: 'Hybrid'})),
         ];
 
         return proposals;

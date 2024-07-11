@@ -6,6 +6,7 @@ import {
     Heading,
     Text,
     VStack,
+    Badge,
 } from '@chakra-ui/react';
 import Link2 from 'next/link';
 
@@ -35,10 +36,10 @@ const UserProposals = ({ userProposals }) => {
     }
 
     return (
-        <HStack ml={0} mr={8} spacing="3.5%">
+        <HStack ml={2} mr={8} spacing="3.5%">
             {userProposals.map((proposal) => (
                 <Box
-                    _hover={{ transform: 'scale(1.07)' }}
+                    _hover={{ transform: 'scale(1.04)' }}
                     key={proposal.id}
                     bg="transparent"
                     borderRadius="2xl"
@@ -49,12 +50,15 @@ const UserProposals = ({ userProposals }) => {
                 >
                     <div style={glassLayerStyle} />
                     <Link2 href={`/voting/?proposal=${proposal.id}`}>
-                        <VStack textColor="white" spacing={3}>
+                        <VStack textColor="white" spacing={2}>
                             <Heading ml={4} fontWeight="extrabold" mt={2} size="sm">
                                 {proposal.name}
                             </Heading>
-                            <Box pl="4" mt="2">
-                                <CountDown duration={calculateRemainingTime(proposal.expirationTimestamp)} />
+                            <Box pl="4" mt="0">
+                                <CountDown duration={calculateRemainingTime(proposal.experationTimestamp)} />
+                            </Box>
+                            <Box pl="4" mt="0">
+                                <Badge colorScheme="blue">{proposal.type}</Badge>
                             </Box>
                         </VStack>
                     </Link2>
