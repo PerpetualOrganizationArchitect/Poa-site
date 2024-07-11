@@ -122,7 +122,7 @@ const UserprofileHub= () => {
           tasksCompleted: userData.tasksCompleted,
           totalVotes: userData.totalVotes,
           dateJoined: userData.dateJoined,
-          tier: determineTier(Number(userData.ptTokenBalance)),
+          tier: determineTier(userData.ptTokenBalance),
         };
         setUserInfo(userInfo);
       }
@@ -187,11 +187,23 @@ const UserprofileHub= () => {
             {/* <Text pl={6} pb={4} fontSize="lg">This makes you top {userInfo.percentage}% of Contributors</Text> */}
           </VStack>
           <VStack p={0} pt={4} align="center" >
-            <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text> {/* Update this line */}
+            <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text>
             <Spacer />
-            <Image width="50%" src={"/images/poa_character.png"} />
+            <Image 
+              width="50%" 
+              src={
+                userInfo.tier 
+                  ? (userInfo.tier === 'Basic' 
+                    ? "/images/high_res_poa.png" 
+                    : `/images/${userInfo.tier.toLowerCase()}Medal.png`)
+                  : "/images/high_res_poa.png"
+              }
+              alt={`${userInfo.tier || 'Basic'} Tier Medal`}
+            />
             <Text textAlign={"center"} fontSize="lg" p={4} >Participation Tier System Coming Soon</Text>
           </VStack>
+
+
         </Box>
         </GridItem>
         <GridItem area={'tierinfo'}>
