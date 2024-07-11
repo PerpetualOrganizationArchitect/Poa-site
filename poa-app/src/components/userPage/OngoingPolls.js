@@ -12,6 +12,7 @@ import {
     Heading,
     Text,
     VStack,
+    Badge
     } from '@chakra-ui/react';
 
     import Link2 from 'next/link';
@@ -41,7 +42,6 @@ const OngoingPolls = ({OngoingPolls}) => {
     // duplicate poll 2 times 
     //const randomPolls = OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3).concat(OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3)).concat(OngoingPolls.sort(() => Math.random() - Math.random()).slice(0, 3));
 
-    console.log("llelelelle",randomPolls)
 
     function calculateRemainingTime(expirationTimestamp) {
         // Current timestamp in seconds
@@ -76,6 +76,9 @@ const OngoingPolls = ({OngoingPolls}) => {
                                     <Heading  ml={4} fontWeight="extrabold" mt={2} size="sm">{poll.name}</Heading>
                                     
                                     <Box pl="4" mt="2"><CountDown duration={calculateRemainingTime(poll?.experationTimestamp)}/></Box>
+                                    <Box alignSelf={"flex-start"} ml="4" mt="0">
+                                        <Badge colorScheme="blue">{poll.type}</Badge>
+                                    </Box>
                                 </VStack>
                                 </Link2>
                                 
