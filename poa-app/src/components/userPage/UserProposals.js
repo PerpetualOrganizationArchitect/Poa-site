@@ -38,9 +38,13 @@ const UserProposals = ({ userProposals }) => {
         return duration;
     }
 
+   // oly display first 3 of my proposals
+    const myProposals = userProposals.slice(0, 3);
+
+
     return (
         <HStack ml={2} mr={8} spacing="3.5%">
-            {userProposals.map((proposal) => (
+            {myProposals.map((proposal) => (
                 <Box
                     _hover={{ transform: 'scale(1.04)' }}
                     key={proposal.id}
