@@ -173,7 +173,7 @@ const UserprofileHub= () => {
     <>
     <Navbar />
     
-    <Box p={4}>
+    <Box p={2}>
       <Grid
         color="white"
         templateAreas={[
@@ -279,7 +279,7 @@ const UserprofileHub= () => {
             </HStack>
           </VStack>
           <Spacer />
-          <Box alignSelf="flex-start" mr="4">
+          <Box alignSelf="flex-start" mr="2">
             <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
           </Box>
         </HStack>
