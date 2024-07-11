@@ -66,7 +66,7 @@ function generateAbbreviatedConstitution(poData) {
 }
 
 const PerpetualOrgDashboard = () => {
-  const { userData, setLoaded, logoHash, fetchRules, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers } = useGraphContext();
+  const {ongoingPolls, userData, setLoaded, logoHash, fetchRules, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers } = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
   const [imageURL, setImageURL] = useState({});
@@ -340,7 +340,7 @@ const PerpetualOrgDashboard = () => {
               </VStack>
               
               <Box  w="100%" p={4}>
-                <OngoingPolls OngoingPolls={democracyVotingOngoing} />
+                <OngoingPolls OngoingPolls={ongoingPolls} />
               </Box>
             </Box>
           </GridItem>

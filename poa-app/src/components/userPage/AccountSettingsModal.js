@@ -12,46 +12,61 @@ import {
   FormLabel,
   Input
 } from '@chakra-ui/react';
-import { useDataBaseContext } from '@/contexts/DataBaseContext';
-import { useWeb3Context } from '@/contexts/Web3Context';
-
+// import { useDataBaseContext } from '@/contexts/DataBaseContext';
+import { useWeb3Context } from '@/context/web3Context';
+import { useGraphContext } from '@/context/graphContext';
 
 
 const AccountSettingsModal = ({ isOpen, onClose }) => {
+    
+    const {address, graphUsername, setGraphUsername} = useGraphContext();
+    const {changeUsername} = useWeb3Context();
 
-    const { userDetails,updateUserData } = useDataBaseContext();
-    const {account} = useWeb3Context();
-
-    // State for input fields
-    const [name, setName] = useState('');
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
+    // const [email, setEmail] = useState('');
   
     useEffect(() => {
-      if (userDetails) {
-        setName(userDetails.name || '');
-        setUsername(userDetails.username || '');
-        setEmail(userDetails.email || '');
+      if (graphUsername) {
+       
+        setUsername(graphUsername);
       }
-    }, [userDetails]);
+    }, [graphUsername]);
 
   // Handle input changes
-  const handleNameChange = (event) => setName(event.target.value);
+  
   const handleUsernameChange = (event) => setUsername(event.target.value);
-  const handleEmailChange = (event) => setEmail(event.target.value);
+  
 
   const handleSave = async () => {
-    
-    let usernameChange = false;
-    if (userDetails.username !== username) {
-      usernameChange = true;
-    }
 
-    await updateUserData(account, name, username, email, usernameChange);
-    onClose(); 
+    if (graphUsername !== username) {
+      try{
+        await changeUsername(username);
+        setGraphUsername(username);
+      } catch (error) {
+        console.error(error);
+        toast({
+          title: 'Error Updating Username',
+          description: 'An error occurred. Please try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+      
+    }
+    else {
+      toast({
+        title: 'Username Unchanged',
+        description: 'New username is the same as the old one. No changes made.',
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    onClose();
   };
 
-    
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -61,12 +76,11 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
-            <FormLabel>Name</FormLabel>
-            <Input value={name} onChange={handleNameChange} />
+           
             <FormLabel>Username</FormLabel>
             <Input value={username} onChange={handleUsernameChange} />
-            <FormLabel>Email</FormLabel>
-          <Input value={email} onChange={handleEmailChange} />
+        
+         
           </FormControl>
         </ModalBody>
 

@@ -8,6 +8,12 @@ export function handlePollCreated(event: NewProposal): void {
 
     let newProposal = new DDProposal(event.params.proposalId.toHex()+"-"+event.address.toHex());
     newProposal.name = event.params.name;
+    let contract = DDVoting.load(event.address.toHex());
+    if (!contract) {
+      log.error("Voting contract not found: {}", [event.address.toHex()]);
+      return;
+    }
+    newProposal.creator = contract.POname + '-' + event.transaction.from.toHex();
     newProposal.description = event.params.description;
     newProposal.creationTimestamp = event.params.creationTimestamp;
     newProposal.timeInMinutes = event.params.timeInMinutes;

@@ -33,6 +33,8 @@ import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { useGraphContext } from "@/context/graphContext";
 import { useWeb3Context } from "@/context/web3Context";
+import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/completedPollModal";
+
 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
@@ -59,6 +61,8 @@ const Voting = () => {
     ddVote
   } = useWeb3Context();
   
+  const { isOpen: isCompletedOpen, onOpen: onCompletedOpen, onClose: onCompletedClose } = useDisclosure();
+
   const {
     directDemocracyVotingContractAddress,
     hybridVotingOngoing,
@@ -143,21 +147,33 @@ const Voting = () => {
     }
   };
 
+
+  
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPoll, setSelectedPoll] = useState(null);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [isPollCompleted, setIsPollCompleted] = useState(false);
+
 
   
   const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 };
   const [proposal, setProposal] = useState(defaultProposal);
 
-  const handlePollClick = (poll) => {
+  const handlePollClick = (poll, isCompleted = false) => {
     setSelectedPoll(poll);
+    setIsPollCompleted(isCompleted);
     router.push(`/voting?poll=${poll.id}&userDAO=${userDAO}`);
-    onOpen();
+    if (isCompleted) {
+      onCompletedOpen();
+    } else {
+      onOpen();
+    }
   };
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -172,6 +188,90 @@ const Voting = () => {
   const handleCreatePollClick = () => {
     setShowCreatePoll(!showCreatePoll);
   };
+
+  useEffect(() => {
+    if (router.query.poll) {
+      const pollID = router.query.poll;
+  
+      const findPoll = (proposals) => {
+        for (const proposal of proposals) {
+          if (proposal.id === pollID) {
+            return proposal;
+          }
+        }
+        return null;
+      };
+  
+      let pollFound = null;
+      let pollType = "";
+  
+      // only search for poll if the voting arrays are not empty
+      if (Array.isArray(democracyVotingOngoing) && democracyVotingOngoing.length > 0) {
+        pollFound = findPoll(democracyVotingOngoing);
+        if (pollFound) pollType = "Direct Democracy";
+      }
+      
+      if (!pollFound && Array.isArray(hybridVotingOngoing) && hybridVotingOngoing.length > 0) {
+        pollFound = findPoll(hybridVotingOngoing);
+        if (pollFound) pollType = "Hybrid";
+      }
+  
+      if (!pollFound && Array.isArray(participationVotingOngoing) && participationVotingOngoing.length > 0) {
+        pollFound = findPoll(participationVotingOngoing);
+        if (pollFound) pollType = "Participation";
+      }
+  
+      if (!pollFound && Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.length > 0) {
+        pollFound = findPoll(democracyVotingCompleted);
+        if (pollFound) pollType = "Direct Democracy";
+      }
+  
+      if (!pollFound && Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.length > 0) {
+        pollFound = findPoll(hybridVotingCompleted);
+        if (pollFound) pollType = "Hybrid";
+      }
+  
+      if (!pollFound && Array.isArray(participationVotingCompleted) && participationVotingCompleted.length > 0) {
+        pollFound = findPoll(participationVotingCompleted);
+        if (pollFound) pollType = "Participation";
+      }
+  
+      if (pollFound) {
+        setSelectedPoll(pollFound);
+        setVotingTypeSelected(pollType);
+        setSelectedTab(pollType === "Direct Democracy" ? 0 : 1);
+        setIsPollCompleted(
+          (Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(participationVotingCompleted) && participationVotingCompleted.includes(pollFound))
+        );
+        if (
+          (Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(participationVotingCompleted) && participationVotingCompleted.includes(pollFound))
+        ) {
+          onCompletedOpen();
+        } else {
+          onOpen();
+        }
+      }
+    }
+  }, [
+    router.query.poll,
+    democracyVotingOngoing,
+    democracyVotingCompleted,
+    hybridVotingOngoing,
+    hybridVotingCompleted,
+    participationVotingOngoing,
+    participationVotingCompleted,
+    onOpen,
+    onCompletedOpen
+  ]);
+  
+  
+  
+  
+
 
   const handlePollCreated = () => {
     const run = () => {
@@ -208,6 +308,7 @@ const Voting = () => {
       <Container maxW="container.2xl" py={6} px={10}>
         <HeadingVote selectedTab={selectedTab} />
         <Tabs
+          index={selectedTab}
           isFitted
           variant="soft-rounded"
           onChange={handleTabsChange}
@@ -305,7 +406,7 @@ const Voting = () => {
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.expirationTimestamp, proposal?.id, false)} />
+                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
@@ -432,6 +533,7 @@ const Voting = () => {
                               position="relative"
                               color="rgba(333, 333, 333, 1)"
                               zIndex={1}
+                              onClick = {() => handlePollClick(proposal, true)}
                             >
                               <div className="glass" style={glassLayerStyle} />
                               <Text
@@ -599,7 +701,7 @@ const Voting = () => {
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.expirationTimestamp, proposal?.id, true)} />
+                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, true)} />
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
@@ -726,6 +828,7 @@ const Voting = () => {
                               position="relative"
                               color="rgba(333, 333, 333, 1)"
                               zIndex={1}
+                              onClick={() => handlePollClick(proposal, true)}
                             >
                               <div className="glass" style={glassLayerStyle} />
                               <Text
@@ -913,6 +1016,11 @@ const Voting = () => {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           onOpen={onOpen}
+        />
+        <CompletedPollModal
+          isOpen={isCompletedOpen}
+          onClose={onCompletedClose}
+          selectedPoll={selectedPoll}
         />
       </Container>
     </>
