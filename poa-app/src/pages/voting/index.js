@@ -33,6 +33,8 @@ import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { useGraphContext } from "@/context/graphContext";
 import { useWeb3Context } from "@/context/web3Context";
+import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/completedPollModal";
+
 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
@@ -59,6 +61,8 @@ const Voting = () => {
     ddVote
   } = useWeb3Context();
   
+  const { isOpen: isCompletedOpen, onOpen: onCompletedOpen, onClose: onCompletedClose } = useDisclosure();
+
   const {
     directDemocracyVotingContractAddress,
     hybridVotingOngoing,
@@ -151,16 +155,25 @@ const Voting = () => {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [isPollCompleted, setIsPollCompleted] = useState(false);
+
 
   
   const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 };
   const [proposal, setProposal] = useState(defaultProposal);
 
-  const handlePollClick = (poll) => {
+  const handlePollClick = (poll, isCompleted = false) => {
     setSelectedPoll(poll);
+    setIsPollCompleted(isCompleted);
     router.push(`/voting?poll=${poll.id}&userDAO=${userDAO}`);
-    onOpen();
+    if (isCompleted) {
+      onCompletedOpen();
+    } else {
+      onOpen();
+    }
   };
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -227,7 +240,18 @@ const Voting = () => {
         setSelectedPoll(pollFound);
         setVotingTypeSelected(pollType);
         setSelectedTab(pollType === "Direct Democracy" ? 0 : 1);
-        onOpen();
+        setIsPollCompleted(
+          democracyVotingCompleted.includes(pollFound) ||
+          hybridVotingCompleted.includes(pollFound) ||
+          participationVotingCompleted.includes(pollFound)
+        );
+        if (democracyVotingCompleted.includes(pollFound) ||
+            hybridVotingCompleted.includes(pollFound) ||
+            participationVotingCompleted.includes(pollFound)) {
+          onCompletedOpen();
+        } else {
+          onOpen();
+        }
       }
     }
   }, [
@@ -238,8 +262,10 @@ const Voting = () => {
     hybridVotingCompleted,
     participationVotingOngoing,
     participationVotingCompleted,
-    onOpen
+    onOpen,
+    onCompletedOpen
   ]);
+  
   
 
 
@@ -503,6 +529,7 @@ const Voting = () => {
                               position="relative"
                               color="rgba(333, 333, 333, 1)"
                               zIndex={1}
+                              onClick = {() => handlePollClick(proposal, true)}
                             >
                               <div className="glass" style={glassLayerStyle} />
                               <Text
@@ -797,6 +824,7 @@ const Voting = () => {
                               position="relative"
                               color="rgba(333, 333, 333, 1)"
                               zIndex={1}
+                              onClick={() => handlePollClick(proposal, true)}
                             >
                               <div className="glass" style={glassLayerStyle} />
                               <Text
@@ -984,6 +1012,11 @@ const Voting = () => {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           onOpen={onOpen}
+        />
+        <CompletedPollModal
+          isOpen={isCompletedOpen}
+          onClose={onCompletedClose}
+          selectedPoll={selectedPoll}
         />
       </Container>
     </>
