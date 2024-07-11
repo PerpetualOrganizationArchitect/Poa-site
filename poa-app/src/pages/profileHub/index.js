@@ -101,19 +101,32 @@ const UserprofileHub= () => {
       return 'Gold';
     } else if (balance >= 500) {
       return 'Silver';
-    } else if (balance >= 250) {
+    } else if (balance >= 150) {
       return 'Bronze';
     } else {
       return 'Basic';
     }
   };
 
+  const calculateProgress = (balance) => {
+    if (balance < 150) {
+      return { progress: (balance / 150) * 100, nextTier: 'Bronze', nextTierThreshold: 150 };
+    } else if (balance < 500) {
+      return { progress: ((balance - 150) / 150) * 100, nextTier: 'Silver', nextTierThreshold: 500 };
+    } else if (balance < 1000) {
+      return { progress: ((balance - 500) / 500) * 100, nextTier: 'Gold', nextTierThreshold: 1000 };
+    } else {
+      return { progress: 100, nextTier: 'Gold', nextTierThreshold: 1000 };
+    }
+  };
+  
 
     const [userInfo, setUserInfo] = useState({});
 
     useEffect(() => {
       if (userData) {
         console.log(userData);
+        let progressData = calculateProgress(userData.ptTokenBalance);
         let userInfo = {
           username: graphUsername,
           ptBalance: Number(userData.ptTokenBalance),
@@ -123,6 +136,9 @@ const UserprofileHub= () => {
           totalVotes: userData.totalVotes,
           dateJoined: userData.dateJoined,
           tier: determineTier(userData.ptTokenBalance),
+          progress: progressData.progress,
+          nextTier: progressData.nextTier,
+          nextTierThreshold: progressData.nextTierThreshold
         };
         setUserInfo(userInfo);
       }
@@ -187,21 +203,24 @@ const UserprofileHub= () => {
             {/* <Text pl={6} pb={4} fontSize="lg">This makes you top {userInfo.percentage}% of Contributors</Text> */}
           </VStack>
           <VStack p={0} pt={4} align="center" >
-            <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text>
-            <Spacer />
-            <Image 
-              width="50%" 
-              src={
-                userInfo.tier 
-                  ? (userInfo.tier === 'Basic' 
-                    ? "/images/high_res_poa.png" 
-                    : `/images/${userInfo.tier.toLowerCase()}Medal.png`)
-                  : "/images/high_res_poa.png"
-              }
-              alt={`${userInfo.tier || 'Basic'} Tier Medal`}
-            />
-            <Text textAlign={"center"} fontSize="lg" p={4} >Participation Tier System Coming Soon</Text>
-          </VStack>
+              <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text>
+              <Spacer />
+              <Image 
+                width="50%" 
+                src={
+                  userInfo.tier 
+                    ? (userInfo.tier === 'Basic' 
+                      ? "/images/high_res_poa.png" 
+                      : `/images/${userInfo.tier.toLowerCase()}Medal.png`)
+                    : "/images/high_res_poa.png"
+                }
+                alt={`${userInfo.tier || 'Basic'} Tier Medal`}
+              />
+              <Progress mt="2" width="70%" value={userInfo.progress} colorScheme="teal" borderRadius="md" />
+              <Text textAlign={"center"} fontSize="md" p={2}mb="2">
+                {userInfo.progress < 100 ? `Progress to ${userInfo.nextTier} Tier: ${userInfo.ptBalance}/${userInfo.nextTierThreshold}` : `You have reached the highest tier!`}
+              </Text>
+            </VStack>
 
 
         </Box>
