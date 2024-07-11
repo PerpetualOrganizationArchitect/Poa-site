@@ -51,6 +51,9 @@ const PollModal = ({
     router.push(`/voting/?userDAO=${userDAO}`);
   };
 
+
+  
+
   const vote = () => {
 
     console.log("selectedOption", selectedOption);

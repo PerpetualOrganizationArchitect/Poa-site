@@ -16,6 +16,7 @@ import {
     } from '@chakra-ui/react';
 
     import Link2 from 'next/link';
+    import { useRouter } from "next/router";
 
 const glassLayerStyle = {
     position: 'absolute',
@@ -31,6 +32,8 @@ const glassLayerStyle = {
 const OngoingPolls = ({OngoingPolls}) => {
 
     // check if ongoing polsl exist
+    const router = useRouter();
+    const { userDAO } = router.query;
     const ongoingPollsExist = OngoingPolls && OngoingPolls.length > 0;
     if (!ongoingPollsExist) {
         return <Text mt="4" ml="7">No ongoing polls available</Text>;
@@ -70,12 +73,12 @@ const OngoingPolls = ({OngoingPolls}) => {
                                 
                                 <div style={glassLayerStyle}/>
                                 
-                                <Link2  href={`/voting/?poll=${poll.id}`}>
-                                <VStack textColor="white"  spacing={3}>
+                                <Link2  href={`/voting/?poll=${poll.id}&userDAO=${userDAO}`}>
+                                <VStack textColor="white"  spacing={2}>
 
                                     <Heading  ml={4} fontWeight="extrabold" mt={2} size="sm">{poll.name}</Heading>
                                     
-                                    <Box pl="4" mt="2"><CountDown duration={calculateRemainingTime(poll?.experationTimestamp)}/></Box>
+                                    <Box pl="4" mt="0"><CountDown duration={calculateRemainingTime(poll?.experationTimestamp)}/></Box>
                                     <Box alignSelf={"flex-start"} ml="4" mt="0">
                                         <Badge colorScheme="blue">{poll.type}</Badge>
                                     </Box>

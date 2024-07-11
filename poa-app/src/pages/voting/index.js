@@ -143,6 +143,9 @@ const Voting = () => {
     }
   };
 
+
+  
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPoll, setSelectedPoll] = useState(null);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
@@ -172,6 +175,73 @@ const Voting = () => {
   const handleCreatePollClick = () => {
     setShowCreatePoll(!showCreatePoll);
   };
+
+  useEffect(() => {
+    if (router.query.poll) {
+      const pollID = router.query.poll;
+  
+      const findPoll = (proposals) => {
+        for (const proposal of proposals) {
+          if (proposal.id === pollID) {
+            return proposal;
+          }
+        }
+        return null;
+      };
+  
+      let pollFound = null;
+      let pollType = "";
+  
+      // only search for poll if the voting arrays are not empty
+      if (democracyVotingOngoing?.length > 0) {
+        pollFound = findPoll(democracyVotingOngoing);
+        if (pollFound) pollType = "Direct Democracy";
+      }
+      
+      if (!pollFound && hybridVotingOngoing?.length > 0) {
+        pollFound = findPoll(hybridVotingOngoing);
+        if (pollFound) pollType = "Hybrid";
+      }
+  
+      if (!pollFound && participationVotingOngoing?.length > 0) {
+        pollFound = findPoll(participationVotingOngoing);
+        if (pollFound) pollType = "Participation";
+      }
+  
+      if (!pollFound && democracyVotingCompleted?.length > 0) {
+        pollFound = findPoll(democracyVotingCompleted);
+        if (pollFound) pollType = "Direct Democracy";
+      }
+  
+      if (!pollFound && hybridVotingCompleted?.length > 0) {
+        pollFound = findPoll(hybridVotingCompleted);
+        if (pollFound) pollType = "Hybrid";
+      }
+  
+      if (!pollFound && participationVotingCompleted?.length > 0) {
+        pollFound = findPoll(participationVotingCompleted);
+        if (pollFound) pollType = "Participation";
+      }
+  
+      if (pollFound) {
+        setSelectedPoll(pollFound);
+        setVotingTypeSelected(pollType);
+        setSelectedTab(pollType === "Direct Democracy" ? 0 : 1);
+        onOpen();
+      }
+    }
+  }, [
+    router.query.poll,
+    democracyVotingOngoing,
+    democracyVotingCompleted,
+    hybridVotingOngoing,
+    hybridVotingCompleted,
+    participationVotingOngoing,
+    participationVotingCompleted,
+    onOpen
+  ]);
+  
+
 
   const handlePollCreated = () => {
     const run = () => {
@@ -208,6 +278,7 @@ const Voting = () => {
       <Container maxW="container.2xl" py={6} px={10}>
         <HeadingVote selectedTab={selectedTab} />
         <Tabs
+          index={selectedTab}
           isFitted
           variant="soft-rounded"
           onChange={handleTabsChange}

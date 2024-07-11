@@ -9,6 +9,7 @@ import {
     Badge,
 } from '@chakra-ui/react';
 import Link2 from 'next/link';
+import { useRouter } from "next/router";
 
 const glassLayerStyle = {
     position: 'absolute',
@@ -22,6 +23,8 @@ const glassLayerStyle = {
 
 const UserProposals = ({ userProposals }) => {
     // Check if user proposals exist
+    const router = useRouter();
+    const { userDAO } = router.query;
     const userProposalsExist = userProposals && userProposals.length > 0;
     if (!userProposalsExist) {
         return <Text mt="4" ml="7">No proposals available</Text>;
@@ -49,7 +52,7 @@ const UserProposals = ({ userProposals }) => {
                     mt="-4"
                 >
                     <div style={glassLayerStyle} />
-                    <Link2 href={`/voting/?proposal=${proposal.id}`}>
+                    <Link2  href={`/voting/?poll=${proposal.id}&userDAO=${userDAO}`}>
                         <VStack textColor="white" spacing={2}>
                             <Heading ml={4} fontWeight="extrabold" mt={2} size="sm">
                                 {proposal.name}
