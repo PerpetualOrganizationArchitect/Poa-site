@@ -274,7 +274,7 @@ const UserprofileHub= () => {
           <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
             <div style={glassLayerStyle} />
             <Text pl={6} fontWeight="bold" fontSize="2xl">
-              {userProposals && userProposals.length > 0 ? 'My Proposals' : 'Ongoing Polls'} {' '}
+              {userProposals && userProposals.length > 0 ? 'My Proposals' : 'Ongoing Proposals'} {' '}
             </Text>
           </VStack>
           <Box mt="4">

@@ -305,7 +305,7 @@ const Voting = () => {
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.expirationTimestamp, proposal?.id, false)} />
+                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
@@ -599,7 +599,7 @@ const Voting = () => {
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.expirationTimestamp, proposal?.id, true)} />
+                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, true)} />
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (

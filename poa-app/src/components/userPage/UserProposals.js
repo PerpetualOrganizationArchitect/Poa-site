@@ -57,7 +57,7 @@ const UserProposals = ({ userProposals }) => {
                             <Box pl="4" mt="0">
                                 <CountDown duration={calculateRemainingTime(proposal.experationTimestamp)} />
                             </Box>
-                            <Box pl="4" mt="0">
+                            <Box alignSelf={"flex-start"} ml="4" mt="0">
                                 <Badge colorScheme="blue">{proposal.type}</Badge>
                             </Box>
                         </VStack>
