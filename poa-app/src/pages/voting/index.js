@@ -206,32 +206,32 @@ const Voting = () => {
       let pollType = "";
   
       // only search for poll if the voting arrays are not empty
-      if (democracyVotingOngoing?.length > 0) {
+      if (Array.isArray(democracyVotingOngoing) && democracyVotingOngoing.length > 0) {
         pollFound = findPoll(democracyVotingOngoing);
         if (pollFound) pollType = "Direct Democracy";
       }
       
-      if (!pollFound && hybridVotingOngoing?.length > 0) {
+      if (!pollFound && Array.isArray(hybridVotingOngoing) && hybridVotingOngoing.length > 0) {
         pollFound = findPoll(hybridVotingOngoing);
         if (pollFound) pollType = "Hybrid";
       }
   
-      if (!pollFound && participationVotingOngoing?.length > 0) {
+      if (!pollFound && Array.isArray(participationVotingOngoing) && participationVotingOngoing.length > 0) {
         pollFound = findPoll(participationVotingOngoing);
         if (pollFound) pollType = "Participation";
       }
   
-      if (!pollFound && democracyVotingCompleted?.length > 0) {
+      if (!pollFound && Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.length > 0) {
         pollFound = findPoll(democracyVotingCompleted);
         if (pollFound) pollType = "Direct Democracy";
       }
   
-      if (!pollFound && hybridVotingCompleted?.length > 0) {
+      if (!pollFound && Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.length > 0) {
         pollFound = findPoll(hybridVotingCompleted);
         if (pollFound) pollType = "Hybrid";
       }
   
-      if (!pollFound && participationVotingCompleted?.length > 0) {
+      if (!pollFound && Array.isArray(participationVotingCompleted) && participationVotingCompleted.length > 0) {
         pollFound = findPoll(participationVotingCompleted);
         if (pollFound) pollType = "Participation";
       }
@@ -241,13 +241,15 @@ const Voting = () => {
         setVotingTypeSelected(pollType);
         setSelectedTab(pollType === "Direct Democracy" ? 0 : 1);
         setIsPollCompleted(
-          democracyVotingCompleted.includes(pollFound) ||
-          hybridVotingCompleted.includes(pollFound) ||
-          participationVotingCompleted.includes(pollFound)
+          (Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(participationVotingCompleted) && participationVotingCompleted.includes(pollFound))
         );
-        if (democracyVotingCompleted.includes(pollFound) ||
-            hybridVotingCompleted.includes(pollFound) ||
-            participationVotingCompleted.includes(pollFound)) {
+        if (
+          (Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.includes(pollFound)) ||
+          (Array.isArray(participationVotingCompleted) && participationVotingCompleted.includes(pollFound))
+        ) {
           onCompletedOpen();
         } else {
           onOpen();
@@ -265,6 +267,8 @@ const Voting = () => {
     onOpen,
     onCompletedOpen
   ]);
+  
+  
   
   
 

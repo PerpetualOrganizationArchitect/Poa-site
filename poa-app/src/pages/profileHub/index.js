@@ -96,27 +96,38 @@ const UserprofileHub= () => {
     veryhard: 'red'
   };
 
-
+  const determineTier = (balance) => {
+    if (balance >= 1000) {
+      return 'Gold';
+    } else if (balance >= 500) {
+      return 'Silver';
+    } else if (balance >= 250) {
+      return 'Bronze';
+    } else {
+      return 'Basic';
+    }
+  };
 
 
     const [userInfo, setUserInfo] = useState({});
 
     useEffect(() => {
-        
-        if(userData){
-            console.log(userData);
-            let userInfo = {
-                username: graphUsername,
-                ptBalance: Number(userData.ptTokenBalance),
-                memberStatus: userData.memberType,
-                accountAddress: userData.id,
-                tasksCompleted: userData.tasksCompleted,
-                totalVotes: userData.totalVotes,
-                dateJoined: userData.dateJoined
-            };
-            setUserInfo(userInfo);
-        }
+      if (userData) {
+        console.log(userData);
+        let userInfo = {
+          username: graphUsername,
+          ptBalance: Number(userData.ptTokenBalance),
+          memberStatus: userData.memberType,
+          accountAddress: userData.id,
+          tasksCompleted: userData.tasksCompleted,
+          totalVotes: userData.totalVotes,
+          dateJoined: userData.dateJoined,
+          tier: determineTier(Number(userData.ptTokenBalance)),
+        };
+        setUserInfo(userInfo);
+      }
     }, [userData, graphUsername]);
+    
 
 
   const animatedPT = useSpring({ 
@@ -175,13 +186,12 @@ const UserprofileHub= () => {
 
             {/* <Text pl={6} pb={4} fontSize="lg">This makes you top {userInfo.percentage}% of Contributors</Text> */}
           </VStack>
-            <VStack p={0} pt={4} align="center" >
-                <Text fontSize="3xl" fontWeight="bold">Gold Tier Contributor</Text>
-                <Spacer />
-                <Image width="50%" src={"/images/poa_character.png"} />
-                <Text textAlign={"center"} fontSize="lg" p={4} >Participation Tier System Coming Soon</Text>
-            </VStack>
-
+          <VStack p={0} pt={4} align="center" >
+            <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text> {/* Update this line */}
+            <Spacer />
+            <Image width="50%" src={"/images/poa_character.png"} />
+            <Text textAlign={"center"} fontSize="lg" p={4} >Participation Tier System Coming Soon</Text>
+          </VStack>
         </Box>
         </GridItem>
         <GridItem area={'tierinfo'}>

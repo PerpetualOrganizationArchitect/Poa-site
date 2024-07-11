@@ -147,9 +147,8 @@ export const GraphProvider = ({ children }) => {
 
     }
 
-    async function fetchUsersProposals(poName, address){
-        const query =
-        `{
+    async function fetchUsersProposals(poName, address) {
+        const query = `{
             user(id:"${poName}-${address.toLocaleLowerCase()}"){
               ptProposals(orderBy: experationTimestamp, orderDirection: desc){
                 id
@@ -158,30 +157,50 @@ export const GraphProvider = ({ children }) => {
                 creationTimestamp
               }
               ddProposals(orderBy: experationTimestamp, orderDirection: desc){
+                id
                 name
                 experationTimestamp
                 creationTimestamp
               }
               hybridProposals(orderBy: experationTimestamp, orderDirection: desc){
+                id
                 name
                 experationTimestamp
                 creationTimestamp
               }
             }
-          }`
-
+          }`;
+    
         const data = await querySubgraph(query);
-        
-        // combine all proposals into one array but keep the type of proposal
+    
+        // Combine all proposals into one array but keep the type of proposal
         const proposals = [
-            ...data.user.ptProposals.map(proposal => ({...proposal, type: 'Participation'})),
-            ...data.user.ddProposals.map(proposal => ({...proposal, type: 'Direct Democracy'})),
-            ...data.user.hybridProposals.map(proposal => ({...proposal, type: 'Hybrid'})),
+            ...data.user.ptProposals.map(proposal => ({ ...proposal, type: 'Participation' })),
+            ...data.user.ddProposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' })),
+            ...data.user.hybridProposals.map(proposal => ({ ...proposal, type: 'Hybrid' })),
         ];
-
+    
+        const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+    
+        // Order proposals by expiration timestamp, but move completed proposals to the end
+        proposals.sort((a, b) => {
+            const aIsCompleted = a.experationTimestamp < currentTime;
+            const bIsCompleted = b.experationTimestamp < currentTime;
+    
+            if (aIsCompleted && !bIsCompleted) {
+                return 1; // a is completed, b is not - put a after b
+            } else if (!aIsCompleted && bIsCompleted) {
+                return -1; // b is completed, a is not - put b after a
+            } else if (!aIsCompleted && !bIsCompleted) {
+                return a.experationTimestamp - b.experationTimestamp; // Both are active - sort by expiration ascending
+            } else {
+                return a.experationTimestamp - b.experationTimestamp; // Both are completed - sort by expiration ascending
+            }
+        });
+    
         return proposals;
-
     }
+    
 
 
 
