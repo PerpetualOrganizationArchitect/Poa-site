@@ -119,6 +119,13 @@ const UserprofileHub= () => {
       return { progress: 100, nextTier: 'Gold', nextTierThreshold: 1000 };
     }
   };
+
+  const formatDateToAmerican = (timestamp) => {
+    const date = new Date(timestamp * 1000); // assuming the timestamp is in seconds
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+  
   
 
     const [userInfo, setUserInfo] = useState({});
@@ -134,7 +141,7 @@ const UserprofileHub= () => {
           accountAddress: userData.id,
           tasksCompleted: userData.tasksCompleted,
           totalVotes: userData.totalVotes,
-          dateJoined: userData.dateJoined,
+          dateJoined: formatDateToAmerican(userData.dateJoined),
           tier: determineTier(userData.ptTokenBalance),
           progress: progressData.progress,
           nextTier: progressData.nextTier,
@@ -143,6 +150,7 @@ const UserprofileHub= () => {
         setUserInfo(userInfo);
       }
     }, [userData, graphUsername]);
+    
     
 
 
@@ -261,11 +269,14 @@ const UserprofileHub= () => {
         onClose={closeSettingsModal}
         />
       
-        <HStack pb={4} pt={2} spacing="10%">
-          <VStack align={'flex-start'} ml="4%" spacing={1}>
+        <HStack pb={4} pt={2} spacing="4%">
+          <VStack align={'flex-start'} ml="3%" spacing={1}>
             <Text fontWeight="bold" fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
             <Text fontWeight="bold" fontSize="md">Total Votes: {userInfo.totalVotes}</Text>
-            <Text fontWeight="bold" fontSize="md">Date Joined: {userInfo.dateJoined}</Text>
+            <HStack spacing={1}>
+              <Text fontWeight="bold" fontSize="md">Joined: </Text>
+              <Text fontSize="sm">{userInfo.dateJoined}</Text>
+            </HStack>
           </VStack>
           <Spacer />
           <Box alignSelf="flex-start" mr="4">
