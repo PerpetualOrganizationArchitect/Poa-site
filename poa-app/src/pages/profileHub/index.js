@@ -29,6 +29,7 @@ import { useSpring, animated } from 'react-spring';
 import Link2 from 'next/link';
 import { set } from 'lodash';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
+import UserProposals from '@/components/userPage/UserProposals';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
@@ -43,7 +44,7 @@ const UserprofileHub= () => {
       }, [userDAO]);
 
 
-    const {claimedTasks,democracyVotingOngoing, graphUsername, reccommendedTasks} = useGraphContext();
+    const {userProposals, claimedTasks,democracyVotingOngoing, graphUsername, reccommendedTasks} = useGraphContext();
     
     
     

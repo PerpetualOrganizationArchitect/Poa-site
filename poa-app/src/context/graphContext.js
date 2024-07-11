@@ -39,6 +39,7 @@ export const GraphProvider = ({ children }) => {
     const [claimedTasks, setClaimedTasks] = useState([]);
     const[reccommendedTasks, setReccomendedTasks] = useState([]);
     const { fetchFromIpfs } = useIPFScontext();
+    const [userProposals, setUserProposals] = useState([]);
 
     //contract address state 
     const [partcipationTokenContractAddress, setPartcipationTokenContractAddress] = useState('');
@@ -750,7 +751,7 @@ export const GraphProvider = ({ children }) => {
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         const userProposalData = await fetchUsersProposals(poName, address);
-
+        setUserProposals(userProposalData);
         const leaderboardData = await fetchLeaderboardData(poName);
         setLeaderboardData(leaderboardData);
         
@@ -793,7 +794,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{userProposals, setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );
