@@ -44,7 +44,7 @@ const UserprofileHub= () => {
       }, [userDAO]);
 
 
-    const {userProposals, claimedTasks,democracyVotingOngoing, graphUsername, reccommendedTasks} = useGraphContext();
+    const {userProposals, claimedTasks,democracyVotingOngoing, ongoingPolls, graphUsername, reccommendedTasks} = useGraphContext();
     
     
     
@@ -281,7 +281,7 @@ const UserprofileHub= () => {
             {userProposals && userProposals.length > 0 ? (
               <UserProposals userProposals={userProposals} />
             ) : (
-              <OngoingPolls OngoingPolls={democracyVotingOngoing} />
+              <OngoingPolls OngoingPolls={ongoingPolls} />
             )}
           </Box>
         </Box>

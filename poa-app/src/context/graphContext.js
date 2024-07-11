@@ -36,6 +36,8 @@ export const GraphProvider = ({ children }) => {
     const[projectsData, setProjectsData] = useState({});
     const[leaderboardData, setLeaderboardData] = useState({});
 
+    const [ongoingPolls, setOngoingPolls] = useState([]);
+
     const [claimedTasks, setClaimedTasks] = useState([]);
     const[reccommendedTasks, setReccomendedTasks] = useState([]);
     const { fetchFromIpfs } = useIPFScontext();
@@ -317,6 +319,83 @@ export const GraphProvider = ({ children }) => {
         console.log("democracy voting ongoing", data);
 
         return data.perpetualOrganization.DirectDemocracyVoting?.proposals;
+    }
+
+    async function fetchAllOngoingPolls(id) {
+        const query = `{
+            perpetualOrganization(id: "${id}") {
+
+            DirectDemocracyVoting {
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    options{
+                        id
+                        name
+                        votes
+                    }
+                }
+            }
+            HybridVoting {
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    options{
+                        id
+                        name
+                        votes
+                    }
+                }
+            }
+            ParticipationVoting {
+                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
+                    id
+                    name
+                    experationTimestamp
+                    creationTimestamp
+                    description
+                    options{
+                        id
+                        name
+                        votes
+                    }
+                }
+            }
+            }
+        }`;
+
+        const data = await querySubgraph(query);
+
+        
+        // set ongoing polls to correct ongoing use state 
+        const ddVoting = data.perpetualOrganization.DirectDemocracyVoting?.proposals;
+        const hybridVoting = data.perpetualOrganization.HybridVoting?.proposals;
+        const participationVoting = data.perpetualOrganization.ParticipationVoting?.proposals;
+
+        if(ddVoting){
+            setDemocracyVotingOngoing(ddVoting);
+        }
+        if(hybridVoting){
+            setHybridVotingOngoing(hybridVoting);
+        }
+
+        if(participationVoting){
+            setParticipationVotingOngoing(participationVoting);
+        }
+
+        // combine all ongoing polls into one array with type of poll check to make sure each exists first 
+        const polls = [
+            ...(ddVoting || []).map(proposal => ({...proposal, type: 'Direct Democracy'})),
+            ...(hybridVoting || []).map(proposal => ({...proposal, type: 'Hybrid'})),
+            ...(participationVoting || []).map(proposal => ({...proposal, type: 'Participation'})),
+        ];
+        setOngoingPolls(polls);
     }
 
     async function fetchDemocracyVotingCompleted(id) {
@@ -738,16 +817,12 @@ export const GraphProvider = ({ children }) => {
         const userInfo = await fetchUserDetails(poName, address.toLocaleLowerCase());
         const projectData = await fetchProjectData(poName);
         setProjectsData( await transformProjects(projectData));
-        const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
-        setParticipationVotingOngoing(participationVotingOngoing);
+        const proposalData = await fetchAllOngoingPolls(poName);
+
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
         setParticipationVotingCompleted(participationVotingCompleted);
-        const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
-        setHybridVotingOngoing(hybridVotingOngoing);
         const hybridVotingCompleted = await fetchHybridVotingCompleted(poName);
         setHybridVotingCompleted(hybridVotingCompleted);
-        const democracyVotingOngoing = await fetchDemocracyVotingOngoing(poName);
-        setDemocracyVotingOngoing(democracyVotingOngoing);
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         const userProposalData = await fetchUsersProposals(poName, address);
@@ -764,11 +839,13 @@ export const GraphProvider = ({ children }) => {
 
         const projectData = await fetchProjectData(poName);
         setProjectsData( await transformProjects(projectData));
-        const participationVotingOngoing = await fetchParticpationVotingOngoing(poName);
+        const proposalData = await fetchAllOngoingPolls(poName);
+
+        
         const participationVotingCompleted = await fetchParticipationVotingCompleted(poName);
-        const hybridVotingOngoing = await fetchHybridVotingOngoing(poName);
+       
         const hybridVotingCompleted = await fetchHybridVotingCompleted(poName);
-        const democracyVotingOngoing = await fetchDemocracyVotingOngoing(poName);
+       
         const democracyVotingCompleted = await fetchDemocracyVotingCompleted(poName);
        
         const leaderboardData = await fetchLeaderboardData(poName);
@@ -777,16 +854,13 @@ export const GraphProvider = ({ children }) => {
         console.log("participationTokenContractAddress", participationVotingContractAddress);
         if(participationVotingContractAddress === ''){
             console.log("hybrid voting ongoinngg", hybridVotingOngoing);
-            setParticipationVotingOngoing(hybridVotingOngoing);
             setParticipationVotingCompleted(hybridVotingCompleted);
             console.log("hybrid voting contract address", hybridVotingContractAddress);
         }else
         {
-            setParticipationVotingOngoing(participationVotingOngoing);
             setParticipationVotingCompleted(participationVotingCompleted);
             console.log("participation voting contract address", participationVotingContractAddress);
         }
-        setDemocracyVotingOngoing(democracyVotingOngoing);
         setDemocracyVotingCompleted(democracyVotingCompleted);
         setLeaderboardData(leaderboardData);
 
@@ -794,7 +868,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{userProposals, setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{ongoingPolls, userProposals, setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );
