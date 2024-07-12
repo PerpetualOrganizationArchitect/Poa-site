@@ -495,7 +495,13 @@ const Voting = () => {
                       {displayedCompletedProposals.length > 0 ? (
                         displayedCompletedProposals.map((proposal, index) => {
                           const totalVotes = proposal.totalVotes;
-                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                          let WinnerName = proposal.options[proposal.winningOptionIndex].name;
+
+                          //if hasWinner is false set WinnerName to "No Winner"
+                          if (proposal.validWinner === false) {
+                            WinnerName = "No Winner";
+                          }
+
                           const predefinedColors = [
                             "red",
                             "darkblue",
@@ -790,7 +796,14 @@ const Voting = () => {
                       {displayedCompletedProposals.length > 0 ? (
                         displayedCompletedProposals.map((proposal, index) => {
                           const totalVotes = proposal.totalVotes;
-                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                          let WinnerName = proposal.options[proposal.winningOptionIndex].name;
+
+                          //if hasWinner is false set WinnerName to "No Winner"
+                         
+                          if (proposal.validWinner === false) {
+                            WinnerName = "No Winner";
+                          }
+
                           const predefinedColors = [
                             "red",
                             "darkblue",

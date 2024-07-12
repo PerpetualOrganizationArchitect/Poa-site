@@ -240,6 +240,7 @@ export const GraphProvider = ({ children }) => {
                     creationTimestamp
                     description
                     winningOptionIndex
+                    validWinner
                     options{
                       id
                       name
@@ -343,6 +344,7 @@ export const GraphProvider = ({ children }) => {
                     creationTimestamp
                     description
                     winningOptionIndex
+                    validWinner
                     options{
                       id
                       name
@@ -356,6 +358,7 @@ export const GraphProvider = ({ children }) => {
         const data = await querySubgraph(query);
 
         return data.perpetualOrganization.DirectDemocracyVoting?.proposals;
+        
     }
 
     async function fetchProjectData(id) {
