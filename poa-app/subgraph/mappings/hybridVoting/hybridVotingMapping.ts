@@ -61,8 +61,8 @@ export function handleVoted(event: Voted): void {
 
     let scalingFactor = BigInt.fromI32(1000000000);
 
-    let normalizedVotePT = votePT.times(scalingFactor).div(proposal.totalVotesPT);
-    let normalizedVoteDD = voteDD.times(scalingFactor).div(proposal.totalVotesDD);
+    let normalizedVotePT = proposal.totalVotesPT.isZero() ? BigInt.fromI32(0) : votePT.times(scalingFactor).div(proposal.totalVotesPT);
+    let normalizedVoteDD = proposal.totalVotesDD.isZero() ? BigInt.fromI32(0) : voteDD.times(scalingFactor).div(proposal.totalVotesDD);
 
     let weightedVotePT = normalizedVotePT.times((contract.percentPT)).div(scalingFactor); 
     let weightedVoteDD = normalizedVoteDD.times((contract.percentDD)).div(scalingFactor); 

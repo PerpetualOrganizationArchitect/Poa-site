@@ -125,6 +125,13 @@ type TreasuryCreated @entity {
   treasuryAddress: Bytes!
 }
 
+type TreasuryWithdrawal @entity {
+  id: ID!
+  treasury: Treasury! @link
+  recipient: Bytes!
+  amount: BigInt!
+}
+
 ## parcitipation voting 
 
 type PTVotingCreated @entity {

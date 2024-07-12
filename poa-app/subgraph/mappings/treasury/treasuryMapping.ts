@@ -1,5 +1,5 @@
 import { log } from "@graphprotocol/graph-ts"
-import {VotingContractSet, TokensReceived  } from "../../generated/templates/Treasury/Treasury"
+import {VotingContractSet, TokensReceived, ToeknsSent  } from "../../generated/templates/Treasury/Treasury"
 import { Treasury} from "../../generated/schema";
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 
@@ -13,12 +13,13 @@ export function handleVotingSet(event: VotingContractSet): void{
     }
 }
 
-// export function handleTokensReceived(event: TokensReceived): void{
-//     log.info("Triggered handleTokensReceived", [])
+export function handleSendTokens(event: TokensSent): void{
+    log.info("Triggered handleSendTokens", [])
     
-//     let treasury = Treasury.load(event.address.toHex());
-//     if (treasury != null) {
-//       treasury.tokensReceived = event.params.tokensReceived;
-//       treasury.save();
-//     }
-// }
+    let treasury = Treasury.load(event.address.toHex());
+    if (treasury != null) {
+      treasury.totalTokensSent = treasury.totalTokensSent.plus(event.params.amount);
+      treasury.save();
+    }
+}
+
