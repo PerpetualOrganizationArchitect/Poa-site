@@ -40,9 +40,9 @@ const TaskBoard = ({ columns, projectName }) => {
             <Box
               key={column.id}
               flex="1 1 100%"
-              mx={{ base: 0, md: 1 }}
-              p={3}
-              borderRadius="3xl"
+              mx={{ base: 0, md: .5 }}
+              p={2}
+              borderRadius="xl"
               position="relative"
               sx={glassLayerStyle}
             >

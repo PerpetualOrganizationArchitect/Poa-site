@@ -91,6 +91,7 @@ const Voting = () => {
     };
 
     if (duration < 0 && account !== "0x00") {
+      console.log("is hybrid" + isHybrid)
       getWinner(isHybrid ? votingContractAddress : directDemocracyVotingContractAddress, proposalId);
     }
 

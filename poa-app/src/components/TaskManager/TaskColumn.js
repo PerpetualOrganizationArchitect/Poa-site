@@ -189,7 +189,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       w="100%"
       h="100%"
       bg="transparent" 
-      borderRadius="md"
+      borderRadius="xl"
       boxShadow="lg"
       style={{ ...columnStyle, position: 'relative' }} // Add position: 'relative'
       zIndex={1}
@@ -199,6 +199,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
           {title}
           {title === 'Open' && (
             <IconButton
+            
               ml={8}
               icon={<AddIcon color="white" />} // Change color to white
               aria-label="Add task"
