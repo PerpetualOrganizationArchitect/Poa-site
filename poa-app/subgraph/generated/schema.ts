@@ -1322,6 +1322,14 @@ export class Treasury extends Entity {
       this.set("votingContract", Value.fromBytes(<Bytes>value));
     }
   }
+
+  get withdrawals(): TreasuryWithdrawalLoader {
+    return new TreasuryWithdrawalLoader(
+      "Treasury",
+      this.get("id")!.toString(),
+      "withdrawals",
+    );
+  }
 }
 
 export class TreasuryCreated extends Entity {
@@ -1389,6 +1397,102 @@ export class TreasuryCreated extends Entity {
 
   set treasuryAddress(value: Bytes) {
     this.set("treasuryAddress", Value.fromBytes(value));
+  }
+}
+
+export class TreasuryWithdrawal extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TreasuryWithdrawal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TreasuryWithdrawal must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("TreasuryWithdrawal", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TreasuryWithdrawal | null {
+    return changetype<TreasuryWithdrawal | null>(
+      store.get_in_block("TreasuryWithdrawal", id),
+    );
+  }
+
+  static load(id: string): TreasuryWithdrawal | null {
+    return changetype<TreasuryWithdrawal | null>(
+      store.get("TreasuryWithdrawal", id),
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get treasury(): string {
+    let value = this.get("treasury");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set treasury(value: string) {
+    this.set("treasury", Value.fromString(value));
+  }
+
+  get recipient(): Bytes {
+    let value = this.get("recipient");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set recipient(value: Bytes) {
+    this.set("recipient", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get token(): Bytes {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set token(value: Bytes) {
+    this.set("token", Value.fromBytes(value));
   }
 }
 
@@ -4779,6 +4883,24 @@ export class NFTChangeTypeEventLoader extends Entity {
   load(): NFTChangeTypeEvent[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<NFTChangeTypeEvent[]>(value);
+  }
+}
+
+export class TreasuryWithdrawalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TreasuryWithdrawal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TreasuryWithdrawal[]>(value);
   }
 }
 

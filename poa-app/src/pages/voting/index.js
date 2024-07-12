@@ -179,7 +179,7 @@ const Voting = () => {
 
 
   
-  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [], type: 'normal', id: 0 };
+  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [], type: 'normal', transferAddress: '', transferAmount: '', transferOption: '', id: 0 };
   const [proposal, setProposal] = useState(defaultProposal);
 
   const handleProposalTypeChange = (e) => {
@@ -211,6 +211,19 @@ const Voting = () => {
 
   const handleCreatePollClick = () => {
     setShowCreatePoll(!showCreatePoll);
+  };
+
+  // Add these new handle functions for the new inputs
+  const handleTransferAddressChange = (e) => {
+    setProposal({ ...proposal, transferAddress: e.target.value });
+  };
+
+  const handleTransferAmountChange = (e) => {
+    setProposal({ ...proposal, transferAmount: e.target.value });
+  };
+
+  const handleTransferOptionChange = (e) => {
+    setProposal({ ...proposal, transferOption: e.target.value });
   };
 
   useEffect(() => {
@@ -299,28 +312,64 @@ const Voting = () => {
 
   const handlePollCreated = () => {
     const run = () => {
+      const last = proposal.type === "transferFunds";
+  
       if (votingTypeSelected === "Participation") {
-        return createProposalDDVoting(votingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+        return createProposalDDVoting(
+          votingContractAddress,
+          proposal.name,
+          proposal.description,
+          proposal.time,
+          proposal.options.map((option, index) => ({ name: option, id: index })),
+          last ? proposal.transferOption : 0,
+          last ? proposal.transferAddress : account,
+          last ? proposal.transferAmount : 0,
+          last
+        );
       }
+  
       if (votingTypeSelected === "Hybrid") {
-        return createProposalDDVoting(votingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+        return createProposalDDVoting(
+          votingContractAddress,
+          proposal.name,
+          proposal.description,
+          proposal.time,
+          proposal.options.map((option, index) => ({ name: option, id: index })),
+          last ? proposal.transferOption : 0,
+          last ? proposal.transferAddress : account,
+          last ? proposal.transferAmount : 0,
+          last
+        );
       }
+  
       if (votingTypeSelected === "Direct Democracy") {
-        return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+        return createProposalDDVoting(
+          directDemocracyVotingContractAddress,
+          proposal.name,
+          proposal.description,
+          proposal.time,
+          proposal.options.map((option, index) => ({ name: option, id: index })),
+          last ? proposal.transferOption : 0,
+          last ? proposal.transferAddress : account,
+          last ? proposal.transferAmount : 0,
+          last
+        );
       }
-
     };
+
     setLoadingSubmit(true);
-    run().then(() => {
-      setLoadingSubmit(false);
-      setShowCreatePoll(false);
-      setProposal(defaultProposal);
-    }).catch((error) => {
-      console.error("Error creating poll:", error);
-      setLoadingSubmit(false);
-      setShowCreatePoll(false);
-      setProposal(defaultProposal);
-    });
+    run()
+      .then(() => {
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+      })
+      .catch((error) => {
+        console.error("Error creating poll:", error);
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+      });
   };
 
 
@@ -1047,6 +1096,40 @@ const Voting = () => {
                           <option value="transferFunds">Transfer Funds</option>
                         </Select>
                     </FormControl>
+                    {proposal.type === 'transferFunds' && (
+                      <>
+                        <FormControl>
+                          <FormLabel>Transfer Address</FormLabel>
+                          <Input
+                            type="text"
+                            name="transferAddress"
+                            value={proposal.transferAddress}
+                            onChange={handleTransferAddressChange}
+                            required
+                          />
+                        </FormControl>
+                        <FormControl>
+                          <FormLabel>Transfer Amount</FormLabel>
+                          <Input
+                            type="number"
+                            name="transferAmount"
+                            value={proposal.transferAmount}
+                            onChange={handleTransferAmountChange}
+                            required
+                          />
+                        </FormControl>
+                        <FormControl>
+                          <FormLabel>Transfer Option</FormLabel>
+                          <Input
+                            type="number"  
+                            name="transferOption"
+                            value={proposal.transferOption}
+                            onChange={handleTransferOptionChange}
+                            required
+                          />
+                        </FormControl>
+                      </>
+                    )}
                     <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
                   </VStack>
                 </ModalBody>
