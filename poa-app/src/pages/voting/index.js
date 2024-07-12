@@ -80,26 +80,38 @@ const Voting = () => {
     setLoaded(userDAO);
   }, [userDAO]);
 
-  const calculateRemainingTime = (expirationTimestamp, proposalId, isHybrid) => {
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const duration = expirationTimestamp - currentTimestamp;
-
-    const getWinner = async (address, proposalId) => {
-      const newID = proposalId.split("-")[0];
-      const tx = await getWinnerDDVoting(address, newID);
-      await tx.wait();
-    };
-
-    if (duration < 0 && account !== "0x00") {
-      console.log("is hybrid" + isHybrid)
-      getWinner(isHybrid ? votingContractAddress : directDemocracyVotingContractAddress, proposalId);
-    }
-
-    return Math.max(0, duration);
-  };
 
   const PTVoteType = Array.isArray(hybridVotingOngoing) ? "Hybrid" : "Participation";
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
+
+  const [showDetermineWinner, setShowDetermineWinner] = useState({});
+
+  const calculateRemainingTime = (expirationTimestamp) => {
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const duration = expirationTimestamp - currentTimestamp;
+    return Math.max(0, duration);
+  };
+  
+  const updateWinnerStatus = async (expirationTimestamp, proposalId, isHybrid) => {
+    const duration = calculateRemainingTime(expirationTimestamp);
+  
+    console.log("duration: ", duration);
+    if (duration <= 0 ) {
+      console.log("duration is less than 0");
+      setShowDetermineWinner(prevState => ({
+        ...prevState,
+        [proposalId]: true
+      }));
+    }
+  };
+  
+  const getWinner = async (address, proposalId) => {
+    const newID = proposalId.split("-")[0];
+    const tx = await getWinnerDDVoting(address, newID);
+    await tx.wait();
+  };
+  
+  
 
 
   const handleTabsChange = (index) => {
@@ -116,6 +128,12 @@ const Voting = () => {
   const safeVotingCompleted = Array.isArray(selectedTab === 0 ? democracyVotingCompleted : (PTVoteType === "Hybrid" ? hybridVotingCompleted : participationVotingCompleted)) ? (selectedTab === 0 ? democracyVotingCompleted : (PTVoteType === "Hybrid" ? hybridVotingCompleted : participationVotingCompleted)) : [];
   
 
+  useEffect(() => {
+    safeVotingOngoing.forEach(proposal => {
+      updateWinnerStatus(proposal?.experationTimestamp, proposal?.id, proposal?.isHybrid);
+    });
+  }, [safeVotingOngoing]);
+  
 
 
   const displayedOngoingProposals = safeVotingOngoing.slice(
@@ -407,7 +425,17 @@ const Voting = () => {
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
+                              {showDetermineWinner[proposal.id] ? (
+                                <Button
+                                  colorScheme="gray"
+                                  size="sm"
+                                  onClick={() => getWinner(proposal.isHybrid ? votingContractAddress : directDemocracyVotingContractAddress, proposal.id)}
+                                >
+                                  Determine Winner
+                                </Button>
+                              ) : (
+                                <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
+                              )}
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
