@@ -26,7 +26,8 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea
+  Textarea,
+  Select,
 } from "@chakra-ui/react";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
@@ -178,8 +179,12 @@ const Voting = () => {
 
 
   
-  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 };
+  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [], type: 'normal', id: 0 };
   const [proposal, setProposal] = useState(defaultProposal);
+
+  const handleProposalTypeChange = (e) => {
+    setProposal({ ...proposal, type: e.target.value });
+  };
 
   const handlePollClick = (poll, isCompleted = false) => {
     setSelectedPoll(poll);
@@ -1031,9 +1036,21 @@ const Voting = () => {
                         required
                       />
                     </FormControl>
+                    <FormControl>
+                      <FormLabel>Proposal Type</FormLabel>
+                        <Select
+                          name="type"
+                          value={proposal.type}
+                          onChange={handleProposalTypeChange}
+                        >
+                          <option value="normal">Normal</option>
+                          <option value="transferFunds">Transfer Funds</option>
+                        </Select>
+                    </FormControl>
                     <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
                   </VStack>
                 </ModalBody>
+                
                 <ModalFooter>
                   <Button
                     type="submit"
