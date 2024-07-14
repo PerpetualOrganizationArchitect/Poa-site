@@ -11,6 +11,7 @@ interface INFTMembership2 {
 interface ITreasury {
     function sendTokens(address _token, address _to, uint256 _amount) external;
     function setVotingContract(address _votingContract) external;
+    function withdrawEther(address payable _to, uint256 _amount) external;
 }
 
 
@@ -138,7 +139,11 @@ contract DirectDemocracyVoting {
         (uint256 winningOptionIndex, bool hasValidWinner) = getWinner(_proposalId);
 
         if (hasValidWinner && proposals[_proposalId].transferEnabled && winningOptionIndex == proposals[_proposalId].transferTriggerOptionIndex) {
-            treasury.sendTokens(address(proposals[_proposalId].transferToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            if(proposals[_proposalId].transferToken == address(0x0000000000000000000000000000000000001010)) {
+                treasury.withdrawEther(proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            } else {
+                treasury.sendTokens(address(proposals[_proposalId].transferToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            }
         }
 
         emit WinnerAnnounced(_proposalId, winningOptionIndex, hasValidWinner);

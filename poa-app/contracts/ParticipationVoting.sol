@@ -11,6 +11,7 @@ interface INFTMembership5 {
 
 interface ITreasury3 {
     function sendTokens(address _token, address _to, uint256 _amount) external;
+    function withdrawEther(address payable _to, uint256 _amount) external;
 }
 
 
@@ -158,7 +159,11 @@ contract ParticipationVoting {
 
         // Check if there's a valid winner and if the specific winning option triggers a transfer
         if (hasValidWinner && proposals[_proposalId].transferEnabled && winningOptionIndex == proposals[_proposalId].transferTriggerOptionIndex) {
-            treasury.sendTokens(address(proposals[_proposalId].transferToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            if(proposals[_proposalId].transferToken == address(0x0000000000000000000000000000000000001010)) {
+                treasury.withdrawEther(proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            } else {
+                treasury.sendTokens(address(proposals[_proposalId].transferToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            }
         }
 
         // Emitting the winner announcement with additional detail about the win validity
