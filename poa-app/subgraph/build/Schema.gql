@@ -117,12 +117,21 @@ type Treasury @entity {
   POname: String!
   treasuryAddress: Bytes!
   votingContract: Bytes
+  withdrawals: [TreasuryWithdrawal!] @derivedFrom(field: "treasury")
 }
 
 type TreasuryCreated @entity {
   id: ID!
   POname: String!
   treasuryAddress: Bytes!
+}
+
+type TreasuryWithdrawal @entity {
+  id: ID!
+  treasury: Treasury! @link
+  recipient: Bytes!
+  amount: BigInt!
+  token: Bytes!
 }
 
 ## parcitipation voting 

@@ -107,11 +107,12 @@ const Voting = () => {
   };
   
   const getWinner = async (address, proposalId) => {
+    console.log("proposalId: ", proposalId);
+    console.log("address: ", address);
     const newID = proposalId.split("-")[0];
     const tx = await getWinnerDDVoting(address, newID);
     await tx.wait();
   };
-  
   
 
 
@@ -483,7 +484,7 @@ const Voting = () => {
                                 <Button
                                   colorScheme="gray"
                                   size="sm"
-                                  onClick={() => getWinner(proposal.isHybrid ? votingContractAddress : directDemocracyVotingContractAddress, proposal.id)}
+                                  onClick={() => getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id)}
                                 >
                                   Determine Winner
                                 </Button>
@@ -790,7 +791,17 @@ const Voting = () => {
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, true)} />
+                            {showDetermineWinner[proposal.id] ? (
+                                <Button
+                                  colorScheme="gray"
+                                  size="sm"
+                                  onClick={() => getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id)}
+                                >
+                                  Determine Winner
+                                </Button>
+                              ) : (
+                                <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
+                              )}
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
