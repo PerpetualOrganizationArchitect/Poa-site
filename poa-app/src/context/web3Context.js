@@ -319,15 +319,30 @@ export const Web3Provider = ({ children }) => {
     // treasury
 
     async function sendToTreasury(contractAddress, tokenAddress, amount) {
-        const contract = getContractInstance(contractAddress, Treasury.abi);
-        const tx = await contract.recieveTokens(tokenAddress, amount);
-        await tx.wait();
-        console.log("Tokens sent to treasury");
+        try {
+            console.log("contractAddress: ", contractAddress);
+            console.log("tokenAddress: ", tokenAddress);
+            console.log("amount: ", amount);
+            console.log("abi: ", Treasury.abi);
+            console.log("account: ", account);
+    
+            const contract = getContractInstance(contractAddress, Treasury.abi);
+            console.log("contract: ", contract);
+    
+            const tx = await contract.receiveTokens(tokenAddress, account, amount, {
+                gasLimit: ethers.utils.hexlify(20000000) // Adjust the gas limit as needed
+            });
+            await tx.wait();
+            console.log("Tokens sent to treasury");
+        } catch (error) {
+            console.error("Error sending tokens to treasury:", error);
+        }
     }
+    
 
     
     return (
-        <Web3Context.Provider value={{changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
+        <Web3Context.Provider value={{sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
             closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
