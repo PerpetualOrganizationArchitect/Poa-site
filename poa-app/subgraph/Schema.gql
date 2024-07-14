@@ -172,6 +172,7 @@ type PTProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
+  transferAddress: Bytes
   options: [PTPollOption!] @derivedFrom(field: "proposal")
   votes: [PTVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
@@ -223,6 +224,7 @@ type DDProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
+  transferAddress: Bytes
   options: [DDPollOption!] @derivedFrom(field: "proposal")
   votes: [DDVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
@@ -277,6 +279,7 @@ type HybridProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
+  transferAddress: Bytes
   options: [HybridPollOption!] @derivedFrom(field: "proposal")
   votes: [HybridVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt

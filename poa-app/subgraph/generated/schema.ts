@@ -1956,6 +1956,23 @@ export class PTProposal extends Entity {
     this.set("transferEnabled", Value.fromBoolean(value));
   }
 
+  get transferAddress(): Bytes | null {
+    let value = this.get("transferAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferAddress");
+    } else {
+      this.set("transferAddress", Value.fromBytes(<Bytes>value));
+    }
+  }
+
   get options(): PTPollOptionLoader {
     return new PTPollOptionLoader(
       "PTProposal",
@@ -2540,6 +2557,23 @@ export class DDProposal extends Entity {
 
   set transferEnabled(value: boolean) {
     this.set("transferEnabled", Value.fromBoolean(value));
+  }
+
+  get transferAddress(): Bytes | null {
+    let value = this.get("transferAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferAddress");
+    } else {
+      this.set("transferAddress", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get options(): DDPollOptionLoader {
@@ -3171,6 +3205,23 @@ export class HybridProposal extends Entity {
 
   set transferEnabled(value: boolean) {
     this.set("transferEnabled", Value.fromBoolean(value));
+  }
+
+  get transferAddress(): Bytes | null {
+    let value = this.get("transferAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferAddress");
+    } else {
+      this.set("transferAddress", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get options(): HybridPollOptionLoader {

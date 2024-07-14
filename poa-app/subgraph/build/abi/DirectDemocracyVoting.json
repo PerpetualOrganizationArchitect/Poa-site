@@ -86,6 +86,12 @@
         "internalType": "bool",
         "name": "transferEnabled",
         "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "transferToken",
+        "type": "address"
       }
     ],
     "name": "NewProposal",
@@ -233,6 +239,11 @@
         "internalType": "bool",
         "name": "_transferEnabled",
         "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_transferToken",
+        "type": "address"
       }
     ],
     "name": "createProposal",

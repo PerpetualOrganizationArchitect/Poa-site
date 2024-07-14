@@ -26,6 +26,7 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.totalVotesDD = BigInt.fromI32(0);
     newProposal.totalVotesPT = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
+    newProposal.transferAddress = event.params.transferToken;
     newProposal.validWinner = false;
     newProposal.save();
 }

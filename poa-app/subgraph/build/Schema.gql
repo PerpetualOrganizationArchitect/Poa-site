@@ -134,6 +134,14 @@ type TreasuryWithdrawal @entity {
   token: Bytes!
 }
 
+type TreasuryDeposit @entity {
+  id: ID!
+  treasury: Treasury! @link
+  sender: Bytes!
+  amount: BigInt!
+  token: Bytes!
+}
+
 ## parcitipation voting 
 
 type PTVotingCreated @entity {
@@ -164,6 +172,7 @@ type PTProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
+  transferAddress: Bytes
   options: [PTPollOption!] @derivedFrom(field: "proposal")
   votes: [PTVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
@@ -215,6 +224,7 @@ type DDProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
+  transferAddress: Bytes
   options: [DDPollOption!] @derivedFrom(field: "proposal")
   votes: [DDVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
@@ -269,6 +279,7 @@ type HybridProposal @entity {
   transferRecipient: Bytes
   transferAmount: BigInt
   transferEnabled: Boolean!
+  transferAddress: Bytes
   options: [HybridPollOption!] @derivedFrom(field: "proposal")
   votes: [HybridVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
