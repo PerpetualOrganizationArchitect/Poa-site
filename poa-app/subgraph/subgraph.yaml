@@ -8,7 +8,7 @@ dataSources:
     name: UniversalAccountRegistry
     network: polygon-amoy
     source:
-      address: "0x30C7f04127861c3246C00ED84BC3246B76fe5c04"
+      address: "0x7ba94351D24A4a0A81ea8CE49a7d333e3be11208"
       abi: AccountManager
       startBlock: 9480000
     mapping:

@@ -77,6 +77,7 @@ export const GraphProvider = ({ children }) => {
         }
 
         if (loaded !== undefined && loaded !== '' && address !== undefined) {
+            console.log("address", address)
             if (loaded === poName) {
                 console.log('loaded')
             }
@@ -171,7 +172,13 @@ export const GraphProvider = ({ children }) => {
             }
           }`;
     
+
         const data = await querySubgraph(query);
+        if (!data.user) {
+            return [];
+        }
+
+        console.log("data", data);
     
         // Combine all proposals into one array but keep the type of proposal
         const proposals = [
