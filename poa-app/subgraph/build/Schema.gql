@@ -118,6 +118,7 @@ type Treasury @entity {
   treasuryAddress: Bytes!
   votingContract: Bytes
   withdrawals: [TreasuryWithdrawal!] @derivedFrom(field: "treasury")
+  deposits: [TreasuryDeposit!] @derivedFrom(field: "treasury")
 }
 
 type TreasuryCreated @entity {

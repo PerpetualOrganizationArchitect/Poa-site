@@ -1330,6 +1330,14 @@ export class Treasury extends Entity {
       "withdrawals",
     );
   }
+
+  get deposits(): TreasuryDepositLoader {
+    return new TreasuryDepositLoader(
+      "Treasury",
+      this.get("id")!.toString(),
+      "deposits",
+    );
+  }
 }
 
 export class TreasuryCreated extends Entity {
@@ -5046,6 +5054,24 @@ export class TreasuryWithdrawalLoader extends Entity {
   load(): TreasuryWithdrawal[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<TreasuryWithdrawal[]>(value);
+  }
+}
+
+export class TreasuryDepositLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TreasuryDeposit[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TreasuryDeposit[]>(value);
   }
 }
 
