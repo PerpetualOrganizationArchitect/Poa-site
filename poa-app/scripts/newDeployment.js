@@ -3,7 +3,7 @@ const MasterDeployfactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
 // sepoila const masterDeployFactoryAddress = "0xDBdf5B0532827917eFFd55439c05B4dB0e471205";
-const masterDeployFactoryAddress = "0xD4A03F49Ab2b8d912a0F199137273fF1423D8FB8";
+const masterDeployFactoryAddress = "0x71ABDf1C5193A826784d1269Ce918CC35081Af1C";
 
 export async function main(
     memberTypeNames,
