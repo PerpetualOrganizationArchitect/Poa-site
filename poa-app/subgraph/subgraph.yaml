@@ -310,7 +310,7 @@ templates:
         - name: ParticipationVoting
           file: ../abi/ParticipationVoting.json
       eventHandlers:
-        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
           handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
@@ -337,7 +337,7 @@ templates:
         - name: DirectDemocracyVoting
           file: ../abi/DirectDemocracyVoting.json
       eventHandlers:
-        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
           handler: handlePollCreated
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
@@ -364,7 +364,7 @@ templates:
         - name: HybridVoting
           file: ../abi/HybridVoting.json
       eventHandlers:
-        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
           handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames

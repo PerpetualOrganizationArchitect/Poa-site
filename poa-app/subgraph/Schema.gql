@@ -134,6 +134,14 @@ type TreasuryWithdrawal @entity {
   token: Bytes!
 }
 
+type TreasuryDeposit @entity {
+  id: ID!
+  treasury: Treasury! @link
+  sender: Bytes!
+  amount: BigInt!
+  token: Bytes!
+}
+
 ## parcitipation voting 
 
 type PTVotingCreated @entity {
