@@ -1,5 +1,5 @@
-import { log } from "@graphprotocol/graph-ts"
-import {VotingContractSet, TokensReceived, TokensSent  } from "../../generated/templates/Treasury/Treasury"
+import { log, Bytes } from "@graphprotocol/graph-ts"
+import {VotingContractSet, TokensReceived, TokensSent, EtherReceived  } from "../../generated/templates/Treasury/Treasury"
 import { Treasury, TreasuryWithdrawal, TreasuryDeposit} from "../../generated/schema";
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 
@@ -38,4 +38,17 @@ export function handleReceiveTokens(event: TokensReceived): void{
     entity.save();
 
 }
+
+export function handleNativeToeksnRecieved(event: EtherReceived): void{
+    log.info("Triggered handleNativeToeksnRecieved", [])
+
+    let entity = new TreasuryDeposit(event.transaction.hash.toHex());
+
+    entity.amount = event.params.amount;
+    entity.token = Bytes.fromHexString("0x0000000000000000000000000000000000001010");
+    entity.sender = event.params.from;
+    entity.treasury = event.address.toHex();
+    entity.save();
+}
+
 

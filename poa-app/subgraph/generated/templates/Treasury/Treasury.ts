@@ -10,6 +10,28 @@ import {
   BigInt,
 } from "@graphprotocol/graph-ts";
 
+export class EtherReceived extends ethereum.Event {
+  get params(): EtherReceived__Params {
+    return new EtherReceived__Params(this);
+  }
+}
+
+export class EtherReceived__Params {
+  _event: EtherReceived;
+
+  constructor(event: EtherReceived) {
+    this._event = event;
+  }
+
+  get from(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class EtherWithdrawn extends ethereum.Event {
   get params(): EtherWithdrawn__Params {
     return new EtherWithdrawn__Params(this);
