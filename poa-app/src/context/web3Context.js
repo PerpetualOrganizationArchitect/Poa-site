@@ -110,8 +110,12 @@ export const Web3Provider = ({ children }) => {
         if (!checkNetwork()) {
             return;
           }
+
+        let tokenAddress = "0x0000000000000000000000000000000000001010"
+        // convert amount to wei
+        let amountConverted = ethers.utils.parseUnits(amount, 18);
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
-        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend);
+        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amountConverted, canSend, tokenAddress);
         await tx.wait();
         console.log("Proposal created");
     }
