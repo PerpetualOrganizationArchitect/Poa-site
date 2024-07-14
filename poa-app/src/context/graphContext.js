@@ -46,6 +46,7 @@ export const GraphProvider = ({ children }) => {
     //contract address state 
     const [partcipationTokenContractAddress, setPartcipationTokenContractAddress] = useState('');
     const [ddTokenContractAddress, setDDTokenContractAddress] = useState('');
+    const [treasuryContractAddress, setTreasuryContractAddress] = useState('');
     const [taskManagerContractAddress, setTaskManagerContractAddress] = useState('');
     const [hybridVotingContractAddress, setHybridVotingContractAddress] = useState('');
     const [participationVotingContractAddress, setParticipationVotingContractAddress] = useState('');
@@ -604,6 +605,9 @@ export const GraphProvider = ({ children }) => {
                 NFTMembership {
                     id
                 }
+                Treasury {
+                    id
+                }
             }
         }`;
     
@@ -614,6 +618,10 @@ export const GraphProvider = ({ children }) => {
     
         if (po.logoHash) {
             setLogoHash(po.logoHash);
+        }
+
+        if(data.perpetualOrganization.Treasury?.id){
+            setTreasuryContractAddress(po.Treasury.id);
         }
     
         if (data.perpetualOrganization.aboutInfo?.description) {
@@ -812,7 +820,7 @@ export const GraphProvider = ({ children }) => {
     }
 
     return (
-        <GraphContext.Provider value={{ongoingPolls, userProposals, setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
+        <GraphContext.Provider value={{treasuryContractAddress,ongoingPolls, userProposals, setGraphUsername, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers, reccommendedTasks, taskCount, chainId, poDescription, poLinks, logoHash, address, graphUsername,claimedTasks, ddTokenContractAddress, nftMembershipContractAddress, userData, setLoaded, leaderboardData, projectsData, hasExecNFT, hasMemberNFT, address, taskManagerContractAddress, directDemocracyVotingContractAddress, democracyVotingOngoing, democracyVotingCompleted, participationVotingOngoing, participationVotingCompleted, votingContractAddress, hybridVotingCompleted, hybridVotingOngoing, fetchRules}}>
         {children}
         </GraphContext.Provider>
     );

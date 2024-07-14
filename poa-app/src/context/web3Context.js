@@ -316,6 +316,15 @@ export const Web3Provider = ({ children }) => {
         return ipfsHash;
     }
 
+    // treasury
+
+    async function sendToTreasury(contractAddress, tokenAddress, amount) {
+        const contract = getContractInstance(contractAddress, Treasury.abi);
+        const tx = await contract.recieveTokens(tokenAddress, amount);
+        await tx.wait();
+        console.log("Tokens sent to treasury");
+    }
+
     
     return (
         <Web3Context.Provider value={{changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
