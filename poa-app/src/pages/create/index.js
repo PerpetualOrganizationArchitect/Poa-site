@@ -44,6 +44,7 @@ const steps = {
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
   ASK_CONFIRMATION: "ASK_CONFIRMATION",
   ASK_VOTING_CONTRACT: "ASK_VOTING_CONTRACT",
+  ASK_USERNAME: "ASK_USERNAME"
 };
 
 const containerVariants = {
@@ -140,6 +141,15 @@ const ArchitectPage = () => {
     }
   }, [showSelection, options]);
 
+  useEffect(() => {
+    if (graphUsername === false && currentStep === steps.ASK_USERNAME && orgDetails.username === "") {
+      addMessage("#### What username would you like to use?");
+    } else if (graphUsername && currentStep === steps.ASK_USERNAME) {
+      setCurrentStep(steps.ASK_CONFIRMATION);
+      setIsConfirmationModalOpen(true);
+    }
+  }, [graphUsername, currentStep]);
+
   const handleSaveLinks = async (links) => {
     console.log("links", links);
     setOrgDetails((prevDetails) => ({
@@ -225,10 +235,7 @@ const ArchitectPage = () => {
       }));
       setIsLogoModalOpen(false);
       addMessage("Logo uploaded successfully. Now let's confirm your selections.");
-      setTimeout(() => {
-        setIsConfirmationModalOpen(true);
-      }, 300);
-      setCurrentStep(steps.ASK_CONFIRMATION);
+      setCurrentStep(steps.ASK_USERNAME);
     } catch (error) {
       console.error("Error setting logo URL:", error);
       toast({
@@ -459,8 +466,18 @@ const ArchitectPage = () => {
           setIsConfirmationModalOpen(true);
         }
         break;
+      case steps.ASK_USERNAME:
+          setOrgDetails((prevDetails) => ({ ...prevDetails, username: input }));
+          addMessage("Username has been set. Now let's confirm your selections.");
+          setTimeout(() => {
+            setIsConfirmationModalOpen(true);
+          }, 300);
+          setCurrentStep(steps.ASK_CONFIRMATION);
+          console.log("test");
+          break;
       case steps.ASK_CONFIRMATION:
-        // Handle confirmation step open confirmation modal
+        console.log("tst");
+        setIsConfirmationModalOpen(true);
         break;
     }
   };
