@@ -210,7 +210,7 @@ dataSources:
     name: QuickJoinFactory
     network: polygon-amoy
     source:
-      address: "0xYourQuickJoinFactoryAddress"
+      address: "0x3BdEb093f187A8D9fDC2BD4e3959e86F38275213"
       abi: QuickJoinFactory
       startBlock: 9480000
     mapping:
@@ -223,7 +223,7 @@ dataSources:
         - name: QuickJoinFactory
           file: ../abi/QuickJoinFactory.json
       eventHandlers:
-        - event: QuickJoinDeployed(indexed address,string)
+        - event: QuickJoinDeployed(address,string)
           handler: handleQuickJoinDeployed
       file: ./mappings/quickJoin/quickJoinFactoryMapping.ts
 templates:

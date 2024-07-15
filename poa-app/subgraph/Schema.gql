@@ -389,6 +389,12 @@ type aboutLink @entity {
   infoIPFS: infoIPFS! @link
 }
 
+# Quick Join 
+type QuickJoinContract @entity {
+  id: ID!
+  POname: String!
+}
+
 
 ## Perpetual Organization info 
 
@@ -406,6 +412,7 @@ type PerpetualOrganization @entity {
   ParticipationVoting: PTVoting @link
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
+  QuickJoinContract: QuickJoinContract @link
   Users: [User!] @derivedFrom(field: "organization")
   totalMembers: BigInt!
 }

@@ -206,6 +206,26 @@ dataSources:
         - event: RegistryCreated(address,string,string,address,string[],address[],string)
           handler: handleRegistryContractCreated
       file: RegistryFactory/RegistryFactory.wasm
+  - kind: ethereum/contract
+    name: QuickJoinFactory
+    network: polygon-amoy
+    source:
+      address: "0x3BdEb093f187A8D9fDC2BD4e3959e86F38275213"
+      abi: QuickJoinFactory
+      startBlock: 9480000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - QuickJoinCreated
+      abis:
+        - name: QuickJoinFactory
+          file: abi/QuickJoinFactory.json
+      eventHandlers:
+        - event: QuickJoinDeployed(address,string)
+          handler: handleQuickJoinDeployed
+      file: QuickJoinFactory/QuickJoinFactory.wasm
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
