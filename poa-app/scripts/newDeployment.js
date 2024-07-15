@@ -19,6 +19,7 @@ export async function main(
     votingControlType,
     quorumPercentageDD,
     quorumPercentagePV,
+    username,
     wallet
   ){
 
@@ -35,6 +36,7 @@ export async function main(
           "DirectDemocracyVoting",
           "HybridVoting",
           "TaskManager",
+          "QuickJoin",
         ];
       } else if (participationVotingEnabled) {
         contractNames = [
@@ -45,6 +47,7 @@ export async function main(
           "DirectDemocracyVoting",
           "ParticipationVoting",
           "TaskManager",
+          "QuickJoin",
         ]
         } else {
           contractNames = [
@@ -55,6 +58,7 @@ export async function main(
             "DirectDemocracyVoting",
             "NoVoting",
             "TaskManager",
+            "QuickJoin",
           ];
       }
 
@@ -73,6 +77,7 @@ export async function main(
         contractNames,
         quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
         quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
+        username
     };
 
     console.log("Deploying new DAO with the following parameters:");
