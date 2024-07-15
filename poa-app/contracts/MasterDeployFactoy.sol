@@ -12,6 +12,14 @@ import "./MembershipNFTFactory.sol";
 import "./RegistryFactory.sol";
 import "./TaskManagerFactory.sol";
 
+interface IMembershipNFT {
+    function mintDefaultNFT() external;
+}
+
+interface IDirectDemocracyToken {
+    function mint() external;
+}
+
 contract MasterFactory {
 
     event DeployParamsLog(
@@ -108,6 +116,8 @@ contract MasterFactory {
         treasury.setVotingContract(votingControlAddress);
 
         registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, params.logoURL, params.infoIPFSHash);
+
+        mintInitialTokens(contractAddresses[0], contractAddresses[1]);
     }
 
     // Splitting deployment functions for clarity and reducing stack depth
@@ -218,5 +228,13 @@ contract MasterFactory {
         } else {
             revert("Invalid voting control type");
         }
+    }
+
+    function mintInitialTokens(address nftContractAddress, address tokenContractAddress) public {
+        // Call the mintDefault function on the NFT contract
+        IMembershipNFT(nftContractAddress).mintDefaultNFT();
+
+        // Call the mint function on the Direct Democracy Token contract
+        IDirectDemocracyToken(tokenContractAddress).mint(); 
     }
 }
