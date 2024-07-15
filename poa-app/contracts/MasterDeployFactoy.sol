@@ -56,6 +56,7 @@ contract MasterFactory {
         string[] contractNames;
         uint256 quorumPercentageDD;
         uint256 quorumPercentagePV;
+        string username;
     }
 
     constructor(
@@ -117,7 +118,14 @@ contract MasterFactory {
 
         registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, params.logoURL, params.infoIPFSHash);
 
-        mintInitialTokens(contractAddresses[0], contractAddresses[1]);
+        IQuickJoin quickJoin = IQuickJoin(contractAddresses[7]);
+        
+        if (bytes(params.username).length > 0) {
+            quickJoin.quickJoinNoUser(params.username);
+        } else {
+            quickJoin.quickJoinWithUser();
+        }
+       
     }
 
     // Splitting deployment functions for clarity and reducing stack depth
@@ -227,12 +235,10 @@ contract MasterFactory {
             revert("Invalid voting control type");
         }
     }
-
-    function mintInitialTokens(address nftContractAddress, address tokenContractAddress) public {
-        // Call the mintDefault function on the NFT contract
-        IMembershipNFT(nftContractAddress).mintDefaultNFT();
-
-        // Call the mint function on the Direct Democracy Token contract
-        IDirectDemocracyToken(tokenContractAddress).mint(); 
-    }
 }
+
+interface  IQuickJoin {
+    function quickJoinNoUser(string memory userName) external;
+    function quickJoinWithUser() external;
+}
+   

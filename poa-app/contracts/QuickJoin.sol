@@ -26,7 +26,7 @@ contract QuickJoin {
         accountManager = IAccountManager(_accountManagerAddress);
     }
 
-    function quickJoin(string memory userName) public {
+    function quickJoinNoUser(string memory userName) public {
         string memory existingUsername = accountManager.getUsername(msg.sender);
 
         // Check if the user has an existing username
@@ -34,6 +34,11 @@ contract QuickJoin {
             
             accountManager.registerAccount(userName);
         }
+        membershipNFT.mintDefaultNFT();
+        directDemocracyToken.mint();
+    }
+
+    function quickJoinWithUser() public {
         membershipNFT.mintDefaultNFT();
         directDemocracyToken.mint();
     }
