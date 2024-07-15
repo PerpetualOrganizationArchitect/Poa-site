@@ -27,6 +27,7 @@ import Deployer from "@/components/Architect/TempDeployer";
 import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
+import { useGraphContext } from "@/context/graphContext";
 
 const steps = {
   ASK_INTRO: "ASK_INTRO",
@@ -77,6 +78,8 @@ const ArchitectPage = () => {
   const router = useRouter();
   const selectionRef = useRef(null);
 
+  const {graphUsername} = useGraphContext();
+
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] = useState(false);
   const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
@@ -118,6 +121,7 @@ const ArchitectPage = () => {
     directDemocracyQuorum: 51,
     hybridVoteQuorum: 51,
     participationVoteQuorum: 51,
+    username: "",
   });
 
   useEffect(() => {
@@ -549,6 +553,7 @@ const ArchitectPage = () => {
         orgDetails.votingControlType,
         orgDetails.directDemocracyQuorum,
         quorum,
+        orgDetails.username,
         signer
       );
     

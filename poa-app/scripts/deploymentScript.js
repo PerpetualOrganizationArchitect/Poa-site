@@ -41,6 +41,8 @@ const MasterDeployFactory = require('../abi/MasterFactory.json');
 
 const AccountManager = require('../abi/AccountManager.json');
 
+const QuickJoinFactory = require('../abi/QuickJoinFactory.json');
+
 
 
 async function deployDirectDemocracyToken(wallet) {
