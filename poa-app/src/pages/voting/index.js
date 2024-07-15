@@ -96,9 +96,7 @@ const Voting = () => {
   const updateWinnerStatus = async (expirationTimestamp, proposalId, isHybrid) => {
     const duration = calculateRemainingTime(expirationTimestamp);
   
-    console.log("duration: ", duration);
     if (duration <= 0 ) {
-      console.log("duration is less than 0");
       setShowDetermineWinner(prevState => ({
         ...prevState,
         [proposalId]: true
@@ -107,8 +105,6 @@ const Voting = () => {
   };
   
   const getWinner = async (address, proposalId) => {
-    console.log("proposalId: ", proposalId);
-    console.log("address: ", address);
     const newID = proposalId.split("-")[0];
     const tx = await getWinnerDDVoting(address, newID);
     await tx.wait();
@@ -142,6 +138,7 @@ const Voting = () => {
     ongoingStartIndex,
     ongoingStartIndex + proposalDisplayLimit
   );
+
 
   const displayedCompletedProposals = safeVotingCompleted.slice(
     completedStartIndex,
@@ -321,10 +318,10 @@ const Voting = () => {
           proposal.name,
           proposal.description,
           proposal.time,
-          proposal.options.map((option, index) => ({ name: option, id: index })),
+          proposal.options,
           last ? proposal.transferOption : 0,
           last ? proposal.transferAddress : account,
-          last ? proposal.transferAmount : 0,
+          last ? proposal.transferAmount : '0',
           last
         );
       }
@@ -335,10 +332,10 @@ const Voting = () => {
           proposal.name,
           proposal.description,
           proposal.time,
-          proposal.options.map((option, index) => ({ name: option, id: index })),
+          proposal.options,
           last ? proposal.transferOption : 0,
           last ? proposal.transferAddress : account,
-          last ? proposal.transferAmount : 0,
+          last ? proposal.transferAmount : '0',
           last
         );
       }
@@ -349,10 +346,10 @@ const Voting = () => {
           proposal.name,
           proposal.description,
           proposal.time,
-          proposal.options.map((option, index) => ({ name: option, id: index })),
+          proposal.options,
           last ? proposal.transferOption : 0,
           last ? proposal.transferAddress : account,
-          last ? proposal.transferAmount : 0,
+          last ? proposal.transferAmount : '0',
           last
         );
       }
@@ -484,7 +481,10 @@ const Voting = () => {
                                 <Button
                                   colorScheme="gray"
                                   size="sm"
-                                  onClick={() => getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id)}
+                                  onClick={() => {
+                                    console.log("type", proposal.type);
+                                    getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
+                                  }}
                                 >
                                   Determine Winner
                                 </Button>
@@ -795,7 +795,10 @@ const Voting = () => {
                                 <Button
                                   colorScheme="gray"
                                   size="sm"
-                                  onClick={() => getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id)}
+                                  onClick={() => {
+                                    console.log("type", proposal.type);
+                                    getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
+                                  }}
                                 >
                                   Determine Winner
                                 </Button>

@@ -109,16 +109,43 @@ export const Web3Provider = ({ children }) => {
     async function createProposalDDVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend) {
         if (!checkNetwork()) {
             return;
-          }
-
-        let tokenAddress = "0x0000000000000000000000000000000000001010"
+        }
+    
+        let tokenAddress = "0x0000000000000000000000000000000000001010";
+        
+        // log all params with their types
+        console.log("proposalName: ", proposalName, "Type: ", typeof proposalName);
+        console.log("proposalDescription: ", proposalDescription, "Type: ", typeof proposalDescription);
+        console.log("proposalDuration: ", proposalDuration, "Type: ", typeof proposalDuration);
+        console.log("options: ", options, "Type: ", typeof options);
+        console.log("triggerSpendIndex: ", triggerSpendIndex, "Type: ", typeof triggerSpendIndex);
+        console.log("recieverAddress: ", recieverAddress, "Type: ", typeof recieverAddress);
+        console.log("amount: ", amount, "Type: ", typeof amount);
+        console.log("canSend: ", canSend, "Type: ", typeof canSend);
+        console.log("tokenAddress: ", tokenAddress, "Type: ", typeof tokenAddress);
+    
         // convert amount to wei
         let amountConverted = ethers.utils.parseUnits(amount, 18);
+        
+        // log the converted amount
+        console.log("amountConverted: ", amountConverted, "Type: ", typeof amountConverted);
+        
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
-        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amountConverted, canSend, tokenAddress);
+        const tx = await contract.createProposal(
+            proposalName,
+            proposalDescription,
+            proposalDuration,
+            options,
+            triggerSpendIndex,
+            recieverAddress,
+            amountConverted,
+            canSend,
+            tokenAddress
+        );
         await tx.wait();
         console.log("Proposal created");
     }
+    
 
     async function ddVote(contractAddress,proposalID, optionIndex) {
         if (!checkNetwork()) {

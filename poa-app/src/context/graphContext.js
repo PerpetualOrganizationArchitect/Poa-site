@@ -267,79 +267,77 @@ export const GraphProvider = ({ children }) => {
     async function fetchAllOngoingPolls(id) {
         const query = `{
             perpetualOrganization(id: "${id}") {
-
-            DirectDemocracyVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
-                    id
-                    name
-                    experationTimestamp
-                    creationTimestamp
-                    description
-                    options{
+                DirectDemocracyVoting {
+                    proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
                         id
                         name
-                        votes
+                        experationTimestamp
+                        creationTimestamp
+                        description
+                        options{
+                            id
+                            name
+                            votes
+                        }
                     }
                 }
-            }
-            HybridVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
-                    id
-                    name
-                    experationTimestamp
-                    creationTimestamp
-                    description
-                    options{
+                HybridVoting {
+                    proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
                         id
                         name
-                        votes
+                        experationTimestamp
+                        creationTimestamp
+                        description
+                        options{
+                            id
+                            name
+                            votes
+                        }
                     }
                 }
-            }
-            ParticipationVoting {
-                proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
-                    id
-                    name
-                    experationTimestamp
-                    creationTimestamp
-                    description
-                    options{
+                ParticipationVoting {
+                    proposals(orderBy: experationTimestamp, orderDirection: asc, where: {winningOptionIndex: null}) {
                         id
                         name
-                        votes
+                        experationTimestamp
+                        creationTimestamp
+                        description
+                        options{
+                            id
+                            name
+                            votes
+                        }
                     }
                 }
-            }
             }
         }`;
-
+    
         const data = await querySubgraph(query);
-
-        
+    
         // set ongoing polls to correct ongoing use state 
-        const ddVoting = data.perpetualOrganization.DirectDemocracyVoting?.proposals;
-        const hybridVoting = data.perpetualOrganization.HybridVoting?.proposals;
-        const participationVoting = data.perpetualOrganization.ParticipationVoting?.proposals;
-
-        if(ddVoting){
+        const ddVoting = data.perpetualOrganization.DirectDemocracyVoting?.proposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' }));
+        const hybridVoting = data.perpetualOrganization.HybridVoting?.proposals.map(proposal => ({ ...proposal, type: 'Hybrid' }));
+        const participationVoting = data.perpetualOrganization.ParticipationVoting?.proposals.map(proposal => ({ ...proposal, type: 'Participation' }));
+    
+        if (ddVoting) {
             setDemocracyVotingOngoing(ddVoting);
         }
-        if(hybridVoting){
+        if (hybridVoting) {
             setHybridVotingOngoing(hybridVoting);
         }
-
-        if(participationVoting){
+        if (participationVoting) {
             setParticipationVotingOngoing(participationVoting);
         }
-
+    
         // combine all ongoing polls into one array with type of poll check to make sure each exists first 
         const polls = [
-            ...(ddVoting || []).map(proposal => ({...proposal, type: 'Direct Democracy'})),
-            ...(hybridVoting || []).map(proposal => ({...proposal, type: 'Hybrid'})),
-            ...(participationVoting || []).map(proposal => ({...proposal, type: 'Participation'})),
+            ...(ddVoting || []),
+            ...(hybridVoting || []),
+            ...(participationVoting || []),
         ];
         setOngoingPolls(polls);
     }
+    
 
     async function fetchDemocracyVotingCompleted(id) {
         const query = `{
