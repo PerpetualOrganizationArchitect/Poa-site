@@ -473,7 +473,11 @@ const Voting = () => {
                             p={2}
                             zIndex={1}
                             _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
-                            onClick={() => handlePollClick(proposal)}
+                            onClick={() => {
+                              if (!showDetermineWinner[proposal.id]) {
+                                handlePollClick(proposal);
+                              }
+                            }}
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
@@ -787,7 +791,11 @@ const Voting = () => {
                             p={2}
                             zIndex={1}
                             _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
-                            onClick={() => handlePollClick(proposal)}
+                            onClick={() => {
+                              if (!showDetermineWinner[proposal.id]) {
+                                handlePollClick(proposal);
+                              }
+                            }}
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
