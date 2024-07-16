@@ -13,6 +13,7 @@ import NFTMembership from "../../abi/NFTMembership.json";
 import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
+import QuickJoin from '../../abi/QuickJoin.json';
 import { useMetaMask } from '@/components/Metamask';
 import NetworkSwitchModal from '@/components/NetworkSwitchModal';
 
@@ -113,16 +114,6 @@ export const Web3Provider = ({ children }) => {
     
         let tokenAddress = "0x0000000000000000000000000000000000001010";
         
-        // log all params with their types
-        console.log("proposalName: ", proposalName, "Type: ", typeof proposalName);
-        console.log("proposalDescription: ", proposalDescription, "Type: ", typeof proposalDescription);
-        console.log("proposalDuration: ", proposalDuration, "Type: ", typeof proposalDuration);
-        console.log("options: ", options, "Type: ", typeof options);
-        console.log("triggerSpendIndex: ", triggerSpendIndex, "Type: ", typeof triggerSpendIndex);
-        console.log("recieverAddress: ", recieverAddress, "Type: ", typeof recieverAddress);
-        console.log("amount: ", amount, "Type: ", typeof amount);
-        console.log("canSend: ", canSend, "Type: ", typeof canSend);
-        console.log("tokenAddress: ", tokenAddress, "Type: ", typeof tokenAddress);
     
         // convert amount to wei
         let amountConverted = ethers.utils.parseUnits(amount, 18);
@@ -351,14 +342,9 @@ export const Web3Provider = ({ children }) => {
 
     async function sendToTreasury(contractAddress, tokenAddress, amount) {
         try {
-            console.log("contractAddress: ", contractAddress);
-            console.log("tokenAddress: ", tokenAddress);
-            console.log("amount: ", amount);
-            console.log("abi: ", Treasury.abi);
-            console.log("account: ", account);
-    
+
             const contract = getContractInstance(contractAddress, Treasury.abi);
-            console.log("contract: ", contract);
+            
     
             const tx = await contract.receiveTokens(tokenAddress, account, amount, {
                 gasLimit: ethers.utils.hexlify(20000000) // Adjust the gas limit as needed
@@ -369,11 +355,47 @@ export const Web3Provider = ({ children }) => {
             console.error("Error sending tokens to treasury:", error);
         }
     }
+
+    // quick join
+
+    async function quickJoinNoUser(contractAddress, username) {
+        if (!checkNetwork()) {
+            return;
+          }
+
+        try {
+            const contract = getContractInstance(contractAddress, QuickJoin.abi);
+            const tx= await contract.quickJoinNoUser(username);
+            await tx.wait();
+            console.log("User joined with new username ");
+        }
+        catch (error) {
+            console.error("Error joining with new username:", error);
+        }
+
+    }
+
+    async function quickJoinWithUser(contractAddress) {
+        if (!checkNetwork()) {
+            return;
+          }
+
+        try {
+            const contract = getContractInstance(contractAddress, QuickJoin.abi);
+            const tx= await contract.quickJoinWithUser();
+            await tx.wait();
+            console.log("User joined with existing username ");
+        }
+        catch (error) {
+            console.error("Error joining with existing username:", error);
+        }
+
+    }
     
 
     
     return (
-        <Web3Context.Provider value={{sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
+        <Web3Context.Provider value={{quickJoinNoUser, quickJoinWithUser, sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
             closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>
