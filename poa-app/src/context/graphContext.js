@@ -53,6 +53,7 @@ export const GraphProvider = ({ children }) => {
     const [directDemocracyVotingContractAddress, setDirectDemocracyVotingContractAddress] = useState('');
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
     const [votingContractAddress, setVotingContractAddress] = useState('');
+    const [quickJoinContactAddress, setQuickJoinContractAddress] = useState('');
 
     //Po info 
     const [poDescription, setPOdescription]= useState('No description provided or IPFS content still being indexed')
@@ -606,6 +607,9 @@ export const GraphProvider = ({ children }) => {
                 Treasury {
                     id
                 }
+                QuickJoinContract {
+                    id
+                }
             }
         }`;
     
@@ -681,6 +685,10 @@ export const GraphProvider = ({ children }) => {
     
         if (data.perpetualOrganization.NFTMembership?.id) {
             setNFTMembershipContractAddress(po.NFTMembership.id);
+        }
+
+        if (data.perpetualOrganization.QuickJoinContract?.id) {
+            setQuickJoinContractAddress(po.QuickJoinContract.id);
         }
     }
 
