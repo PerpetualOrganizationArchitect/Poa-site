@@ -359,6 +359,8 @@ export const Web3Provider = ({ children }) => {
     // quick join
 
     async function quickJoinNoUser(contractAddress, username) {
+        console.log("username: ", username);
+        console.log("contractAddress: ", contractAddress);
         if (!checkNetwork()) {
             return;
           }

@@ -41,7 +41,7 @@ contract QuickJoin {
         // Check if the user has an existing username
         if (bytes(existingUsername).length == 0) {
             
-            accountManager.registerAccount(userName);
+            accountManager.registerAccountQuickJoin(userName, msg.sender);
         }
         membershipNFT.mintDefaultNFT(msg.sender);
         directDemocracyToken.mint(msg.sender);
