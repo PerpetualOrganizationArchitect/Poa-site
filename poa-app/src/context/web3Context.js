@@ -14,8 +14,6 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
 import QuickJoin from '../../abi/QuickJoin.json';
-import { useMetaMask } from '@/components/Metamask';
-import NetworkSwitchModal from '@/components/NetworkSwitchModal';
 
 import {
     useAccount

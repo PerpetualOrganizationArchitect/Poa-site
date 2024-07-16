@@ -51,9 +51,13 @@ async function deployDirectDemocracyToken(wallet) {
   const DirectDemocracyTokenFactoryAbi = DirectDemocracyTokenFactory.abi;
 
   const factory = new ethers.ContractFactory(DirectDemocracyTokenFactoryAbi, DirectDemocracyTokenFactoryBytecode, wallet);
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
 
-
-  const contract = await factory.deploy();
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
 
   console.log(`ddtoken factory Contract deployed at address: ${contract.address}`);
@@ -68,7 +72,14 @@ async function deployDirectDemocracyVoting( wallet, ddtokenAddress) {
 
 
     const factory = new ethers.ContractFactory(DirectDemocracyVotingFactoryAbi, DirectDemocracyVotingFactoryBytecode, wallet);
-    const contract = await factory.deploy();
+
+    const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+    const gasLimit = 6000000;
+
+    const contract = await factory.deploy({
+      gasPrice: gasPrice,
+      gasLimit: gasLimit,
+    });
     await contract.deployed();
     console.log(`ddvoting factory Contract deployed at address: ${contract.address}`);
     return contract;
@@ -79,7 +90,13 @@ async function deployDirectDemocracyVoting( wallet, ddtokenAddress) {
 async function deployNFTMembership(wallet) {
   const factory = new ethers.ContractFactory(NFTMembershipFactory.abi, NFTMembershipFactory.bytecode, wallet);
 
-  const contract = await factory.deploy();
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`NFT Membership Contract deployed at address: ${contract.address}`);
   return contract;
@@ -87,7 +104,13 @@ async function deployNFTMembership(wallet) {
 
 async function deployParticipationToken(wallet) {
   const factory = new ethers.ContractFactory(ParticipationTokenFactory.abi, ParticipationTokenFactory.bytecode, wallet);
-  const contract = await factory.deploy();
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Participation Token Contract deployed at address: ${contract.address}`);
   return contract;
@@ -95,9 +118,13 @@ async function deployParticipationToken(wallet) {
 
 async function deployTreasury(wallet) {
   const factory = new ethers.ContractFactory(TreasuryFactory.abi, TreasuryFactory.bytecode, wallet);
-  const contract = await factory.deploy(); 
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
 
-
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Treasury Contract deployed at address: ${contract.address}`);
   return contract;
@@ -105,7 +132,13 @@ async function deployTreasury(wallet) {
 
 async function deployParticipationVoting(wallet) {
   const factory = new ethers.ContractFactory(ParticipationVotingFactory.abi, ParticipationVotingFactory.bytecode, wallet);
-  const contract = await factory.deploy(); 
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Participation Voting Contract deployed at address: ${contract.address}`);
   return contract;
@@ -113,7 +146,13 @@ async function deployParticipationVoting(wallet) {
 
 async function deployHybridVoting(wallet) {
   const factory = new ethers.ContractFactory(HybridVotingFactory.abi, HybridVotingFactory.bytecode, wallet);
-  const contract = await factory.deploy(); 
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Hybrid Voting Contract deployed at address: ${contract.address}`);
   return contract;
@@ -121,7 +160,13 @@ async function deployHybridVoting(wallet) {
 
 async function deployTaskManager(wallet) {
   const factory = new ethers.ContractFactory(TaskManagerFactory.abi, TaskManagerFactory.bytecode, wallet);
-  const contract = await factory.deploy();
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Task Manager Contract deployed at address: ${contract.address}`);
   return contract;
@@ -130,8 +175,14 @@ async function deployTaskManager(wallet) {
 async function deployMasterDeployFactory(wallet, directDemocracyTokenFactory, directDemocracyVotingFactory, hybridVotingFactory, participationTokenFactory, participationVotingFactory, treasuryFactory,
   nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress) {
     const factory = new ethers.ContractFactory(MasterDeployFactory.abi, MasterDeployFactory.bytecode, wallet);
+    const gasPrice = ethers.utils.parseUnits('29', 'gwei');
+    const gasLimit = 8000000;
+  
     const contract = await factory.deploy(directDemocracyTokenFactory, directDemocracyVotingFactory, hybridVotingFactory, participationTokenFactory, participationVotingFactory, treasuryFactory,
-      nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress);
+      nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress, {
+        gasPrice: gasPrice,
+        gasLimit: gasLimit,
+      });
     await contract.deployed();
     console.log(`Master Deploy Factory Contract deployed at address: ${contract.address}`);
     return contract;
@@ -141,7 +192,13 @@ async function deployMasterDeployFactory(wallet, directDemocracyTokenFactory, di
 async function deployRegistry(wallet) {
   const factory = new ethers.ContractFactory(RegistryFactory.abi, RegistryFactory.bytecode, wallet);
   
-  const contract = await factory.deploy(); 
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Registry Contract deployed at address: ${contract.address}`);
   return contract;
@@ -149,7 +206,13 @@ async function deployRegistry(wallet) {
 
 async function deployAccountManager(wallet) {
   const factory = new ethers.ContractFactory(AccountManager.abi, AccountManager.bytecode, wallet);
-  const contract = await factory.deploy();
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Account Manager Contract deployed at address: ${contract.address}`);
   return contract;
@@ -157,7 +220,13 @@ async function deployAccountManager(wallet) {
 
 async function deployQuickJoinFactory(wallet) {
   const factory = new ethers.ContractFactory(QuickJoinFactory.abi, QuickJoinFactory.bytecode, wallet);
-  const contract = await factory.deploy();
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
   await contract.deployed();
   console.log(`Quick Join Factory Contract deployed at address: ${contract.address}`);
   return contract;

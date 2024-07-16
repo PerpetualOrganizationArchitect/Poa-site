@@ -129,7 +129,7 @@ contract MasterFactory {
         if (bytes(params.username).length > 0) {
             quickJoin.quickJoinNoUserMasterDeploy(params.username, msg.sender);
         } else {
-            quickJoin.quickJoinWithUseMasterDeploy(msg.sender);
+            quickJoin.quickJoinWithUserMasterDeploy(msg.sender);
         }
        
     }
@@ -245,7 +245,7 @@ contract MasterFactory {
 
 interface  IQuickJoin {
     function quickJoinNoUserMasterDeploy(string memory userName, address newUser) external;
-    function quickJoinWithUseMasterDeploy(address newUser) external;
+    function quickJoinWithUserMasterDeploy(address newUser) external;
 }
 
 interface IDirectDemocracyToken2 {

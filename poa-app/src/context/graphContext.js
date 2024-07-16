@@ -64,9 +64,13 @@ export const GraphProvider = ({ children }) => {
     const [completedTaskAmount, setCompletedTaskAmount] = useState(0);
     const [ptTokenBalance, setPtTokenBalance] = useState(0);
 
+    // use effect to fetch username when address changes
+
 
 
     useEffect(() => {
+        console.log("loaded", loaded)
+        console.log("address", address)
         
         async function init() {
             await fetchPOdata(loaded);
@@ -76,6 +80,12 @@ export const GraphProvider = ({ children }) => {
         async function noAccountInit(){
             await fetchPOdata(loaded);
             await loadGraphDataNoAccount(loaded);
+        }
+
+        async function fetchUser() {
+            console.log("fetching user")
+            const username = await fetchUsername(address);
+            setGraphUsername(username);
         }
 
         if (loaded !== undefined && loaded !== '' && address !== undefined) {
@@ -92,6 +102,9 @@ export const GraphProvider = ({ children }) => {
 
         }else if (loaded !== undefined && loaded !== '' && address === undefined){
             noAccountInit();
+        }
+        else if (loaded === '' && address !== undefined){
+            fetchUser();
         }
     }, [address, loaded]);
 
@@ -149,6 +162,7 @@ export const GraphProvider = ({ children }) => {
         return data;
 
     }
+
 
     async function fetchUsersProposals(poName, address) {
         const query = `{
@@ -424,7 +438,17 @@ export const GraphProvider = ({ children }) => {
         return data;
     }
     
+    async function fetchUsername(id) {
+        let normalizedId = id.toLowerCase();
+        const query = `{
+            account(id: "${normalizedId}") {
+                userName
+            }
+        }`;
     
+        const data = await querySubgraph(query);
+        return data.account.userName;
+    }
 
     async function fetchUserDetails(poName, id) {
         if (!poName || !id) {

@@ -142,11 +142,15 @@ const ArchitectPage = () => {
   }, [showSelection, options]);
 
   useEffect(() => {
+    console.log("graphUsername", graphUsername);
     if (graphUsername === false && currentStep === steps.ASK_USERNAME && orgDetails.username === "") {
       addMessage("#### What username would you like to use?");
     } else if (graphUsername && currentStep === steps.ASK_USERNAME) {
       setCurrentStep(steps.ASK_CONFIRMATION);
-      setIsConfirmationModalOpen(true);
+      
+      setTimeout(() => {
+        setIsConfirmationModalOpen(true);
+      }, 300);
     }
   }, [graphUsername, currentStep]);
 
@@ -221,7 +225,7 @@ const ArchitectPage = () => {
       participationVoteQuorum: 51,
       hybridVotingEnabled: false,
       participationVotingEnabled: false,
-      logoURL: "",
+      logoURL: "QmZ4XzP6HRdVXdyJXKLzHXnQWpi7uztCuYEgwbse8XsDhD",
       votingControlType: "DirectDemocracy",
     });
     setCurrentStep(steps.ASK_NAME);
@@ -461,9 +465,8 @@ const ArchitectPage = () => {
         if (input.toLowerCase().includes("yes")) {
           setIsLogoModalOpen(true);
         } else {
-          setCurrentStep(steps.ASK_CONFIRMATION);
+          setCurrentStep(steps.ASK_USERNAME);
           addMessage("Okay, skipping logo upload.");
-          setIsConfirmationModalOpen(true);
         }
         break;
       case steps.ASK_USERNAME:
@@ -473,10 +476,9 @@ const ArchitectPage = () => {
             setIsConfirmationModalOpen(true);
           }, 300);
           setCurrentStep(steps.ASK_CONFIRMATION);
-          console.log("test");
           break;
       case steps.ASK_CONFIRMATION:
-        console.log("tst");
+
         setIsConfirmationModalOpen(true);
         break;
     }
