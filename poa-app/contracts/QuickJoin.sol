@@ -13,6 +13,7 @@ interface IDirectDemocracyToken {
 interface IAccountManager {
     function getUsername(address accountAddress) external view returns (string memory);
     function registerAccount(string memory username) external;
+    function registerAccountQuickJoin(string memory username, address newUser) external;
 }
 
 contract QuickJoin {
@@ -51,19 +52,19 @@ contract QuickJoin {
         directDemocracyToken.mint(msg.sender);
     }
 
-    function quickJoinNoUserMasterDeploy(string memory userName, address newUser) public {
-        string memory existingUsername = accountManager.getUsername(msg.sender);
+    function quickJoinNoUserMasterDeploy(string memory userName, address newUser) public onlyMasterDeploy() {
+        string memory existingUsername = accountManager.getUsername(newUser);
 
         // Check if the user has an existing username
         if (bytes(existingUsername).length == 0) {
             
-            accountManager.registerAccount(userName);
+            accountManager.registerAccountQuickJoin(userName, newUser);
         }
         membershipNFT.mintDefaultNFT(newUser);
         directDemocracyToken.mint(newUser);
     }
 
-    function quickJoinWithUserMasterDeploy(address newUser) public {
+    function quickJoinWithUserMasterDeploy(address newUser) public onlyMasterDeploy() {
         membershipNFT.mintDefaultNFT(newUser);
         directDemocracyToken.mint(newUser);
     }

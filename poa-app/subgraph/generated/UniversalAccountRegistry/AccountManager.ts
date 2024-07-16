@@ -161,3 +161,37 @@ export class RegisterAccountCall__Outputs {
     this._call = call;
   }
 }
+
+export class RegisterAccountQuickJoinCall extends ethereum.Call {
+  get inputs(): RegisterAccountQuickJoinCall__Inputs {
+    return new RegisterAccountQuickJoinCall__Inputs(this);
+  }
+
+  get outputs(): RegisterAccountQuickJoinCall__Outputs {
+    return new RegisterAccountQuickJoinCall__Outputs(this);
+  }
+}
+
+export class RegisterAccountQuickJoinCall__Inputs {
+  _call: RegisterAccountQuickJoinCall;
+
+  constructor(call: RegisterAccountQuickJoinCall) {
+    this._call = call;
+  }
+
+  get username(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get newUser(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class RegisterAccountQuickJoinCall__Outputs {
+  _call: RegisterAccountQuickJoinCall;
+
+  constructor(call: RegisterAccountQuickJoinCall) {
+    this._call = call;
+  }
+}

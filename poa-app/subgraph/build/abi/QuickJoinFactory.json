@@ -39,6 +39,11 @@
         "internalType": "string",
         "name": "_POname",
         "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_masterDeployAddress",
+        "type": "address"
       }
     ],
     "name": "createQuickJoin",

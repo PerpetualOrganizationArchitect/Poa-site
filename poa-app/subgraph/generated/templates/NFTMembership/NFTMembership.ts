@@ -609,6 +609,10 @@ export class MintDefaultNFTCall__Inputs {
   constructor(call: MintDefaultNFTCall) {
     this._call = call;
   }
+
+  get newUser(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
 }
 
 export class MintDefaultNFTCall__Outputs {
@@ -823,6 +827,36 @@ export class SetMemberTypeImageCall__Outputs {
   _call: SetMemberTypeImageCall;
 
   constructor(call: SetMemberTypeImageCall) {
+    this._call = call;
+  }
+}
+
+export class SetQuickJoinCall extends ethereum.Call {
+  get inputs(): SetQuickJoinCall__Inputs {
+    return new SetQuickJoinCall__Inputs(this);
+  }
+
+  get outputs(): SetQuickJoinCall__Outputs {
+    return new SetQuickJoinCall__Outputs(this);
+  }
+}
+
+export class SetQuickJoinCall__Inputs {
+  _call: SetQuickJoinCall;
+
+  constructor(call: SetQuickJoinCall) {
+    this._call = call;
+  }
+
+  get _quickJoin(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetQuickJoinCall__Outputs {
+  _call: SetQuickJoinCall;
+
+  constructor(call: SetQuickJoinCall) {
     this._call = call;
   }
 }

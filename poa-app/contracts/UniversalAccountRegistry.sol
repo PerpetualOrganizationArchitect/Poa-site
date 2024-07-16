@@ -14,6 +14,7 @@ contract AccountManager {
     // Event for username change
     event UsernameChanged(address indexed accountAddress, string newUsername);
 
+
     // Function to register a new account with a unique username
     function registerAccount(string memory username) public {
         require(bytes(username).length > 0, "Username cannot be empty");
@@ -23,6 +24,16 @@ contract AccountManager {
         addressToUsername[msg.sender] = username;
         usernameExists[username] = true;
         emit UserRegistered(msg.sender, username);
+    }
+
+    function registerAccountQuickJoin(string memory username, address newUser) public {
+        require(bytes(username).length > 0, "Username cannot be empty");
+        require(bytes(addressToUsername[newUser]).length == 0, "Account already registered");
+        require(!usernameExists[username], "Username already taken");
+
+        addressToUsername[newUser] = username;
+        usernameExists[username] = true;
+        emit UserRegistered(newUser, username);
     }
 
     // Function to change the username

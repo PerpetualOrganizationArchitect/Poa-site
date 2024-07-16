@@ -6,8 +6,8 @@ import "./QuickJoin.sol";
 contract QuickJoinFactory {
     event QuickJoinDeployed(address quickJoinAddress, string POname);
 
-    function createQuickJoin(address _membershipNFTAddress, address _directDemocracyTokenAddress, address _accountManagerAddress, string memory _POname) public returns (address) {
-        QuickJoin quickJoin = new QuickJoin(_membershipNFTAddress, _directDemocracyTokenAddress, _accountManagerAddress);
+    function createQuickJoin(address _membershipNFTAddress, address _directDemocracyTokenAddress, address _accountManagerAddress, string memory _POname, address _masterDeployAddress) public returns (address) {
+        QuickJoin quickJoin = new QuickJoin(_membershipNFTAddress, _directDemocracyTokenAddress, _accountManagerAddress, _masterDeployAddress);
         
         emit QuickJoinDeployed(address(quickJoin), _POname);
         return address(quickJoin);

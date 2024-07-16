@@ -42,15 +42,17 @@ export class QuickJoinFactory extends ethereum.SmartContract {
     _directDemocracyTokenAddress: Address,
     _accountManagerAddress: Address,
     _POname: string,
+    _masterDeployAddress: Address,
   ): Address {
     let result = super.call(
       "createQuickJoin",
-      "createQuickJoin(address,address,address,string):(address)",
+      "createQuickJoin(address,address,address,string,address):(address)",
       [
         ethereum.Value.fromAddress(_membershipNFTAddress),
         ethereum.Value.fromAddress(_directDemocracyTokenAddress),
         ethereum.Value.fromAddress(_accountManagerAddress),
         ethereum.Value.fromString(_POname),
+        ethereum.Value.fromAddress(_masterDeployAddress),
       ],
     );
 
@@ -62,15 +64,17 @@ export class QuickJoinFactory extends ethereum.SmartContract {
     _directDemocracyTokenAddress: Address,
     _accountManagerAddress: Address,
     _POname: string,
+    _masterDeployAddress: Address,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createQuickJoin",
-      "createQuickJoin(address,address,address,string):(address)",
+      "createQuickJoin(address,address,address,string,address):(address)",
       [
         ethereum.Value.fromAddress(_membershipNFTAddress),
         ethereum.Value.fromAddress(_directDemocracyTokenAddress),
         ethereum.Value.fromAddress(_accountManagerAddress),
         ethereum.Value.fromString(_POname),
+        ethereum.Value.fromAddress(_masterDeployAddress),
       ],
     );
     if (result.reverted) {
@@ -112,6 +116,10 @@ export class CreateQuickJoinCall__Inputs {
 
   get _POname(): string {
     return this._call.inputValues[3].value.toString();
+  }
+
+  get _masterDeployAddress(): Address {
+    return this._call.inputValues[4].value.toAddress();
   }
 }
 

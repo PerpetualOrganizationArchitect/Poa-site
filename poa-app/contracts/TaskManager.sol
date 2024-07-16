@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface INFTMembership4 {
     function checkMemberTypeByAddress(address user) external view returns (string memory);
+    function setQuickJoin(address _quickJoin) external;
+    function mintDefaultNFT(address newUser) external;
 }
 
 interface IParticipationToken {

@@ -114,16 +114,22 @@ contract MasterFactory {
         ITreasury treasury = ITreasury(contractAddresses[3]);
         treasury.setVotingContract(votingControlAddress);
 
-        contractAddresses[7] = quickJoinFactory.createQuickJoin(contractAddresses[0], contractAddresses[1], accountManagerAddress, params.POname);
+        contractAddresses[7] = quickJoinFactory.createQuickJoin(contractAddresses[0], contractAddresses[1], accountManagerAddress, params.POname, address(this));
 
         registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, params.logoURL, params.infoIPFSHash);
 
         IQuickJoin quickJoin = IQuickJoin(contractAddresses[7]);
+
+        IDirectDemocracyToken2 directDemocracyToken = IDirectDemocracyToken2(contractAddresses[1]);
+        directDemocracyToken.setQuickJoin(contractAddresses[7]);
+
+        INFTMembership4 nftMembership = INFTMembership4(contractAddresses[0]);
+        nftMembership.setQuickJoin(contractAddresses[7]);
         
         if (bytes(params.username).length > 0) {
-            quickJoin.quickJoinNoUser(params.username);
+            quickJoin.quickJoinNoUserMasterDeploy(params.username, msg.sender);
         } else {
-            quickJoin.quickJoinWithUser();
+            quickJoin.quickJoinWithUseMasterDeploy(msg.sender);
         }
        
     }
@@ -238,7 +244,11 @@ contract MasterFactory {
 }
 
 interface  IQuickJoin {
-    function quickJoinNoUser(string memory userName) external;
-    function quickJoinWithUser() external;
+    function quickJoinNoUserMasterDeploy(string memory userName, address newUser) external;
+    function quickJoinWithUseMasterDeploy(address newUser) external;
+}
+
+interface IDirectDemocracyToken2 {
+    function setQuickJoin(address _quickJoin) external;
 }
    
