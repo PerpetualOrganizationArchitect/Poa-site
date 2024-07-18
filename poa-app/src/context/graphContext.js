@@ -514,10 +514,12 @@ export const GraphProvider = ({ children }) => {
             const username = account?.userName || false;
             const userTasks = user?.tasks || [];
             
-            // count amount of tasks completed
+            // count amount of tasks completed and add task to taskComleted array
+            let tasksCompleted = [];
             let taskCount = 0;
             userTasks.forEach(task => {
                 if (task.completed) {
+                    tasksCompleted.push(task);
                     taskCount++;
                 }
             });
@@ -543,6 +545,7 @@ export const GraphProvider = ({ children }) => {
                     tasksCompleted: taskCount,
                     totalVotes: user.totalVotes,
                     dateJoined: user.dateJoined,
+                    completedTasks: tasksCompleted,
                 });
             }
     
