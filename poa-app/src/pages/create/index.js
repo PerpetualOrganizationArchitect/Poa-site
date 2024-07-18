@@ -116,7 +116,7 @@ const ArchitectPage = () => {
     participationVoteWeight: 0,
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
-    logoURL: "",
+    logoURL: "QmZ4XzP6HRdVXdyJXKLzHXnQWpi7uztCuYEgwbse8XsDhD",
     infoIPFSHash: "",
     votingControlType: "DirectDemocracy",
     directDemocracyQuorum: 51,
