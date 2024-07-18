@@ -8,20 +8,20 @@ const glassLayerStyle = {
   zIndex: -1,
   borderRadius: "inherit",
   backdropFilter: "blur(20px)",
-  backgroundColor: "rgba(0, 0, 0, .6)",
+  backgroundColor: "rgba(0, 0, 0, .8)",
 };
 
 const HeadingVote = ({ selectedTab }) => {
   return (
     <Flex
       align="center"
-      mb={6}
+      mb={4}
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
       borderRadius="3xl"
       boxShadow="lg"
-      p="2%"
+      p="1.5%"
       w="100%"
       bg="transparent"
       position="relative"

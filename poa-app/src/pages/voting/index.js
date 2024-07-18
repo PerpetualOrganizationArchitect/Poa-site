@@ -49,7 +49,7 @@ const glassLayerStyle = {
   zIndex: -1,
   borderRadius: "inherit",
   backdropFilter: "blur(20px)",
-  backgroundColor: "rgba(0, 0, 0, .73)",
+  backgroundColor: "rgba(0, 0, 0, .8)",
 };
 
 const Voting = () => {
@@ -376,7 +376,7 @@ const Voting = () => {
   return (
     <>
       <Navbar />
-      <Container maxW="container.2xl" py={6} px={10}>
+      <Container maxW="container.2xl" py={4} px={6}>
         <HeadingVote selectedTab={selectedTab} />
         <Tabs
           index={selectedTab}
@@ -436,17 +436,17 @@ const Voting = () => {
               >
                 <div className="glass" style={glassLayerStyle} />
                 <Flex w="100%" flexDirection="column">
-                  <VStack alignItems={"flex-start"} spacing={8}>
+                  <VStack alignItems={"flex-start"} spacing={6}>
                     <HStack w="100%" justifyContent="space-between">
                       <Heading pl={2} color="rgba(333, 333, 333, 1)">
                         Ongoing Votes
                       </Heading>
                       <Button
                         fontWeight="black"
-                        p="2%"
+                        p="1%"
                         w="20%"
                         bg="green.300"
-                        mt="2%"
+                        mt="1%"
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
@@ -754,17 +754,17 @@ const Voting = () => {
               >
                 <div className="glass" style={glassLayerStyle} />
                 <Flex w="100%" flexDirection="column">
-                  <VStack alignItems={"flex-start"} spacing={8}>
+                  <VStack alignItems={"flex-start"} spacing={6}>
                     <HStack w="100%" justifyContent="space-between">
                       <Heading pl={2} color="rgba(333, 333, 333, 1)">
                         Ongoing Votes
                       </Heading>
                       <Button
                         fontWeight="black"
-                        p="2%"
+                        p="1%"
                         w="20%"
                         bg="green.300"
-                        mt="2%"
+                        mt="1%"
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
