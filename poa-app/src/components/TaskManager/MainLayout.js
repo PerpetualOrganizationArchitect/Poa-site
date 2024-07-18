@@ -33,7 +33,7 @@ const MainLayout = () => {
 
 
   return (
-      <Flex minHeight={`calc(100vh - 94px)`}>
+      <Flex minHeight={`calc(100vh - 80px)`}>
         <ProjectSidebar
           projects={projects}
           selectedProject={selectedProject}

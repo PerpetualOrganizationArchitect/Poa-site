@@ -28,7 +28,7 @@ const Navigation = () => {
             <Image
               src="/images/poa_logo.png"
               alt="Home"
-              width={54}
+              width={48}
               height={48}
             />
           }

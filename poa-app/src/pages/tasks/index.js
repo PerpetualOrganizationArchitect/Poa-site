@@ -45,7 +45,7 @@ const Tasks = () => {
   return (
     <>
       <Navbar />
-    <Box p={0} minH="80vh" position="relative" bg="blackAlpha.600" ref={containerRef}>
+    <Box   minH="90vh" position="relative" bg="blackAlpha.600" ref={containerRef}>
       
       <MainLayout />
     </Box>
