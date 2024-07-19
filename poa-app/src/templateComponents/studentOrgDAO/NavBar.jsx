@@ -9,19 +9,19 @@ const Navbar = () => {
   const router = useRouter();
   const { userDAO } = router.query;
   return (
-    <Box bg="black" p={2.5} >
+    <Box bg="black" p={2.5} alignItems={"center"} >
       <Flex
         alignItems="center"
         h="60px"
         maxW="100%"
         justifyContent="space-between"
       >
-        <Box h="100%" w="12%" mr={{ base: "2", md: "4" }}>
+        <Box   h="100%" w="12%" mr={{ base: "2", md: "4" }}>
           <Link as={NextLink} href={`/home/?userDAO=${userDAO}`} passHref>
             <Image
-              src="/images/poa_character.png"
+              src="/images/high_res_poa.png"
               alt="Your Logo"
-              height="107%"
+              height="113%"
               width="auto"
               objectFit="contain"
             />

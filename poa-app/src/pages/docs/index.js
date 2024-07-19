@@ -17,7 +17,7 @@ export default function Home({ allPostsData }) {
                     p="4"
                     borderRadius="xl"
                     maxWidth="fit-content"
-                    mr="7%"
+                    mr="5%"
                 >
                     <VStack align="flex-start">
                         <Text
@@ -48,7 +48,8 @@ export default function Home({ allPostsData }) {
                                     mt="1"
                                     src="/images/high_res_poa.png"
                                     alt="Poa Logo"
-                                    height={[100,140, 180]}
+                                    maxHeight={[90, 130, 170]}
+                                    width="auto"
                                 />
                             </Box>
                             </Link>
@@ -71,7 +72,8 @@ export default function Home({ allPostsData }) {
                                         src="/images/Po.webp"
                                         alt="Poa Logo"
                                         mt="1"
-                                        height={[100,140, 180]}
+                                        maxHeight={[100, 140, 180]}
+                                        width="auto"
                                     />
                                 </Box>
                             </Link>
@@ -94,7 +96,8 @@ export default function Home({ allPostsData }) {
                                         mt="1"
                                         src="/images/join.webp"
                                         alt="AlphaV1"
-                                        height={[100,140, 180]}
+                                        maxHeight={[100, 140, 180]}
+                                        width="auto"
                                     />
                                 </Box>
                             </Link>
@@ -128,8 +131,8 @@ export default function Home({ allPostsData }) {
                                         mt="2"
                                         src="/images/alphaV1.webp"
                                         alt="AlphaV1"
-                                
-                                        height={[100,140, 180]}
+                                        maxHeight={[100, 140, 180]}
+                                        width="auto"
                                     />
                                 </Box>
                             </Link>

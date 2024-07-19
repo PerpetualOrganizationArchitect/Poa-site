@@ -376,7 +376,7 @@ const Voting = () => {
   return (
     <>
       <Navbar />
-      <Container maxW="container.2xl" py={4} px={6}>
+      <Container maxW="container.2xl" py={4} px={"3.8%"}>
         <HeadingVote selectedTab={selectedTab} />
         <Tabs
           index={selectedTab}
