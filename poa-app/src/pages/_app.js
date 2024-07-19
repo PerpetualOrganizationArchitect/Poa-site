@@ -4,6 +4,7 @@ import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
 import { ProfileHubProvider } from "@/context/profileHubContext";
+import { ProjectProvider } from "@/context/ProjectContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -26,8 +27,8 @@ import {
 } from "@tanstack/react-query";
 
 import NetworkModalControl from "@/components/NetworkModalControl";
-
-
+import { ApolloProvider } from '@apollo/client';
+import client from '../util//apolloClient';
 
 
 
@@ -60,11 +61,13 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }) {
   return (
     <WagmiProvider config={config}>
+      <ApolloProvider client={client}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider  initialChain={polygonAmoy}>
           <IPFSprovider>
             <ProfileHubProvider>
               <GraphProvider>
+              <ProjectProvider>
                 <Web3Provider>
                   
                   <DataBaseProvider>
@@ -74,11 +77,13 @@ function MyApp({ Component, pageProps }) {
                     </ChakraProvider>
                   </DataBaseProvider>
                 </Web3Provider>
+              </ProjectProvider>
               </GraphProvider>
             </ProfileHubProvider>
           </IPFSprovider>
         </RainbowKitProvider>
       </QueryClientProvider>
+      </ApolloProvider>
     </WagmiProvider>
   );
 }

@@ -1,21 +1,27 @@
 // ProjectContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { FETCH_PROJECT_DATA } from './queries';
-import client from './apolloClient';
+import { FETCH_PROJECT_DATA } from '../util/queries';
+import client from '../util/apolloClient';
+import { useRouter } from "next/router";
 
 const ProjectContext = createContext();
 
 export const useProjectContext = () => useContext(ProjectContext);
 
-export const ProjectProvider = ({ children, poName }) => {
+export const ProjectProvider = ({ children }) => {
   const [projectsData, setProjectsData] = useState([]);
   const [taskCount, setTaskCount] = useState(0);
   const [reccommendedTasks, setReccommendedTasks] = useState([]);
 
+  const router = useRouter();
+  const { poName } = router.query;
+
+  // Check if poName is defined before running the query
   const { data, loading, error } = useQuery(FETCH_PROJECT_DATA, {
     variables: { id: poName },
     client,
+    skip: !poName, // Skip the query if poName is not defined
   });
 
   useEffect(() => {
