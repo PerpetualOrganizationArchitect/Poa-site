@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.10.8",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
@@ -21,6 +22,7 @@
     "ethers": "5.7.2",
     "framer-motion": "^11.0.6",
     "fs": "^0.0.2",
+    "graphql": "^16.9.0",
     "hardhat": "^2.20.1",
     "html-to-text": "^9.0.5",
     "ipfs-http-client": "^60.0.1",
