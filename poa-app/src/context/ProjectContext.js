@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { FETCH_PROJECT_DATA } from '../util/queries';
 import { useRouter } from 'next/router';
 
@@ -21,9 +21,11 @@ export const ProjectProvider = ({ children }) => {
 
 
 
-  const [fetchProjectData, { data, loading, error }] = useLazyQuery(FETCH_PROJECT_DATA, {
+  const  { data, loading, error } = useQuery(FETCH_PROJECT_DATA, {
     variables: { id: poName },
     skip: poName === '',
+    fetchPolicy:'cache-first',
+    notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
@@ -107,7 +109,6 @@ export const ProjectProvider = ({ children }) => {
     recommendedTasks,
     loading,
     error,
-    fetchProjectData,
   }), [projectsData, taskCount, recommendedTasks, loading, error]);
 
   return (

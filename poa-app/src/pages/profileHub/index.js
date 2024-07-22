@@ -36,15 +36,12 @@ const UserprofileHub = () => {
   const router = useRouter();
   const { userDAO } = router.query;
 
-  const { ongoingPolls, fetchVotingDetails} = useVotingContext();
+  const { ongoingPolls,} = useVotingContext();
   const {recommendedTasks} = useProjectContext();
 
-  const {claimedTasks,  userProposals,graphUsername, userDataLoading, error, userData, fetchUserDetails } = useUserContext();
+  const {claimedTasks,  userProposals,graphUsername, userDataLoading, error, userData} = useUserContext();
 
-  useEffect(() => {
-    fetchUserDetails();
-    fetchVotingDetails();
-  }, [userDAO]);
+
 
 
 

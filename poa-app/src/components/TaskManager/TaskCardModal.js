@@ -53,11 +53,6 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
   const toast = useToast();
   const { isOpen, onOpen, onClose} = useDisclosure();
 
-  useEffect(() => {
-    if(userDAO) {
-      fetchUserDetails();
-    }
-  }, [userDAO]);
 
   useEffect(() => {
     console.log("this", router.query);

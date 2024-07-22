@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { FETCH_PO_DATA } from '../util/queries';
 import { useRouter } from 'next/router';
 
@@ -30,10 +30,12 @@ export const POProvider = ({ children}) => {
 
     const poName =  router.query.userDAO || '';
 
-  const [fetchPODetails, { data, loading, error }] = useLazyQuery(FETCH_PO_DATA, {
-    variables: { poName },
-    skip: !poName,
-  });
+    const  { data, loading, error } = useQuery(FETCH_PO_DATA, {
+        variables: { poName },
+        skip: !poName,
+        fetchPolicy:'cache-first',
+        notifyOnNetworkStatusChange: true,
+    });
 
   useEffect(() => {
     if (data) {
@@ -77,7 +79,6 @@ export const POProvider = ({ children}) => {
     votingContractAddress,
     loading,
     error,
-    fetchPODetails,
   }), [
     poDescription,
     poLinks,

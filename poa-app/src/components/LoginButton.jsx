@@ -6,16 +6,12 @@ import { useUserContext } from '@/context/UserContext';
 
 const LoginButton = () => {
 
-    const { address, hasMemberNFT,fetchUserDetails } = useUserContext();
+    const { address, hasMemberNFT} = useUserContext();
     
     const router = useRouter();
     const { userDAO } = router.query;
 
-    useEffect(() => {
-        if (userDAO) {
-            fetchUserDetails();
-        }
-    }, [userDAO])
+
 
     // const [isMounted, setIsMounted] = useState(false); // new state to track mounting
     const [text, setText] = useState("Connect Wallet");

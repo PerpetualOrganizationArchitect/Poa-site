@@ -15,22 +15,16 @@ import {
 // import { useDataBaseContext } from '@/contexts/DataBaseContext';
 import { useWeb3Context } from '@/context/web3Context';
 import { useUserContext } from '@/context/UserContext';
-import { useRouter } from 'next/router';
 
 
 const AccountSettingsModal = ({ isOpen, onClose }) => {
     
-    const {address, graphUsername, setGraphUsername, fetchUserDetails} = useUserContext();
+    const {address, graphUsername, setGraphUsername} = useUserContext();
     const {changeUsername} = useWeb3Context();
 
-    const router = useRouter();
-    const { userDAO } = router.query;
 
-    useEffect(() => {
-        if (userDAO) {
-            fetchUserDetails();
-        }
-    } , [userDAO])
+
+
 
     const [username, setUsername] = useState('');
     // const [email, setEmail] = useState('');

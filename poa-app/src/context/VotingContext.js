@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { FETCH_VOTING_DATA } from '../util/queries'; 
 import { useRouter } from 'next/router';
 
@@ -19,27 +19,44 @@ export const VotingProvider = ({ children, id }) => {
     const router = useRouter();
     const {userDAO} = router.query;
 
-  const [fetchVotingDetails, { data, loading, error }] = useLazyQuery(FETCH_VOTING_DATA, {
+  const  { data, loading, error } = useQuery(FETCH_VOTING_DATA, {
     variables: { id: userDAO },
     skip: !userDAO,
+    fetchPolicy:'cache-first',
+    notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
     if (data) {
+        console.log("data", data); 
       const { perpetualOrganization } = data;
-      setParticipationVotingOngoing(perpetualOrganization.ParticipationVoting?.proposals.filter(proposal => !proposal.winningOptionIndex));
-      setParticipationVotingCompleted(perpetualOrganization.ParticipationVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
-      setHybridVotingOngoing(perpetualOrganization.HybridVoting?.proposals.filter(proposal => !proposal.winningOptionIndex));
-      setHybridVotingCompleted(perpetualOrganization.HybridVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
-      setDemocracyVotingOngoing(perpetualOrganization.DirectDemocracyVoting?.proposals.filter(proposal => !proposal.winningOptionIndex));
-      setDemocracyVotingCompleted(perpetualOrganization.DirectDemocracyVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
       
+      setParticipationVotingCompleted(perpetualOrganization.ParticipationVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
+      setHybridVotingCompleted(perpetualOrganization.HybridVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
+      setDemocracyVotingCompleted(perpetualOrganization.DirectDemocracyVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
 
-        const ongoingPolls = [...perpetualOrganization.ParticipationVoting?.proposals.filter(proposal => !proposal.winningOptionIndex),
-            ...perpetualOrganization.HybridVoting?.proposals.filter(proposal => !proposal.winningOptionIndex),
-            ...perpetualOrganization.DirectDemocracyVoting?.proposals.filter(proposal => !proposal.winningOptionIndex)];
-        
-        setOngoingPolls(ongoingPolls);
+      const ddVoting = data.perpetualOrganization.DirectDemocracyVoting?.proposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' }));
+      const hybridVoting = data.perpetualOrganization.HybridVoting?.proposals.map(proposal => ({ ...proposal, type: 'Hybrid' }));
+      const participationVoting = data.perpetualOrganization.ParticipationVoting?.proposals.map(proposal => ({ ...proposal, type: 'Participation' }));
+  
+      if (ddVoting) {
+          setDemocracyVotingOngoing(ddVoting);
+      }
+      if (hybridVoting) {
+          setHybridVotingOngoing(hybridVoting);
+      }
+      if (participationVoting) {
+          setParticipationVotingOngoing(participationVoting);
+      }
+  
+      // combine all ongoing polls into one array with type of poll check to make sure each exists first 
+      const polls = [
+          ...(ddVoting || []),
+          ...(hybridVoting || []),
+          ...(participationVoting || []),
+      ];
+      setOngoingPolls(polls);
+      console.log("polls", polls);
     }
   }, [data]);
 
@@ -52,7 +69,7 @@ export const VotingProvider = ({ children, id }) => {
     democracyVotingCompleted,
     loading,
     error,
-    fetchVotingDetails, // Pass fetchVotingDetails to consumers
+    ongoingPolls
   }), [
     participationVotingOngoing,
     participationVotingCompleted,

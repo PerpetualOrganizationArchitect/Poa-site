@@ -70,7 +70,6 @@ const Voting = () => {
   const {
     directDemocracyVotingContractAddress,
     votingContractAddress, 
-    fetchPODetails,
   } = usePOContext();
 
   const {hybridVotingOngoing,
@@ -79,16 +78,10 @@ const Voting = () => {
     democracyVotingCompleted,
     participationVotingCompleted,
     participationVotingOngoing,
-    fetchVotingDetails,
 
 
   } = useVotingContext();
 
-  useEffect(() => {
-    fetchVotingDetails();
-    fetchPODetails();
-
-  }, [userDAO]);
 
 
   const PTVoteType = Array.isArray(hybridVotingOngoing) ? "Hybrid" : "Participation";

@@ -32,8 +32,8 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask } = useWeb3Context();
-  const { taskManagerContractAddress, fetchPODetails } = usePOContext();
-  const {taskCount, fetchProjectDetails} = useProjectContext();
+  const { taskManagerContractAddress,  } = usePOContext();
+  const {taskCount, } = useProjectContext();
   const toast = useToast();
 
   let hasExecNFT= true;
@@ -42,14 +42,6 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const hasMemberNFTRef = useRef(hasMemberNFT);
   const hasExecNFTRef = useRef(hasExecNFT);
 
-
-  useEffect(() => {
-    if (userDAO) {
-      fetchProjectDetails();
-      fetchPODetails();
-    }
-    
-  }, [userDAO]);
 
 
   useEffect(() => {

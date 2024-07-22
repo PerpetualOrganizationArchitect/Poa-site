@@ -6,7 +6,7 @@ import { TaskBoardProvider } from '../../context/TaskBoardContext';
 import { useDataBaseContext} from '../../context/dataBaseContext';
 import { useWeb3Context } from '../../context/web3Context';
 import { usePOContext } from '@/context/POContext';
-import {useRouter} from 'next/router';
+
 
 
 const MainLayout = () => {
@@ -22,15 +22,10 @@ const MainLayout = () => {
 
   const {account, createProject}= useWeb3Context()
 
-  const {taskManagerContractAddress, fetchPODetails} = usePOContext();
-  const router = useRouter();
-  const { userDAO } = router.query;
+  const {taskManagerContractAddress} = usePOContext();
 
-  useEffect(()=>{
-    if (userDAO) {
-      fetchPODetails();
-    }
-  },[userDAO])
+
+
   
 
   const handleSelectProject = (projectId) => {

@@ -16,6 +16,7 @@ import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
 import { useVotingContext } from '@/context/VotingContext';
 import {usePOContext} from '@/context/POContext';
+import { useProjectContext } from '@/context/ProjectContext';
 import { useUserContext } from '@/context/UserContext';
 import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
@@ -70,13 +71,11 @@ function generateAbbreviatedConstitution(poData) {
 
 const PerpetualOrgDashboard = () => {
   const { fetchRules } = useGraphContext();
-  const {ongoingPolls, fetchVotingDetails } = useVotingContext();
-  const {poDescription, poLinks, fetchPODetails, logoHash, activeTaskAmount, completedTaskAmount, ptTokenBalance, poMembers} = usePOContext();
+  const {ongoingPolls } = useVotingContext();
+  console.log("ongoingPolls", ongoingPolls);
+  const {poDescription, poLinks, logoHash, activeTaskAmount, completedTaskAmount, ptTokenBalance, poMembers} = usePOContext();
 
-  useEffect(() => {
-    fetchPODetails();
-    fetchVotingDetails();
-  }, [fetchPODetails]);
+
 
 
   const router = useRouter();
@@ -108,7 +107,11 @@ const PerpetualOrgDashboard = () => {
     }
   }, [userDAO]);
 
-  const { leaderboardData, reccommendedTasks } = useGraphContext();
+  const { leaderboardData} = useGraphContext();
+  const { recommendedTasks } = useProjectContext();
+
+
+
 
 
 
@@ -299,7 +302,7 @@ const PerpetualOrgDashboard = () => {
                 </Text>
               </VStack>
               <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={2}>
-                {reccommendedTasks?.slice(0, 3).map((task) => (
+                {recommendedTasks?.slice(0, 3).map((task) => (
                   <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                     <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
                       <VStack textColor="white" align="stretch" spacing={3}>

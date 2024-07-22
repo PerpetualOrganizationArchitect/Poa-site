@@ -22,13 +22,8 @@ export const DataBaseProvider = ({ children }) => {
     const router = useRouter();
     const { userDAO } = router.query;
 
-    const {projectsData, fetchProjectData}= useProjectContext();
+    const {projectsData}= useProjectContext();
 
-    useEffect(()=>{
-      if (userDAO) {
-        fetchProjectData();
-      }
-    },[userDAO])
 
     useEffect(()=>{
         if (typeof projectsData === 'object' && projectsData !== null && Object.keys(projectsData).length !== 0) {

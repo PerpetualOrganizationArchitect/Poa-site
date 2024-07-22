@@ -89,17 +89,10 @@ const FloatingBox = styled.div`
 `;
 
 const Home = () => {
-  const{logoHash, poDescription, poLinks, fetchPODetails} = usePOContext();
+  const{logoHash, poDescription, poLinks} = usePOContext();
 
   const router = useRouter();
   const { userDAO } = router.query;
-
-  useEffect(() => {
-    if (userDAO) {
-      fetchPODetails();
-    }
-  }, [userDAO]);
-
 
   return (
     <>

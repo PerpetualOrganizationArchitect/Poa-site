@@ -15,8 +15,8 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const User = () => {
-  const { address, hasMemberNFT, graphUsername, fetchUserDetails } = useUserContext();
-  const {quickJoinContractAddress, fetchPODetails} = usePOContext();
+  const { address, hasMemberNFT, graphUsername } = useUserContext();
+  const {quickJoinContractAddress} = usePOContext();
   const { quickJoinNoUser, quickJoinWithUser } = useWeb3Context();
   const router = useRouter();
   const { userDAO } = router.query;
@@ -27,8 +27,6 @@ const User = () => {
   const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
-    fetchPODetails();
-    fetchUserDetails();
     setIsSSR(false);
   }, [userDAO]);
 

@@ -5,11 +5,6 @@ import { usePOContext } from './POContext';
 
 import { useToast } from '@chakra-ui/react';
 
-import { useRouter } from 'next/router';
-
-
-
-
 
 const TaskBoardContext = createContext();
 
@@ -22,16 +17,8 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
   const{claimTask, updateTask, ipfsAddTask, completeTask, editTaskWeb3, submitTask} = useWeb3Context();
-  const {taskManagerContractAddress, fetchPODetails} = usePOContext();
+  const {taskManagerContractAddress} = usePOContext();
 
-  const router = useRouter();
-  const { userDAO } = router.query;
-
-  useEffect(()=>{
-    if (userDAO) {
-      fetchPODetails();
-    }
-  },[userDAO])
 
   useEffect(() => {
     setTaskColumns(initialColumns);

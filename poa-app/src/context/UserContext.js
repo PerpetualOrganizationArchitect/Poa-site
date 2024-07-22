@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useAccount } from 'wagmi';
 import { FETCH_USER_DETAILS } from '../util/queries'; 
 import { useRouter } from 'next/router';
@@ -24,9 +24,11 @@ export const UserProvider = ({ children }) => {
 
     console.log("combinedID", combinedID);
 
-    const [fetchUserDetails, { data, error }] = useLazyQuery(FETCH_USER_DETAILS, {
+    const  { data, error } = useQuery(FETCH_USER_DETAILS, {
         variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID },
         skip: !address || !userDAO || !combinedID,
+        fetchPolicy:'cache-first',
+        notifyOnNetworkStatusChange: true,
     });
 
     useEffect(() => {
@@ -99,7 +101,6 @@ export const UserProvider = ({ children }) => {
         hasMemberNFT,
         claimedTasks,
         error,
-        fetchUserDetails
     }), [userDataLoading, userProposals, userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, error]);
 
     return (
