@@ -21,26 +21,114 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
 import { useWeb3Context } from '@/context/web3Context';
-import { useGraphContext } from '@/context/graphContext';
-import { useUserContext } from '@/context/UserContext';
+
 import { useSpring, animated } from 'react-spring';
 import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import UserProposals from '@/components/userPage/UserProposals';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+import { useQuery } from '@apollo/client';
+import { useAccount } from 'wagmi';
+import { FETCH_USER_DETAILS } from '../../util/queries';
+import { FETCH_PROJECT_DATA } from '../../util/queries';
 
 const UserprofileHub = () => {
-  const { setLoaded } = useGraphContext();
   const router = useRouter();
   const { userDAO } = router.query;
+  const { address } = useAccount();
+
+  const [userData, setUserData] = useState({});
+  const [graphUsername, setGraphUsername] = useState('');
+  const [hasExecNFT, setHasExecNFT] = useState(false);
+  const [hasMemberNFT, setHasMemberNFT] = useState(false);
+  const [claimedTasks, setClaimedTasks] = useState([]);
+  const [userProposals, setUserProposals] = useState([]);
+  const [userDataLoading, setUserDataLoading] = useState(true);
+  const [reccomendedTasks, setReccomendedTasks] = useState([]);
+  const combinedID = `${userDAO}-${address?.toLowerCase()}`;
+
+
+
+  const { data, error } = useQuery(FETCH_USER_DETAILS, {
+    variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID },
+    skip: !address || !userDAO || !combinedID,
+  });
+
+  const { data: projectData, loading: projectLoading, error: projectError } = useQuery(FETCH_PROJECT_DATA, {
+    variables: { id: userDAO },
+    skip: !userDAO,
+  });
 
   useEffect(() => {
-    setLoaded(userDAO);
-  }, [userDAO]);
+    if(projectData) {
+      // sort for open tasks 
+     
+      let openTasks = projectData.perpetualOrganization.TaskManager.projects.flatMap(project => project.tasks).filter(task => task.taskInfo.location === 'Open');
 
-  const { ongoingPolls, reccommendedTasks } = useGraphContext();
-  const {claimedTasks,  userProposals,graphUsername, userDataLoading, error, userData } = useUserContext();
+      // select 3 random tasks
+      let randomTasks = openTasks.sort(() => Math.random() - 0.5).slice(0, 3);
+      setReccomendedTasks(randomTasks);
+    }
+  }, [projectData]);
+
+  useEffect(() => {
+    if (data) {
+      const { user, account, perpetualOrganization } = data;
+
+      const execRoles = perpetualOrganization.NFTMembership.executiveRoles;
+      const hasExecNFT = execRoles.includes(user.memberType.memberTypeName);
+      const hasMemberNFT = user != null;
+      const username = account?.userName || '';
+      const userTasks = user?.tasks || [];
+      const tasksCompleted = userTasks.filter(task => task.completed).length;
+
+      setGraphUsername(username);
+      setHasExecNFT(hasExecNFT);
+      setHasMemberNFT(hasMemberNFT);
+      setClaimedTasks(userTasks.filter(task => !task.completed));
+
+      if (hasMemberNFT) {
+        setUserData({
+          id: user.id,
+          ptTokenBalance: user.ptTokenBalance,
+          ddTokenBalance: user.ddTokenBalance,
+          memberType: user.memberType.memberTypeName,
+          imageURL: user.memberType.imageURL,
+          tasksCompleted,
+          totalVotes: user.totalVotes,
+          dateJoined: user.dateJoined,
+        });
+      }
+
+      const proposals = [
+        ...data.user.ptProposals.map(proposal => ({ ...proposal, type: 'Participation' })),
+        ...data.user.ddProposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' })),
+        ...data.user.hybridProposals.map(proposal => ({ ...proposal, type: 'Hybrid' })),
+      ];
+
+      const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+
+      // Order proposals by expiration timestamp, but move completed proposals to the end
+      proposals.sort((a, b) => {
+        const aIsCompleted = a.experationTimestamp < currentTime;
+        const bIsCompleted = b.experationTimestamp < currentTime;
+
+        if (aIsCompleted && !bIsCompleted) {
+          return 1; // a is completed, b is not - put a after b
+        } else if (!aIsCompleted && bIsCompleted) {
+          return -1; // b is completed, a is not - put b after a
+        } else if (!aIsCompleted && !bIsCompleted) {
+          return a.experationTimestamp - b.experationTimestamp; // Both are active - sort by expiration ascending
+        } else {
+          return a.experationTimestamp - b.experationTimestamp; // Both are completed - sort by expiration ascending
+        }
+      });
+
+      setUserProposals(proposals);
+      setUserDataLoading(false);
+    }
+  }, [data]);
 
   const prefersReducedMotion = usePrefersReducedMotion();
   const [countFinished, setCountFinished] = useState(false);
@@ -48,8 +136,8 @@ const UserprofileHub = () => {
   const [showDevMenu, setShowDevMenu] = useState(false);
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
   const [notLoaded, setNotLoaded] = useState(true);
-  const [reccomendedTasks, setReccomendedTasks] = useState([]);
-  const { web3, account, KUBIXbalance, hasExecNFT } = useWeb3Context();
+
+  const { web3, account, KUBIXbalance } = useWeb3Context();
 
   const glassLayerStyle = {
     position: 'absolute',
@@ -126,8 +214,8 @@ const UserprofileHub = () => {
     }
   }, [userData, graphUsername]);
 
-  const animatedPT = useSpring({ 
-    pt: userInfo.ptBalance, 
+  const animatedPT = useSpring({
+    pt: userInfo.ptBalance,
     from: { pt: 0 },
     config: { duration: 1700 },
     onRest: () => setCountFinished(true),
@@ -264,7 +352,7 @@ const UserprofileHub = () => {
                   </Text>
                 </VStack>
                 <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
-                  {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccommendedTasks)?.slice(0, 3).map((task) => (
+                  {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : reccomendedTasks)?.slice(0, 3).map((task) => (
                     <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                       <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
@@ -352,7 +440,6 @@ const UserprofileHub = () => {
       </Box>
     </>
   );
-  
 };
 
 export default UserprofileHub;
