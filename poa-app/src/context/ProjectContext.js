@@ -17,13 +17,18 @@ export const ProjectProvider = ({ children }) => {
   const poName = userDAO || '';
 
 
+
+
+
+
   const [fetchProjectData, { data, loading, error }] = useLazyQuery(FETCH_PROJECT_DATA, {
     variables: { id: poName },
-    skip: !poName,
+    skip: poName === '',
   });
 
   useEffect(() => {
     if (data) {
+      console.log("data", data);
       const projects = data.perpetualOrganization.TaskManager.projects;
 
       let taskCount = 0;

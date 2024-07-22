@@ -210,6 +210,66 @@ import { gql } from '@apollo/client';
 //   }
 // `;
 
+export const FETCH_USERNAME = gql`
+  query FetchUsername($id: String!) {
+    account(id: $id) {
+      userName
+    }
+  }
+`;
+
+export const FETCH_VOTING_DATA = gql`
+  query FetchVotingData($id: String!) {
+    perpetualOrganization(id: $id) {
+      ParticipationVoting {
+        proposals {
+          id
+          name
+          experationTimestamp
+          creationTimestamp
+          description
+          winningOptionIndex
+          options {
+            id
+            name
+            votes
+          }
+        }
+      }
+      HybridVoting {
+        proposals {
+          id
+          name
+          experationTimestamp
+          creationTimestamp
+          description
+          winningOptionIndex
+          options {
+            id
+            name
+            votes
+          }
+        }
+      }
+      DirectDemocracyVoting {
+        proposals {
+          id
+          name
+          experationTimestamp
+          creationTimestamp
+          description
+          winningOptionIndex
+          options {
+            id
+            name
+            votes
+          }
+        }
+      }
+    }
+  }
+`;
+
 // export const FETCH_ALL_ONGOING_POLLS = gql`
 //   query FetchAllOngoingPolls($id: String!) {
 //     perpetualOrganization(id: $id) {

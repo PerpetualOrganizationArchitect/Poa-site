@@ -5,7 +5,6 @@ import MainLayout from '../../components/TaskManager/MainLayout';
 import { useDataBaseContext } from '@/context/dataBaseContext';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
-import { useGraphContext } from '@/context/graphContext';
 
 
 //<FloatingBalls containerRef={containerRef} />
@@ -18,12 +17,7 @@ const Tasks = () => {
   const { userDAO } = router.query;
 
   const {setTaskLoaded, setSelectedProjectId, projects} = useDataBaseContext();
-  const { setLoaded} = useGraphContext();
   const containerRef = useRef();
-  
-  useEffect(() => {
-    setLoaded(userDAO);
-  }, [userDAO]);
 
   useEffect(()=>{
     

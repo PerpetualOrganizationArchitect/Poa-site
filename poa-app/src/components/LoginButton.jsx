@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Button } from '@chakra-ui/react';
 import { useRouter } from "next/router";
-import { useMetaMask } from './Metamask';
 import NextLink from 'next/link';
-import { useGraphContext } from '@/context/graphContext';
-import { a } from 'react-spring';
+import { useUserContext } from '@/context/UserContext';
 
 const LoginButton = () => {
 
-    const {address, hasMemberNFT}= useGraphContext();
+    const { address, hasMemberNFT,fetchUserDetails } = useUserContext();
     
     const router = useRouter();
     const { userDAO } = router.query;
+
+    useEffect(() => {
+        if (userDAO) {
+            fetchUserDetails();
+        }
+    }, [userDAO])
 
     // const [isMounted, setIsMounted] = useState(false); // new state to track mounting
     const [text, setText] = useState("Connect Wallet");

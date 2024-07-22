@@ -5,6 +5,7 @@ import { useIPFScontext } from './ipfsContext';
 import { set } from 'lodash';
 import { id } from 'ethers/lib/utils';
 import { useProjectContext } from './ProjectContext';
+import { useRouter } from 'next/router';
 
 
 
@@ -18,11 +19,16 @@ export const useDataBaseContext = () => {
 export const DataBaseProvider = ({ children }) => {
     // usestate for projects initalized with mock data with 3 projects and each has an id 
 
+    const router = useRouter();
+    const { userDAO } = router.query;
+
     const {projectsData, fetchProjectData}= useProjectContext();
 
     useEffect(()=>{
+      if (userDAO) {
         fetchProjectData();
-    },[fetchProjectData])
+      }
+    },[userDAO])
 
     useEffect(()=>{
         if (typeof projectsData === 'object' && projectsData !== null && Object.keys(projectsData).length !== 0) {

@@ -395,7 +395,7 @@ export const Web3Provider = ({ children }) => {
 
     
     return (
-        <Web3Context.Provider value={{quickJoinNoUser, quickJoinWithUser, sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
+        <Web3Context.Provider value={{ chainId,quickJoinNoUser, quickJoinWithUser, sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
             closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>

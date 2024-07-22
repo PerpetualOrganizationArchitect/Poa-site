@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useWeb3Context } from "@/context/web3Context";
-import { useGraphContext } from "@/context/graphContext";
+import { usePOContext } from "@/context/POContext";
+import { useUserContext } from "@/context/UserContext";
 import { useRouter } from 'next/router';
 import {
   VStack,
@@ -14,7 +15,8 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const User = () => {
-  const { address, hasMemberNFT, setLoaded, graphUsername, quickJoinContractAddress } = useGraphContext();
+  const { address, hasMemberNFT, graphUsername, fetchUserDetails } = useUserContext();
+  const {quickJoinContractAddress, fetchPODetails} = usePOContext();
   const { quickJoinNoUser, quickJoinWithUser } = useWeb3Context();
   const router = useRouter();
   const { userDAO } = router.query;
@@ -25,7 +27,8 @@ const User = () => {
   const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
-    setLoaded(userDAO);
+    fetchPODetails();
+    fetchUserDetails();
     setIsSSR(false);
   }, [userDAO]);
 

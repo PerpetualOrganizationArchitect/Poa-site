@@ -32,8 +32,9 @@ import {
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { useGraphContext } from "@/context/graphContext";
 import { useWeb3Context } from "@/context/web3Context";
+import { usePOContext } from "@/context/POContext";
+import { useVotingContext } from "@/context/VotingContext";
 import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/completedPollModal";
 
 
@@ -59,26 +60,34 @@ const Voting = () => {
   const {
     createProposalDDVoting,
     getWinnerDDVoting,
-    ddVote
+    ddVote,
+    account
   } = useWeb3Context();
   
   const { isOpen: isCompletedOpen, onOpen: onCompletedOpen, onClose: onCompletedClose } = useDisclosure();
 
+
   const {
     directDemocracyVotingContractAddress,
-    hybridVotingOngoing,
+    votingContractAddress, 
+    fetchPODetails,
+  } = usePOContext();
+
+  const {hybridVotingOngoing,
     hybridVotingCompleted,
-    setLoaded,
     democracyVotingOngoing,
     democracyVotingCompleted,
-    address: account,
     participationVotingCompleted,
     participationVotingOngoing,
-    votingContractAddress
-  } = useGraphContext();
+    fetchVotingDetails,
+
+
+  } = useVotingContext();
 
   useEffect(() => {
-    setLoaded(userDAO);
+    fetchVotingDetails();
+    fetchPODetails();
+
   }, [userDAO]);
 
 

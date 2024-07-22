@@ -14,6 +14,8 @@ import OpenAI from "openai";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 
+import { useQuery } from "@apollo/client";
+
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
@@ -27,7 +29,7 @@ import Deployer from "@/components/Architect/TempDeployer";
 import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
-import { useGraphContext } from "@/context/graphContext";
+import { FETCH_USERNAME } from "@/util/queries";
 
 const steps = {
   ASK_INTRO: "ASK_INTRO",
@@ -73,13 +75,17 @@ const startOptions = [
 ];
 
 const ArchitectPage = () => {
-  const { signer } = useWeb3Context();
+  const { signer, account } = useWeb3Context();
   const { addToIpfs } = useIPFScontext();
   const toast = useToast();
   const router = useRouter();
   const selectionRef = useRef(null);
 
-  const {graphUsername} = useGraphContext();
+  const {data: graphUsername} = useQuery(FETCH_USERNAME, {
+    variables: { id: account?.toLowerCase() },
+    skip: !account,
+  }
+  );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] = useState(false);

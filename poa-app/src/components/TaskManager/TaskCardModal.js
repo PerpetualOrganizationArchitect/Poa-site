@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   Button,
   FormControl,
@@ -28,9 +28,9 @@ import EditTaskModal from './EditTaskModal';
 import { useTaskBoard } from '../../context/TaskBoardContext';
 import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '@/context/dataBaseContext';
-import { useGraphContext } from '@/context/graphContext';
+import { useUserContext } from '@/context/UserContext';
 import { useRouter } from 'next/router';
-import { to } from 'react-spring';
+
 
 const glassLayerStyle = {
   position: "absolute",
@@ -46,12 +46,18 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
   console.log("task", task);
   const [submission, setSubmission] = useState('');
   const { moveTask, deleteTask } = useTaskBoard();
-  const { hasExecNFT, hasMemberNFT, account } = useGraphContext();
+  const { hasExecNFT, hasMemberNFT, address: account, fetchUserDetails } = useUserContext();
   const { getUsernameByAddress, setSelectedProjectId } = useDataBaseContext();
   const router = useRouter();
   const { userDAO } = router.query;
   const toast = useToast();
   const { isOpen, onOpen, onClose} = useDisclosure();
+
+  useEffect(() => {
+    if(userDAO) {
+      fetchUserDetails();
+    }
+  }, [userDAO]);
 
   useEffect(() => {
     console.log("this", router.query);

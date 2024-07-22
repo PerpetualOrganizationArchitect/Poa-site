@@ -1,11 +1,11 @@
 import React from 'react';
 import { useWeb3Context } from '@/context/web3Context';
-import { useGraphContext } from '@/context/graphContext';
+import {usePOContext} from '@/context/POContext';
 import { ethers } from 'ethers';
 
 const TestPage = () => {
     const { sendToTreasury } = useWeb3Context(); 
-    const {treasuryContractAddress } = useGraphContext();
+    const {treasuryContractAddress} = usePOContext();
 
     const handleSendToTreasury = async () => {
        

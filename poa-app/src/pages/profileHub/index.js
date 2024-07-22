@@ -21,7 +21,7 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
 import { useWeb3Context } from '@/context/web3Context';
-import { useGraphContext } from '@/context/graphContext';
+import { useVotingContext } from '@/context/VotingContext';
 import { useUserContext } from '@/context/UserContext';
 import { useProjectContext } from '@/context/ProjectContext';
 import { useSpring, animated } from 'react-spring';
@@ -32,21 +32,18 @@ import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 const UserprofileHub = () => {
-  const { setLoaded } = useGraphContext();
+
   const router = useRouter();
   const { userDAO } = router.query;
 
-  useEffect(() => {
-    setLoaded(userDAO);
-  }, [userDAO]);
-
-  const { ongoingPolls} = useGraphContext();
+  const { ongoingPolls, fetchVotingDetails} = useVotingContext();
   const {recommendedTasks} = useProjectContext();
 
   const {claimedTasks,  userProposals,graphUsername, userDataLoading, error, userData, fetchUserDetails } = useUserContext();
 
   useEffect(() => {
     fetchUserDetails();
+    fetchVotingDetails();
   }, [userDAO]);
 
 

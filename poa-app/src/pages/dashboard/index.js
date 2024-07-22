@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
+import { useVotingContext } from '@/context/VotingContext';
 import {usePOContext} from '@/context/POContext';
 import { useUserContext } from '@/context/UserContext';
 import Link2 from 'next/link';
@@ -68,16 +69,15 @@ function generateAbbreviatedConstitution(poData) {
 }
 
 const PerpetualOrgDashboard = () => {
-  const {ongoingPolls, setLoaded,  fetchRules } = useGraphContext();
+  const { fetchRules } = useGraphContext();
+  const {ongoingPolls, fetchVotingDetails } = useVotingContext();
   const {poDescription, poLinks, fetchPODetails, logoHash, activeTaskAmount, completedTaskAmount, ptTokenBalance, poMembers} = usePOContext();
 
   useEffect(() => {
     fetchPODetails();
+    fetchVotingDetails();
   }, [fetchPODetails]);
 
-  useEffect(() => {
-    fetchUserDetails();
-  }, [fetchUserDetails]);
 
   const router = useRouter();
   const { userDAO } = router.query;
@@ -86,9 +86,6 @@ const PerpetualOrgDashboard = () => {
   const [constitutionElements, setConstitutionElements] = useState([]);
   const { fetchImageFromIpfs } = useIPFScontext();
 
-  useEffect(() => {
-    setLoaded(userDAO);
-  }, [userDAO]);
 
   useEffect(() => {
     const fetchImage = async () => {

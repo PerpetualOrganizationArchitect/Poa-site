@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { Box, Heading, IconButton, Toast} from '@chakra-ui/react';
 import { useDrop } from 'react-dnd';
@@ -7,9 +7,10 @@ import { useTaskBoard } from '../../context/TaskBoardContext';
 import AddTaskModal from './AddTaskModal';
 import { useWeb3Context } from '../../context/web3Context';
 import { useDataBaseContext } from '../../context/dataBaseContext';
-import { useGraphContext } from '@/context/graphContext';
+import {usePOContext} from '@/context/POContext';
 import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useProjectContext } from '@/context/ProjectContext';
 
 // ... inside TaskColumn component, before return statement
 const glassLayerStyle = {
@@ -25,15 +26,14 @@ const glassLayerStyle = {
 
 
 
-
-
-
 const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const router = useRouter();
+  const {userDAO} = router.query;
   const { moveTask, addTask, editTask } = useTaskBoard();
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {account, mintKUBIX, createTask } = useWeb3Context();
-  const { taskManagerContractAddress, taskCount } = useGraphContext();
+  const { taskManagerContractAddress, fetchPODetails } = usePOContext();
+  const {taskCount, fetchProjectDetails} = useProjectContext();
   const toast = useToast();
 
   let hasExecNFT= true;
@@ -42,6 +42,14 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   const hasMemberNFTRef = useRef(hasMemberNFT);
   const hasExecNFTRef = useRef(hasExecNFT);
 
+
+  useEffect(() => {
+    if (userDAO) {
+      fetchProjectDetails();
+      fetchPODetails();
+    }
+    
+  }, [userDAO]);
 
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import { ProfileHubProvider } from "@/context/profileHubContext";
 import { ProjectProvider } from "@/context/ProjectContext";
 import { UserProvider } from "@/context/UserContext";
 import { POProvider } from "@/context/POContext";
+import { VotingProvider } from "@/context/VotingContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -70,6 +71,7 @@ function MyApp({ Component, pageProps }) {
             <ProfileHubProvider>
               <GraphProvider>
               <POProvider>
+              <VotingProvider>
               <ProjectProvider>
               <UserProvider>
                 <Web3Provider>
@@ -82,6 +84,7 @@ function MyApp({ Component, pageProps }) {
                 </Web3Provider>
                 </UserProvider>
               </ProjectProvider>
+              </VotingProvider>
               </POProvider>
               </GraphProvider>
             </ProfileHubProvider>
