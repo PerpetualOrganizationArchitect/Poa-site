@@ -21,6 +21,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import AccountSettingsModal from '@/components/userPage/AccountSettingsModal';
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
+import { useUserContext } from '@/context/UserContext';
 import { useSpring, animated } from 'react-spring';
 import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
@@ -37,7 +38,8 @@ const UserprofileHub = () => {
     setLoaded(userDAO);
   }, [userDAO]);
 
-  const { userProposals, claimedTasks, democracyVotingOngoing, ongoingPolls, graphUsername, reccommendedTasks } = useGraphContext();
+  const { userProposals, claimedTasks, democracyVotingOngoing, ongoingPolls, reccommendedTasks } = useGraphContext();
+  const { graphUsername } = useUserContext();
 
   const prefersReducedMotion = usePrefersReducedMotion();
   const [countFinished, setCountFinished] = useState(false);

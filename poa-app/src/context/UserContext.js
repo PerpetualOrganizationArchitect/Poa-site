@@ -1,77 +1,69 @@
-// // UserContext.js
-// import React, { createContext, useContext, useState, useEffect } from 'react';
-// import { useQuery } from '@apollo/client';
-// import { useAccount } from 'wagmi';
-// import { FETCH_USERNAME, FETCH_USER_DETAILS } from './queries';
-// import client from './apolloClient';
+// UserContext.js
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import { useAccount } from 'wagmi';
+import { FETCH_USER_DETAILS } from '../util/queries'; 
+import { useRouter } from 'next/router';
 
-// const UserContext = createContext();
+const UserContext = createContext();
 
-// export const useUserContext = () => useContext(UserContext);
+export const useUserContext = () => useContext(UserContext);
 
-// export const UserProvider = ({ children }) => {
-//   const { address } = useAccount();
-//   const [userData, setUserData] = useState({});
-//   const [graphUsername, setGraphUsername] = useState(false);
-//   const [claimedTasks, setClaimedTasks] = useState([]);
+export const UserProvider = ({ children }) => {
+    const { address } = useAccount();
+    const [userData, setUserData] = useState({});
+    const [graphUsername, setGraphUsername] = useState('');
+    const [hasExecNFT, setHasExecNFT] = useState(false);
+    const [hasMemberNFT, setHasMemberNFT] = useState(false);
+    const [claimedTasks, setClaimedTasks] = useState([]);
 
-//   const { data: usernameData } = useQuery(FETCH_USERNAME, {
-//     variables: { id: address?.toLowerCase() },
-//     client,
-//     skip: !address,
-//   });
+    const router = useRouter();
+    const { userDAO } = router.query;
 
-//   const { data: userDetailsData } = useQuery(FETCH_USER_DETAILS, {
-//     variables: { poName: 'your_po_name', id: address?.toLowerCase() },
-//     client,
-//     skip: !address,
-//   });
+    const combinedID = `${userDAO}-${address?.toLowerCase()}`;
 
-//   useEffect(() => {
-//     if (usernameData) {
-//       setGraphUsername(usernameData.account.userName);
-//     }
-//   }, [usernameData]);
+    console.log("combinedID", combinedID);
 
-//   useEffect(() => {
-//     if (userDetailsData) {
-//       const { user, perpetualOrganization } = userDetailsData;
-//       const hasExecNFT = perpetualOrganization.Users.some(u =>
-//         perpetualOrganization.NFTMembership.executiveRoles.includes(u.memberType.memberTypeName)
-//       );
-//       const hasMemberNFT = perpetualOrganization.Users.length > 0;
-//       const userTasks = user?.tasks || [];
+    const { data, loading, error } = useQuery(FETCH_USER_DETAILS, {
+        variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID},
+        skip: !address || !userDAO || !combinedID,
+    });
 
-//       let tasksCompleted = [];
-//       let taskCount = 0;
-//       userTasks.forEach(task => {
-//         if (task.completed) {
-//           tasksCompleted.push(task);
-//           taskCount++;
-//         }
-//       });
+    useEffect(() => {
+        if (data) {
+            console.log("data", data);
+            const { user, account, perpetualOrganization } = data;
 
-//       setClaimedTasks(userTasks.filter(task => !task.completed));
+            const execRoles = perpetualOrganization.NFTMembership.executiveRoles;
+            const hasExecNFT = execRoles.includes(user.memberType.memberTypeName);
+            const hasMemberNFT = user != null;
+            const username = account?.userName || '';
+            const userTasks = user?.tasks || [];
+            const tasksCompleted = userTasks.filter(task => task.completed).length;
 
-//       if (hasMemberNFT) {
-//         setUserData({
-//           id: user.id,
-//           ptTokenBalance: user.ptTokenBalance,
-//           ddTokenBalance: user.ddTokenBalance,
-//           memberType: user.memberType.memberTypeName,
-//           imageURL: user.memberType.imageURL,
-//           tasksCompleted: taskCount,
-//           totalVotes: user.totalVotes,
-//           dateJoined: user.dateJoined,
-//           completedTasks: tasksCompleted,
-//         });
-//       }
-//     }
-//   }, [userDetailsData]);
+            setGraphUsername(username);
+            setHasExecNFT(hasExecNFT);
+            setHasMemberNFT(hasMemberNFT);
+            setClaimedTasks(userTasks.filter(task => !task.completed));
 
-//   return (
-//     <UserContext.Provider value={{ userData, graphUsername, claimedTasks }}>
-//       {children}
-//     </UserContext.Provider>
-//   );
-// };
+            if (hasMemberNFT) {
+                setUserData({
+                id: user.id,
+                ptTokenBalance: user.ptTokenBalance,
+                ddTokenBalance: user.ddTokenBalance,
+                memberType: user.memberType.memberTypeName,
+                imageURL: user.memberType.imageURL,
+                tasksCompleted,
+                totalVotes: user.totalVotes,
+                dateJoined: user.dateJoined,
+                });
+            }
+        }
+    }, [data]);
+
+  return (
+    <UserContext.Provider value={{ userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, loading, error }}>
+      {children}
+    </UserContext.Provider>
+  );
+};

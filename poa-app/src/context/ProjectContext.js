@@ -1,9 +1,7 @@
-// ProjectContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { FETCH_PROJECT_DATA } from '../util/queries';
-import client from '../util/apolloClient';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 const ProjectContext = createContext();
 
@@ -12,16 +10,15 @@ export const useProjectContext = () => useContext(ProjectContext);
 export const ProjectProvider = ({ children }) => {
   const [projectsData, setProjectsData] = useState([]);
   const [taskCount, setTaskCount] = useState(0);
-  const [reccommendedTasks, setReccommendedTasks] = useState([]);
+  const [recommendedTasks, setRecommendedTasks] = useState([]);
 
   const router = useRouter();
-  const { poName } = router.query;
+  const { userDAO } = router.query;
+  const poName = userDAO || '';
 
-  // Check if poName is defined before running the query
   const { data, loading, error } = useQuery(FETCH_PROJECT_DATA, {
     variables: { id: poName },
-    client,
-    skip: !poName, // Skip the query if poName is not defined
+    skip: !poName,
   });
 
   useEffect(() => {
@@ -34,12 +31,12 @@ export const ProjectProvider = ({ children }) => {
       });
       setTaskCount(taskCount);
 
-      const reccommendedTasks = projects
+      const recommendedTasks = projects
         .flatMap(project => project.tasks)
         .filter(task => !task.completed)
         .sort(() => Math.random() - 0.5);
 
-      setReccommendedTasks(reccommendedTasks);
+      setRecommendedTasks(recommendedTasks);
 
       const transformedProjects = projects.map(project => {
         const transformedProject = {
@@ -97,7 +94,7 @@ export const ProjectProvider = ({ children }) => {
   }, [data]);
 
   return (
-    <ProjectContext.Provider value={{ projectsData, taskCount, reccommendedTasks, loading, error }}>
+    <ProjectContext.Provider value={{ projectsData, taskCount, recommendedTasks, loading, error }}>
       {children}
     </ProjectContext.Provider>
   );

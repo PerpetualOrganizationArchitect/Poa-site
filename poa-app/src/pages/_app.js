@@ -5,6 +5,7 @@ import { DataBaseProvider } from "@/context/dataBaseContext";
 import { GraphProvider } from "@/context/graphContext";
 import { ProfileHubProvider } from "@/context/profileHubContext";
 import { ProjectProvider } from "@/context/ProjectContext";
+import { UserProvider } from "@/context/UserContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -68,8 +69,8 @@ function MyApp({ Component, pageProps }) {
             <ProfileHubProvider>
               <GraphProvider>
               <ProjectProvider>
+              <UserProvider>
                 <Web3Provider>
-                  
                   <DataBaseProvider>
                     <ChakraProvider theme={theme}>
                       <NetworkModalControl />  
@@ -77,6 +78,7 @@ function MyApp({ Component, pageProps }) {
                     </ChakraProvider>
                   </DataBaseProvider>
                 </Web3Provider>
+                </UserProvider>
               </ProjectProvider>
               </GraphProvider>
             </ProfileHubProvider>
