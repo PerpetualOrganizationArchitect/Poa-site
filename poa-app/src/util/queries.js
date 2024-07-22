@@ -431,6 +431,24 @@ export const FETCH_USER_DETAILS = gql`
         payout
         completed
       }
+      ptProposals(orderBy: experationTimestamp, orderDirection: desc){
+        id
+        name
+        experationTimestamp
+        creationTimestamp
+      }
+      ddProposals(orderBy: experationTimestamp, orderDirection: desc){
+        id
+        name
+        experationTimestamp
+        creationTimestamp
+      }
+      hybridProposals(orderBy: experationTimestamp, orderDirection: desc){
+        id
+        name
+        experationTimestamp
+        creationTimestamp
+      }
     }
     perpetualOrganization(id: $poName) {
       NFTMembership {

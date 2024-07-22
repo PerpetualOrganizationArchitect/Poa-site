@@ -16,7 +16,8 @@ export const UserProvider = ({ children }) => {
     const [hasExecNFT, setHasExecNFT] = useState(false);
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
     const [claimedTasks, setClaimedTasks] = useState([]);
-
+    const [userProposals, setUserProposals] = useState([]);
+    const [userDataLoading, setUserDataLoading] = useState(true);
     const router = useRouter();
     const { userDAO } = router.query;
 
@@ -24,8 +25,8 @@ export const UserProvider = ({ children }) => {
 
     console.log("combinedID", combinedID);
 
-    const { data, loading, error } = useQuery(FETCH_USER_DETAILS, {
-        variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID},
+    const { data, error } = useQuery(FETCH_USER_DETAILS, {
+        variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID },
         skip: !address || !userDAO || !combinedID,
     });
 
@@ -48,22 +49,51 @@ export const UserProvider = ({ children }) => {
 
             if (hasMemberNFT) {
                 setUserData({
-                id: user.id,
-                ptTokenBalance: user.ptTokenBalance,
-                ddTokenBalance: user.ddTokenBalance,
-                memberType: user.memberType.memberTypeName,
-                imageURL: user.memberType.imageURL,
-                tasksCompleted,
-                totalVotes: user.totalVotes,
-                dateJoined: user.dateJoined,
+                    id: user.id,
+                    ptTokenBalance: user.ptTokenBalance,
+                    ddTokenBalance: user.ddTokenBalance,
+                    memberType: user.memberType.memberTypeName,
+                    imageURL: user.memberType.imageURL,
+                    tasksCompleted,
+                    totalVotes: user.totalVotes,
+                    dateJoined: user.dateJoined,
                 });
             }
+
+            const proposals = [
+                ...data.user.ptProposals.map(proposal => ({ ...proposal, type: 'Participation' })),
+                ...data.user.ddProposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' })),
+                ...data.user.hybridProposals.map(proposal => ({ ...proposal, type: 'Hybrid' })),
+            ];
+        
+            const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+        
+            // Order proposals by expiration timestamp, but move completed proposals to the end
+            proposals.sort((a, b) => {
+                const aIsCompleted = a.experationTimestamp < currentTime;
+                const bIsCompleted = b.experationTimestamp < currentTime;
+        
+                if (aIsCompleted && !bIsCompleted) {
+                    return 1; // a is completed, b is not - put a after b
+                } else if (!aIsCompleted && bIsCompleted) {
+                    return -1; // b is completed, a is not - put b after a
+                } else if (!aIsCompleted && !bIsCompleted) {
+                    return a.experationTimestamp - b.experationTimestamp; // Both are active - sort by expiration ascending
+                } else {
+                    return a.experationTimestamp - b.experationTimestamp; // Both are completed - sort by expiration ascending
+                }
+            });
+        
+            setUserProposals(proposals);
+            setUserDataLoading(false);
+
         }
     }, [data]);
 
-  return (
-    <UserContext.Provider value={{ userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, loading, error }}>
-      {children}
-    </UserContext.Provider>
-  );
+    return (
+        <UserContext.Provider value={{userDataLoading, userProposals, userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, error }}>
+            {error && <div>Error: {error.message}</div>}
+            {children}
+        </UserContext.Provider>
+    );
 };
