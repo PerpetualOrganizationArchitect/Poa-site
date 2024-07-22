@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { FETCH_PROJECT_DATA } from '../util/queries';
 import { useRouter } from 'next/router';
 
@@ -16,7 +16,8 @@ export const ProjectProvider = ({ children }) => {
   const { userDAO } = router.query;
   const poName = userDAO || '';
 
-  const { data, loading, error } = useQuery(FETCH_PROJECT_DATA, {
+
+  const [fetchProjectData, { data, loading, error }] = useLazyQuery(FETCH_PROJECT_DATA, {
     variables: { id: poName },
     skip: !poName,
   });
@@ -33,8 +34,9 @@ export const ProjectProvider = ({ children }) => {
 
       const recommendedTasks = projects
         .flatMap(project => project.tasks)
-        .filter(task => !task.completed)
+        .filter(task => task.taskInfo.location === 'Open')
         .sort(() => Math.random() - 0.5);
+
 
       setRecommendedTasks(recommendedTasks);
 
@@ -93,8 +95,18 @@ export const ProjectProvider = ({ children }) => {
     }
   }, [data]);
 
+  // Memoize the context value to avoid unnecessary re-renders
+  const contextValue = useMemo(() => ({
+    projectsData,
+    taskCount,
+    recommendedTasks,
+    loading,
+    error,
+    fetchProjectData,
+  }), [projectsData, taskCount, recommendedTasks, loading, error]);
+
   return (
-    <ProjectContext.Provider value={{ projectsData, taskCount, recommendedTasks, loading, error }}>
+    <ProjectContext.Provider value={contextValue}>
       {children}
     </ProjectContext.Provider>
   );

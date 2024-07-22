@@ -6,6 +6,7 @@ import { GraphProvider } from "@/context/graphContext";
 import { ProfileHubProvider } from "@/context/profileHubContext";
 import { ProjectProvider } from "@/context/ProjectContext";
 import { UserProvider } from "@/context/UserContext";
+import { POProvider } from "@/context/POContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -68,6 +69,7 @@ function MyApp({ Component, pageProps }) {
           <IPFSprovider>
             <ProfileHubProvider>
               <GraphProvider>
+              <POProvider>
               <ProjectProvider>
               <UserProvider>
                 <Web3Provider>
@@ -80,6 +82,7 @@ function MyApp({ Component, pageProps }) {
                 </Web3Provider>
                 </UserProvider>
               </ProjectProvider>
+              </POProvider>
               </GraphProvider>
             </ProfileHubProvider>
           </IPFSprovider>

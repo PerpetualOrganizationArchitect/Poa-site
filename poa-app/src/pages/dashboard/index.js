@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   Box,
   VStack,
@@ -14,6 +14,8 @@ import {
 } from '@chakra-ui/react';
 import { useWeb3Context } from '@/context/web3Context';
 import { useGraphContext } from '@/context/graphContext';
+import {usePOContext} from '@/context/POContext';
+import { useUserContext } from '@/context/UserContext';
 import Link2 from 'next/link';
 import OngoingPolls from '@/components/userPage/OngoingPolls';
 import { useRouter } from 'next/router';
@@ -66,7 +68,17 @@ function generateAbbreviatedConstitution(poData) {
 }
 
 const PerpetualOrgDashboard = () => {
-  const {ongoingPolls, userData, setLoaded, logoHash, fetchRules, activeTaskAmount,completedTaskAmount, ptTokenBalance, poMembers } = useGraphContext();
+  const {ongoingPolls, setLoaded,  fetchRules } = useGraphContext();
+  const {poDescription, poLinks, fetchPODetails, logoHash, activeTaskAmount, completedTaskAmount, ptTokenBalance, poMembers} = usePOContext();
+
+  useEffect(() => {
+    fetchPODetails();
+  }, [fetchPODetails]);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
+
   const router = useRouter();
   const { userDAO } = router.query;
   const [imageURL, setImageURL] = useState({});
@@ -99,22 +111,10 @@ const PerpetualOrgDashboard = () => {
     }
   }, [userDAO]);
 
-  const { leaderboardData, reccommendedTasks, democracyVotingOngoing, graphUsername, poDescription, poLinks } = useGraphContext();
+  const { leaderboardData, reccommendedTasks } = useGraphContext();
 
-  const { web3, account, hasExecNFT } = useWeb3Context();
-  const [userInfo, setUserInfo] = useState({});
 
-  useEffect(() => {
-    if (userData) {
-      let userInfo = {
-        username: graphUsername,
-        ptBalance: Number(userData.ptTokenBalance),
-        memberStatus: userData.memberType?.memberTypeName,
-        accountAddress: userData.id,
-      };
-      setUserInfo(userInfo);
-    }
-  }, [userData, graphUsername]);
+
 
   const getMedalColor = (rank) => {
     switch (rank) {

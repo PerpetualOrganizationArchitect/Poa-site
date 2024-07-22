@@ -291,6 +291,52 @@ export const FETCH_PROJECT_DATA = gql`
   }
 `;
 
+
+export const FETCH_PO_DATA = gql`
+  query FetchPODetails($poName: String!) {
+    perpetualOrganization(id: $poName) {
+      logoHash
+      totalMembers
+      aboutInfo {
+        description
+        links {
+          name
+          url
+        }
+      }
+      TaskManager {
+        activeTaskAmount
+        completedTaskAmount
+      }
+      ParticipationToken {
+        supply
+      }
+      Treasury {
+        id
+      }
+      QuickJoinContract {
+        id
+      }
+      HybridVoting {
+        id
+      }
+      ParticipationVoting {
+        id
+      }
+      DirectDemocracyVoting {
+        id
+      }
+      DirectDemocracyToken {
+        id
+      }
+      NFTMembership {
+        id
+      }
+    }
+  }
+`;
+
+
 // export const FETCH_USERNAME = gql`
 //   query FetchUsername($id: String!) {
 //     account(id: $id) {

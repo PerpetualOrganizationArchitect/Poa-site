@@ -1,6 +1,5 @@
-// UserContext.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { useAccount } from 'wagmi';
 import { FETCH_USER_DETAILS } from '../util/queries'; 
 import { useRouter } from 'next/router';
@@ -25,7 +24,7 @@ export const UserProvider = ({ children }) => {
 
     console.log("combinedID", combinedID);
 
-    const { data, error } = useQuery(FETCH_USER_DETAILS, {
+    const [fetchUserDetails, { data, error }] = useLazyQuery(FETCH_USER_DETAILS, {
         variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID },
         skip: !address || !userDAO || !combinedID,
     });
@@ -90,8 +89,21 @@ export const UserProvider = ({ children }) => {
         }
     }, [data]);
 
+    // Memoize the context value to avoid unnecessary re-renders
+    const contextValue = useMemo(() => ({
+        userDataLoading,
+        userProposals,
+        userData,
+        graphUsername,
+        hasExecNFT,
+        hasMemberNFT,
+        claimedTasks,
+        error,
+        fetchUserDetails
+    }), [userDataLoading, userProposals, userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, error]);
+
     return (
-        <UserContext.Provider value={{userDataLoading, userProposals, userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, error }}>
+        <UserContext.Provider value={contextValue}>
             {error && <div>Error: {error.message}</div>}
             {children}
         </UserContext.Provider>

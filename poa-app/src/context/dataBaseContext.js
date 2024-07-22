@@ -8,6 +8,7 @@ import { useProjectContext } from './ProjectContext';
 
 
 
+
 const DataBaseContext = createContext();
 
 export const useDataBaseContext = () => {
@@ -17,7 +18,11 @@ export const useDataBaseContext = () => {
 export const DataBaseProvider = ({ children }) => {
     // usestate for projects initalized with mock data with 3 projects and each has an id 
 
-    const {projectsData}= useProjectContext();
+    const {projectsData, fetchProjectData}= useProjectContext();
+
+    useEffect(()=>{
+        fetchProjectData();
+    },[fetchProjectData])
 
     useEffect(()=>{
         if (typeof projectsData === 'object' && projectsData !== null && Object.keys(projectsData).length !== 0) {
