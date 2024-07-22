@@ -17,15 +17,14 @@ export const ProjectProvider = ({ children }) => {
   const poName = userDAO || '';
 
 
-
-
-
-
   const  { data, loading, error } = useQuery(FETCH_PROJECT_DATA, {
     variables: { id: poName },
     skip: poName === '',
     fetchPolicy:'cache-first',
     notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      console.log('Query project completed successfully');
+    },
   });
 
   useEffect(() => {

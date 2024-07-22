@@ -30,11 +30,16 @@ export const POProvider = ({ children}) => {
 
     const poName =  router.query.userDAO || '';
 
+
+    console.log("poName", poName);
+
     const  { data, loading, error } = useQuery(FETCH_PO_DATA, {
         variables: { poName },
-        skip: !poName,
+        skip: poName === '',
         fetchPolicy:'cache-first',
-        notifyOnNetworkStatusChange: true,
+        onCompleted: () => {
+            console.log('Query po context completed successfully');
+          },
     });
 
   useEffect(() => {

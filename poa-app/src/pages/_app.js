@@ -71,20 +71,20 @@ function MyApp({ Component, pageProps }) {
             <ProfileHubProvider>
               <GraphProvider>
               <POProvider>
-              <VotingProvider>
-              <ProjectProvider>
-              <UserProvider>
-                <Web3Provider>
-                  <DataBaseProvider>
-                    <ChakraProvider theme={theme}>
-                      <NetworkModalControl />  
-                      <Component {...pageProps} />
-                    </ChakraProvider>
-                  </DataBaseProvider>
-                </Web3Provider>
-                </UserProvider>
-              </ProjectProvider>
-              </VotingProvider>
+                <VotingProvider>
+                  <ProjectProvider>
+                  <UserProvider>
+                    <Web3Provider>
+                      <DataBaseProvider>
+                        <ChakraProvider theme={theme}>
+                          <NetworkModalControl />  
+                          <Component {...pageProps} />
+                        </ChakraProvider>
+                      </DataBaseProvider>
+                    </Web3Provider>
+                    </UserProvider>
+                  </ProjectProvider>
+                </VotingProvider>
               </POProvider>
               </GraphProvider>
             </ProfileHubProvider>

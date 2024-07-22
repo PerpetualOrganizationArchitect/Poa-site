@@ -24,6 +24,9 @@ export const VotingProvider = ({ children, id }) => {
     skip: !userDAO,
     fetchPolicy:'cache-first',
     notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+        console.log('Query voting context completed successfully');
+      },
   });
 
   useEffect(() => {
