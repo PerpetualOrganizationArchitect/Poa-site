@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { FETCH_PO_DATA } from '../util/queries';
+import { FETCH_PO_DATA, FETCH_PO_AND_USER_DETAILS } from '../util/queries';
 import { useRouter } from 'next/router';
+import { useAccount } from 'wagmi';
 
 const POContext = createContext();
 
 export const usePOContext = () => useContext(POContext);
 
 export const POProvider = ({ children}) => {
+    const { address } = useAccount();
   const [poDescription, setPODescription] = useState('No description provided or IPFS content still being indexed');
   const [poLinks, setPOLinks] = useState({});
   const [logoHash, setLogoHash] = useState('');
@@ -30,12 +32,12 @@ export const POProvider = ({ children}) => {
 
     const poName =  router.query.userDAO || '';
 
+    const combinedID = `${poName}-${address?.toLowerCase()}`;
 
-    console.log("poName", poName);
 
-    const  { data, loading, error } = useQuery(FETCH_PO_DATA, {
-        variables: { poName },
-        skip: poName === '',
+    const  { data, error, loading } = useQuery(FETCH_PO_AND_USER_DETAILS, {
+        variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
+        skip: !address || !poName || !combinedID,
         fetchPolicy:'cache-first',
         onCompleted: () => {
             console.log('Query po context completed successfully');

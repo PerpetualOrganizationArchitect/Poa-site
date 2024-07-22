@@ -238,12 +238,14 @@ export const FETCH_PO_AND_USER_DETAILS = gql`
       totalVotes
       dateJoined
       memberType {
+        id
         memberTypeName
         imageURL
       }
       tasks {
         id
         taskInfo {
+          id
           name
           description
           difficulty
@@ -272,20 +274,25 @@ export const FETCH_PO_AND_USER_DETAILS = gql`
       }
     }
     perpetualOrganization(id: $poName) {
+      id
       logoHash
       totalMembers
       aboutInfo {
+        id
         description
         links {
+          id
           name
           url
         }
       }
       TaskManager {
+        id
         activeTaskAmount
         completedTaskAmount
       }
       ParticipationToken {
+        id
         supply
       }
       Treasury {
@@ -313,6 +320,7 @@ export const FETCH_PO_AND_USER_DETAILS = gql`
       Users(where: { id: $combinedID }) {
         id
         memberType {
+          id
           memberTypeName
         }
       }

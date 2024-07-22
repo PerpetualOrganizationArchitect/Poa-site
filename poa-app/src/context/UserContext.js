@@ -22,9 +22,8 @@ export const UserProvider = ({ children }) => {
 
     const combinedID = `${userDAO}-${address?.toLowerCase()}`;
 
-    console.log("combinedID", combinedID);
 
-    const  { data, error } = useQuery(FETCH_USER_DETAILS, {
+    const  { data, error } = useQuery(FETCH_PO_AND_USER_DETAILS, {
         variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID },
         skip: !address || !userDAO || !combinedID,
         fetchPolicy:'cache-first',
