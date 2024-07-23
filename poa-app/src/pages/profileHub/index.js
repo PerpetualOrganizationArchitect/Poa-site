@@ -157,13 +157,13 @@ const UserprofileHub = () => {
           <Grid
             color="white"
             templateAreas={[
-              `'welcome welcome' 'userinfo tierinfo' 'userinfo tierinfo' 'completedtasks completedtasks'`,
-              `'welcome welcome' 'userinfo tierinfo' 'userinfo tierinfo' 'completedtasks completedtasks'`
+              `'welcome welcome' 'userinfo tierinfo' 'userinfo tierinfo' 'proposals proposals' 'completedtasks completedtasks'`,
+              `'welcome welcome' 'userinfo tierinfo' 'userinfo tierinfo' 'proposals proposals' 'completedtasks completedtasks'`
             ]}
             templateColumns="repeat(2, 1fr)"
-            gap={3}
+            gap={4}
           >
-            <GridItem area={'userinfo'}>
+            <GridItem area={'userinfo'} >
               <Box
                 w="100%"
                 borderRadius="2xl"
@@ -171,6 +171,7 @@ const UserprofileHub = () => {
                 boxShadow="lg"
                 position="relative"
                 zIndex={2}
+               
               >
                 <div style={glassLayerStyle} />
                 <VStack position="relative" borderTopRadius="2xl" align="flex-start">
@@ -186,7 +187,7 @@ const UserprofileHub = () => {
                     )}
                   </Text>
                 </VStack>
-                <VStack p={0} pt={2} align="center">
+                <VStack p={0} pt={2} align="center" height={"100%"}>
                   <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text>
                   <Spacer />
                   <Image
@@ -283,6 +284,7 @@ const UserprofileHub = () => {
               <Box
                 w="100%"
                 pt={8}
+                mb="2"
                 borderRadius="2xl"
                 bg="transparent"
                 position="relative"
@@ -307,7 +309,7 @@ const UserprofileHub = () => {
             <GridItem area={'completedtasks'} colSpan={2}>
               <Box
                 w="100%"
-                pt={2}
+                mt={2}
                 borderRadius="2xl"
                 bg="transparent"
                 boxShadow="lg"
@@ -351,6 +353,7 @@ const UserprofileHub = () => {
       </Box>
     </>
   );
+  
   
 };
 

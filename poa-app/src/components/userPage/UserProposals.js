@@ -54,6 +54,7 @@ const UserProposals = ({ userProposals }) => {
                     position="relative"
                     w="31%"
                     mt="-4"
+                    mb="-3"
                 >
                     <div style={glassLayerStyle} />
                     <Link2  href={`/voting/?poll=${proposal.id}&userDAO=${userDAO}`}>
