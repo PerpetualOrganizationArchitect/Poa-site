@@ -28,6 +28,8 @@ import {
   Input,
   Textarea,
   Select,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
@@ -70,6 +72,7 @@ const Voting = () => {
   const {
     directDemocracyVotingContractAddress,
     votingContractAddress, 
+    poContextLoading,
   } = usePOContext();
 
   const {hybridVotingOngoing,
@@ -378,15 +381,20 @@ const Voting = () => {
   return (
     <>
       <Navbar />
-      <Container maxW="container.2xl" py={4} px={"3.8%"}>
-        <HeadingVote selectedTab={selectedTab} />
-        <Tabs
-          index={selectedTab}
-          isFitted
-          variant="soft-rounded"
-          onChange={handleTabsChange}
-          mb={6}
-        >
+      {poContextLoading ? (
+        <Center height="90vh">
+          <Spinner size="xl" />
+        </Center>
+      ) : (
+        <Container maxW="container.2xl" py={4} px={"3.8%"}>
+          <HeadingVote selectedTab={selectedTab} />
+          <Tabs
+            index={selectedTab}
+            isFitted
+            variant="soft-rounded"
+            onChange={handleTabsChange}
+            mb={6}
+          >
         <TabList
           alignItems="center"
           justifyContent="center"
@@ -1189,8 +1197,9 @@ const Voting = () => {
           selectedPoll={selectedPoll}
         />
       </Container>
-    </>
-  );
+    )}
+  </>
+);
 };
 
 export default Voting;
