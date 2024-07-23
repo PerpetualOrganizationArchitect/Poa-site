@@ -2,7 +2,6 @@ import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
 import { IPFSprovider } from "@/context/ipfsContext";
 import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
-import { GraphProvider } from "@/context/graphContext";
 import { ProfileHubProvider } from "@/context/profileHubContext";
 import { ProjectProvider } from "@/context/ProjectContext";
 import { UserProvider } from "@/context/UserContext";
@@ -69,7 +68,6 @@ function MyApp({ Component, pageProps }) {
         <RainbowKitProvider  initialChain={polygonAmoy}>
           <IPFSprovider>
             <ProfileHubProvider>
-              <GraphProvider>
               <POProvider>
                 <VotingProvider>
                   <ProjectProvider>
@@ -86,7 +84,6 @@ function MyApp({ Component, pageProps }) {
                   </ProjectProvider>
                 </VotingProvider>
               </POProvider>
-              </GraphProvider>
             </ProfileHubProvider>
           </IPFSprovider>
         </RainbowKitProvider>
