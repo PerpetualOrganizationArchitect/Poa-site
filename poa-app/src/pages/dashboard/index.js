@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   VStack,
@@ -15,9 +15,8 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { useWeb3Context } from '@/context/web3Context';
-import { useGraphContext } from '@/context/graphContext';
 import { useVotingContext } from '@/context/VotingContext';
-import {usePOContext} from '@/context/POContext';
+import { usePOContext } from '@/context/POContext';
 import { useProjectContext } from '@/context/ProjectContext';
 import { useUserContext } from '@/context/UserContext';
 import Link2 from 'next/link';
@@ -34,7 +33,7 @@ function generateAbbreviatedConstitution(poData) {
     ParticipationVoting = null,
     NFTMembership = null,
     Treasury = null
-  } = poData.perpetualOrganization;
+  } = poData;
 
   let descriptions = [];
 
@@ -72,11 +71,9 @@ function generateAbbreviatedConstitution(poData) {
 }
 
 const PerpetualOrgDashboard = () => {
-  const { fetchRules } = useGraphContext();
-  const {ongoingPolls } = useVotingContext();
+  const { ongoingPolls } = useVotingContext();
   console.log("ongoingPolls", ongoingPolls);
-  const {poContextLoading, poDescription, poLinks, logoHash, activeTaskAmount, completedTaskAmount, ptTokenBalance, poMembers} = usePOContext();
-
+  const { poContextLoading, poDescription, poLinks, logoHash, activeTaskAmount, completedTaskAmount, ptTokenBalance, poMembers, rules } = usePOContext();
 
   const router = useRouter();
   const { userDAO } = router.query;
@@ -84,7 +81,6 @@ const PerpetualOrgDashboard = () => {
   const [imageFetched, setImageFetched] = useState(false);
   const [constitutionElements, setConstitutionElements] = useState([]);
   const { fetchImageFromIpfs } = useIPFScontext();
-
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -98,18 +94,13 @@ const PerpetualOrgDashboard = () => {
   }, [logoHash]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      let poData = await fetchRules(userDAO);
-      setConstitutionElements(generateAbbreviatedConstitution(poData));
-    };
-    if (userDAO) {
-      fetchData();
+    if (rules) {
+      setConstitutionElements(generateAbbreviatedConstitution(rules));
     }
-  }, [userDAO]);
+  }, [rules]);
 
   const { leaderboardData } = usePOContext();
   const { recommendedTasks } = useProjectContext();
-
 
   const getMedalColor = (rank) => {
     switch (rank) {
@@ -215,7 +206,7 @@ const PerpetualOrgDashboard = () => {
                 </HStack>
               </Box>
             </GridItem>
-  
+
             <GridItem area={'orgStats'}>
               <Box
                 h="100%"
@@ -243,7 +234,7 @@ const PerpetualOrgDashboard = () => {
                       {poMembers}
                     </Text>
                   </HStack>
-  
+
                   <HStack spacing={2}>
                     <Text mt="-1" fontSize="lg" fontWeight="bold">
                       Total Participation Tokens:
@@ -252,7 +243,7 @@ const PerpetualOrgDashboard = () => {
                       {ptTokenBalance}
                     </Text>
                   </HStack>
-  
+
                   <HStack spacing={2}>
                     <Text mt="-1" fontSize="lg" fontWeight="bold">
                       Active Tasks:
@@ -261,7 +252,7 @@ const PerpetualOrgDashboard = () => {
                       {activeTaskAmount}
                     </Text>
                   </HStack>
-  
+
                   <HStack spacing={2}>
                     <Text mt="-1" fontSize="lg" fontWeight="bold">
                       Completed Tasks:
@@ -270,7 +261,7 @@ const PerpetualOrgDashboard = () => {
                      {completedTaskAmount}
                     </Text>
                   </HStack>
-  
+
                   <HStack spacing={2}>
                     <Text mt="-1" fontSize="lg" fontWeight="bold">
                       Treasury Balance:
@@ -280,10 +271,10 @@ const PerpetualOrgDashboard = () => {
                     </Text>
                   </HStack>
                 </VStack>
-  
+
               </Box>
             </GridItem>
-  
+
             <GridItem area={'tasks'}>
               <Box
                 h="100%"
@@ -304,7 +295,7 @@ const PerpetualOrgDashboard = () => {
                 <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={2}>
                   {recommendedTasks?.slice(0, 3).map((task) => (
                     <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
-                      <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
+                      <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO={userDAO}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
                           <Text mt="-2" fontSize="md" lineHeight="99%" fontWeight="extrabold">
                             {task.taskInfo.name}
@@ -320,7 +311,7 @@ const PerpetualOrgDashboard = () => {
                 </HStack>
               </Box>
             </GridItem>
-  
+
             <GridItem area={'polls'}>
               <Box
                h="100%"
@@ -344,7 +335,7 @@ const PerpetualOrgDashboard = () => {
                 </Box>
               </Box>
             </GridItem>
-  
+
             <GridItem area={'leaderboard'}>
               <Link2 href="/leaderboard">
                 <Box
@@ -385,7 +376,7 @@ const PerpetualOrgDashboard = () => {
                 </Box>
               </Link2>
             </GridItem>
-  
+
             <GridItem area={'constitution'}>
               <Box
                 w="100%"
@@ -427,8 +418,6 @@ const PerpetualOrgDashboard = () => {
       )}
     </>
   );
-   
-  
 };
 
 export default PerpetualOrgDashboard;

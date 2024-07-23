@@ -64,12 +64,14 @@ export const FETCH_ALL_PO_DATA = gql`
       }
       Treasury {
         id
+        votingContract
       }
       QuickJoinContract {
         id
       }
       HybridVoting {
         id
+        quorum
         proposals {
           id
           name
@@ -86,6 +88,7 @@ export const FETCH_ALL_PO_DATA = gql`
       }
       ParticipationVoting {
         id
+        quorum
         proposals {
           id
           name
@@ -102,6 +105,7 @@ export const FETCH_ALL_PO_DATA = gql`
       }
       DirectDemocracyVoting {
         id
+        quorum
         proposals {
           id
           name
@@ -122,6 +126,7 @@ export const FETCH_ALL_PO_DATA = gql`
       NFTMembership {
         id
         executiveRoles
+        memberTypeNames
       }
       Users(orderBy: ptTokenBalance, orderDirection: desc) {
         id

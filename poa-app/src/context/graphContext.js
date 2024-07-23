@@ -149,7 +149,7 @@ export const GraphProvider = ({ children }) => {
               }
               NFTMembership{
                 executiveRoles
-                memberTypeNames
+                memberTypeName
               }
               Treasury{
                 votingContract

@@ -15,31 +15,23 @@ const LoginButton = () => {
 
     // const [isMounted, setIsMounted] = useState(false); // new state to track mounting
     const [text, setText] = useState("Connect Wallet");
+    const [ route , setRoute] = useState("user");
 
     // Effect to set text based on accounts, only runs on client side after mount
     useEffect(() => {
 
         if (hasMemberNFT) {
             setText("Profile Hub");
+            setRoute("profileHub");
         } else {
           
             setText("Join or Connect");
         }
     }, [hasMemberNFT, address]);
 
-    // // Effect to set isMounted to true when component mounts
-    // useEffect(() => {
-    //     setIsMounted(true); 
-    // }, []); 
-
-    // // Conditional rendering based on the isMounted state
-    // if (!isMounted) {
-    //     // If the component hasn't mounted yet, render nothing or a placeholder
-    //     return null;
-    // }
 
     return (
-        <NextLink href={`/user/?userDAO=${userDAO}`} passHref>
+        <NextLink href={`/${route}/?userDAO=${userDAO}`} passHref>
             <Button
                 bgGradient="linear(to-r, teal.300, green.300)"
                 color="white"
