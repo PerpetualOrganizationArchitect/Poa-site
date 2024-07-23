@@ -42,9 +42,6 @@ const UserprofileHub = () => {
   const {claimedTasks,  userProposals,graphUsername, userDataLoading, error, userData} = useUserContext();
 
 
-
-
-
   const prefersReducedMotion = usePrefersReducedMotion();
   const [countFinished, setCountFinished] = useState(false);
   const [upgradeAvailable, setUpgradeAvailable] = useState(false);

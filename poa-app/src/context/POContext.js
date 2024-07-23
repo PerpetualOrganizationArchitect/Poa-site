@@ -40,6 +40,7 @@ export const POProvider = ({ children}) => {
   const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
   const [votingContractAddress, setVotingContractAddress] = useState('');
   const[leaderboardData, setLeaderboardData] = useState({});
+  const [poContextLoading, setPoContextLoading] = useState(true);
 
 
     const router = useRouter();
@@ -82,6 +83,8 @@ export const POProvider = ({ children}) => {
       fetchLeaderboardData(combinedID, po.Users).then(data => {
         setLeaderboardData(data);
       });
+
+      setPoContextLoading(false);
     }
   }, [data]);
 
@@ -105,6 +108,7 @@ export const POProvider = ({ children}) => {
     loading,
     error,
     leaderboardData,
+    poContextLoading,
   }), [
     poDescription,
     poLinks,
@@ -125,6 +129,7 @@ export const POProvider = ({ children}) => {
     loading,
     error,
     leaderboardData,
+    poContextLoading,
   ]);
 
   return (
