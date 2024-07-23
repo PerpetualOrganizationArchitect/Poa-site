@@ -223,6 +223,18 @@ export const FETCH_USER_DETAILS = gql`
   }
 `;
 
+export const FETCH_LEADERBOARD = gql`
+  query FetchLeaderboard($id: String!) {
+    perpetualOrganization(id: $id) {
+      id
+      Users(orderBy: ptTokenBalance, orderDirection: desc) {
+        id
+        ptTokenBalance
+      }
+    }
+  }
+`;
+
 
 
 export const FETCH_PO_AND_USER_DETAILS = gql`
