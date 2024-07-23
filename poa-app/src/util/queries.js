@@ -14,7 +14,7 @@ export const FETCH_USERNAME = gql`
 
 export const FETCH_ALL_PO_DATA = gql`
   query FetchCombinedData($id: String!, $poName: String!, $combinedID: String!) {
-    perpetualOrganization(id: $id) {
+    perpetualOrganization(id: $poName) {
       id
       logoHash
       totalMembers
@@ -70,12 +70,51 @@ export const FETCH_ALL_PO_DATA = gql`
       }
       HybridVoting {
         id
+        proposals {
+          id
+          name
+          experationTimestamp
+          creationTimestamp
+          description
+          winningOptionIndex
+          options {
+            id
+            name
+            votes
+          }
+        }
       }
       ParticipationVoting {
         id
+        proposals {
+          id
+          name
+          experationTimestamp
+          creationTimestamp
+          description
+          winningOptionIndex
+          options {
+            id
+            name
+            votes
+          }
+        }
       }
       DirectDemocracyVoting {
         id
+        proposals {
+          id
+          name
+          experationTimestamp
+          creationTimestamp
+          description
+          winningOptionIndex
+          options {
+            id
+            name
+            votes
+          }
+        }
       }
       DirectDemocracyToken {
         id
@@ -87,9 +126,9 @@ export const FETCH_ALL_PO_DATA = gql`
       Users(orderBy: ptTokenBalance, orderDirection: desc) {
         id
         ptTokenBalance
-        memberType {
+        Account {
           id
-          memberTypeName
+          userName
         }
       }
     }

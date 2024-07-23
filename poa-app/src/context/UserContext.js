@@ -29,6 +29,7 @@ export const UserProvider = ({ children }) => {
         fetchPolicy:'cache-first',
         onCompleted: () => {
             console.log('Query user context completed successfully');
+            console.log('data', data);
           },
     });
 

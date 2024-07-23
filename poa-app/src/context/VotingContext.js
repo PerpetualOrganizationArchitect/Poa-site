@@ -25,7 +25,7 @@ export const VotingProvider = ({ children, id }) => {
 
   const  { data, loading, error } = useQuery(FETCH_ALL_PO_DATA, {
     variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
-    skip: !userDAO,
+    skip: !address || !poName || !combinedID,
     fetchPolicy:'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {

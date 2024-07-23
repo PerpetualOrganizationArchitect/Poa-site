@@ -107,7 +107,7 @@ const PerpetualOrgDashboard = () => {
     }
   }, [userDAO]);
 
-  const { leaderboardData} = useGraphContext();
+  const { leaderboardData } = usePOContext();
   const { recommendedTasks } = useProjectContext();
 
 

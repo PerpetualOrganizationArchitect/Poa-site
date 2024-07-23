@@ -8,6 +8,19 @@ const POContext = createContext();
 
 export const usePOContext = () => useContext(POContext);
 
+async function fetchLeaderboardData(id, users) {
+    if (users) {
+      return users.map(user => ({
+        id: user.id,
+        name: user.Account.userName,
+        token: user.ptTokenBalance,
+      }));
+    } else {
+      console.error("No user data available");
+      return [];
+    }
+  }
+
 export const POProvider = ({ children}) => {
     const { address } = useAccount();
   const [poDescription, setPODescription] = useState('No description provided or IPFS content still being indexed');
@@ -26,6 +39,7 @@ export const POProvider = ({ children}) => {
   const [ddTokenContractAddress, setDDTokenContractAddress] = useState('');
   const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
   const [votingContractAddress, setVotingContractAddress] = useState('');
+  const[leaderboardData, setLeaderboardData] = useState({});
 
 
     const router = useRouter();
@@ -64,6 +78,10 @@ export const POProvider = ({ children}) => {
       setNFTMembershipContractAddress(po.NFTMembership?.id || '');
       setQuickJoinContractAddress(po.QuickJoinContract?.id || '');
       setVotingContractAddress(po.HybridVoting?.id || po.ParticipationVoting?.id || '');
+      
+      fetchLeaderboardData(combinedID, po.Users).then(data => {
+        setLeaderboardData(data);
+      });
     }
   }, [data]);
 
@@ -86,6 +104,7 @@ export const POProvider = ({ children}) => {
     votingContractAddress,
     loading,
     error,
+    leaderboardData,
   }), [
     poDescription,
     poLinks,
@@ -105,6 +124,7 @@ export const POProvider = ({ children}) => {
     votingContractAddress,
     loading,
     error,
+    leaderboardData,
   ]);
 
   return (
