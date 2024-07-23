@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { FETCH_PROJECT_DATA } from '../util/queries';
+import { FETCH_PROJECT_DATA, FETCH_ALL_PO_DATA } from '../util/queries';
 import { useRouter } from 'next/router';
+import { useAccount } from 'wagmi';
 
 const ProjectContext = createContext();
 
@@ -11,15 +12,16 @@ export const ProjectProvider = ({ children }) => {
   const [projectsData, setProjectsData] = useState([]);
   const [taskCount, setTaskCount] = useState(0);
   const [recommendedTasks, setRecommendedTasks] = useState([]);
+  const { address } = useAccount();
 
   const router = useRouter();
   const { userDAO } = router.query;
   const poName = userDAO || '';
+  const combinedID = `${poName}-${address?.toLowerCase()}`;
 
-
-  const  { data, loading, error } = useQuery(FETCH_PROJECT_DATA, {
-    variables: { id: poName },
-    skip: poName === '',
+  const  { data, loading, error } = useQuery(FETCH_ALL_PO_DATA, {
+    variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
+    skip: !address || !poName || !combinedID,
     fetchPolicy:'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {

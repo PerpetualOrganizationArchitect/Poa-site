@@ -12,6 +12,148 @@ export const FETCH_USERNAME = gql`
   }
 `;
 
+export const FETCH_ALL_PO_DATA = gql`
+  query FetchCombinedData($id: String!, $poName: String!, $combinedID: String!) {
+    perpetualOrganization(id: $id) {
+      id
+      logoHash
+      totalMembers
+      aboutInfo {
+        id
+        description
+        links {
+          id
+          name
+          url
+        }
+      }
+      TaskManager {
+        id
+        projects(where: { deleted: false }) {
+          id
+          name
+          tasks {
+            id
+            taskInfo {
+              id
+              name
+              description
+              difficulty
+              estimatedHours
+              location
+              submissionContent
+            }
+            payout
+            claimer
+            completed
+            user {
+              id
+              Account {
+                id
+                userName
+              }
+            }
+          }
+        }
+        activeTaskAmount
+        completedTaskAmount
+      }
+      ParticipationToken {
+        id
+        supply
+      }
+      Treasury {
+        id
+      }
+      QuickJoinContract {
+        id
+      }
+      HybridVoting {
+        id
+      }
+      ParticipationVoting {
+        id
+      }
+      DirectDemocracyVoting {
+        id
+      }
+      DirectDemocracyToken {
+        id
+      }
+      NFTMembership {
+        id
+        executiveRoles
+      }
+      Users(orderBy: ptTokenBalance, orderDirection: desc) {
+        id
+        ptTokenBalance
+        memberType {
+          id
+          memberTypeName
+        }
+      }
+    }
+    account(id: $id) {
+      id
+      userName
+    }
+    user(id: $combinedID) {
+      id
+      ptTokenBalance
+      ddTokenBalance
+      totalVotes
+      dateJoined
+      memberType {
+        memberTypeName
+        imageURL
+      }
+      tasks {
+        id
+        taskInfo {
+          id
+          name
+          description
+          difficulty
+          estimatedHours
+        }
+        payout
+        completed
+      }
+      ptProposals(orderBy: experationTimestamp, orderDirection: desc) {
+        id
+        name
+        experationTimestamp
+        creationTimestamp
+      }
+      ddProposals(orderBy: experationTimestamp, orderDirection: desc) {
+        id
+        name
+        experationTimestamp
+        creationTimestamp
+      }
+      hybridProposals(orderBy: experationTimestamp, orderDirection: desc) {
+        id
+        name
+        experationTimestamp
+        creationTimestamp
+      }
+    }
+    perpetualOrganization(id: $poName) {
+      id
+      Users(where: { id: $combinedID }) {
+        id
+        memberType {
+          id
+          memberTypeName
+        }
+      }
+    }
+  }
+`;
+
+
+
+
 export const FETCH_VOTING_DATA = gql`
   query FetchVotingData($id: String!) {
     perpetualOrganization(id: $id) {
@@ -67,9 +209,6 @@ export const FETCH_VOTING_DATA = gql`
     }
   }
 `;
-
-
-
 export const FETCH_PROJECT_DATA = gql`
   query FetchProjectData($id: String!) {
     perpetualOrganization(id: $id) {

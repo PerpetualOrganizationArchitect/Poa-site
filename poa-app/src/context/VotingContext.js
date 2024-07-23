@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { FETCH_VOTING_DATA } from '../util/queries'; 
+import { FETCH_VOTING_DATA, FETCH_ALL_PO_DATA } from '../util/queries'; 
 import { useRouter } from 'next/router';
+import { useAccount } from 'wagmi';
 
 const VotingContext = createContext();
 
@@ -16,11 +17,14 @@ export const VotingProvider = ({ children, id }) => {
   const [democracyVotingCompleted, setDemocracyVotingCompleted] = useState([]);
   const [ongoingPolls, setOngoingPolls] = useState([]);
 
+    const { address } = useAccount();
     const router = useRouter();
-    const {userDAO} = router.query;
+    const poName =  router.query.userDAO || '';
 
-  const  { data, loading, error } = useQuery(FETCH_VOTING_DATA, {
-    variables: { id: userDAO },
+    const combinedID = `${poName}-${address?.toLowerCase()}`;
+
+  const  { data, loading, error } = useQuery(FETCH_ALL_PO_DATA, {
+    variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
     skip: !userDAO,
     fetchPolicy:'cache-first',
     notifyOnNetworkStatusChange: true,

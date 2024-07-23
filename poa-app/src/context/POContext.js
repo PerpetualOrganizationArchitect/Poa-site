@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { FETCH_PO_DATA, FETCH_PO_AND_USER_DETAILS } from '../util/queries';
+import { FETCH_PO_DATA, FETCH_ALL_PO_DATA } from '../util/queries';
 import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
 
@@ -35,7 +35,7 @@ export const POProvider = ({ children}) => {
     const combinedID = `${poName}-${address?.toLowerCase()}`;
 
 
-    const  { data, error, loading } = useQuery(FETCH_PO_AND_USER_DETAILS, {
+    const  { data, error, loading } = useQuery(FETCH_ALL_PO_DATA, {
         variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
         skip: !address || !poName || !combinedID,
         fetchPolicy:'cache-first',
