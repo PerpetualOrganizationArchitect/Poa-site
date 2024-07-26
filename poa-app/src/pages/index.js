@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Flex, Box, Button, Text, Image, VStack, HStack, useColorModeValue } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import AutoPlayVideo1 from "@/components/AutoPlayVideo1";
 
 export default function Home() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function Home() {
           left="0"
           right="0"
           bottom="0"
-          bg="radial-gradient(circle, rgba(255, 255, 255, 1) 80%, rgba(154, 215, 255, 0.8) 115%)"
+          bg="radial-gradient(circle, rgba(255, 255, 255, 10) 80%, rgba(154, 215, 255, 0.8) 115%)"
         />
         <Image
           src="/images/poa_logo.png"
@@ -56,11 +57,11 @@ export default function Home() {
           Perpetual Organization Architect
         </Text>
         <Text
-          zIndex={1}
+          zIndex={3}
           fontWeight="1000"
           fontSize={["25px", "27px", "31px", "39px"]}
           textAlign="center"
-          mt={["4", "4", "4"]}
+          mt={["4", "4", "6"]}
           css={{
             lineHeight: "1.3",
             background: "linear-gradient(90deg, #ff416c, #f28500)",
@@ -72,45 +73,32 @@ export default function Home() {
           Build Organizations Owned Fully by Your Community
         </Text>
         <Text
-          mt={["6", "10"]}
+          mt={["8", "10"]}
           zIndex={1}
-          fontSize={["16px", "19px", "23px"]}
+          fontSize={["16px", "19px", "21px"]}
           fontWeight="700"
           textAlign="center"
-          color="gray.800"
+          color="gray.700"
           w={["95%", "65%"]}
         >
           Unite your Community, simplify Collaboration, and manage funds Collectively with Poa
         </Text>
-        <Text
-          mt={["6", "8"]}
-          zIndex={1}
-          fontSize={["15px", "18px", "19px"]}
-          fontWeight="500"
-          textAlign="center"
-          color="gray.700"
-          w={["90%", "60%"]}
-        >
-          Decisions are made Directly by your Community through Contribution-based voting and Democracy
-        </Text>
-        <Text mt={["8", "10"]} zIndex={1} fontSize={["19px", "23px", "27px"]} fontWeight="700" textAlign="center" color="gray.900">
-          No Coding Required. No Middlemen. No Censorship.
-        </Text>
 
-        <Flex direction={["column", "column", "row"]} gap={12} mt={["6", "14"]} zIndex={1}>
+        <Flex justifyContent={["center", "center", "center"]} direction={["column", "column", "row"]} gap={12} mt={["8", "14"]} zIndex={1}>
           <Box
             _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }}
             onClick={() => router.push("/create")}
             cursor="pointer"
-            maxW={["100%", "100%", "45%"]}
+            maxW={["100%", "100%", "650px"]}
+            flex="1"
           >
-            <HStack spacing={[2, 4]} bg="purple.200" borderRadius="3xl" p={[4, 6]}>
+            <HStack display="flex" spacing={[2, 4]} bg="purple.200" borderRadius="3xl" p={[4, 6]} justifyContent="center" >
               <Image
                 mr={["1", "4"]}
                 src="/images/high_res_poa.png"
                 alt="Poa Logo"
-                width={[100, 140, 180]}
-                height={[100, 140, 180]}
+                width={[100,140,180,240]}
+                height={[100,140,180,240]}
               />
               <Box borderRadius="2xl" bg="white" p={[3, 4]}>
                 <Text fontWeight="500" fontSize={["13px", "15px", "17px"]} color="black.900">
@@ -122,10 +110,10 @@ export default function Home() {
               </Box>
             </HStack>
           </Box>
-          <Box maxW={["100%", "100%", "45%"]}>
+          <Box mt="-4" mb="8" maxW={["100%", "100%", "650px"]} flex="1">
             <VStack display={["flex", "flex", "none"]} spacing={4} bg="blue.200" borderRadius="3xl" p={6}>
-            <Box borderRadius="2xl" bg="white" p={[2, 4]}>
-                <Text fontWeight="500" fontSize={["12px", "14px", "16px"]} color="black.900">
+              <Box borderRadius="2xl" bg="white" p={[4, 4]}>
+                <Text fontWeight="600" fontSize={["16px", "16px", "18px"]} color="black.900">
                   What is a{" "}
                   <Text
                     as="span"
@@ -136,62 +124,65 @@ export default function Home() {
                       "-webkit-text-fill-color": "transparent",
                       textShadow: "1px 1px 10px rgba(255, 255, 255, 0.5)",
                     }}
+                    fontSize={["16px", "16px", "18px"]}
                   >
                     Perpetual Organization
                   </Text>
                 </Text>
-                <Text mt={2} color="black.900" fontSize={["12px", "14px", "16px"]} fontWeight="400">
+                <Text mt={2} color="black.900" fontSize={["13px", "14px", "16px"]} fontWeight="500">
                   POs are community-owned, unstoppable organizations based on contribution and democracy, not investment.
                 </Text>
-                <Button mt={4} colorScheme="blue" variant="outline" _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }} onClick={() => router.push("/about")}>
+                <Button size="sm" mt={4} colorScheme="blue" variant="outline" _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }} onClick={() => router.push("/about")}>
                   Learn More
                 </Button>
               </Box>
               <Box
                 height="100%"
-                width="100%"
+                width="90%"
                 bg={useColorModeValue("gray.800", "white")}
                 borderRadius="xl"
-                p={6}
+                p={["2","6"]}
                 textAlign="center"
                 boxShadow="md"
                 _hover={{ boxShadow: "lg", transform: "scale(1.05)" }}
                 transition="all 0.3s ease"
                 onClick={handleClick}
                 cursor="pointer"
+                mt="2" 
               >
-                <Text fontSize={["16px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
+                <Text fontSize={["19px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
                   Explore
                 </Text>
-                <Text fontSize={["12px", "14px", "16px"]} fontWeight="bold" color="white">
-                  Discover and join existing Perpetual Organizations.
+                <Text mt="2" fontSize={["12px", "14px", "16px"]} fontWeight="bold" color="white">
+                  Discover and join existing Perpetual Organizations
                 </Text>
               </Box>
-
             </VStack>
-            <HStack display={["none", "none", "flex"]} spacing={4} bg="blue.200" borderRadius="3xl" p={6}>
+            <HStack display={["none", "none", "flex"]} spacing={8} bg="blue.200" borderRadius="3xl" p={6} justifyContent="center">
               <Box
                 height="100%"
                 width="100%"
                 bg={useColorModeValue("gray.800", "white")}
                 borderRadius="xl"
-                p={6}
+                p={8}
                 textAlign="center"
                 boxShadow="md"
                 _hover={{ boxShadow: "lg", transform: "scale(1.05)" }}
                 transition="all 0.3s ease"
                 onClick={handleClick}
                 cursor="pointer"
+                maxW={["100%", "100%", "650px"]}
+                flex="1"
               >
-                <Text fontSize={["16px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
+                <Text mt="-2"fontSize={["16px", "22px", "34px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
                   Explore
                 </Text>
-                <Text fontSize={["12px", "14px", "16px"]} fontWeight="bold" color="white">
-                  Discover and join existing Perpetual Organizations.
+                <Text mt="2"  mb="-2"  fontSize={["12px", "14px", "16px"]}  color="white">
+                  Discover and join existing Perpetual Organizations
                 </Text>
               </Box>
               <Box borderRadius="2xl" bg="white" p={[2, 4]}>
-                <Text fontWeight="500" fontSize={["12px", "14px", "16px"]} color="black.900">
+                <Text fontWeight="500" fontSize={["12px", "14px", "20px"]} color="black.900">
                   What is a{" "}
                   <Text
                     as="span"
@@ -209,13 +200,33 @@ export default function Home() {
                 <Text mt={2} color="black.900" fontSize={["12px", "14px", "16px"]} fontWeight="400">
                   POs are community-owned, unstoppable organizations based on contribution and democracy, not investment.
                 </Text>
-                <Button mt={4} colorScheme="blue" variant="outline" _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }} onClick={() => router.push("/about")}>
+                <Button size="md" mt={4} colorScheme="blue" variant="outline" _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }} onClick={() => router.push("/about")}>
                   Learn More
                 </Button>
               </Box>
             </HStack>
           </Box>
         </Flex>
+        <AutoPlayVideo1 />
+
+       <VStack zIndex={"4"}>
+        <Text fontSize={["sm", "xl"]} fontWeight="bold" textColor={"gray.900"}>
+          Join our Community
+        </Text>
+        <HStack  spacing={4} align="center">
+          {" "}
+          <Box width={["10","20"]}>
+            <Link href="https://discord.gg/kKDKgetdNx" passHref>
+              <Image src="/images/discord.png" alt="Descriptive Alt Text" />
+            </Link>
+          </Box>
+          <Box width={["10","20"]}>
+            <Link href="https://twitter.com/PoaPerpetual" passHref>
+              <Image src="/images/x.png" alt="Descriptive Alt Text" />
+            </Link>
+          </Box>
+        </HStack>
+        </VStack>
       </Flex>
     </>
   );
