@@ -37,7 +37,7 @@ import { useRouter } from "next/router";
 import { useWeb3Context } from "@/context/web3Context";
 import { usePOContext } from "@/context/POContext";
 import { useVotingContext } from "@/context/VotingContext";
-import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/completedPollModal";
+import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/CompletedPollModal";
 
 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
