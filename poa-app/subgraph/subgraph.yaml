@@ -8,9 +8,9 @@ dataSources:
     name: UniversalAccountRegistry
     network: polygon-amoy
     source:
-      address: "0x30C7f04127861c3246C00ED84BC3246B76fe5c04"
+      address: "0xdE873b727FCb261cE890BAD1678227e69Edd87F9"
       abi: AccountManager
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -30,9 +30,9 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: polygon-amoy
     source:
-      address: "0xa5586c78757385B070A3EC2ff26b5faa14b54402"
+      address: "0x2F0f89dc567A9147e43008141496e0703870C057"
       abi: DirectDemocracyTokenFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -50,9 +50,9 @@ dataSources:
     name: ParticipationTokenFactory
     network: polygon-amoy
     source:
-      address: "0xc34040828Ea1Cd5d1A1c14A71753b579003678E7"
+      address: "0xe2eb571074dFA066Df11D283301F5BFF6e0821Bf"
       abi:  ParticipationTokenFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -70,9 +70,9 @@ dataSources:
     name: NFTMembershipFactory
     network: polygon-amoy
     source:
-      address: "0x75F75b8C2e72CBAaB8F1E8bb14C7d8Dd33341fF5"
+      address: "0x7AE18Bf851fBDD16D93307f6194694Fa5b862d33"
       abi: NFTMembershipFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -90,9 +90,9 @@ dataSources:
     name: TreasuryFactory
     network: polygon-amoy
     source:
-      address: "0x233D3F6183dC745d96915EFAA677a9361A8b0288"
+      address: "0x18209e281E67a9b9DB09a9D17D6A84d30b27e2ab"
       abi: TreasuryFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -110,9 +110,9 @@ dataSources:
     name: ParticipationVotingFactory
     network: polygon-amoy
     source:
-      address: "0x0b9e213DB7B2712Dad512919c6148003B28c2278"
+      address: "0x87e816e758921248f8E96C072aA36AA68f660A49"
       abi: ParticipationVotingFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -130,9 +130,9 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: polygon-amoy
     source:
-      address: "0x7138B8f5C02E75ebA4C557410dd84d5da2DcF643"
+      address: "0xEFd015dAf0edC06B56561c26D29f5076a5a5E1D0"
       abi: DirectDemocracyVotingFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -150,9 +150,9 @@ dataSources:
     name: HybridVotingFactory
     network: polygon-amoy
     source:
-      address: "0x3e43B9D4d254a18780Fd36515CFFfBe9100e8810"
+      address: "0x8ee4726E4C2e4a5F7F840Be1DbF00429b3391c0b"
       abi: HybridVotingFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -170,9 +170,9 @@ dataSources:
     name: TaskManagerFactory
     network: polygon-amoy
     source:
-      address: "0x55E95d5A579fFfAF30Bfd507E4419f7acd3FA6aF"
+      address: "0x9c4665df761aA98cCFc39c55B8D49f54f4EE493B"
       abi: TaskManagerFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -190,9 +190,9 @@ dataSources:
     name: RegistryFactory
     network: polygon-amoy
     source:
-      address: "0x4B7998E30A5e425B8342FC7026F723986DD56A88"
+      address: "0xb2B2A5e1B2a6eF84efD01054A872A2854Dc0dAF8"
       abi: RegistryFactory
-      startBlock: 8800000
+      startBlock: 9480000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -206,6 +206,26 @@ dataSources:
         - event: RegistryCreated(address,string,string,address,string[],address[],string)
           handler: handleRegistryContractCreated
       file: ./mappings/registry/registryFactoryMapping.ts
+  - kind: ethereum/contract
+    name: QuickJoinFactory
+    network: polygon-amoy
+    source:
+      address: "0xa807AB9ADD1e71a2F403F4530231b57bCc63a9aE"
+      abi: QuickJoinFactory
+      startBlock: 9480000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - QuickJoinCreated
+      abis:
+        - name: QuickJoinFactory
+          file: ../abi/QuickJoinFactory.json
+      eventHandlers:
+        - event: QuickJoinDeployed(address,string)
+          handler: handleQuickJoinDeployed
+      file: ./mappings/quickJoin/quickJoinFactoryMapping.ts
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -289,6 +309,12 @@ templates:
       eventHandlers:
         - event: VotingContractSet(address)
           handler: handleVotingSet
+        - event: TokensSent(indexed address,indexed address,uint256)
+          handler: handleSendTokens
+        - event: TokensReceived(indexed address,indexed address,uint256)
+          handler: handleReceiveTokens
+        - event: EtherReceived(indexed address,uint256)
+          handler: handleNativeToeksnRecieved
       file: ./mappings/treasury/treasuryMapping.ts
   - kind: ethereum/contract
     name: ParticipationVoting
@@ -308,7 +334,7 @@ templates:
         - name: ParticipationVoting
           file: ../abi/ParticipationVoting.json
       eventHandlers:
-        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
           handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
@@ -335,7 +361,7 @@ templates:
         - name: DirectDemocracyVoting
           file: ../abi/DirectDemocracyVoting.json
       eventHandlers:
-        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
           handler: handlePollCreated
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
@@ -362,7 +388,7 @@ templates:
         - name: HybridVoting
           file: ../abi/HybridVoting.json
       eventHandlers:
-        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool)
+        - event: NewProposal(indexed uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
           handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames

@@ -1,0 +1,60 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "quickJoinAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "POname",
+        "type": "string"
+      }
+    ],
+    "name": "QuickJoinDeployed",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_membershipNFTAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_directDemocracyTokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_accountManagerAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_POname",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_masterDeployAddress",
+        "type": "address"
+      }
+    ],
+    "name": "createQuickJoin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

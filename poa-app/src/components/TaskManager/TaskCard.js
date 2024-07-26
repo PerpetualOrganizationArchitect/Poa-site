@@ -50,27 +50,27 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
         bg="ghostwhite"
         borderRadius='md'
         boxShadow='sm'
-        p={2}
+        p={1.5}
         mb={4}
         cursor="grab"
         style={cardStyle}
         onClick={openTask}
       >
         <Box fontWeight="900">{name}</Box>
-        <Box fontSize="xs">{truncateDescription(description, 40)}</Box>
-        <HStack mt={2} spacing={4}>
+        <Box  fontSize="xs">{truncateDescription(description, 40)}</Box>
+        <HStack mt={2} spacing={2.5}>
           {Payout && (
-            <Box fontWeight="500">
-              <HStack>
-                <Text>Reward:</Text>
-                <Text fontWeight="extrabold">{Payout}</Text>
+            <Box fontWeight="500" >
+              <HStack spacing={.5}>
+                <Text fontSize="sm">Reward:</Text>
+                <Text  fontWeight="extrabold">{Payout}</Text>
               </HStack>
             </Box>
           )}
           {difficulty && (
-            <Badge colorScheme={difficultyColorScheme[difficulty.toLowerCase().replace(" ", "")]}>{difficulty}</Badge>
+            <Badge fontSize="2xs" colorScheme={difficultyColorScheme[difficulty.toLowerCase().replace(" ", "")]}>{difficulty}</Badge>
           )}
-          <Badge colorScheme="blue">{estHours} hrs</Badge>
+          <Badge fontSize="2xs"  colorScheme="blue">{estHours} hrs</Badge>
         </HStack>
       </Box>
       <TaskCardModal

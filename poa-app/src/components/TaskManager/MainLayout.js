@@ -5,7 +5,8 @@ import TaskBoard from './TaskBoard';
 import { TaskBoardProvider } from '../../context/TaskBoardContext';
 import { useDataBaseContext} from '../../context/dataBaseContext';
 import { useWeb3Context } from '../../context/web3Context';
-import { useGraphContext } from '@/context/graphContext';
+import { usePOContext } from '@/context/POContext';
+
 
 
 const MainLayout = () => {
@@ -21,7 +22,10 @@ const MainLayout = () => {
 
   const {account, createProject}= useWeb3Context()
 
-  const {projectData, taskManagerContractAddress} = useGraphContext();
+  const {taskManagerContractAddress} = usePOContext();
+
+
+
   
 
   const handleSelectProject = (projectId) => {
@@ -33,7 +37,7 @@ const MainLayout = () => {
 
 
   return (
-      <Flex minHeight={`calc(100vh - 94px)`}>
+      <Flex minHeight={`calc(100vh - 80px)`}>
         <ProjectSidebar
           projects={projects}
           selectedProject={selectedProject}

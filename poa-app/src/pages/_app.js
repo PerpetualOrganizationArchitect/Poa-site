@@ -2,8 +2,11 @@ import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
 import { IPFSprovider } from "@/context/ipfsContext";
 import { Web3Provider } from "@/context/web3Context";
 import { DataBaseProvider } from "@/context/dataBaseContext";
-import { GraphProvider } from "@/context/graphContext";
 import { ProfileHubProvider } from "@/context/profileHubContext";
+import { ProjectProvider } from "@/context/ProjectContext";
+import { UserProvider } from "@/context/UserContext";
+import { POProvider } from "@/context/POContext";
+import { VotingProvider } from "@/context/VotingContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -26,8 +29,8 @@ import {
 } from "@tanstack/react-query";
 
 import NetworkModalControl from "@/components/NetworkModalControl";
-
-
+import { ApolloProvider } from '@apollo/client';
+import client from '../util//apolloClient';
 
 
 
@@ -60,25 +63,32 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }) {
   return (
     <WagmiProvider config={config}>
+      <ApolloProvider client={client}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider  initialChain={polygonAmoy}>
           <IPFSprovider>
             <ProfileHubProvider>
-              <GraphProvider>
-                <Web3Provider>
-                  
-                  <DataBaseProvider>
-                    <ChakraProvider theme={theme}>
-                      <NetworkModalControl />  
-                      <Component {...pageProps} />
-                    </ChakraProvider>
-                  </DataBaseProvider>
-                </Web3Provider>
-              </GraphProvider>
+              <POProvider>
+                <VotingProvider>
+                  <ProjectProvider>
+                  <UserProvider>
+                    <Web3Provider>
+                      <DataBaseProvider>
+                        <ChakraProvider theme={theme}>
+                          <NetworkModalControl />  
+                          <Component {...pageProps} />
+                        </ChakraProvider>
+                      </DataBaseProvider>
+                    </Web3Provider>
+                    </UserProvider>
+                  </ProjectProvider>
+                </VotingProvider>
+              </POProvider>
             </ProfileHubProvider>
           </IPFSprovider>
         </RainbowKitProvider>
       </QueryClientProvider>
+      </ApolloProvider>
     </WagmiProvider>
   );
 }

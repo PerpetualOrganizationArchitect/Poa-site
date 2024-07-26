@@ -1,10 +1,12 @@
 import {ethers } from 'ethers';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, use } from 'react';
 import { useWeb3Context } from './web3Context';
 import { useIPFScontext } from './ipfsContext';
 import { set } from 'lodash';
 import { id } from 'ethers/lib/utils';
-import { useGraphContext } from './graphContext';
+import { useProjectContext } from './ProjectContext';
+import { useRouter } from 'next/router';
+
 
 
 
@@ -17,7 +19,11 @@ export const useDataBaseContext = () => {
 export const DataBaseProvider = ({ children }) => {
     // usestate for projects initalized with mock data with 3 projects and each has an id 
 
-    const {projectsData}= useGraphContext();
+    const router = useRouter();
+    const { userDAO } = router.query;
+
+    const {projectsData}= useProjectContext();
+
 
     useEffect(()=>{
         if (typeof projectsData === 'object' && projectsData !== null && Object.keys(projectsData).length !== 0) {

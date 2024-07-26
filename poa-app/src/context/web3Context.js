@@ -13,8 +13,7 @@ import NFTMembership from "../../abi/NFTMembership.json";
 import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
-import { useMetaMask } from '@/components/Metamask';
-import NetworkSwitchModal from '@/components/NetworkSwitchModal';
+import QuickJoin from '../../abi/QuickJoin.json';
 
 import {
     useAccount
@@ -48,7 +47,7 @@ export const Web3Provider = ({ children }) => {
     
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
-    const AccountManagerAddress = "0x30C7f04127861c3246C00ED84BC3246B76fe5c04";
+    const AccountManagerAddress = "0x7ba94351D24A4a0A81ea8CE49a7d333e3be11208";
 
     const getContractInstance = (contractAddress, contractABI) => {
         return new ethers.Contract(contractAddress, contractABI, signer);
@@ -109,12 +108,33 @@ export const Web3Provider = ({ children }) => {
     async function createProposalDDVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend) {
         if (!checkNetwork()) {
             return;
-          }
+        }
+    
+        let tokenAddress = "0x0000000000000000000000000000000000001010";
+        
+    
+        // convert amount to wei
+        let amountConverted = ethers.utils.parseUnits(amount, 18);
+        
+        // log the converted amount
+        console.log("amountConverted: ", amountConverted, "Type: ", typeof amountConverted);
+        
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
-        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, recieverAddress, amount, canSend);
+        const tx = await contract.createProposal(
+            proposalName,
+            proposalDescription,
+            proposalDuration,
+            options,
+            triggerSpendIndex,
+            recieverAddress,
+            amountConverted,
+            canSend,
+            tokenAddress
+        );
         await tx.wait();
         console.log("Proposal created");
     }
+    
 
     async function ddVote(contractAddress,proposalID, optionIndex) {
         if (!checkNetwork()) {
@@ -316,9 +336,66 @@ export const Web3Provider = ({ children }) => {
         return ipfsHash;
     }
 
+    // treasury
+
+    async function sendToTreasury(contractAddress, tokenAddress, amount) {
+        try {
+
+            const contract = getContractInstance(contractAddress, Treasury.abi);
+            
+    
+            const tx = await contract.receiveTokens(tokenAddress, account, amount, {
+                gasLimit: ethers.utils.hexlify(20000000) // Adjust the gas limit as needed
+            });
+            await tx.wait();
+            console.log("Tokens sent to treasury");
+        } catch (error) {
+            console.error("Error sending tokens to treasury:", error);
+        }
+    }
+
+    // quick join
+
+    async function quickJoinNoUser(contractAddress, username) {
+        console.log("username: ", username);
+        console.log("contractAddress: ", contractAddress);
+        if (!checkNetwork()) {
+            return;
+          }
+
+        try {
+            const contract = getContractInstance(contractAddress, QuickJoin.abi);
+            const tx= await contract.quickJoinNoUser(username);
+            await tx.wait();
+            console.log("User joined with new username ");
+        }
+        catch (error) {
+            console.error("Error joining with new username:", error);
+        }
+
+    }
+
+    async function quickJoinWithUser(contractAddress) {
+        if (!checkNetwork()) {
+            return;
+          }
+
+        try {
+            const contract = getContractInstance(contractAddress, QuickJoin.abi);
+            const tx= await contract.quickJoinWithUser();
+            await tx.wait();
+            console.log("User joined with existing username ");
+        }
+        catch (error) {
+            console.error("Error joining with existing username:", error);
+        }
+
+    }
+    
+
     
     return (
-        <Web3Context.Provider value={{changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
+        <Web3Context.Provider value={{ chainId,quickJoinNoUser, quickJoinWithUser, sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
             closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
         {children}
         </Web3Context.Provider>

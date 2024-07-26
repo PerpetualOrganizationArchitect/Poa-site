@@ -66,8 +66,8 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
   return (
     <DndProvider backend={HTML5Backend}>
       <Box
-        w="17%"
-        minW="200px"
+        w="15%"
+        minW="180px"
         marginRight={0}
         display="flex"
         flexDirection="column"

@@ -14,6 +14,8 @@ import OpenAI from "openai";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 
+import { useQuery } from "@apollo/client";
+
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
 import WeightModal from "@/components/Architect/WeightModal";
@@ -27,6 +29,7 @@ import Deployer from "@/components/Architect/TempDeployer";
 import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
+import { FETCH_USERNAME } from "@/util/queries";
 
 const steps = {
   ASK_INTRO: "ASK_INTRO",
@@ -43,6 +46,7 @@ const steps = {
   ASK_LOGO_UPLOAD: "ASK_LOGO_UPLOAD",
   ASK_CONFIRMATION: "ASK_CONFIRMATION",
   ASK_VOTING_CONTRACT: "ASK_VOTING_CONTRACT",
+  ASK_USERNAME: "ASK_USERNAME"
 };
 
 const containerVariants = {
@@ -71,11 +75,17 @@ const startOptions = [
 ];
 
 const ArchitectPage = () => {
-  const { signer } = useWeb3Context();
+  const { signer, account } = useWeb3Context();
   const { addToIpfs } = useIPFScontext();
   const toast = useToast();
   const router = useRouter();
   const selectionRef = useRef(null);
+
+  const {data: graphUsername} = useQuery(FETCH_USERNAME, {
+    variables: { id: account?.toLowerCase() },
+    skip: !account,
+  }
+  );
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] = useState(false);
@@ -112,12 +122,13 @@ const ArchitectPage = () => {
     participationVoteWeight: 0,
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
-    logoURL: "",
+    logoURL: "QmZ4XzP6HRdVXdyJXKLzHXnQWpi7uztCuYEgwbse8XsDhD",
     infoIPFSHash: "",
     votingControlType: "DirectDemocracy",
     directDemocracyQuorum: 51,
     hybridVoteQuorum: 51,
     participationVoteQuorum: 51,
+    username: "",
   });
 
   useEffect(() => {
@@ -135,6 +146,19 @@ const ArchitectPage = () => {
       setSelectionHeight(selectionRef.current.offsetHeight + 20);
     }
   }, [showSelection, options]);
+
+  useEffect(() => {
+    console.log("graphUsername", graphUsername);
+    if (graphUsername === false && currentStep === steps.ASK_USERNAME && orgDetails.username === "") {
+      addMessage("#### What username would you like to use?");
+    } else if (graphUsername && currentStep === steps.ASK_USERNAME) {
+      setCurrentStep(steps.ASK_CONFIRMATION);
+      
+      setTimeout(() => {
+        setIsConfirmationModalOpen(true);
+      }, 300);
+    }
+  }, [graphUsername, currentStep]);
 
   const handleSaveLinks = async (links) => {
     console.log("links", links);
@@ -207,7 +231,7 @@ const ArchitectPage = () => {
       participationVoteQuorum: 51,
       hybridVotingEnabled: false,
       participationVotingEnabled: false,
-      logoURL: "",
+      logoURL: "QmZ4XzP6HRdVXdyJXKLzHXnQWpi7uztCuYEgwbse8XsDhD",
       votingControlType: "DirectDemocracy",
     });
     setCurrentStep(steps.ASK_NAME);
@@ -221,10 +245,7 @@ const ArchitectPage = () => {
       }));
       setIsLogoModalOpen(false);
       addMessage("Logo uploaded successfully. Now let's confirm your selections.");
-      setTimeout(() => {
-        setIsConfirmationModalOpen(true);
-      }, 300);
-      setCurrentStep(steps.ASK_CONFIRMATION);
+      setCurrentStep(steps.ASK_USERNAME);
     } catch (error) {
       console.error("Error setting logo URL:", error);
       toast({
@@ -450,13 +471,21 @@ const ArchitectPage = () => {
         if (input.toLowerCase().includes("yes")) {
           setIsLogoModalOpen(true);
         } else {
-          setCurrentStep(steps.ASK_CONFIRMATION);
+          setCurrentStep(steps.ASK_USERNAME);
           addMessage("Okay, skipping logo upload.");
-          setIsConfirmationModalOpen(true);
         }
         break;
+      case steps.ASK_USERNAME:
+          setOrgDetails((prevDetails) => ({ ...prevDetails, username: input }));
+          addMessage("Username has been set. Now let's confirm your selections.");
+          setTimeout(() => {
+            setIsConfirmationModalOpen(true);
+          }, 300);
+          setCurrentStep(steps.ASK_CONFIRMATION);
+          break;
       case steps.ASK_CONFIRMATION:
-        // Handle confirmation step open confirmation modal
+
+        setIsConfirmationModalOpen(true);
         break;
     }
   };
@@ -549,6 +578,7 @@ const ArchitectPage = () => {
         orgDetails.votingControlType,
         orgDetails.directDemocracyQuorum,
         quorum,
+        orgDetails.username,
         signer
       );
     

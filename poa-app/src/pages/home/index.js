@@ -16,7 +16,7 @@ import {
 import Link2 from "next/link";
 import Typist from "react-typist";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
-import { useGraphContext } from "@/context/graphContext";
+import { usePOContext } from "@/context/POContext";
 
 
 // CSS for the wave animation
@@ -89,14 +89,10 @@ const FloatingBox = styled.div`
 `;
 
 const Home = () => {
-  const{setLoaded, logoHash, poDescription, poLinks} = useGraphContext();
+  const{logoHash, poDescription, poLinks} = usePOContext();
+
   const router = useRouter();
   const { userDAO } = router.query;
-
-  useEffect(() => {
-    setLoaded(userDAO);
-  }, [userDAO]);
-
 
   return (
     <>

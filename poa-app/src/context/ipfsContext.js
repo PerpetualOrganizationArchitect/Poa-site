@@ -25,7 +25,7 @@ export const IPFSprovider = ({children}) => {
         host: 'api.thegraph.com',
         port: 443,
         protocol: 'https',
-        apiPath: '/ipfs/api/v0'
+        apiPath: '/ipfs/api/v0',
     });
 
     async function addToIpfs(content) {

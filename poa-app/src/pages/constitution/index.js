@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
-import { useGraphContext } from "@/context/graphContext";
+import { usePOContext } from "@/context/POContext";
 import Link from "next/link";
 import { Flex, VStack, Box, Text, Button, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -12,7 +12,7 @@ function generatePODetails(poData) {
         ParticipationVoting = null,
         NFTMembership = null,
         Treasury = null
-    } = poData.perpetualOrganization;
+    } = poData;
 
     let descriptions = [];
     let treasuryControl = "an unidentified voting system";
@@ -24,7 +24,6 @@ function generatePODetails(poData) {
             descriptions.push(<Heading ml="2" size="md" mt="2">{name}</Heading>);
             descriptions.push(<Text mt="2" mb="2" ml="2">{description}</Text>);
             descriptions.push(<Text ml="2">Minimum Quorum: {system.quorum}% of total votes to pass</Text>);
-            // Check if this system controls the treasury
             if (Treasury && Treasury.votingContract === system.id) {
                 treasuryControl = name;
             }
@@ -34,7 +33,7 @@ function generatePODetails(poData) {
     addVotingSystemDescription(
         "Hybrid Voting",
         HybridVoting,
-        "Hybrid Voting combines elements of both direct democracy and participation based voting. It allows for particpants and the community to check and balance each other. For example, the particpant vote weight could be 70% and the community vote weight could be 30%. This allows for a worker ownerrship model while making sure the community at large has a say in the decision making process."
+        "Hybrid Voting combines elements of both direct democracy and participation based voting. It allows for participants and the community to check and balance each other. For example, the participant vote weight could be 70% and the community vote weight could be 30%. This allows for a worker ownership model while making sure the community at large has a say in the decision-making process."
     );
     addVotingSystemDescription(
         "Direct Democracy Voting",
@@ -44,9 +43,8 @@ function generatePODetails(poData) {
     addVotingSystemDescription(
         "Participation Voting",
         ParticipationVoting,
-        "Participation Voting is designed to reward workers/contributors for their participation in the organization. The more a member participates, the more voting power they have. This is detrimened by task done in the task management system."
+        "Participation Voting is designed to reward workers/contributors for their participation in the organization. The more a member participates, the more voting power they have. This is determined by tasks done in the task management system."
     );
-
 
     if (NFTMembership) {
         descriptions.push(<Heading mb="4" size="lg" mt="4">Member Roles</Heading>);
@@ -61,28 +59,21 @@ function generatePODetails(poData) {
     const votingControlDescription = <Text ml="2">The treasury and upgradability is controlled by the {treasuryControl} System.</Text>;
     descriptions.push(votingControlDescription);
 
-
     return descriptions;
 }
 
 const ConstitutionPage = () => {
-    const { fetchRules } = useGraphContext();
+    const { rules } = usePOContext();
     const router = useRouter();
     const { userDAO } = router.query;
 
-    // Manage description as a state
     const [descriptionElements, setDescriptionElements] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            let poData = await fetchRules(userDAO);
-            console.log("rules",poData);
-            setDescriptionElements(generatePODetails(poData));
-        };
-        if (userDAO) {
-            fetchData();
+        if (rules) {
+            setDescriptionElements(generatePODetails(rules));
         }
-    }, [userDAO]);
+    }, [rules]);
 
     return (
         <>

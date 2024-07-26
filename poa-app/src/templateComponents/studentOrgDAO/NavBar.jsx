@@ -1,30 +1,29 @@
 import React from "react";
-import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import LoginButton from "@/components/LoginButton";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-
 
 const Navbar = () => {
   const router = useRouter();
   const { userDAO } = router.query;
   return (
-    
-    <Box bg="black" p={4}>
+    <Box bg="black" p={2.5} alignItems={"center"} >
       <Flex
         alignItems="center"
-        h="100%"
-        maxH="62px"
-        maxW={"100%"}
+        h="60px"
+        maxW="100%"
         justifyContent="space-between"
       >
-        <Box h="100%" w="12%" mr={{ base: "2", md: "4" }}>
+        <Box   h="100%" w="12%" mr={{ base: "2", md: "4" }}>
           <Link as={NextLink} href={`/home/?userDAO=${userDAO}`} passHref>
             <Image
-              src="/images/poa_character.png"
+              src="/images/high_res_poa.png"
               alt="Your Logo"
-              w="45%"
+              height="113%"
+              width="auto"
+              objectFit="contain"
             />
           </Link>
         </Box>
@@ -32,7 +31,7 @@ const Navbar = () => {
         <Flex
           justifyContent="space-between"
           flexGrow={1}
-          ml={0}
+          ml={4}
           mr={4}
           alignItems="center"
         >
@@ -49,7 +48,6 @@ const Navbar = () => {
           >
             Tasks
           </Link>
-          
           <Link
             as={NextLink}
             href={`/voting/?userDAO=${userDAO}`}
@@ -63,7 +61,6 @@ const Navbar = () => {
           <LoginButton />
         </Flex>
       </Flex>
-
     </Box>
   );
 };

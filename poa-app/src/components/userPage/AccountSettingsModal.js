@@ -14,13 +14,17 @@ import {
 } from '@chakra-ui/react';
 // import { useDataBaseContext } from '@/contexts/DataBaseContext';
 import { useWeb3Context } from '@/context/web3Context';
-import { useGraphContext } from '@/context/graphContext';
+import { useUserContext } from '@/context/UserContext';
 
 
 const AccountSettingsModal = ({ isOpen, onClose }) => {
     
-    const {address, graphUsername, setGraphUsername} = useGraphContext();
+    const {address, graphUsername, setGraphUsername} = useUserContext();
     const {changeUsername} = useWeb3Context();
+
+
+
+
 
     const [username, setUsername] = useState('');
     // const [email, setEmail] = useState('');

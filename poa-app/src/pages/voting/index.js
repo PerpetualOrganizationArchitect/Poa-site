@@ -26,13 +26,17 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea
+  Textarea,
+  Select,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import { useGraphContext } from "@/context/graphContext";
 import { useWeb3Context } from "@/context/web3Context";
+import { usePOContext } from "@/context/POContext";
+import { useVotingContext } from "@/context/VotingContext";
 import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/completedPollModal";
 
 
@@ -48,7 +52,7 @@ const glassLayerStyle = {
   zIndex: -1,
   borderRadius: "inherit",
   backdropFilter: "blur(20px)",
-  backgroundColor: "rgba(0, 0, 0, .73)",
+  backgroundColor: "rgba(0, 0, 0, .8)",
 };
 
 const Voting = () => {
@@ -58,47 +62,59 @@ const Voting = () => {
   const {
     createProposalDDVoting,
     getWinnerDDVoting,
-    ddVote
+    ddVote,
+    account
   } = useWeb3Context();
   
   const { isOpen: isCompletedOpen, onOpen: onCompletedOpen, onClose: onCompletedClose } = useDisclosure();
 
+
   const {
     directDemocracyVotingContractAddress,
-    hybridVotingOngoing,
+    votingContractAddress, 
+    poContextLoading,
+  } = usePOContext();
+
+  const {hybridVotingOngoing,
     hybridVotingCompleted,
-    setLoaded,
     democracyVotingOngoing,
     democracyVotingCompleted,
-    address: account,
     participationVotingCompleted,
     participationVotingOngoing,
-    votingContractAddress
-  } = useGraphContext();
 
-  useEffect(() => {
-    setLoaded(userDAO);
-  }, [userDAO]);
 
-  const calculateRemainingTime = (expirationTimestamp, proposalId, isHybrid) => {
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const duration = expirationTimestamp - currentTimestamp;
+  } = useVotingContext();
 
-    const getWinner = async (address, proposalId) => {
-      const newID = proposalId.split("-")[0];
-      const tx = await getWinnerDDVoting(address, newID);
-      await tx.wait();
-    };
 
-    if (duration < 0 && account !== "0x00") {
-      getWinner(isHybrid ? votingContractAddress : directDemocracyVotingContractAddress, proposalId);
-    }
-
-    return Math.max(0, duration);
-  };
 
   const PTVoteType = Array.isArray(hybridVotingOngoing) ? "Hybrid" : "Participation";
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
+
+  const [showDetermineWinner, setShowDetermineWinner] = useState({});
+
+  const calculateRemainingTime = (expirationTimestamp) => {
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const duration = expirationTimestamp - currentTimestamp;
+    return Math.max(0, duration);
+  };
+  
+  const updateWinnerStatus = async (expirationTimestamp, proposalId, isHybrid) => {
+    const duration = calculateRemainingTime(expirationTimestamp);
+  
+    if (duration <= 0 ) {
+      setShowDetermineWinner(prevState => ({
+        ...prevState,
+        [proposalId]: true
+      }));
+    }
+  };
+  
+  const getWinner = async (address, proposalId) => {
+    const newID = proposalId.split("-")[0];
+    const tx = await getWinnerDDVoting(address, newID);
+    await tx.wait();
+  };
+  
 
 
   const handleTabsChange = (index) => {
@@ -115,12 +131,19 @@ const Voting = () => {
   const safeVotingCompleted = Array.isArray(selectedTab === 0 ? democracyVotingCompleted : (PTVoteType === "Hybrid" ? hybridVotingCompleted : participationVotingCompleted)) ? (selectedTab === 0 ? democracyVotingCompleted : (PTVoteType === "Hybrid" ? hybridVotingCompleted : participationVotingCompleted)) : [];
   
 
+  useEffect(() => {
+    safeVotingOngoing.forEach(proposal => {
+      updateWinnerStatus(proposal?.experationTimestamp, proposal?.id, proposal?.isHybrid);
+    });
+  }, [safeVotingOngoing]);
+  
 
 
   const displayedOngoingProposals = safeVotingOngoing.slice(
     ongoingStartIndex,
     ongoingStartIndex + proposalDisplayLimit
   );
+
 
   const displayedCompletedProposals = safeVotingCompleted.slice(
     completedStartIndex,
@@ -159,8 +182,12 @@ const Voting = () => {
 
 
   
-  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [] ,id:0 };
+  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [], type: 'normal', transferAddress: '', transferAmount: '', transferOption: '', id: 0 };
   const [proposal, setProposal] = useState(defaultProposal);
+
+  const handleProposalTypeChange = (e) => {
+    setProposal({ ...proposal, type: e.target.value });
+  };
 
   const handlePollClick = (poll, isCompleted = false) => {
     setSelectedPoll(poll);
@@ -187,6 +214,19 @@ const Voting = () => {
 
   const handleCreatePollClick = () => {
     setShowCreatePoll(!showCreatePoll);
+  };
+
+  // Add these new handle functions for the new inputs
+  const handleTransferAddressChange = (e) => {
+    setProposal({ ...proposal, transferAddress: e.target.value });
+  };
+
+  const handleTransferAmountChange = (e) => {
+    setProposal({ ...proposal, transferAmount: e.target.value });
+  };
+
+  const handleTransferOptionChange = (e) => {
+    setProposal({ ...proposal, transferOption: e.target.value });
   };
 
   useEffect(() => {
@@ -275,28 +315,64 @@ const Voting = () => {
 
   const handlePollCreated = () => {
     const run = () => {
+      const last = proposal.type === "transferFunds";
+  
       if (votingTypeSelected === "Participation") {
-        return createProposalDDVoting(votingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+        return createProposalDDVoting(
+          votingContractAddress,
+          proposal.name,
+          proposal.description,
+          proposal.time,
+          proposal.options,
+          last ? proposal.transferOption : 0,
+          last ? proposal.transferAddress : account,
+          last ? proposal.transferAmount : '0',
+          last
+        );
       }
+  
       if (votingTypeSelected === "Hybrid") {
-        return createProposalDDVoting(votingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+        return createProposalDDVoting(
+          votingContractAddress,
+          proposal.name,
+          proposal.description,
+          proposal.time,
+          proposal.options,
+          last ? proposal.transferOption : 0,
+          last ? proposal.transferAddress : account,
+          last ? proposal.transferAmount : '0',
+          last
+        );
       }
+  
       if (votingTypeSelected === "Direct Democracy") {
-        return createProposalDDVoting(directDemocracyVotingContractAddress, proposal.name, proposal.description, proposal.time, proposal.options, 0, account, 0, false);
+        return createProposalDDVoting(
+          directDemocracyVotingContractAddress,
+          proposal.name,
+          proposal.description,
+          proposal.time,
+          proposal.options,
+          last ? proposal.transferOption : 0,
+          last ? proposal.transferAddress : account,
+          last ? proposal.transferAmount : '0',
+          last
+        );
       }
-
     };
+
     setLoadingSubmit(true);
-    run().then(() => {
-      setLoadingSubmit(false);
-      setShowCreatePoll(false);
-      setProposal(defaultProposal);
-    }).catch((error) => {
-      console.error("Error creating poll:", error);
-      setLoadingSubmit(false);
-      setShowCreatePoll(false);
-      setProposal(defaultProposal);
-    });
+    run()
+      .then(() => {
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+      })
+      .catch((error) => {
+        console.error("Error creating poll:", error);
+        setLoadingSubmit(false);
+        setShowCreatePoll(false);
+        setProposal(defaultProposal);
+      });
   };
 
 
@@ -305,15 +381,20 @@ const Voting = () => {
   return (
     <>
       <Navbar />
-      <Container maxW="container.2xl" py={6} px={10}>
-        <HeadingVote selectedTab={selectedTab} />
-        <Tabs
-          index={selectedTab}
-          isFitted
-          variant="soft-rounded"
-          onChange={handleTabsChange}
-          mb={6}
-        >
+      {poContextLoading ? (
+        <Center height="90vh">
+          <Spinner size="xl" />
+        </Center>
+      ) : (
+        <Container maxW="container.2xl" py={4} px={"3.8%"}>
+          <HeadingVote selectedTab={selectedTab} />
+          <Tabs
+            index={selectedTab}
+            isFitted
+            variant="soft-rounded"
+            onChange={handleTabsChange}
+            mb={6}
+          >
         <TabList
           alignItems="center"
           justifyContent="center"
@@ -365,17 +446,17 @@ const Voting = () => {
               >
                 <div className="glass" style={glassLayerStyle} />
                 <Flex w="100%" flexDirection="column">
-                  <VStack alignItems={"flex-start"} spacing={8}>
+                  <VStack alignItems={"flex-start"} spacing={6}>
                     <HStack w="100%" justifyContent="space-between">
                       <Heading pl={2} color="rgba(333, 333, 333, 1)">
                         Ongoing Votes
                       </Heading>
                       <Button
                         fontWeight="black"
-                        p="2%"
+                        p="1%"
                         w="20%"
                         bg="green.300"
-                        mt="2%"
+                        mt="1%"
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
@@ -402,11 +483,28 @@ const Voting = () => {
                             p={2}
                             zIndex={1}
                             _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
-                            onClick={() => handlePollClick(proposal)}
+                            onClick={() => {
+                              if (!showDetermineWinner[proposal.id]) {
+                                handlePollClick(proposal);
+                              }
+                            }}
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
+                              {showDetermineWinner[proposal.id] ? (
+                                <Button
+                                  colorScheme="gray"
+                                  size="sm"
+                                  onClick={() => {
+                                    console.log("type", proposal.type);
+                                    getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
+                                  }}
+                                >
+                                  Determine Winner
+                                </Button>
+                              ) : (
+                                <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
+                              )}
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
@@ -494,7 +592,13 @@ const Voting = () => {
                       {displayedCompletedProposals.length > 0 ? (
                         displayedCompletedProposals.map((proposal, index) => {
                           const totalVotes = proposal.totalVotes;
-                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                          let WinnerName = proposal.options[proposal.winningOptionIndex].name;
+
+                          //if hasWinner is false set WinnerName to "No Winner"
+                          if (proposal.validWinner === false) {
+                            WinnerName = "No Winner";
+                          }
+
                           const predefinedColors = [
                             "red",
                             "darkblue",
@@ -660,17 +764,17 @@ const Voting = () => {
               >
                 <div className="glass" style={glassLayerStyle} />
                 <Flex w="100%" flexDirection="column">
-                  <VStack alignItems={"flex-start"} spacing={8}>
+                  <VStack alignItems={"flex-start"} spacing={6}>
                     <HStack w="100%" justifyContent="space-between">
                       <Heading pl={2} color="rgba(333, 333, 333, 1)">
                         Ongoing Votes
                       </Heading>
                       <Button
                         fontWeight="black"
-                        p="2%"
+                        p="1%"
                         w="20%"
                         bg="green.300"
-                        mt="2%"
+                        mt="1%"
                         onClick={handleCreatePollClick}
                         _hover={{ bg: "green.400", transform: "scale(1.05)" }}
                       >
@@ -697,11 +801,28 @@ const Voting = () => {
                             p={2}
                             zIndex={1}
                             _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
-                            onClick={() => handlePollClick(proposal)}
+                            onClick={() => {
+                              if (!showDetermineWinner[proposal.id]) {
+                                handlePollClick(proposal);
+                              }
+                            }}
                           >
                             <div className="glass" style={glassLayerStyle} />
                             <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, true)} />
+                            {showDetermineWinner[proposal.id] ? (
+                                <Button
+                                  colorScheme="gray"
+                                  size="sm"
+                                  onClick={() => {
+                                    console.log("type", proposal.type);
+                                    getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
+                                  }}
+                                >
+                                  Determine Winner
+                                </Button>
+                              ) : (
+                                <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
+                              )}
                             <Text mt="2"> Voting Options:</Text>
                             <HStack mb={2} spacing={6}>
                               {proposal.options.map((option, index) => (
@@ -789,7 +910,14 @@ const Voting = () => {
                       {displayedCompletedProposals.length > 0 ? (
                         displayedCompletedProposals.map((proposal, index) => {
                           const totalVotes = proposal.totalVotes;
-                          const WinnerName = proposal.options[proposal.winningOptionIndex].name;
+                          let WinnerName = proposal.options[proposal.winningOptionIndex].name;
+
+                          //if hasWinner is false set WinnerName to "No Winner"
+                         
+                          if (proposal.validWinner === false) {
+                            WinnerName = "No Winner";
+                          }
+
                           const predefinedColors = [
                             "red",
                             "darkblue",
@@ -989,9 +1117,55 @@ const Voting = () => {
                         required
                       />
                     </FormControl>
+                    <FormControl>
+                      <FormLabel>Proposal Type</FormLabel>
+                        <Select
+                          name="type"
+                          value={proposal.type}
+                          onChange={handleProposalTypeChange}
+                        >
+                          <option value="normal">Normal</option>
+                          <option value="transferFunds">Transfer Funds</option>
+                        </Select>
+                    </FormControl>
+                    {proposal.type === 'transferFunds' && (
+                      <>
+                        <FormControl>
+                          <FormLabel>Transfer Address</FormLabel>
+                          <Input
+                            type="text"
+                            name="transferAddress"
+                            value={proposal.transferAddress}
+                            onChange={handleTransferAddressChange}
+                            required
+                          />
+                        </FormControl>
+                        <FormControl>
+                          <FormLabel>Transfer Amount</FormLabel>
+                          <Input
+                            type="number"
+                            name="transferAmount"
+                            value={proposal.transferAmount}
+                            onChange={handleTransferAmountChange}
+                            required
+                          />
+                        </FormControl>
+                        <FormControl>
+                          <FormLabel>Transfer Option</FormLabel>
+                          <Input
+                            type="number"  
+                            name="transferOption"
+                            value={proposal.transferOption}
+                            onChange={handleTransferOptionChange}
+                            required
+                          />
+                        </FormControl>
+                      </>
+                    )}
                     <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
                   </VStack>
                 </ModalBody>
+                
                 <ModalFooter>
                   <Button
                     type="submit"
@@ -1023,8 +1197,9 @@ const Voting = () => {
           selectedPoll={selectedPoll}
         />
       </Container>
-    </>
-  );
+    )}
+  </>
+);
 };
 
 export default Voting;

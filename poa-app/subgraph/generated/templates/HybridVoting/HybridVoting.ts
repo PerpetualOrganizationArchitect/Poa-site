@@ -58,6 +58,10 @@ export class NewProposal__Params {
   get transferEnabled(): boolean {
     return this._event.parameters[8].value.toBoolean();
   }
+
+  get transferToken(): Address {
+    return this._event.parameters[9].value.toAddress();
+  }
 }
 
 export class PollOptionNames extends ethereum.Event {
@@ -554,6 +558,10 @@ export class CreateProposalCall__Inputs {
 
   get _transferEnabled(): boolean {
     return this._call.inputValues[7].value.toBoolean();
+  }
+
+  get _transferToken(): Address {
+    return this._call.inputValues[8].value.toAddress();
   }
 }
 

@@ -22,7 +22,7 @@ export function handlePollCreated(event: NewProposal): void {
     newProposal.transferRecipient = event.params.transferRecipient;
     newProposal.transferEnabled = event.params.transferEnabled;
     newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes.times(BigInt.fromI32(60)));
-
+    newProposal.transferAddress = event.params.transferToken;
     newProposal.totalVotes = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
     newProposal.validWinner = false;

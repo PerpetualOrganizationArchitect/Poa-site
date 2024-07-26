@@ -1322,6 +1322,22 @@ export class Treasury extends Entity {
       this.set("votingContract", Value.fromBytes(<Bytes>value));
     }
   }
+
+  get withdrawals(): TreasuryWithdrawalLoader {
+    return new TreasuryWithdrawalLoader(
+      "Treasury",
+      this.get("id")!.toString(),
+      "withdrawals",
+    );
+  }
+
+  get deposits(): TreasuryDepositLoader {
+    return new TreasuryDepositLoader(
+      "Treasury",
+      this.get("id")!.toString(),
+      "deposits",
+    );
+  }
 }
 
 export class TreasuryCreated extends Entity {
@@ -1389,6 +1405,196 @@ export class TreasuryCreated extends Entity {
 
   set treasuryAddress(value: Bytes) {
     this.set("treasuryAddress", Value.fromBytes(value));
+  }
+}
+
+export class TreasuryWithdrawal extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TreasuryWithdrawal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TreasuryWithdrawal must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("TreasuryWithdrawal", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TreasuryWithdrawal | null {
+    return changetype<TreasuryWithdrawal | null>(
+      store.get_in_block("TreasuryWithdrawal", id),
+    );
+  }
+
+  static load(id: string): TreasuryWithdrawal | null {
+    return changetype<TreasuryWithdrawal | null>(
+      store.get("TreasuryWithdrawal", id),
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get treasury(): string {
+    let value = this.get("treasury");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set treasury(value: string) {
+    this.set("treasury", Value.fromString(value));
+  }
+
+  get recipient(): Bytes {
+    let value = this.get("recipient");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set recipient(value: Bytes) {
+    this.set("recipient", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get token(): Bytes {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set token(value: Bytes) {
+    this.set("token", Value.fromBytes(value));
+  }
+}
+
+export class TreasuryDeposit extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TreasuryDeposit entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TreasuryDeposit must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("TreasuryDeposit", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TreasuryDeposit | null {
+    return changetype<TreasuryDeposit | null>(
+      store.get_in_block("TreasuryDeposit", id),
+    );
+  }
+
+  static load(id: string): TreasuryDeposit | null {
+    return changetype<TreasuryDeposit | null>(store.get("TreasuryDeposit", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get treasury(): string {
+    let value = this.get("treasury");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set treasury(value: string) {
+    this.set("treasury", Value.fromString(value));
+  }
+
+  get sender(): Bytes {
+    let value = this.get("sender");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set sender(value: Bytes) {
+    this.set("sender", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get token(): Bytes {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set token(value: Bytes) {
+    this.set("token", Value.fromBytes(value));
   }
 }
 
@@ -1756,6 +1962,23 @@ export class PTProposal extends Entity {
 
   set transferEnabled(value: boolean) {
     this.set("transferEnabled", Value.fromBoolean(value));
+  }
+
+  get transferAddress(): Bytes | null {
+    let value = this.get("transferAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferAddress");
+    } else {
+      this.set("transferAddress", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get options(): PTPollOptionLoader {
@@ -2342,6 +2565,23 @@ export class DDProposal extends Entity {
 
   set transferEnabled(value: boolean) {
     this.set("transferEnabled", Value.fromBoolean(value));
+  }
+
+  get transferAddress(): Bytes | null {
+    let value = this.get("transferAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferAddress");
+    } else {
+      this.set("transferAddress", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get options(): DDPollOptionLoader {
@@ -2973,6 +3213,23 @@ export class HybridProposal extends Entity {
 
   set transferEnabled(value: boolean) {
     this.set("transferEnabled", Value.fromBoolean(value));
+  }
+
+  get transferAddress(): Bytes | null {
+    let value = this.get("transferAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transferAddress(value: Bytes | null) {
+    if (!value) {
+      this.unset("transferAddress");
+    } else {
+      this.set("transferAddress", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get options(): HybridPollOptionLoader {
@@ -4140,6 +4397,63 @@ export class aboutLink extends Entity {
   }
 }
 
+export class QuickJoinContract extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save QuickJoinContract entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type QuickJoinContract must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("QuickJoinContract", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): QuickJoinContract | null {
+    return changetype<QuickJoinContract | null>(
+      store.get_in_block("QuickJoinContract", id),
+    );
+  }
+
+  static load(id: string): QuickJoinContract | null {
+    return changetype<QuickJoinContract | null>(
+      store.get("QuickJoinContract", id),
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+}
+
 export class PerpetualOrganization extends Entity {
   constructor(id: string) {
     super();
@@ -4379,6 +4693,23 @@ export class PerpetualOrganization extends Entity {
       this.unset("HybridVoting");
     } else {
       this.set("HybridVoting", Value.fromString(<string>value));
+    }
+  }
+
+  get QuickJoinContract(): string | null {
+    let value = this.get("QuickJoinContract");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set QuickJoinContract(value: string | null) {
+    if (!value) {
+      this.unset("QuickJoinContract");
+    } else {
+      this.set("QuickJoinContract", Value.fromString(<string>value));
     }
   }
 
@@ -4779,6 +5110,42 @@ export class NFTChangeTypeEventLoader extends Entity {
   load(): NFTChangeTypeEvent[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<NFTChangeTypeEvent[]>(value);
+  }
+}
+
+export class TreasuryWithdrawalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TreasuryWithdrawal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TreasuryWithdrawal[]>(value);
+  }
+}
+
+export class TreasuryDepositLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TreasuryDeposit[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TreasuryDeposit[]>(value);
   }
 }
 

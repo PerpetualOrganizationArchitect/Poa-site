@@ -14,6 +14,7 @@ contract Treasury {
     event TokensReceived(address indexed token, address indexed from, uint256 amount);
     event EtherWithdrawn(address indexed to, uint256 amount);
     event VotingContractSet(address votingContract);
+    event EtherReceived(address indexed from, uint256 amount);
 
     constructor() {
         votingContract = address(0);
@@ -49,5 +50,7 @@ contract Treasury {
         emit EtherWithdrawn(_to, _amount);
     }
 
-    receive() external payable {}
+    receive() external payable {
+         emit EtherReceived(msg.sender, msg.value);
+    }
 }

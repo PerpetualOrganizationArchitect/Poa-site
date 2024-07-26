@@ -3,7 +3,7 @@ const MasterDeployfactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
 // sepoila const masterDeployFactoryAddress = "0xDBdf5B0532827917eFFd55439c05B4dB0e471205";
-const masterDeployFactoryAddress = "0x75d19e9f9A9F4012897ec1f7C38Bb38e7B29BA3B";
+const masterDeployFactoryAddress = "0x026A25A09Ff671b6983744355d26998410FF947b";
 
 export async function main(
     memberTypeNames,
@@ -19,6 +19,7 @@ export async function main(
     votingControlType,
     quorumPercentageDD,
     quorumPercentagePV,
+    username,
     wallet
   ){
 
@@ -35,6 +36,7 @@ export async function main(
           "DirectDemocracyVoting",
           "HybridVoting",
           "TaskManager",
+          "QuickJoin",
         ];
       } else if (participationVotingEnabled) {
         contractNames = [
@@ -45,6 +47,7 @@ export async function main(
           "DirectDemocracyVoting",
           "ParticipationVoting",
           "TaskManager",
+          "QuickJoin",
         ]
         } else {
           contractNames = [
@@ -55,6 +58,7 @@ export async function main(
             "DirectDemocracyVoting",
             "NoVoting",
             "TaskManager",
+            "QuickJoin",
           ];
       }
 
@@ -73,6 +77,7 @@ export async function main(
         contractNames,
         quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
         quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
+        username
     };
 
     console.log("Deploying new DAO with the following parameters:");
@@ -80,7 +85,7 @@ export async function main(
 
 
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(14700000); 
+    const gasLimit = ethers.utils.hexlify(15700000); 
 
     const options = {
         gasLimit: gasLimit,

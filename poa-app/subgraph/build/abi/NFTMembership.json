@@ -384,7 +384,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newUser",
+        "type": "address"
+      }
+    ],
     "name": "mintDefaultNFT",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -543,6 +549,19 @@
       }
     ],
     "name": "setMemberTypeImage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_quickJoin",
+        "type": "address"
+      }
+    ],
+    "name": "setQuickJoin",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

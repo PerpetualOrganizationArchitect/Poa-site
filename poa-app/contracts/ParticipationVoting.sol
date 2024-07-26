@@ -11,6 +11,7 @@ interface INFTMembership5 {
 
 interface ITreasury3 {
     function sendTokens(address _token, address _to, uint256 _amount) external;
+    function withdrawEther(address payable _to, uint256 _amount) external;
 }
 
 
@@ -34,11 +35,12 @@ contract ParticipationVoting {
         address payable transferRecipient;
         uint256 transferAmount;
         bool transferEnabled;
+        address transferToken;
     }
 
     Proposal[] private proposals;
 
-    event NewProposal(uint256 indexed proposalId, string name, string description, uint256 timeInMinutes, uint256 creationTimestamp,  uint256 transferTriggerOptionIndex, address transferRecipient, uint256 transferAmount, bool transferEnabled);
+    event NewProposal(uint256 indexed proposalId, string name, string description, uint256 timeInMinutes, uint256 creationTimestamp,  uint256 transferTriggerOptionIndex, address transferRecipient, uint256 transferAmount, bool transferEnabled, address transferToken);
     event Voted(uint256 indexed proposalId, address indexed voter, uint256 optionIndex, uint256 voteWeight);
     event PollOptionNames(uint256 indexed proposalId, uint256 indexed optionIndex, string name);
     event WinnerAnnounced(uint256 indexed proposalId, uint256 winningOptionIndex, bool hasValidWinner);
@@ -89,7 +91,8 @@ contract ParticipationVoting {
         uint256 _transferTriggerOptionIndex,
         address payable _transferRecipient,
         uint256 _transferAmount,
-        bool _transferEnabled
+        bool _transferEnabled,
+        address _transferToken
     ) external canCreateProposal {
 
         Proposal storage newProposal = proposals.push();
@@ -100,9 +103,10 @@ contract ParticipationVoting {
         newProposal.transferRecipient = _transferRecipient;
         newProposal.transferAmount = _transferAmount;
         newProposal.transferEnabled = _transferEnabled;
+        newProposal.transferToken = _transferToken;
 
         uint256 proposalId = proposals.length - 1;
-        emit NewProposal(proposalId, _name, _description, _timeInMinutes, block.timestamp, _transferTriggerOptionIndex, _transferRecipient, _transferAmount, _transferEnabled);
+        emit NewProposal(proposalId, _name, _description, _timeInMinutes, block.timestamp, _transferTriggerOptionIndex, _transferRecipient, _transferAmount, _transferEnabled, _transferToken);
 
         for (uint256 i = 0; i < _optionNames.length; i++) {
             newProposal.options.push(PollOption(0));
@@ -155,7 +159,11 @@ contract ParticipationVoting {
 
         // Check if there's a valid winner and if the specific winning option triggers a transfer
         if (hasValidWinner && proposals[_proposalId].transferEnabled && winningOptionIndex == proposals[_proposalId].transferTriggerOptionIndex) {
-            treasury.sendTokens(address(ParticipationToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            if(proposals[_proposalId].transferToken == address(0x0000000000000000000000000000000000001010)) {
+                treasury.withdrawEther(proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            } else {
+                treasury.sendTokens(address(proposals[_proposalId].transferToken), proposals[_proposalId].transferRecipient, proposals[_proposalId].transferAmount);
+            }
         }
 
         // Emitting the winner announcement with additional detail about the win validity

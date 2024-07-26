@@ -16,6 +16,10 @@ contract DirectDemocracyToken is ERC20, Ownable {
 
     uint256 public constant maxSupplyPerPerson = 100;
 
+    address quickJoin; 
+
+    bool quickJoinSet = false;
+
     mapping(string => bool) private allowedRoles;
 
     constructor(string memory name, string memory symbol, address _nftMembership, string[] memory _allowedRoleNames) ERC20(name, symbol) {
@@ -26,8 +30,21 @@ contract DirectDemocracyToken is ERC20, Ownable {
         }
     }
 
-    modifier canMint() {
-        string memory memberType = nftMembership.checkMemberTypeByAddress(msg.sender);
+    function setQuickJoin(address _quickJoin) public {
+        require(!quickJoinSet, "QuickJoin already set");
+        quickJoin = _quickJoin;
+        quickJoinSet = true;
+
+    }
+
+    modifier onlyQuickJoin() {
+        require(msg.sender == quickJoin, "Only QuickJoin can call this function");
+        _;
+        
+    }
+
+    modifier canMint(address newUser) {
+        string memory memberType = nftMembership.checkMemberTypeByAddress(newUser);
         require(allowedRoles[memberType], "Not authorized to mint coins");
         _;
     }
@@ -36,10 +53,10 @@ contract DirectDemocracyToken is ERC20, Ownable {
         return 0;
     }
 
-    function mint() public canMint { 
-        require(balanceOf(msg.sender) == 0, "This account has already claimed coins!");
-        _mint(msg.sender, maxSupplyPerPerson);
-        emit Mint(msg.sender, maxSupplyPerPerson);
+    function mint(address newUser) public canMint(newUser) onlyQuickJoin { 
+        require(balanceOf(newUser) == 0, "This account has already claimed coins!");
+        _mint(newUser, maxSupplyPerPerson);
+        emit Mint(newUser, maxSupplyPerPerson);
     }
 
     function getBalance(address _address) public view returns (uint256) {

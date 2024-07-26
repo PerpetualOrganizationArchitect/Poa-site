@@ -11,6 +11,7 @@ import "./TreasuryFactory.sol";
 import "./MembershipNFTFactory.sol";
 import "./RegistryFactory.sol";
 import "./TaskManagerFactory.sol";
+import "./QuickJoinFactory.sol";
 
 contract MasterFactory {
 
@@ -37,6 +38,8 @@ contract MasterFactory {
     NFTMembershipFactory nftMembershipFactory;
     RegistryFactory registryFactory;
     TaskManagerFactory taskManagerFactory;
+    QuickJoinFactory quickJoinFactory;
+    address accountManagerAddress;
 
     struct DeployParams {
         string[] memberTypeNames;
@@ -53,6 +56,7 @@ contract MasterFactory {
         string[] contractNames;
         uint256 quorumPercentageDD;
         uint256 quorumPercentagePV;
+        string username;
     }
 
     constructor(
@@ -64,7 +68,9 @@ contract MasterFactory {
         address _treasuryFactory,
         address _nftMembershipFactory,
         address _registryFactory,
-        address _taskManagerFactory
+        address _taskManagerFactory,
+        address _quickJoinFactory,
+        address _accountManagerAddress
     ) {
         directDemocracyTokenFactory = DirectDemocracyTokenFactory(_directDemocracyTokenFactory);
         directDemocracyVotingFactory = DirectDemocracyVotingFactory(_directDemocracyVotingFactory);
@@ -75,6 +81,8 @@ contract MasterFactory {
         nftMembershipFactory = NFTMembershipFactory(_nftMembershipFactory);
         registryFactory = RegistryFactory(_registryFactory);
         taskManagerFactory = TaskManagerFactory(_taskManagerFactory);
+        quickJoinFactory = QuickJoinFactory(_quickJoinFactory);
+        accountManagerAddress = _accountManagerAddress;
     }
 
     function deployAll(DeployParams memory params) public {
@@ -90,24 +98,40 @@ contract MasterFactory {
             params.logoURL,
             params.votingControlType,
             params.contractNames
-
         );
-    
-        address[] memory contractAddresses = new address[](7);
+
+        address[] memory contractAddresses = new address[](8); // Increased size to include QuickJoin address
 
         deployStandardContracts(contractAddresses, params.memberTypeNames, params.executivePermissionNames, params.logoURL, params.POname);
         deployConditionalContracts(contractAddresses, params);
         
         address votingControlAddress = determineVotingControlAddress(params.votingControlType, contractAddresses);
 
-        // 9. Set TaskManager in participation token contract
+        // Set TaskManager in participation token contract
         IParticipationToken token = IParticipationToken(contractAddresses[2]);
         token.setTaskManagerAddress(contractAddresses[6]);
-        // 10. Set Voting Contract in Treasury
+        // Set Voting Contract in Treasury
         ITreasury treasury = ITreasury(contractAddresses[3]);
         treasury.setVotingContract(votingControlAddress);
 
+        contractAddresses[7] = quickJoinFactory.createQuickJoin(contractAddresses[0], contractAddresses[1], accountManagerAddress, params.POname, address(this));
+
         registryFactory.createRegistry(votingControlAddress, params.contractNames, contractAddresses, params.POname, params.logoURL, params.infoIPFSHash);
+
+        IQuickJoin quickJoin = IQuickJoin(contractAddresses[7]);
+
+        IDirectDemocracyToken2 directDemocracyToken = IDirectDemocracyToken2(contractAddresses[1]);
+        directDemocracyToken.setQuickJoin(contractAddresses[7]);
+
+        INFTMembership4 nftMembership = INFTMembership4(contractAddresses[0]);
+        nftMembership.setQuickJoin(contractAddresses[7]);
+        
+        if (bytes(params.username).length > 0) {
+            quickJoin.quickJoinNoUserMasterDeploy(params.username, msg.sender);
+        } else {
+            quickJoin.quickJoinWithUserMasterDeploy(msg.sender);
+        }
+       
     }
 
     // Splitting deployment functions for clarity and reducing stack depth
@@ -164,8 +188,6 @@ contract MasterFactory {
              contractAddresses[5] = address(0);
         }
         contractAddresses[6] = taskManagerFactory.createTaskManager(contractAddresses[2], contractAddresses[0], params.executivePermissionNames, params.POname);
-        
-       
     }
 
     function deployPartcipationVoting(
@@ -220,3 +242,13 @@ contract MasterFactory {
         }
     }
 }
+
+interface  IQuickJoin {
+    function quickJoinNoUserMasterDeploy(string memory userName, address newUser) external;
+    function quickJoinWithUserMasterDeploy(address newUser) external;
+}
+
+interface IDirectDemocracyToken2 {
+    function setQuickJoin(address _quickJoin) external;
+}
+   

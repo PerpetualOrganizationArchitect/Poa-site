@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {useDataBaseContext} from './dataBaseContext';
 import { useWeb3Context } from './web3Context';
-import { useGraphContext } from './graphContext';
+import { usePOContext } from './POContext';
 
 import { useToast } from '@chakra-ui/react';
-
-
-
 
 
 const TaskBoardContext = createContext();
@@ -20,7 +17,8 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
   const{claimTask, updateTask, ipfsAddTask, completeTask, editTaskWeb3, submitTask} = useWeb3Context();
-  const {taskManagerContractAddress} = useGraphContext();
+  const {taskManagerContractAddress} = usePOContext();
+
 
   useEffect(() => {
     setTaskColumns(initialColumns);

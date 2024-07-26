@@ -12,7 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { ConnectButton, useChainModal} from "@rainbow-me/rainbowkit";
-import { useGraphContext } from "@/context/graphContext";
+import { useWeb3Context } from "@/context/web3Context";
 
 const ConfirmationModal = ({
   isOpen,
@@ -25,7 +25,7 @@ const ConfirmationModal = ({
   const connected = wallet ? true : false;
   const [display, setDisplay] = useState(connected);
 
-  const { chainId } = useGraphContext();
+  const { chainId } = useWeb3Context();
   console.log(chainId);
 
 

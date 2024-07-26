@@ -16,6 +16,9 @@ contract NFTMembership is ERC721URIStorage, Ownable{
     mapping(uint256 => string) public executiveRoleNames;
     mapping(string => bool) public isExecutiveRole;
 
+    address quickJoin; 
+    bool quickJoinSet = false;
+
 
 
     string private constant DEFAULT_MEMBER_TYPE = "Default";
@@ -43,6 +46,18 @@ contract NFTMembership is ERC721URIStorage, Ownable{
         _;
     }
 
+    function setQuickJoin(address _quickJoin) public {
+        require(!quickJoinSet, "QuickJoin already set");
+        quickJoin = _quickJoin;
+        quickJoinSet = true;
+
+    }
+
+    modifier onlyQuickJoin() {
+        require(msg.sender == quickJoin, "Only QuickJoin can call this function");
+        _;
+        
+    }
 
     function setMemberTypeImage(string memory memberTypeName, string memory imageURL) public {
         memberTypeImages[memberTypeName] = imageURL;
@@ -74,20 +89,19 @@ contract NFTMembership is ERC721URIStorage, Ownable{
     bool public firstMint = true;
     
 
-
-    function mintDefaultNFT() public {
+    function mintDefaultNFT(address newUser) public onlyQuickJoin() {
         string memory tokenURI = defaultImageURL;
         uint256 tokenId = _nextTokenId++;
         _mint(msg.sender, tokenId);
         _setTokenURI(tokenId, tokenURI);
         if (firstMint) {
-            memberTypeOf[msg.sender] = "Executive";
+            memberTypeOf[newUser] = "Executive";
             firstMint = false;
-            emit mintedNFT(msg.sender, "Executive", tokenURI);
+            emit mintedNFT(newUser, "Executive", tokenURI);
         } else
         {
-            memberTypeOf[msg.sender] = DEFAULT_MEMBER_TYPE;
-            emit mintedNFT(msg.sender, DEFAULT_MEMBER_TYPE, tokenURI);
+            memberTypeOf[newUser] = DEFAULT_MEMBER_TYPE;
+            emit mintedNFT(newUser, DEFAULT_MEMBER_TYPE, tokenURI);
         }
 
     }

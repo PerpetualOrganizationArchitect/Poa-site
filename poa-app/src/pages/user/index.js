@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useWeb3Context } from "@/context/web3Context";
-import { useGraphContext } from "@/context/graphContext";
+import { usePOContext } from "@/context/POContext";
+import { useUserContext } from "@/context/UserContext";
 import { useRouter } from 'next/router';
 import {
   VStack,
@@ -14,12 +15,11 @@ import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const User = () => {
-  const { address, nftMembershipContractAddress, hasMemberNFT, setLoaded, ddTokenContractAddress, graphUsername } = useGraphContext();
-  const { mintDDtokens, createNewUser, mintDefaultNFT } = useWeb3Context();
+  const { address, hasMemberNFT, graphUsername } = useUserContext();
+  const {quickJoinContractAddress} = usePOContext();
+  const { quickJoinNoUser, quickJoinWithUser } = useWeb3Context();
   const router = useRouter();
   const { userDAO } = router.query;
-
-  const [email, setEmail] = useState("");
 
   const [newUsername, setNewUsername] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,11 +27,8 @@ const User = () => {
   const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
-    setLoaded(userDAO);
     setIsSSR(false);
   }, [userDAO]);
-
-
 
   useEffect(() => {
     if (hasMemberNFT) {
@@ -41,7 +38,11 @@ const User = () => {
 
   const setDispalyHandle = async () => {
     setLoading(true);
-    await mintAssets(nftMembershipContractAddress, ddTokenContractAddress);
+    try {
+      await quickJoinWithUser(quickJoinContractAddress);
+    } catch (error) {
+      console.error(error);
+    }
     router.push(`/profileHub/?userDAO=${userDAO}`);
     setLoading(false);
   };
@@ -49,28 +50,12 @@ const User = () => {
   const setDispalyHandleNew = async () => {
     setLoading(true);
     try {
-      await createNewUser(newUsername);
+      await quickJoinNoUser(quickJoinContractAddress, newUsername);
     } catch (error) {
       console.error(error);
     }
-    await mintAssets(nftMembershipContractAddress, ddTokenContractAddress);
     router.push(`/profileHub/?userDAO=${userDAO}`);
     setLoading(false);
-  };
-
-  const mintAssets = async (nftMembershipContractAddress, ddTokenContractAddress) => {
-    if (!nftMembershipContractAddress) return;
-    try {
-      await mintDefaultNFT(nftMembershipContractAddress);
-    } catch (error) {
-      console.error(error);
-    }
-    if (!ddTokenContractAddress) return;
-    try {
-      await mintDDtokens(ddTokenContractAddress);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   if (isSSR) {
@@ -84,7 +69,7 @@ const User = () => {
         <>
           <Box position="relative">
             <Flex justify="flex-end" p="4">
-              <ConnectButton showBalance={false} chainStatus="icon"  />
+              <ConnectButton showBalance={false} chainStatus="icon" />
             </Flex>
           </Box>
           {dispaly && graphUsername ? (
@@ -93,9 +78,9 @@ const User = () => {
                 Join to become a Member of {userDAO} and access the Profile Hub.
               </Text>
               <Text align={"center"} fontWeight="bold" maxW="60%" fontSize="2xl" textColor="black">
-                Please wait for both Transactions; it could take some time.
+                Please wait for the transaction; it could take some time.
               </Text>
-              <Button isLoading={loading} loadingText="Joining Please wait for Second Transaction" onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
+              <Button isLoading={loading} loadingText="Joining..." onClick={setDispalyHandle} size="lg" mt={4} bg="green.300" _hover={{ bg: "green.400", boxShadow: "md", transform: "scale(1.05)" }}>
                 Join Now
               </Button>
             </VStack>
@@ -105,7 +90,7 @@ const User = () => {
                 Join to become a Member of {userDAO} and access the Profile Hub.
               </Text>
               <Text align={"center"} fontWeight="bold" maxW="60%" fontSize="2xl" textColor="black">
-                Please wait for all three Transactions; it could take some time.
+                Please wait for the transaction; it could take some time.
               </Text>
               <Input 
                 placeholder="Enter your username" 
@@ -117,7 +102,7 @@ const User = () => {
               />
               <Button 
                 isLoading={loading} 
-                loadingText="Joining Please wait for Three total Transactions" 
+                loadingText="Joining..." 
                 onClick={setDispalyHandleNew} 
                 size="lg" 
                 mt={4} 

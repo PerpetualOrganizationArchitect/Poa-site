@@ -16,7 +16,7 @@ import {
 
 import { useRouter } from 'next/router';
 
-import { useGraphContext } from '@/context/graphContext';
+import { usePOContext } from '@/context/POContext';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 
@@ -34,26 +34,19 @@ const glassLayerStyle = {
 
 
 const Leaderboard = () => {
-  
-
 
     const router = useRouter();
     const { userDAO } = router.query;
     
 
-    const { setLoaded, leaderboardData } = useGraphContext();
+    const { leaderboardData } = usePOContext();
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        console.log('leaderboardData', leaderboardData);
         if (leaderboardData) {
             setData(leaderboardData);
         }
     }, [leaderboardData]);
-
-    useEffect(() => {
-        setLoaded(userDAO);
-    }, [userDAO]);
 
 
 
