@@ -30,6 +30,8 @@ import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
 import { FETCH_USERNAME } from "@/util/queries";
+import { ConnectButton, useChainModal} from "@rainbow-me/rainbowkit";
+
 
 const steps = {
   ASK_INTRO: "ASK_INTRO",
@@ -75,15 +77,15 @@ const startOptions = [
 ];
 
 const ArchitectPage = () => {
-  const { signer, account } = useWeb3Context();
+  const { signer, address } = useWeb3Context();
   const { addToIpfs } = useIPFScontext();
   const toast = useToast();
   const router = useRouter();
   const selectionRef = useRef(null);
 
   const {data: graphUsername} = useQuery(FETCH_USERNAME, {
-    variables: { id: account?.toLowerCase() },
-    skip: !account,
+    variables: { id: address?.toLowerCase() },
+    skip: !address,
   }
   );
 
@@ -149,16 +151,42 @@ const ArchitectPage = () => {
 
   useEffect(() => {
     console.log("graphUsername", graphUsername);
-    if (graphUsername === false && currentStep === steps.ASK_USERNAME && orgDetails.username === "") {
-      addMessage("#### What username would you like to use?");
-    } else if (graphUsername && currentStep === steps.ASK_USERNAME) {
-      setCurrentStep(steps.ASK_CONFIRMATION);
-      
-      setTimeout(() => {
-        setIsConfirmationModalOpen(true);
-      }, 300);
+    console.log("currentStep", currentStep);
+    console.log("orgDetails", orgDetails.username);
+  
+    if (currentStep === steps.ASK_USERNAME) {
+      if (!address) {
+        addMessage("#### Please connect your account to continue.");
+        // Set options to display the Connect Wallet button
+        setShowSelection(true);
+        setOptions([
+          {
+            label: <ConnectButton />,
+            value: "connect_wallet",
+            isComponent: true, 
+          },
+        ]);
+      } else {
+        setShowSelection(false); 
+      }
     }
-  }, [graphUsername, currentStep]);
+  }, [address, currentStep]);
+  
+  useEffect(() => {
+    if (currentStep === steps.ASK_USERNAME && address) {
+      if (graphUsername.account == null && orgDetails.username === "") {
+        addMessage("#### What username would you like to use?");
+      } else if (graphUsername.account != null ) {
+        addMessage("#### Confirming your slecetions...");
+        setCurrentStep(steps.ASK_CONFIRMATION);
+        setTimeout(() => {
+          setIsConfirmationModalOpen(true);
+        }, 700);
+      }
+    }
+  }, [graphUsername, currentStep, address]);
+  
+  
 
   const handleSaveLinks = async (links) => {
     console.log("links", links);
@@ -233,6 +261,7 @@ const ArchitectPage = () => {
       participationVotingEnabled: false,
       logoURL: "QmZ4XzP6HRdVXdyJXKLzHXnQWpi7uztCuYEgwbse8XsDhD",
       votingControlType: "DirectDemocracy",
+      username: "",
     });
     setCurrentStep(steps.ASK_NAME);
   };
