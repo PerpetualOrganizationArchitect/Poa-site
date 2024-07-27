@@ -8,7 +8,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/landing");
+    router.push("/browse");
   };
 
   return (
