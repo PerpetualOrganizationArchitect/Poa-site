@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { useAccount } from 'wagmi';
 import { FETCH_USER_DETAILS, FETCH_PO_AND_USER_DETAILS, FETCH_ALL_PO_DATA } from '../util/queries'; 
 import { useRouter } from 'next/router';
+import { useWeb3Context } from './web3Context';
 
 const UserContext = createContext();
 
@@ -20,17 +21,24 @@ export const UserProvider = ({ children }) => {
     const router = useRouter();
     const { userDAO } = router.query;
 
-    const combinedID = `${userDAO}-${address?.toLowerCase()}`;
+    const [account, setAccount] = useState('0x00');
 
+    useEffect(() => {
+        if (address) {
+            setAccount(address);
+        }
+    } , [address]);
 
-    const  { data, error } = useQuery(FETCH_ALL_PO_DATA, {
-        variables: { id: address?.toLowerCase(), poName: userDAO, combinedID: combinedID },
-        skip: !address || !userDAO || !combinedID,
-        fetchPolicy:'cache-first',
+    const combinedID = `${userDAO}-${account?.toLowerCase()}`;
+
+    const { data, error } = useQuery(FETCH_ALL_PO_DATA, {
+        variables: { id: account?.toLowerCase(), poName: userDAO, combinedID: combinedID },
+        skip: !account || !userDAO || !combinedID,
+        fetchPolicy: 'cache-first',
         onCompleted: () => {
             console.log('Query user context completed successfully');
             console.log('data', data);
-          },
+        },
     });
 
     useEffect(() => {
@@ -38,9 +46,9 @@ export const UserProvider = ({ children }) => {
             console.log("data", data);
             const { user, account, perpetualOrganization } = data;
 
-            const execRoles = perpetualOrganization.NFTMembership.executiveRoles;
-            const hasExecNFT = execRoles.includes(user.memberType.memberTypeName);
-            const hasMemberNFT = user != null;
+            const execRoles = perpetualOrganization?.NFTMembership?.executiveRoles || [];
+            const hasExecNFT = user ? execRoles.includes(user.memberType.memberTypeName) : false;
+            const hasMemberNFT = !!user;
             const username = account?.userName || '';
             const userTasks = user?.tasks || [];
             const tasksCompleted = userTasks.filter(task => task.completed).length;
@@ -64,32 +72,33 @@ export const UserProvider = ({ children }) => {
             }
 
             const proposals = [
-                ...data.user.ptProposals.map(proposal => ({ ...proposal, type: 'Participation' })),
-                ...data.user.ddProposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' })),
-                ...data.user.hybridProposals.map(proposal => ({ ...proposal, type: 'Hybrid' })),
+                ...(data.user?.ptProposals || []).map(proposal => ({ ...proposal, type: 'Participation' })),
+                ...(data.user?.ddProposals || []).map(proposal => ({ ...proposal, type: 'Direct Democracy' })),
+                ...(data.user?.hybridProposals || []).map(proposal => ({ ...proposal, type: 'Hybrid' })),
             ];
-        
-            const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
-        
-            // Order proposals by expiration timestamp, but move completed proposals to the end
+
+            const currentTime = Math.floor(Date.now() / 1000); 
+
+
             proposals.sort((a, b) => {
                 const aIsCompleted = a.experationTimestamp < currentTime;
                 const bIsCompleted = b.experationTimestamp < currentTime;
-        
+
                 if (aIsCompleted && !bIsCompleted) {
-                    return 1; // a is completed, b is not - put a after b
+                    return 1; 
                 } else if (!aIsCompleted && bIsCompleted) {
-                    return -1; // b is completed, a is not - put b after a
+                    return -1; 
                 } else if (!aIsCompleted && !bIsCompleted) {
-                    return a.experationTimestamp - b.experationTimestamp; // Both are active - sort by expiration ascending
+                    return a.experationTimestamp - b.experationTimestamp; 
                 } else {
-                    return a.experationTimestamp - b.experationTimestamp; // Both are completed - sort by expiration ascending
+                    return a.experationTimestamp - b.experationTimestamp; 
                 }
             });
-        
+
             setUserProposals(proposals);
             setUserDataLoading(false);
-
+        } else {
+            setUserDataLoading(false); 
         }
     }, [data]);
 

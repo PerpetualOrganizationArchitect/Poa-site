@@ -30,7 +30,7 @@ import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
 import { FETCH_USERNAME } from "@/util/queries";
-import { ConnectButton, useChainModal} from "@rainbow-me/rainbowkit";
+import { ConnectButton, openChainModal} from "@rainbow-me/rainbowkit";
 
 
 const steps = {
@@ -113,6 +113,8 @@ const ArchitectPage = () => {
   const [isInputVisible, setIsInputVisible] = useState(true);
   const [isTyping, setIsTyping] = useState(false); // Add isTyping state
 
+  const{ chainId } = useWeb3Context();
+
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Default", "Executive"],
     executiveRoleNames: ["Executive"],
@@ -132,6 +134,16 @@ const ArchitectPage = () => {
     participationVoteQuorum: 51,
     username: "",
   });
+
+  const { openChainModal } = useChainModal();
+
+  // function to check if chain id is 80002 and if not display switch to amoy modal 
+  const checkChainId = () => {
+    if (chainId !== 80002) {
+      
+    }
+  };
+
 
   useEffect(() => {
     if (!initChatBotCalled.current) {
