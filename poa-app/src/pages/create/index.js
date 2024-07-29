@@ -30,7 +30,7 @@ import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
 import { FETCH_USERNAME } from "@/util/queries";
-import { ConnectButton, openChainModal} from "@rainbow-me/rainbowkit";
+import { ConnectButton, useChainModal} from "@rainbow-me/rainbowkit";
 
 
 const steps = {
