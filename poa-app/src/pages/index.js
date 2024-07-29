@@ -8,27 +8,60 @@ export default function Home() {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/browse");
+    router.push("/browser");
   };
 
   return (
     <>
       <Head>
         <title>Poa - Perpetual Organization Architect</title>
-        <meta name="description" content="Poa, the perpetual organization architect, helps you create and manage decentralized autonomous organizations (DAOs) with no coding required. Start building your community-driven organization today." />
+        <meta name="description" content="Poa, the Perpetual Organization Architect, helps you create and manage worker-owned DAOs with no coding required. Start building your community-driven organization today with Poa." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://poa.community" />
+        <meta property="og:title" content="Poa - Perpetual Organization Architect" />
+        <meta property="og:description" content="Poa helps you create and manage fully worker-owned DAOs with no coding required. Start building your community-driven organization today with Poa." />
+        <meta property="og:url" content="https://poa.community" />
+        <meta property="og:image" content="https://poa.community/images/high_res_poa.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Poa - Perpetual Organization Architect" />
+        <meta name="twitter:description" content="Poa helps you create and manage fully worker-owned DAOs with no coding required. Start building your community-driven organization today with Poa." />
+        <meta name="twitter:image" content="https://poa.community/images/high_res_poa.png" />
         <script type="application/ld+json">
-          {JSON.stringify({
+          {`
+          {
             "@context": "http://schema.org",
             "@type": "Organization",
             "name": "Poa",
             "url": "https://poa.community",
-            "logo": "https://poa.community/images/poa_logo.png",
+            "logo": "https://poa.community/images/high_res_poa.png",
             "sameAs": ["https://twitter.com/PoaPerpetual"],
-            "description": "Poa is a no code DAO builder that makes it easy to create and join fully community owned censorship resistant organizations called Perpetual Organizations."
-          })}
+            "description": "Poa is a no code DAO builder that makes it easy to create and join fully community owned censorship resistant organizations called Perpetual Organizations. Poa leverages web3 tech to keep the Perpetual Organizations fully community owned and operated.",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://poa.community"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Docs",
+                  "item": "https://poa.community/docs"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "AlphaV1",
+                  "item": "https://poa.community/docs/AlphaV1"
+                }
+              ]
+            }
+          }
+          `}
         </script>
       </Head>
       <Flex
@@ -217,12 +250,12 @@ export default function Home() {
           {" "}
           <Box width={["10","20"]}>
             <Link href="https://discord.gg/kKDKgetdNx" passHref>
-              <Image src="/images/discord.png" alt="Descriptive Alt Text" />
+              <Image src="/images/discord.png" alt="Poa Discord" />
             </Link>
           </Box>
           <Box width={["10","20"]}>
             <Link href="https://twitter.com/PoaPerpetual" passHref>
-              <Image src="/images/x.png" alt="Descriptive Alt Text" />
+              <Image src="/images/x.png" alt="Poa Twitter" />
             </Link>
           </Box>
         </HStack>

@@ -21,11 +21,21 @@ export const VotingProvider = ({ children, id }) => {
     const router = useRouter();
     const poName =  router.query.userDAO || '';
 
-    const combinedID = `${poName}-${address?.toLowerCase()}`;
+    
+
+    const [account, setAccount] = useState('0x00');
+
+    useEffect(() => {
+        if (address) {
+            setAccount(address);
+        }
+    } , [address]);
+
+    const combinedID = `${poName}-${account?.toLowerCase()}`;
 
   const  { data, loading, error } = useQuery(FETCH_ALL_PO_DATA, {
-    variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
-    skip: !address || !poName || !combinedID,
+    variables: { id: account?.toLowerCase(), poName: poName, combinedID: combinedID },
+    skip: !account || !poName || !combinedID,
     fetchPolicy:'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {

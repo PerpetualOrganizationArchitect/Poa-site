@@ -43,13 +43,25 @@ export const POProvider = ({ children }) => {
     const [poContextLoading, setPoContextLoading] = useState(true);
     const [rules, setRules] = useState(null); // Add rules state
 
+    const [account, setAccount] = useState('0x00');
     const router = useRouter();
     const poName = router.query.userDAO || '';
-    const combinedID = `${poName}-${address?.toLowerCase()}`;
+    
+
+    useEffect(() => {
+        if (address) {
+            setAccount(address);
+        }
+    }
+    , [address]);
+
+    const combinedID = `${poName}-${account?.toLowerCase()}`;
+
+
 
     const { data, error, loading } = useQuery(FETCH_ALL_PO_DATA, {
-        variables: { id: address?.toLowerCase(), poName: poName, combinedID: combinedID },
-        skip: !address || !poName || !combinedID,
+        variables: { id: account?.toLowerCase(), poName: poName, combinedID: combinedID },
+        skip: !account || !poName || !combinedID,
         fetchPolicy: 'cache-first',
         onCompleted: () => {
             console.log('Query po context completed successfully');

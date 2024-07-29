@@ -63,7 +63,7 @@ function generateAbbreviatedConstitution(poData) {
     } else if (ParticipationVoting && Treasury.votingContract === ParticipationVoting.id) {
       treasuryControl = "Participation Voting";
     }
-    descriptions.push(<Text fontSize={"lg"} fontWeight={"bold"} key="treasury-control" ml="2" mt="2">Treasury and Upgrade Control</Text>);
+    descriptions.push(<Text fontSize={"lg"} fontWeight={"bold"} key="treasury-control-Text" ml="2" mt="2">Treasury and Upgrade Control</Text>);
     descriptions.push(<Text key="treasury-control" ml="2" mt="2">Controlled by: {treasuryControl}</Text>);
   }
 
@@ -192,7 +192,7 @@ const PerpetualOrgDashboard = () => {
                         {poLinks && poLinks.length > 0 ? (
                           poLinks.map((link, index) => (
                             <Text mt="-2" key={index} fontSize="md">
-                              <Link fontSize="xl" fontWeight={"bold"} href={link.url} passHref isExternal color="blue.400">
+                              <Link fontSize="xl" fontWeight={"bold"} href={link.url} isExternal color="blue.400">
                                 {link.name}
                               </Link>
                             </Text>
@@ -396,7 +396,7 @@ const PerpetualOrgDashboard = () => {
                 <Box pl={6} pr={6} pb={4}>
                   {constitutionElements}
                   <HStack mt="2" spacing={4} align="center">
-                    <Link2 href={`/constitution?userDAO=${userDAO}`} passHref>
+                    <Link2 href={`/constitution?userDAO=${userDAO}`}>
                       <Button
                         mt={2}
                         colorScheme="teal"
