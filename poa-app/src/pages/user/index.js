@@ -13,9 +13,11 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import {useAccount} from 'wagmi';
 
 const User = () => {
-  const { address, hasMemberNFT, graphUsername } = useUserContext();
+  const { hasMemberNFT, graphUsername } = useUserContext();
+  const { address } = useAccount();
   const {quickJoinContractAddress} = usePOContext();
   const { quickJoinNoUser, quickJoinWithUser } = useWeb3Context();
   const router = useRouter();
