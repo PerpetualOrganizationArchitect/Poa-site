@@ -637,21 +637,24 @@ const ArchitectPage = () => {
 
   return (
     <Layout isArchitectPage>
-      <Box
-        position="fixed"
-        top="20px"
-        right={["150px", "230px"]}
-        zIndex="banner"
-
-      >
+      <Box position="fixed" top="20px" right={["20px", "150px", "230px"]} zIndex="banner">
         <Link href="/docs" passHref>
-          <Button variant="outline" p={4} colorScheme="black" _hover={{transform: "scale(1.06)"}}>
+          <Button variant="outline" p={4} colorScheme="black" _hover={{ transform: "scale(1.06)" }}>
             Docs
           </Button>
         </Link>
       </Box>
-      <Box position="fixed" top="20px" right="20px" padding="8px" backgroundColor="red" color="white" borderRadius="5px" width={["100px", "180px"]}>
-        <Text fontSize="sm">
+      <Box
+        position="fixed"
+        top="20px"
+        right="20px"
+        padding="8px"
+        backgroundColor="red"
+        color="white"
+        borderRadius="5px"
+        width={["100px", "180px"]}
+      >
+        <Text fontSize={["xs", "sm"]}>
           This is AlphaV1 on Polygon Amoy. There may be some bugs. Please report in our discord.
         </Text>
       </Box>
@@ -661,9 +664,9 @@ const ArchitectPage = () => {
             <Character />
           </motion.div>
         </Box>
-        <Box position="fixed" top="110px" overflowY="auto" width="full" pt="2" px="2">
+        <Box position="fixed" top={["120px", "110px"]} overflowY="auto" width="full" pt="2" px="2">
           <ConversationLog messages={messages} selectionHeight={selectionHeight} />
-
+  
           <MemberSpecificationModal isOpen={isMemberSpecificationModalOpen} onSave={handleSaveMemberRole} onClose={() => setIsMemberSpecificationModalOpen(false)} />
           <WeightModal isOpen={isWeightModalOpen} onSave={handleWeight} onClose={() => setIsWeightModalOpen(false)} />
           <LinksModal isOpen={isLinksModalOpen} onSave={handleSaveLinks} onClose={() => setIsLinksModalOpen(false)} />
@@ -677,12 +680,40 @@ const ArchitectPage = () => {
           )}
         </Box>
         {showSelection && isInputVisible && options.length > 0 && (
-          <Box position="fixed" bottom="60px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="rgba(255, 255, 255, 0.9)" backdropFilter="blur(5px)" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+          <Box
+            position="fixed"
+            bottom={["40px", "60px"]}
+            left="0"
+            right="0"
+            p="4"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            bg="rgba(255, 255, 255, 0.9)"
+            backdropFilter="blur(5px)"
+            borderTop="2px solid"
+            borderColor="gray.200"
+            zIndex="sticky"
+          >
             <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
           </Box>
         )}
         {showSelection && !isInputVisible && options.length > 0 && (
-          <Box position="fixed" bottom="0px" left="0" right="0" p="4" display="flex" alignItems="center" justifyContent="center" bg="rgba(255, 255, 255, 0.9)" backdropFilter="blur(5px)" borderTop="2px solid" borderColor="gray.200" zIndex="sticky">
+          <Box
+            position="fixed"
+            bottom="0px"
+            left="0"
+            right="0"
+            p="4"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            bg="rgba(255, 255, 255, 0.9)"
+            backdropFilter="blur(5px)"
+            borderTop="2px solid"
+            borderColor="gray.200"
+            zIndex="sticky"
+          >
             <Selection ref={selectionRef} options={options} onOptionSelected={handleUserInput} />
           </Box>
         )}
@@ -699,6 +730,7 @@ const ArchitectPage = () => {
       </motion.div>
     </Layout>
   );
+  
 };
 
 export default ArchitectPage;

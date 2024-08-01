@@ -5,22 +5,77 @@ import remarkRehype from "remark-rehype";
 import { Box, Text, Heading, Link, ListItem, OrderedList, UnorderedList, Code, Divider, Spinner, VStack } from "@chakra-ui/react";
 
 const ChakraUIRenderer = {
-  h1: ({ children }) => <Heading as="h1" size="2xl" my={4}>{children}</Heading>,
-  h2: ({ children }) => <Heading as="h2" size="xl" my={4}>{children}</Heading>,
-  h3: ({ children }) => <Heading as="h3" size="lg" my={4}>{children}</Heading>,
-  h4: ({ children }) => <Heading as="h4" size="md" my={4}>{children}</Heading>,
-  h5: ({ children }) => <Heading as="h5" size="sm" my={4}>{children}</Heading>,
-  h6: ({ children }) => <Heading as="h6" size="xs" my={4}>{children}</Heading>,
-  p: ({ children }) => <Text my={2}>{children}</Text>,
-  a: ({ href, children }) => <Link href={href} color="teal.500">{children}</Link>,
-  li: ({ children }) => <ListItem my={1}>{children}</ListItem>,
-  ol: ({ children }) => <OrderedList my={2} styleType="decimal">{children}</OrderedList>,
-  ul: ({ children }) => <UnorderedList my={2} styleType="disc">{children}</UnorderedList>,
+  h1: ({ children }) => (
+    <Heading as="h1" size={["lg", "xl", "2xl"]} my={4}>
+      {children}
+    </Heading>
+  ),
+  h2: ({ children }) => (
+    <Heading as="h2" size={["md", "lg", "xl"]} my={4}>
+      {children}
+    </Heading>
+  ),
+  h3: ({ children }) => (
+    <Heading as="h3" size={["sm", "md", "lg"]} my={4}>
+      {children}
+    </Heading>
+  ),
+  h4: ({ children }) => (
+    <Heading as="h4" size={["xs", "sm", "md"]} my={4}>
+      {children}
+    </Heading>
+  ),
+  h5: ({ children }) => (
+    <Heading as="h5" size={["xs", "sm"]} my={4}>
+      {children}
+    </Heading>
+  ),
+  h6: ({ children }) => (
+    <Heading as="h6" size="xs" my={4}>
+      {children}
+    </Heading>
+  ),
+  p: ({ children }) => (
+    <Text my={2} fontSize={["sm", "md", "lg"]}>
+      {children}
+    </Text>
+  ),
+  a: ({ href, children }) => (
+    <Link href={href} color="teal.500" fontSize={["sm", "md", "lg"]}>
+      {children}
+    </Link>
+  ),
+  li: ({ children }) => (
+    <ListItem my={1} fontSize={["sm", "md", "lg"]}>
+      {children}
+    </ListItem>
+  ),
+  ol: ({ children }) => (
+    <OrderedList my={2} styleType="decimal" fontSize={["sm", "md", "lg"]}>
+      {children}
+    </OrderedList>
+  ),
+  ul: ({ children }) => (
+    <UnorderedList my={2} styleType="disc" fontSize={["sm", "md", "lg"]}>
+      {children}
+    </UnorderedList>
+  ),
   code: ({ inline, children }) => {
     return inline ? (
-      <Code px={2} py={1} rounded="md">{children}</Code>
+      <Code px={2} py={1} rounded="md" fontSize={["sm", "md"]}>
+        {children}
+      </Code>
     ) : (
-      <Code display="block" whiteSpace="pre" p={4} my={2} rounded="md">{children}</Code>
+      <Code
+        display="block"
+        whiteSpace="pre"
+        p={4}
+        my={2}
+        rounded="md"
+        fontSize={["sm", "md"]}
+      >
+        {children}
+      </Code>
     );
   },
   hr: () => <Divider my={4} />,
@@ -30,6 +85,7 @@ const ChakraUIRenderer = {
     </Box>
   ),
 };
+
 
 const TypingMarkdown = ({ text, containerRef, onCompleted }) => {
   const [displayText, setDisplayText] = useState("");
@@ -87,7 +143,7 @@ const SpeechBubble = ({ speaker, children, containerRef, isTyping}) => {
       marginTop={0}
       marginBottom={2}
     >
-      <Text mb="1" fontSize={"2xl"} fontWeight="bold">{speaker}</Text>
+      <Text mb="1" fontSize={["lg","2xl"]} fontWeight="bold">{speaker}</Text>
       <Box p="0">
         {isTyping ? (
           <VStack>
