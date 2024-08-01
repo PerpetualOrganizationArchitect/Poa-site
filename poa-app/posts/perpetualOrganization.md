@@ -1,15 +1,12 @@
 # What is a Perpetual Organization?
 
-A Perpetual Organization (PO) is a self-sustaining entity designed to be fully worker-owned and censorship-resistant by being decentralized at all levels. They are built to make sure the community and contributors stay in control and wealth can't interfere with the will of the people.
+A Perpetual Organization (PO) is a community-owned group that can't be controlled or censored by outside forces. It's designed so that the people who contribute and participate stay in charge, free from the influence of wealth.
 
 This type of organization is structured to operate indefinitely without the need for central leadership, utilizing decentralized governance to ensure autonomy, transparency, and community engagement. 
 
 By placing ownership and control in the hands of its members, a PO adapts and evolves over time to meet the changing needs and contributions of its community, embodying a truly democratic and open system.
 
 ## Benefits of Perpetual Organizations
-
-### **Decentralized Governance**
-Perpetual organizations are founded on the principle of decentralized governance, ensuring that no single entity or group can centralize power. Decision-making is distributed among all members
 
 ### **Worker Ownership**
 Every member of a Perpetual Organization has ownership and a stake in its success. This worker-owned model promotes equity and fairness, allowing everyone to benefit directly from the organization's prosperity and growth.
@@ -29,5 +26,5 @@ Designed for longevity, Perpetual Organizations are structured to withstand chan
 
 ## Conclusion
 
-Perpetual organizations represent a paradigm shift in how entities are structured and managed. They harness the power of technology to create a self-sustaining system that is democratic, transparent, and inclusive, making them particularly suitable for projects and initiatives that benefit from decentralized control and long-term sustainability.
+Perpetual organizations represent a paradigm shift in how entities are structured and managed. They harness the power of technology to create a self-sustaining system that is democratic, transparent, and inclusive, making them particularly suitable for projects and initiatives that benefit from decentralized control and long-term sustainability. Join Poa in making Perpetual Organizations a reality.
 
