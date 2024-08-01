@@ -1,8 +1,11 @@
 import Head from "next/head";
 import Link from "next/link";
-import { Flex, Box, Button, Text, Image, VStack, HStack, useColorModeValue } from "@chakra-ui/react";
+import { Flex, Box, Button, Text, VStack, HStack, useColorModeValue, Image } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import AutoPlayVideo1 from "@/components/AutoPlayVideo1";
+
+import dynamic from "next/dynamic";
+
+const AutoPlayVideo1 = dynamic(() => import("../components/AutoPlayVideo1"), { ssr: false });
 
 export default function Home() {
   const router = useRouter();
@@ -70,6 +73,7 @@ export default function Home() {
         justifyContent="top"
         minH="100vh"
         p={6}
+        position="relative"
       >
         <Box
           position="absolute"
@@ -79,6 +83,21 @@ export default function Home() {
           bottom="0"
           bg="radial-gradient(circle, rgba(255, 255, 255, 10) 80%, rgba(154, 215, 255, 0.8) 115%)"
         />
+        <Box
+          position="absolute"
+          top="12px"
+          right="12px"
+          display={["none", "none", "block"]}
+          bg="red.500"
+          color="white"
+          px={6}
+          py={3}
+          borderRadius="md"
+          fontWeight="bold"
+          zIndex={2}
+        >
+          Alpha
+        </Box>
         <Image
           src="/images/poa_logo.png"
           alt="Poa Perpetual Organization Architect Logo"
@@ -94,7 +113,7 @@ export default function Home() {
           fontWeight="1000"
           fontSize={["25px", "27px", "31px", "39px"]}
           textAlign="center"
-          mt={["4", "4", "6"]}
+          mt={["8", "6", "6"]}
           css={{
             lineHeight: "1.3",
             background: "linear-gradient(90deg, #ff416c, #f28500)",
@@ -106,7 +125,7 @@ export default function Home() {
           Build Organizations Owned Fully by Your Community
         </Text>
         <Text
-          mt={["8", "10"]}
+          mt={["10", "10"]}
           zIndex={1}
           fontSize={["16px", "19px", "21px"]}
           fontWeight="700"
@@ -117,21 +136,22 @@ export default function Home() {
           Unite your Community, simplify Collaboration, and manage funds Collectively with Poa
         </Text>
 
-        <Flex justifyContent={["center", "center", "center"]} direction={["column", "column", "row"]} gap={12} mt={["8", "14"]} zIndex={1}>
+        <Flex  justifyContent={["center", "center", "center"]} direction={["column", "column", "row"]} gap={12} mt={["16", "14"]} mb={["14"]} zIndex={1}>
           <Box
             _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }}
             onClick={() => router.push("/create")}
             cursor="pointer"
             maxW={["100%", "100%", "650px"]}
             flex="1"
+            order={[2, 2, 1]}
           >
             <HStack display="flex" spacing={[2, 4]} bg="purple.200" borderRadius="3xl" p={[4, 6]} justifyContent="center" >
               <Image
                 mr={["1", "4"]}
                 src="/images/high_res_poa.png"
                 alt="Poa Logo"
-                width={[100,140,180,240]}
-                height={[100,140,180,240]}
+                width={[100, 140, 180, 220]}
+                height={[100, 140, 180, 220]}
               />
               <Box borderRadius="2xl" bg="white" p={[3, 4]}>
                 <Text fontWeight="500" fontSize={["13px", "15px", "17px"]} color="black.900">
@@ -143,7 +163,7 @@ export default function Home() {
               </Box>
             </HStack>
           </Box>
-          <Box mt="-4" mb="8" maxW={["100%", "100%", "650px"]} flex="1">
+          <Box  mb="6" maxW={["100%", "100%", "650px"]} flex="1" order={[1, 1, 2]}>
             <VStack display={["flex", "flex", "none"]} spacing={4} bg="blue.200" borderRadius="3xl" p={6}>
               <Box borderRadius="2xl" bg="white" p={[4, 4]}>
                 <Text fontWeight="600" fontSize={["16px", "16px", "18px"]} color="black.900">
@@ -174,7 +194,7 @@ export default function Home() {
                 width="90%"
                 bg={useColorModeValue("gray.800", "white")}
                 borderRadius="xl"
-                p={["2","6"]}
+                p={["4", "6"]}
                 textAlign="center"
                 boxShadow="md"
                 _hover={{ boxShadow: "lg", transform: "scale(1.05)" }}
@@ -183,7 +203,7 @@ export default function Home() {
                 cursor="pointer"
                 mt="2" 
               >
-                <Text fontSize={["19px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
+                <Text mt="-1" fontSize={["23px", "23px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
                   Explore
                 </Text>
                 <Text mt="2" fontSize={["12px", "14px", "16px"]} fontWeight="bold" color="white">
@@ -193,28 +213,27 @@ export default function Home() {
             </VStack>
             <HStack display={["none", "none", "flex"]} spacing={8} bg="blue.200" borderRadius="3xl" p={6} justifyContent="center">
               <Box
-                height="100%"
-                width="100%"
+                
                 bg={useColorModeValue("gray.800", "white")}
                 borderRadius="xl"
-                p={8}
+                p={5}
                 textAlign="center"
                 boxShadow="md"
                 _hover={{ boxShadow: "lg", transform: "scale(1.05)" }}
                 transition="all 0.3s ease"
                 onClick={handleClick}
                 cursor="pointer"
-                maxW={["100%", "100%", "650px"]}
+                maxW={["100%", "100%", "600px"]}
                 flex="1"
               >
-                <Text mt="-2"fontSize={["16px", "22px", "34px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
+                <Text mt="-2" fontSize={["16px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
                   Explore
                 </Text>
-                <Text mt="2"  mb="-2"  fontSize={["12px", "14px", "16px"]}  color="white">
+                <Text mt="2"  mb="-2" fontSize={["12px", "12px", "14px"]} color="white">
                   Discover and join existing Perpetual Organizations
                 </Text>
               </Box>
-              <Box borderRadius="2xl" bg="white" p={[2, 4]}>
+              <Box  borderRadius="2xl" bg="white" p={[2, 4]}>
                 <Text fontWeight="500" fontSize={["12px", "14px", "20px"]} color="black.900">
                   What is a{" "}
                   <Text
@@ -242,23 +261,22 @@ export default function Home() {
         </Flex>
         <AutoPlayVideo1 />
 
-       <VStack zIndex={"4"}>
-        <Text fontSize={["sm", "xl"]} fontWeight="bold" textColor={"gray.900"}>
-          Join our Community
-        </Text>
-        <HStack  spacing={4} align="center">
-          {" "}
-          <Box width={["10","20"]}>
-            <Link href="https://discord.gg/kKDKgetdNx" passHref>
-              <Image src="/images/discord.png" alt="Poa Discord" />
-            </Link>
-          </Box>
-          <Box width={["10","20"]}>
-            <Link href="https://twitter.com/PoaPerpetual" passHref>
-              <Image src="/images/x.png" alt="Poa Twitter" />
-            </Link>
-          </Box>
-        </HStack>
+        <VStack mt="14" zIndex={"4"}>
+          <Text fontSize={["sm", "xl"]} fontWeight="bold" textColor={"gray.900"}>
+            Join our Community
+          </Text>
+          <HStack spacing={4} align="center">
+            <Box width={["10", "20"]}>
+              <Link href="https://discord.gg/kKDKgetdNx" passHref>
+                <Image src="/images/discord.png" alt="Poa Discord" />
+              </Link>
+            </Box>
+            <Box width={["10", "20"]}>
+              <Link href="https://twitter.com/PoaPerpetual" passHref>
+                <Image src="/images/x.png" alt="Poa Twitter" />
+              </Link>
+            </Box>
+          </HStack>
         </VStack>
       </Flex>
     </>
