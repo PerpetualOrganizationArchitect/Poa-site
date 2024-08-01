@@ -26,5 +26,5 @@ Designed for longevity, Perpetual Organizations are structured to withstand chan
 
 ## Conclusion
 
-Perpetual organizations represent a paradigm shift in how entities are structured and managed. They harness the power of technology to create a self-sustaining system that is democratic, transparent, and inclusive, making them particularly suitable for projects and initiatives that benefit from decentralized control and long-term sustainability.
+Perpetual organizations represent a paradigm shift in how entities are structured and managed. They harness the power of technology to create a self-sustaining system that is democratic, transparent, and inclusive, making them particularly suitable for projects and initiatives that benefit from decentralized control and long-term sustainability. Join Poa in making Perpetual Organizations a reality.
 
