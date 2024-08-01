@@ -14,6 +14,7 @@ const Layout = ({ children, isArchitectPage }) => {
           top={0}
           width="full"
           zIndex="banner"
+          color={"black"}
         >
           <Link href="/landing" passHref>
             <IconButton
@@ -24,7 +25,7 @@ const Layout = ({ children, isArchitectPage }) => {
                   src="/images/poa_logo.png"
                   alt="Home"
                   width="auto"
-                  height="60px"
+                  height={["50px","60px"]}
                 />
               }
               variant="ghost"

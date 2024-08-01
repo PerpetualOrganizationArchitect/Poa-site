@@ -1,6 +1,5 @@
 // Character.jsx
-import Image from "next/image";
-import { Box } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 
 const Character = () => {
   return (
@@ -10,7 +9,7 @@ const Character = () => {
       top="0"
       left="0"
       right="0"
-      height="110px"
+      height = "auto"
       display="flex"
       justifyContent="center"
       alignItems="center"
@@ -19,8 +18,8 @@ const Character = () => {
       <Image
         src="/images/high_res_poa.png"
         alt="Character"
-        width={110}
-        height={110}
+        width={[70,110]}
+        height={[70,110]}
       />
     </Box>
   );

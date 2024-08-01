@@ -13,7 +13,7 @@ const Selection = forwardRef(({ options, onOptionSelected }, ref) => {
             <Button
               colorScheme="teal"
               onClick={() => onOptionSelected(option.value)}
-              size="lg"
+              size={["xs","lg"]}
               borderRadius="md"
               boxShadow="md"
               _hover={{ bg: "teal.600", boxShadow: "lg" }}

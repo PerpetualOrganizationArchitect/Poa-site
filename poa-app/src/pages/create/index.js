@@ -7,6 +7,7 @@ import {
   useToast,
   Button,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
@@ -277,6 +278,12 @@ const ArchitectPage = () => {
     });
     setCurrentStep(steps.ASK_NAME);
   };
+
+
+    const displayText = useBreakpointValue({
+      base: "Alpha", 
+      md: "This is AlphaV2 on Polygon Amoy. There may be some bugs. Please report in our discord." 
+    });
 
   const pinLogoFile = async (ipfsUrl) => {
     try {
@@ -646,21 +653,21 @@ const ArchitectPage = () => {
       </Box>
       <Box
         position="fixed"
-        top="20px"
+        top={["70px","20px"]}
         right="20px"
         padding="8px"
         backgroundColor="red"
         color="white"
         borderRadius="5px"
-        width={["100px", "180px"]}
+        width={["60px", "180px"]}
       >
-        <Text fontSize={["xs", "sm"]}>
-          This is AlphaV1 on Polygon Amoy. There may be some bugs. Please report in our discord.
+        <Text fontSize={["sm", "sm"]}>
+          {displayText}
         </Text>
       </Box>
-      <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <Box mt="8" position="fixed" top="0" left="0" right="0" zIndex="sticky">
-          <motion.div variants={itemVariants}>
+      <motion.div  variants={containerVariants} initial="hidden" animate="visible">
+        <Box mt="8"  position="fixed" top="0" left="0" right="0" zIndex="sticky">
+          <motion.div  variants={itemVariants}>
             <Character />
           </motion.div>
         </Box>
