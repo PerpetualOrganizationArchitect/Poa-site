@@ -405,7 +405,7 @@ type PerpetualOrganization @entity {
   logoHash: String
   NFTMembership: NFTMembership! @link
   registry: Registry @link
-  DirectDemocracyToken: DDToken @liknk
+  DirectDemocracyToken: DDToken @link
   ParticipationToken: PTToken @link
   Treasury: Treasury @link
   TaskManager: TaskManager @link
