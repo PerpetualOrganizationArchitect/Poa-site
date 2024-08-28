@@ -248,6 +248,25 @@ dataSources:
       file: ./mappings/election/electionFactoryMapping.ts
 templates:
   - kind: ethereum/contract
+    name: ElectionContract
+    network: polygon-amoy
+    source:
+      abi: ElectionContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ElectionContract
+        - Election
+      abis:
+        - name: ElectionContract
+          file: ../abi/ElectionContract.json
+      eventHandlers:
+        - event: ElectionCreated(uint256,indexed uint256)
+          handler: handleElectionCreated
+      file: ./mappings/election/electionMapping.ts
+  - kind: ethereum/contract
     name: DirectDemocracyToken
     network: polygon-amoy
     source:
