@@ -10,6 +10,24 @@ import {
   BigInt,
 } from "@graphprotocol/graph-ts";
 
+export class ElectionContractSet extends ethereum.Event {
+  get params(): ElectionContractSet__Params {
+    return new ElectionContractSet__Params(this);
+  }
+}
+
+export class ElectionContractSet__Params {
+  _event: ElectionContractSet;
+
+  constructor(event: ElectionContractSet) {
+    this._event = event;
+  }
+
+  get electionContract(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class NewProposal extends ethereum.Event {
   get params(): NewProposal__Params {
     return new NewProposal__Params(this);

@@ -2628,6 +2628,23 @@ export class DDVoting extends Entity {
   set quorum(value: BigInt) {
     this.set("quorum", Value.fromBigInt(value));
   }
+
+  get electionContract(): string | null {
+    let value = this.get("electionContract");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set electionContract(value: string | null) {
+    if (!value) {
+      this.unset("electionContract");
+    } else {
+      this.set("electionContract", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class DDProposal extends Entity {
