@@ -226,6 +226,26 @@ dataSources:
         - event: QuickJoinDeployed(address,string)
           handler: handleQuickJoinDeployed
       file: ./mappings/quickJoin/quickJoinFactoryMapping.ts
+  - kind: ethereum/contract
+    name: ElectionContractFactory
+    network: polygon-amoy
+    source:
+      address: "0x87e816e758921248f8E96C072aA36AA68f660A49"
+      abi: ElectionContractFactory
+      startBlock: 9480000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ElectionContract
+      abis:
+        - name: ElectionContractFactory
+          file: ../abi/ElectionContractFactory.json
+      eventHandlers:
+        - event: ElectionContractCreated(indexed address,indexed address,address,string)
+          handler: handleElectionContractCreated
+      file: ./mappings/election/electionFactoryMapping.ts
 templates:
   - kind: ethereum/contract
     name: DirectDemocracyToken
