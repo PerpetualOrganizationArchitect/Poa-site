@@ -226,7 +226,46 @@ dataSources:
         - event: QuickJoinDeployed(address,string)
           handler: handleQuickJoinDeployed
       file: QuickJoinFactory/QuickJoinFactory.wasm
+  - kind: ethereum/contract
+    name: ElectionContractFactory
+    network: polygon-amoy
+    source:
+      address: "0x87e816e758921248f8E96C072aA36AA68f660A49"
+      abi: ElectionContractFactory
+      startBlock: 9480000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ElectionContract
+      abis:
+        - name: ElectionContractFactory
+          file: abi/ElectionContractFactory.json
+      eventHandlers:
+        - event: ElectionContractCreated(indexed address,indexed address,address,string)
+          handler: handleElectionContractCreated
+      file: ElectionContractFactory/ElectionContractFactory.wasm
 templates:
+  - kind: ethereum/contract
+    name: ElectionContract
+    network: polygon-amoy
+    source:
+      abi: ElectionContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ElectionContract
+        - Election
+      abis:
+        - name: ElectionContract
+          file: abi/ElectionContract.json
+      eventHandlers:
+        - event: ElectionCreated(uint256,indexed uint256)
+          handler: handleElectionCreated
+      file: templates/ElectionContract/ElectionContract.wasm
   - kind: ethereum/contract
     name: DirectDemocracyToken
     network: polygon-amoy
@@ -363,7 +402,7 @@ templates:
           file: abi/DirectDemocracyVoting.json
       eventHandlers:
         - event: NewProposal(indexed
-            uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address)
+            uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address,bool)
           handler: handlePollCreated
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames

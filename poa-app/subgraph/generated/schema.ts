@@ -1297,6 +1297,19 @@ export class ElectionContract extends Entity {
     this.set("contractAddress", Value.fromBytes(value));
   }
 
+  get POname(): string {
+    let value = this.get("POname");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set POname(value: string) {
+    this.set("POname", Value.fromString(value));
+  }
+
   get elections(): ElectionLoader {
     return new ElectionLoader(
       "ElectionContract",

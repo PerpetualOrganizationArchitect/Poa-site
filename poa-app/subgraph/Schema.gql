@@ -115,6 +115,7 @@ type NFTChangeTypeEvent @entity {
 type ElectionContract @entity {
   id: ID!
   contractAddress: Bytes!
+  POname: String!
   elections: [Election!]! @derivedFrom(field: "electionContract")
 }
 
@@ -124,7 +125,7 @@ type Election @entity {
   isActive: Boolean!
   winningCandidateIndex: BigInt
   hasValidWinner: Boolean!
-  candidates: [Candidate!]! @derivedFrom(field: "election")
+  candidates: [Candidate!] @derivedFrom(field: "election")
   electionContract: ElectionContract! @link
 }
 
