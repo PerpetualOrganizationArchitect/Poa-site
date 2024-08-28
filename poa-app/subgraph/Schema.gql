@@ -112,6 +112,12 @@ type NFTChangeTypeEvent @entity {
 
 ## elections 
 
+type ElectionContract @entity {
+  id: ID!
+  contractAddress: Bytes!
+  elections: [Election!]! @derivedFrom(field: "electionContract")
+}
+
 type Election @entity {
   id: ID!
   proposalId: BigInt!
@@ -119,6 +125,7 @@ type Election @entity {
   winningCandidateIndex: BigInt
   hasValidWinner: Boolean!
   candidates: [Candidate!]! @derivedFrom(field: "election")
+  electionContract: ElectionContract! @link
 }
 
 type Candidate @entity {
@@ -128,6 +135,7 @@ type Candidate @entity {
   candidateName: String!
   isWinner: Boolean!
 }
+
 
 ## treasury 
 
@@ -249,6 +257,8 @@ type DDProposal @entity {
   votes: [DDVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
   validWinner: Boolean
+  electionEnabled: Boolean!
+  election: Election @link
 }
 
 type DDPollOption @entity {
@@ -431,7 +441,7 @@ type PerpetualOrganization @entity {
   ParticipationVoting: PTVoting @link
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
-  Election: Election @link
+  ElectionContract: ElectionContract @link
   QuickJoinContract: QuickJoinContract @link
   Users: [User!] @derivedFrom(field: "organization")
   totalMembers: BigInt!

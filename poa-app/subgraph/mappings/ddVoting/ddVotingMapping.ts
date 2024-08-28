@@ -26,6 +26,7 @@ export function handlePollCreated(event: NewProposal): void {
     newProposal.totalVotes = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
     newProposal.validWinner = false;
+    newProposal.electionEnabled = event.params.electionEnabled;
     newProposal.save();
   
 }
