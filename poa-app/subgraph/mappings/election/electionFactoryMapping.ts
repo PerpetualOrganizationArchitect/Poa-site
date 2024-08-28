@@ -10,6 +10,7 @@ export function handleElectionContractCreated(event: ElectionContractCreated): v
   
     entity.contractAddress = event.params.electionContractAddress;
     entity.POname = event.params.POname;
+    entity.votingContractAddress = event.params.votingContractAddress
     entity.save();
 
     let po = PerpetualOrganization.load(event.params.POname);

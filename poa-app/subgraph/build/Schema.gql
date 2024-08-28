@@ -117,6 +117,7 @@ type ElectionContract @entity {
   contractAddress: Bytes!
   POname: String!
   elections: [Election!]! @derivedFrom(field: "electionContract")
+  votingContractAddress: Bytes!
 }
 
 type Election @entity {

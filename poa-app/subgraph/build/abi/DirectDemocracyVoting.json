@@ -463,6 +463,12 @@
         "type": "bool",
         "indexed": false,
         "internalType": "bool"
+      },
+      {
+        "name": "electionId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false

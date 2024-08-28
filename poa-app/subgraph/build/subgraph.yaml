@@ -259,12 +259,17 @@ templates:
       entities:
         - ElectionContract
         - Election
+        - Candidate
       abis:
         - name: ElectionContract
           file: abi/ElectionContract.json
       eventHandlers:
         - event: ElectionCreated(uint256,indexed uint256)
           handler: handleElectionCreated
+        - event: CandidateAdded(indexed uint256,uint256,address,string)
+          handler: handleCandidateAdded
+        - event: ElectionConcluded(indexed uint256,uint256,bool)
+          handler: handleElectionConcluded
       file: templates/ElectionContract/ElectionContract.wasm
   - kind: ethereum/contract
     name: DirectDemocracyToken
@@ -402,7 +407,7 @@ templates:
           file: abi/DirectDemocracyVoting.json
       eventHandlers:
         - event: NewProposal(indexed
-            uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address,bool)
+            uint256,string,string,uint256,uint256,uint256,address,uint256,bool,address,bool,uint256)
           handler: handlePollCreated
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames

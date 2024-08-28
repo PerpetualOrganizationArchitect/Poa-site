@@ -84,6 +84,10 @@ export class NewProposal__Params {
   get electionEnabled(): boolean {
     return this._event.parameters[10].value.toBoolean();
   }
+
+  get electionId(): BigInt {
+    return this._event.parameters[11].value.toBigInt();
+  }
 }
 
 export class PollOptionNames extends ethereum.Event {

@@ -1317,6 +1317,19 @@ export class ElectionContract extends Entity {
       "elections",
     );
   }
+
+  get votingContractAddress(): Bytes {
+    let value = this.get("votingContractAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set votingContractAddress(value: Bytes) {
+    this.set("votingContractAddress", Value.fromBytes(value));
+  }
 }
 
 export class Election extends Entity {
