@@ -1,9 +1,7 @@
 const MasterDeployfactory = require("../abi/MasterFactory.json");
-
 const { ethers } = require("ethers");
 
-// sepoila const masterDeployFactoryAddress = "0xDBdf5B0532827917eFFd55439c05B4dB0e471205";
-const masterDeployFactoryAddress = "0x026A25A09Ff671b6983744355d26998410FF947b";
+const masterDeployFactoryAddress = "0x1C11938fbC65C38Ae0931Fa81E4522d191939CC9";
 
 export async function main(
     memberTypeNames,
@@ -24,7 +22,7 @@ export async function main(
   ){
 
     console.log("Creating new DAO...");
-    console.log("these variables", memberTypeNames, executivePermissionNames, POname, quadraticVotingEnabled, democracyVoteWeight, participationVoteWeight, hybridVotingEnabled, participationVotingEnabled, logoURL, infoIPFSHash, votingControlType, quorumPercentageDD, quorumPercentagePV, wallet)
+    console.log("these variables", memberTypeNames, executivePermissionNames, POname, quadraticVotingEnabled, democracyVoteWeight, participationVoteWeight, hybridVotingEnabled, participationVotingEnabled, logoURL, infoIPFSHash, votingControlType, quorumPercentageDD, quorumPercentagePV, wallet);
 
     let contractNames = [];
     if (hybridVotingEnabled) {
@@ -38,7 +36,7 @@ export async function main(
           "TaskManager",
           "QuickJoin",
         ];
-      } else if (participationVotingEnabled) {
+    } else if (participationVotingEnabled) {
         contractNames = [
           "NFTMembership",
           "DirectDemocracyToken",
@@ -48,19 +46,19 @@ export async function main(
           "ParticipationVoting",
           "TaskManager",
           "QuickJoin",
-        ]
-        } else {
-          contractNames = [
-            "NFTMembership",
-            "DirectDemocracyToken",
-            "ParticipationToken",
-            "Treasury",
-            "DirectDemocracyVoting",
-            "NoVoting",
-            "TaskManager",
-            "QuickJoin",
-          ];
-      }
+        ];
+    } else {
+        contractNames = [
+          "NFTMembership",
+          "DirectDemocracyToken",
+          "ParticipationToken",
+          "Treasury",
+          "DirectDemocracyVoting",
+          "NoVoting",
+          "TaskManager",
+          "QuickJoin",
+        ];
+    }
 
     const params = {
         memberTypeNames,
@@ -77,15 +75,15 @@ export async function main(
         contractNames,
         quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
         quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
-        username
+        username,
+        electionEnabled: true  // Hardcoding electionEnabled to true
     };
 
     console.log("Deploying new DAO with the following parameters:");
     console.log(params);
 
-
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(15700000); 
+    const gasLimit = ethers.utils.hexlify(15700000);
 
     const options = {
         gasLimit: gasLimit,

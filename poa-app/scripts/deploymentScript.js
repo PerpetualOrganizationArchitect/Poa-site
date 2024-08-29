@@ -42,7 +42,7 @@ const MasterDeployFactory = require('../abi/MasterFactory.json');
 const AccountManager = require('../abi/AccountManager.json');
 
 const QuickJoinFactory = require('../abi/QuickJoinFactory.json');
-
+const ElectionContractFactory = require('../abi/ElectionContractFactory.json');
 
 
 async function deployDirectDemocracyToken(wallet) {
@@ -173,13 +173,13 @@ async function deployTaskManager(wallet) {
 }
 
 async function deployMasterDeployFactory(wallet, directDemocracyTokenFactory, directDemocracyVotingFactory, hybridVotingFactory, participationTokenFactory, participationVotingFactory, treasuryFactory,
-  nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress) {
+  nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress, electionContractFactoryAddress) {
     const factory = new ethers.ContractFactory(MasterDeployFactory.abi, MasterDeployFactory.bytecode, wallet);
     const gasPrice = ethers.utils.parseUnits('29', 'gwei');
     const gasLimit = 8000000;
   
     const contract = await factory.deploy(directDemocracyTokenFactory, directDemocracyVotingFactory, hybridVotingFactory, participationTokenFactory, participationVotingFactory, treasuryFactory,
-      nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress, {
+      nftMembershipFactory, registryFactory, taskManagerFactory, quickJoinFactory, accountManagerAddress, electionContractFactoryAddress, {
         gasPrice: gasPrice,
         gasLimit: gasLimit,
       });
@@ -229,6 +229,23 @@ async function deployQuickJoinFactory(wallet) {
   });
   await contract.deployed();
   console.log(`Quick Join Factory Contract deployed at address: ${contract.address}`);
+  return contract;
+}
+
+async function deployElectionContractFactory(wallet) {
+  const factory = new ethers.ContractFactory(ElectionContractFactory.abi, ElectionContractFactory.bytecode, wallet);
+  
+  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasLimit = 6000000;
+
+  const contract = await factory.deploy({
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  });
+  
+  await contract.deployed();
+  
+  console.log(`Election Contract Factory deployed at address: ${contract.address}`);
   return contract;
 }
 
@@ -512,6 +529,7 @@ async function main() {
     const taskManager = await deployTaskManager(wallet);
     const registry = await deployRegistry(wallet);
     const quickJoinFactory = await deployQuickJoinFactory(wallet);
+    const electionContractFactory = await deployElectionContractFactory(wallet);
 
     const masterDeployFactory = await deployMasterDeployFactory(
       wallet,
@@ -525,7 +543,8 @@ async function main() {
       registry.address,
       taskManager.address,
       quickJoinFactory.address,
-      accountManager.address
+      accountManager.address,
+      electionContractFactory.address
     );
 
     console.log("All contracts deployed and configured successfully.");
