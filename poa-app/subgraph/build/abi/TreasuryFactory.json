@@ -1,40 +1,40 @@
 [
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "treasuryAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "POname",
-        "type": "string"
-      }
-    ],
-    "name": "TreasuryCreated",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "POname",
-        "type": "string"
-      }
-    ],
+    "type": "function",
     "name": "createTreasury",
+    "inputs": [
+      {
+        "name": "POname",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
     "outputs": [
       {
-        "internalType": "address",
         "name": "",
-        "type": "address"
+        "type": "address",
+        "internalType": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "TreasuryCreated",
+    "inputs": [
+      {
+        "name": "treasuryAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "POname",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
   }
 ]

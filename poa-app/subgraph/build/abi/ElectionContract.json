@@ -214,7 +214,7 @@
       {
         "name": "",
         "type": "address",
-        "internalType": "contract INFTMembership"
+        "internalType": "contract INFTMembership6"
       }
     ],
     "stateMutability": "view"

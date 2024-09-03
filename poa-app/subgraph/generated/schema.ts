@@ -1966,6 +1966,14 @@ export class EducationHubContract extends Entity {
   set contractAddress(value: Bytes) {
     this.set("contractAddress", Value.fromBytes(value));
   }
+
+  get modules(): ModuleLoader {
+    return new ModuleLoader(
+      "EducationHubContract",
+      this.get("id")!.toString(),
+      "modules",
+    );
+  }
 }
 
 export class Module extends Entity {
@@ -2046,6 +2054,93 @@ export class Module extends Entity {
     this.set("ipfsHash", Value.fromString(value));
   }
 
+  get info(): string {
+    let value = this.get("info");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set info(value: string) {
+    this.set("info", Value.fromString(value));
+  }
+
+  get payout(): BigInt {
+    let value = this.get("payout");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set payout(value: BigInt) {
+    this.set("payout", Value.fromBigInt(value));
+  }
+
+  get completetions(): ModuleCompletionLoader {
+    return new ModuleCompletionLoader(
+      "Module",
+      this.get("id")!.toString(),
+      "completetions",
+    );
+  }
+}
+
+export class ModuleInfo extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ModuleInfo entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ModuleInfo must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("ModuleInfo", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): ModuleInfo | null {
+    return changetype<ModuleInfo | null>(store.get_in_block("ModuleInfo", id));
+  }
+
+  static load(id: string): ModuleInfo | null {
+    return changetype<ModuleInfo | null>(store.get("ModuleInfo", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
   get description(): string {
     let value = this.get("description");
     if (!value || value.kind == ValueKind.NULL) {
@@ -2057,6 +2152,182 @@ export class Module extends Entity {
 
   set description(value: string) {
     this.set("description", Value.fromString(value));
+  }
+
+  get link(): string {
+    let value = this.get("link");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set link(value: string) {
+    this.set("link", Value.fromString(value));
+  }
+
+  get answers(): ModuleAnswerLoader {
+    return new ModuleAnswerLoader(
+      "ModuleInfo",
+      this.get("id")!.toString(),
+      "answers",
+    );
+  }
+}
+
+export class ModuleAnswer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ModuleAnswer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ModuleAnswer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("ModuleAnswer", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): ModuleAnswer | null {
+    return changetype<ModuleAnswer | null>(
+      store.get_in_block("ModuleAnswer", id),
+    );
+  }
+
+  static load(id: string): ModuleAnswer | null {
+    return changetype<ModuleAnswer | null>(store.get("ModuleAnswer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get moduleInfo(): string {
+    let value = this.get("moduleInfo");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set moduleInfo(value: string) {
+    this.set("moduleInfo", Value.fromString(value));
+  }
+
+  get answer(): string {
+    let value = this.get("answer");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set answer(value: string) {
+    this.set("answer", Value.fromString(value));
+  }
+
+  get index(): i32 {
+    let value = this.get("index");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set index(value: i32) {
+    this.set("index", Value.fromI32(value));
+  }
+}
+
+export class ModuleCompletion extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ModuleCompletion entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ModuleCompletion must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("ModuleCompletion", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): ModuleCompletion | null {
+    return changetype<ModuleCompletion | null>(
+      store.get_in_block("ModuleCompletion", id),
+    );
+  }
+
+  static load(id: string): ModuleCompletion | null {
+    return changetype<ModuleCompletion | null>(
+      store.get("ModuleCompletion", id),
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get module(): string {
+    let value = this.get("module");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set module(value: string) {
+    this.set("module", Value.fromString(value));
+  }
+
+  get user(): string | null {
+    let value = this.get("user");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set user(value: string | null) {
+    if (!value) {
+      this.unset("user");
+    } else {
+      this.set("user", Value.fromString(<string>value));
+    }
   }
 }
 
@@ -5455,6 +5726,14 @@ export class User extends Entity {
   set dateJoined(value: BigInt) {
     this.set("dateJoined", Value.fromBigInt(value));
   }
+
+  get modulesCompleted(): ModuleCompletionLoader {
+    return new ModuleCompletionLoader(
+      "User",
+      this.get("id")!.toString(),
+      "modulesCompleted",
+    );
+  }
 }
 
 export class Account extends Entity {
@@ -5708,6 +5987,60 @@ export class TreasuryDepositLoader extends Entity {
   load(): TreasuryDeposit[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<TreasuryDeposit[]>(value);
+  }
+}
+
+export class ModuleLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Module[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Module[]>(value);
+  }
+}
+
+export class ModuleCompletionLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): ModuleCompletion[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<ModuleCompletion[]>(value);
+  }
+}
+
+export class ModuleAnswerLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): ModuleAnswer[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<ModuleAnswer[]>(value);
   }
 }
 

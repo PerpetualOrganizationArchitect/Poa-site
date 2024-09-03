@@ -172,6 +172,46 @@ type TreasuryDeposit @entity {
   token: Bytes!
 }
 
+## education hub 
+
+type EducationHubContract @entity {
+  id: ID!
+  POname: String!
+  contractAddress: Bytes!
+  modules: [Module!] @derivedFrom(field: "educationHub")
+}
+
+type Module @entity {
+  id: ID!
+  educationHub: EducationHubContract! @link
+  name: String!
+  ipfsHash: String!
+  info: ModuleInfo! @link
+  payout: BigInt!
+  completetions: [ModuleCompletion!] @derivedFrom(field: "module")
+}
+
+type ModuleInfo @entity {
+  id: ID!
+  name: String!
+  description: String!
+  link: String!
+  answers: [ModuleAnswer!] @derivedFrom(field: "moduleInfo")
+}
+
+type ModuleAnswer @entity {
+  id: ID!
+  moduleInfo: ModuleInfo! @link
+  answer: String!
+  index: Int!
+}
+
+type ModuleCompletion @entity {
+  id: ID!
+  module: Module! @link
+  user: User @link
+}
+
 ## parcitipation voting 
 
 type PTVotingCreated @entity {
@@ -444,6 +484,7 @@ type PerpetualOrganization @entity {
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
   ElectionContract: ElectionContract @link
+  EducationHubContract: EducationHubContract @link
   QuickJoinContract: QuickJoinContract @link
   Users: [User!] @derivedFrom(field: "organization")
   totalMembers: BigInt!
@@ -466,6 +507,7 @@ type User @entity {
   Account: Account @link
   totalVotes: BigInt!
   dateJoined: BigInt!
+  modulesCompleted: [ModuleCompletion!] @derivedFrom(field: "user")
 }
 
 type Account @entity {

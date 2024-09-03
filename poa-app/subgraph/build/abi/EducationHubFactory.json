@@ -1,22 +1,17 @@
 [
   {
     "type": "function",
-    "name": "createTaskManager",
+    "name": "createEducationHub",
     "inputs": [
       {
-        "name": "_token",
+        "name": "token",
         "type": "address",
         "internalType": "address"
       },
       {
-        "name": "_nftMembership",
+        "name": "nftMembershipAddress",
         "type": "address",
         "internalType": "address"
-      },
-      {
-        "name": "_allowedRoleNames",
-        "type": "string[]",
-        "internalType": "string[]"
       },
       {
         "name": "POname",
@@ -35,12 +30,12 @@
   },
   {
     "type": "event",
-    "name": "TaskManagerCreated",
+    "name": "EducationHubCreated",
     "inputs": [
       {
-        "name": "TaskManager",
+        "name": "educationHubAddress",
         "type": "address",
-        "indexed": false,
+        "indexed": true,
         "internalType": "address"
       },
       {

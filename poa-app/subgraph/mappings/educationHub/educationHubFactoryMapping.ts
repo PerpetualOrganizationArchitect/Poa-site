@@ -2,7 +2,7 @@ import { EducationHubCreated } from "../../generated/EducationHubFactory/Educati
 import { EducationHubContract, PerpetualOrganization } from "../../generated/schema";
 import {EducationHub as educationHubTemplate} from "../../generated/templates";
 
-function handleEducationHubCreated(event: EducationHubCreated): void {
+export function handleEducationHubCreated(event: EducationHubCreated): void {
   let entity = new EducationHubContract(event.params.educationHubAddress.toHex());
 
   entity.contractAddress = event.params.educationHubAddress;

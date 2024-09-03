@@ -179,3 +179,13 @@ export class taskInfo extends DataSourceTemplate {
     DataSourceTemplate.createWithContext("taskInfo", [cid], context);
   }
 }
+
+export class moduleInfo extends DataSourceTemplate {
+  static create(cid: string): void {
+    DataSourceTemplate.create("moduleInfo", [cid]);
+  }
+
+  static createWithContext(cid: string, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext("moduleInfo", [cid], context);
+  }
+}
