@@ -98,6 +98,58 @@ export class TaskManagerAddressSet__Params {
   }
 }
 
+export class TokenRequestApproved extends ethereum.Event {
+  get params(): TokenRequestApproved__Params {
+    return new TokenRequestApproved__Params(this);
+  }
+}
+
+export class TokenRequestApproved__Params {
+  _event: TokenRequestApproved;
+
+  constructor(event: TokenRequestApproved) {
+    this._event = event;
+  }
+
+  get requestId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get approver(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class TokenRequested extends ethereum.Event {
+  get params(): TokenRequested__Params {
+    return new TokenRequested__Params(this);
+  }
+}
+
+export class TokenRequested__Params {
+  _event: TokenRequested;
+
+  constructor(event: TokenRequested) {
+    this._event = event;
+  }
+
+  get requestId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get requester(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get ipfsHash(): string {
+    return this._event.parameters[3].value.toString();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -121,6 +173,58 @@ export class Transfer__Params {
 
   get value(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class ParticipationToken__tokenRequestsResult {
+  value0: Address;
+  value1: BigInt;
+  value2: string;
+  value3: boolean;
+  value4: boolean;
+
+  constructor(
+    value0: Address,
+    value1: BigInt,
+    value2: string,
+    value3: boolean,
+    value4: boolean,
+  ) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromString(this.value2));
+    map.set("value3", ethereum.Value.fromBoolean(this.value3));
+    map.set("value4", ethereum.Value.fromBoolean(this.value4));
+    return map;
+  }
+
+  getRequester(): Address {
+    return this.value0;
+  }
+
+  getAmount(): BigInt {
+    return this.value1;
+  }
+
+  getIpfsHash(): string {
+    return this.value2;
+  }
+
+  getApproved(): boolean {
+    return this.value3;
+  }
+
+  getExists(): boolean {
+    return this.value4;
   }
 }
 
@@ -239,6 +343,29 @@ export class ParticipationToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
+  getTaskManagerAddress(): Address {
+    let result = super.call(
+      "getTaskManagerAddress",
+      "getTaskManagerAddress():(address)",
+      [],
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getTaskManagerAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getTaskManagerAddress",
+      "getTaskManagerAddress():(address)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   increaseAllowance(spender: Address, addedValue: BigInt): boolean {
     let result = super.call(
       "increaseAllowance",
@@ -286,6 +413,25 @@ export class ParticipationToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  nftMembership(): Address {
+    let result = super.call("nftMembership", "nftMembership():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_nftMembership(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "nftMembership",
+      "nftMembership():(address)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   owner(): Address {
     let result = super.call("owner", "owner():(address)", []);
 
@@ -301,6 +447,25 @@ export class ParticipationToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  requestCounter(): BigInt {
+    let result = super.call("requestCounter", "requestCounter():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_requestCounter(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "requestCounter",
+      "requestCounter():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   symbol(): string {
     let result = super.call("symbol", "symbol():(string)", []);
 
@@ -314,6 +479,45 @@ export class ParticipationToken extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  tokenRequests(param0: BigInt): ParticipationToken__tokenRequestsResult {
+    let result = super.call(
+      "tokenRequests",
+      "tokenRequests(uint256):(address,uint256,string,bool,bool)",
+      [ethereum.Value.fromUnsignedBigInt(param0)],
+    );
+
+    return new ParticipationToken__tokenRequestsResult(
+      result[0].toAddress(),
+      result[1].toBigInt(),
+      result[2].toString(),
+      result[3].toBoolean(),
+      result[4].toBoolean(),
+    );
+  }
+
+  try_tokenRequests(
+    param0: BigInt,
+  ): ethereum.CallResult<ParticipationToken__tokenRequestsResult> {
+    let result = super.tryCall(
+      "tokenRequests",
+      "tokenRequests(uint256):(address,uint256,string,bool,bool)",
+      [ethereum.Value.fromUnsignedBigInt(param0)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new ParticipationToken__tokenRequestsResult(
+        value[0].toAddress(),
+        value[1].toBigInt(),
+        value[2].toString(),
+        value[3].toBoolean(),
+        value[4].toBoolean(),
+      ),
+    );
   }
 
   totalSupply(): BigInt {
@@ -412,6 +616,10 @@ export class ConstructorCall__Inputs {
   get symbol(): string {
     return this._call.inputValues[1].value.toString();
   }
+
+  get nftMembershipAddress(): Address {
+    return this._call.inputValues[2].value.toAddress();
+  }
 }
 
 export class ConstructorCall__Outputs {
@@ -457,6 +665,36 @@ export class ApproveCall__Outputs {
 
   get value0(): boolean {
     return this._call.outputValues[0].value.toBoolean();
+  }
+}
+
+export class ApproveRequestCall extends ethereum.Call {
+  get inputs(): ApproveRequestCall__Inputs {
+    return new ApproveRequestCall__Inputs(this);
+  }
+
+  get outputs(): ApproveRequestCall__Outputs {
+    return new ApproveRequestCall__Outputs(this);
+  }
+}
+
+export class ApproveRequestCall__Inputs {
+  _call: ApproveRequestCall;
+
+  constructor(call: ApproveRequestCall) {
+    this._call = call;
+  }
+
+  get requestId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class ApproveRequestCall__Outputs {
+  _call: ApproveRequestCall;
+
+  constructor(call: ApproveRequestCall) {
+    this._call = call;
   }
 }
 
@@ -592,6 +830,70 @@ export class RenounceOwnershipCall__Outputs {
   _call: RenounceOwnershipCall;
 
   constructor(call: RenounceOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class RequestTokensCall extends ethereum.Call {
+  get inputs(): RequestTokensCall__Inputs {
+    return new RequestTokensCall__Inputs(this);
+  }
+
+  get outputs(): RequestTokensCall__Outputs {
+    return new RequestTokensCall__Outputs(this);
+  }
+}
+
+export class RequestTokensCall__Inputs {
+  _call: RequestTokensCall;
+
+  constructor(call: RequestTokensCall) {
+    this._call = call;
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get ipfsHash(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class RequestTokensCall__Outputs {
+  _call: RequestTokensCall;
+
+  constructor(call: RequestTokensCall) {
+    this._call = call;
+  }
+}
+
+export class SetEducationHubAddressCall extends ethereum.Call {
+  get inputs(): SetEducationHubAddressCall__Inputs {
+    return new SetEducationHubAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetEducationHubAddressCall__Outputs {
+    return new SetEducationHubAddressCall__Outputs(this);
+  }
+}
+
+export class SetEducationHubAddressCall__Inputs {
+  _call: SetEducationHubAddressCall;
+
+  constructor(call: SetEducationHubAddressCall) {
+    this._call = call;
+  }
+
+  get _educationHubAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetEducationHubAddressCall__Outputs {
+  _call: SetEducationHubAddressCall;
+
+  constructor(call: SetEducationHubAddressCall) {
     this._call = call;
   }
 }

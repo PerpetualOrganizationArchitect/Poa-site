@@ -83,7 +83,7 @@ export async function main(
     console.log(params);
 
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(15700000);
+    const gasLimit = ethers.utils.hexlify(11000000);
 
     const options = {
         gasLimit: gasLimit,

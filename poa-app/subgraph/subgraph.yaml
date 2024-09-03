@@ -8,9 +8,9 @@ dataSources:
     name: UniversalAccountRegistry
     network: polygon-amoy
     source:
-      address: "0xdE873b727FCb261cE890BAD1678227e69Edd87F9"
+      address: "0xb27cE7aFeef08670FDF480fc026584DC10EA01BE"
       abi: AccountManager
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -30,9 +30,9 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: polygon-amoy
     source:
-      address: "0x2F0f89dc567A9147e43008141496e0703870C057"
+      address: "0x3866D49C78CE4778b5aa8B3269Db49364028e945"
       abi: DirectDemocracyTokenFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -50,9 +50,9 @@ dataSources:
     name: ParticipationTokenFactory
     network: polygon-amoy
     source:
-      address: "0xe2eb571074dFA066Df11D283301F5BFF6e0821Bf"
+      address: "0x806809870cf511B626BF168232D0971B75ad8dE4"
       abi:  ParticipationTokenFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -70,9 +70,9 @@ dataSources:
     name: NFTMembershipFactory
     network: polygon-amoy
     source:
-      address: "0x7AE18Bf851fBDD16D93307f6194694Fa5b862d33"
+      address: "0x9C9a5Ea084F50355F7cF83b6Cd48B9d5b878C444"
       abi: NFTMembershipFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -90,9 +90,9 @@ dataSources:
     name: TreasuryFactory
     network: polygon-amoy
     source:
-      address: "0x18209e281E67a9b9DB09a9D17D6A84d30b27e2ab"
+      address: "0x3584BC0Fa408bcd3dD2Bc068BED9C80BB7fD400D"
       abi: TreasuryFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -110,9 +110,9 @@ dataSources:
     name: ParticipationVotingFactory
     network: polygon-amoy
     source:
-      address: "0x87e816e758921248f8E96C072aA36AA68f660A49"
+      address: "0xF01aa05912bb1CE141525E81C25F63c6A2b28AB4"
       abi: ParticipationVotingFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -130,9 +130,9 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: polygon-amoy
     source:
-      address: "0xEFd015dAf0edC06B56561c26D29f5076a5a5E1D0"
+      address: "0xF177717D5B24D1A2972BbCf649A60fc79F9A03Ea"
       abi: DirectDemocracyVotingFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -152,7 +152,7 @@ dataSources:
     source:
       address: "0x8ee4726E4C2e4a5F7F840Be1DbF00429b3391c0b"
       abi: HybridVotingFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -172,7 +172,7 @@ dataSources:
     source:
       address: "0x9c4665df761aA98cCFc39c55B8D49f54f4EE493B"
       abi: TaskManagerFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -192,7 +192,7 @@ dataSources:
     source:
       address: "0xb2B2A5e1B2a6eF84efD01054A872A2854Dc0dAF8"
       abi: RegistryFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -212,7 +212,7 @@ dataSources:
     source:
       address: "0xa807AB9ADD1e71a2F403F4530231b57bCc63a9aE"
       abi: QuickJoinFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -232,7 +232,7 @@ dataSources:
     source:
       address: "0x87e816e758921248f8E96C072aA36AA68f660A49"
       abi: ElectionContractFactory
-      startBlock: 9480000
+      startBlock: 11325000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -246,7 +246,45 @@ dataSources:
         - event: ElectionContractCreated(indexed address,indexed address,address,string)
           handler: handleElectionContractCreated
       file: ./mappings/election/electionFactoryMapping.ts
+  - kind: ethereum/contract
+    name: EducationHubFactory
+    network: polygon-amoy
+    source:
+      address: "0x87e816e758921248f8E96C072aA36AA68f660A49"
+      abi: EducationHubFactory
+      startBlock: 11325000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - EducationHubContract
+      abis:
+        - name: EducationHubFactory
+          file: ../abi/EducationHubFactory.json
+      eventHandlers:
+        - event: EducationHubCreated(indexed address,string)
+          handler: handleEducationHubContractCreated
+      file: ./mappings/educationHub/educationHubFactoryMapping.ts
 templates:
+  - kind: ethereum/contract
+    name: EducationHub
+    network: polygon-amoy
+    source:
+      abi: EducationHub
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - EducationHubContract
+      abis:
+        - name: EducationHub
+          file: ../abi/EducationHub.json
+      eventHandlers:
+        - event: ModuleCreated(indexed uint256,string,string,uint256,uint8)
+          handler: handleModuleCreated
+      file: ./mappings/educationHub/educationHubMapping.ts
   - kind: ethereum/contract
     name: ElectionContract
     network: polygon-amoy

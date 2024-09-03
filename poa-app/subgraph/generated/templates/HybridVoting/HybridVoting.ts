@@ -150,7 +150,141 @@ export class WinnerAnnounced__Params {
   }
 }
 
+export class HybridVoting__announceWinnerResult {
+  value0: BigInt;
+  value1: boolean;
+
+  constructor(value0: BigInt, value1: boolean) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromBoolean(this.value1));
+    return map;
+  }
+
+  getValue0(): BigInt {
+    return this.value0;
+  }
+
+  getValue1(): boolean {
+    return this.value1;
+  }
+}
+
 export class HybridVoting__getOptionVotesResult {
+  value0: BigInt;
+  value1: BigInt;
+
+  constructor(value0: BigInt, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    return map;
+  }
+
+  getVotesPT(): BigInt {
+    return this.value0;
+  }
+
+  getVotesDDT(): BigInt {
+    return this.value1;
+  }
+}
+
+export class HybridVoting__getProposalResult {
+  value0: BigInt;
+  value1: BigInt;
+  value2: BigInt;
+  value3: BigInt;
+  value4: BigInt;
+  value5: Address;
+  value6: BigInt;
+  value7: boolean;
+  value8: Address;
+
+  constructor(
+    value0: BigInt,
+    value1: BigInt,
+    value2: BigInt,
+    value3: BigInt,
+    value4: BigInt,
+    value5: Address,
+    value6: BigInt,
+    value7: boolean,
+    value8: Address,
+  ) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+    this.value5 = value5;
+    this.value6 = value6;
+    this.value7 = value7;
+    this.value8 = value8;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
+    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
+    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
+    map.set("value5", ethereum.Value.fromAddress(this.value5));
+    map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
+    map.set("value7", ethereum.Value.fromBoolean(this.value7));
+    map.set("value8", ethereum.Value.fromAddress(this.value8));
+    return map;
+  }
+
+  getTotalVotesPT(): BigInt {
+    return this.value0;
+  }
+
+  getTotalVotesDDT(): BigInt {
+    return this.value1;
+  }
+
+  getTimeInMinutes(): BigInt {
+    return this.value2;
+  }
+
+  getCreationTimestamp(): BigInt {
+    return this.value3;
+  }
+
+  getTransferTriggerOptionIndex(): BigInt {
+    return this.value4;
+  }
+
+  getTransferRecipient(): Address {
+    return this.value5;
+  }
+
+  getTransferAmount(): BigInt {
+    return this.value6;
+  }
+
+  getTransferEnabled(): boolean {
+    return this.value7;
+  }
+
+  getTransferToken(): Address {
+    return this.value8;
+  }
+}
+
+export class HybridVoting__getProposalOptionVotesResult {
   value0: BigInt;
   value1: BigInt;
 
@@ -224,6 +358,64 @@ export class HybridVoting extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  announceWinner(_proposalId: BigInt): HybridVoting__announceWinnerResult {
+    let result = super.call(
+      "announceWinner",
+      "announceWinner(uint256):(uint256,bool)",
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
+    );
+
+    return new HybridVoting__announceWinnerResult(
+      result[0].toBigInt(),
+      result[1].toBoolean(),
+    );
+  }
+
+  try_announceWinner(
+    _proposalId: BigInt,
+  ): ethereum.CallResult<HybridVoting__announceWinnerResult> {
+    let result = super.tryCall(
+      "announceWinner",
+      "announceWinner(uint256):(uint256,bool)",
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new HybridVoting__announceWinnerResult(
+        value[0].toBigInt(),
+        value[1].toBoolean(),
+      ),
+    );
+  }
+
+  calculateQuadraticVoteWeight(_balance: BigInt): BigInt {
+    let result = super.call(
+      "calculateQuadraticVoteWeight",
+      "calculateQuadraticVoteWeight(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(_balance)],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_calculateQuadraticVoteWeight(
+    _balance: BigInt,
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "calculateQuadraticVoteWeight",
+      "calculateQuadraticVoteWeight(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(_balance)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   democracyVoteWeight(): BigInt {
@@ -307,6 +499,119 @@ export class HybridVoting extends ethereum.SmartContract {
       "getOptionsCount",
       "getOptionsCount(uint256):(uint256)",
       [ethereum.Value.fromUnsignedBigInt(_proposalId)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getProposal(_proposalId: BigInt): HybridVoting__getProposalResult {
+    let result = super.call(
+      "getProposal",
+      "getProposal(uint256):(uint256,uint256,uint256,uint256,uint256,address,uint256,bool,address)",
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
+    );
+
+    return new HybridVoting__getProposalResult(
+      result[0].toBigInt(),
+      result[1].toBigInt(),
+      result[2].toBigInt(),
+      result[3].toBigInt(),
+      result[4].toBigInt(),
+      result[5].toAddress(),
+      result[6].toBigInt(),
+      result[7].toBoolean(),
+      result[8].toAddress(),
+    );
+  }
+
+  try_getProposal(
+    _proposalId: BigInt,
+  ): ethereum.CallResult<HybridVoting__getProposalResult> {
+    let result = super.tryCall(
+      "getProposal",
+      "getProposal(uint256):(uint256,uint256,uint256,uint256,uint256,address,uint256,bool,address)",
+      [ethereum.Value.fromUnsignedBigInt(_proposalId)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new HybridVoting__getProposalResult(
+        value[0].toBigInt(),
+        value[1].toBigInt(),
+        value[2].toBigInt(),
+        value[3].toBigInt(),
+        value[4].toBigInt(),
+        value[5].toAddress(),
+        value[6].toBigInt(),
+        value[7].toBoolean(),
+        value[8].toAddress(),
+      ),
+    );
+  }
+
+  getProposalOptionVotes(
+    _proposalId: BigInt,
+    _optionIndex: BigInt,
+  ): HybridVoting__getProposalOptionVotesResult {
+    let result = super.call(
+      "getProposalOptionVotes",
+      "getProposalOptionVotes(uint256,uint256):(uint256,uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(_proposalId),
+        ethereum.Value.fromUnsignedBigInt(_optionIndex),
+      ],
+    );
+
+    return new HybridVoting__getProposalOptionVotesResult(
+      result[0].toBigInt(),
+      result[1].toBigInt(),
+    );
+  }
+
+  try_getProposalOptionVotes(
+    _proposalId: BigInt,
+    _optionIndex: BigInt,
+  ): ethereum.CallResult<HybridVoting__getProposalOptionVotesResult> {
+    let result = super.tryCall(
+      "getProposalOptionVotes",
+      "getProposalOptionVotes(uint256,uint256):(uint256,uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(_proposalId),
+        ethereum.Value.fromUnsignedBigInt(_optionIndex),
+      ],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new HybridVoting__getProposalOptionVotesResult(
+        value[0].toBigInt(),
+        value[1].toBigInt(),
+      ),
+    );
+  }
+
+  getProposalsCount(): BigInt {
+    let result = super.call(
+      "getProposalsCount",
+      "getProposalsCount():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getProposalsCount(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getProposalsCount",
+      "getProposalsCount():(uint256)",
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -508,6 +813,14 @@ export class AnnounceWinnerCall__Outputs {
 
   constructor(call: AnnounceWinnerCall) {
     this._call = call;
+  }
+
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
+  }
+
+  get value1(): boolean {
+    return this._call.outputValues[1].value.toBoolean();
   }
 }
 

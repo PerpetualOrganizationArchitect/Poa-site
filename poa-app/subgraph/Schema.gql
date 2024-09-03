@@ -172,6 +172,22 @@ type TreasuryDeposit @entity {
   token: Bytes!
 }
 
+## education hub 
+
+type EducationHubContract @entity {
+  id: ID!
+  POname: String!
+  contractAddress: Bytes!
+}
+
+type Module @entity {
+  id: ID!
+  educationHub: EducationHubContract! @link
+  name: String!
+  ipfsHash: String!
+  description: String!
+}
+
 ## parcitipation voting 
 
 type PTVotingCreated @entity {
@@ -444,6 +460,7 @@ type PerpetualOrganization @entity {
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
   ElectionContract: ElectionContract @link
+  EducationHubContract: EducationHubContract @link
   QuickJoinContract: QuickJoinContract @link
   Users: [User!] @derivedFrom(field: "organization")
   totalMembers: BigInt!
