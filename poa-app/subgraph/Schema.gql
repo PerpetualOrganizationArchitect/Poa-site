@@ -57,6 +57,7 @@ type PTToken @entity {
   mintEvents: [PTTokenMintEvent!]! @derivedFrom(field: "token")
   taskManagerAddress: Bytes
   supply: BigInt!
+  tokenRequests: [TokenRequest!] @derivedFrom(field: "token")
 }
 
 type PTTokenMintEvent @entity {
@@ -64,6 +65,22 @@ type PTTokenMintEvent @entity {
   token: PTToken! @link
   to: Bytes!
   amount: BigInt!
+}
+
+type TokenRequest @entity {
+  id: ID!
+  token: PTToken! @link
+  user: User! @link
+  ipfsHash: String!
+  amount: BigInt!
+  requestInfo: TokenRequestInfo! @link
+  approved: Boolean!
+}
+
+type TokenRequestInfo @entity {
+  id: ID!
+  title: String!
+  description: String!
 }
 
 ##nft 
@@ -508,6 +525,7 @@ type User @entity {
   totalVotes: BigInt!
   dateJoined: BigInt!
   modulesCompleted: [ModuleCompletion!] @derivedFrom(field: "user")
+  tokenRequests: [TokenRequest!] @derivedFrom(field: "user")
 }
 
 type Account @entity {

@@ -68,7 +68,14 @@ export function handleModuleCompleted(event: ModuleCompletedEvent): void {
 
   let moduleCompletion = new ModuleCompletion(event.params.completer.toHex() + "-" + event.params.id.toString());
   moduleCompletion.module = event.params.id.toString() + "-" + event.address.toHex();
-  moduleCompletion.user = event.params.completer.toHex();
+  // load education hub contract
+    let educationHub = EducationHubContract.load(event.address.toHex());
+    if (!educationHub) {
+      log.error("EducationHubContract not found: {}", [event.address.toHex()]);
+      return;
+    }
+
+  moduleCompletion.user = educationHub.POname + "-" + event.params.completer.toHex();
   moduleCompletion.save();
 
 }
