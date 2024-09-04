@@ -14,6 +14,7 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
 import QuickJoin from '../../abi/QuickJoin.json';
+import EducationHub from '../../abi/EducationHub.json';
 
 import {
     useAccount
@@ -390,6 +391,42 @@ export const Web3Provider = ({ children }) => {
             console.error("Error joining with existing username:", error);
         }
 
+    }
+
+    // education hub 
+
+    async function createEduModule(contractAddress, moduleTitle, moduleDescription, payout, answers, correctAnswer) {
+
+        if (!checkNetwork()) {
+            return;
+          }
+        
+        const contract = getContractInstance(contractAddress, EducationHub.abi);
+
+        const ipfsHash = await addToIpfs({
+            title: moduleTitle,
+            description: moduleDescription,
+            answers: answers,
+
+        });
+
+        //find correct answer index
+
+        let correctAnswerIndex = answers.indexOf(correctAnswer);
+
+        const tx = await contract.createModule(moduleTitle, ipfsHash, payout, correctAnswerIndex);
+        await tx.wait();
+        console.log("Module created");
+    }
+
+    async function submitEduModule(contractAddress, moduleID, answer) {
+        if (!checkNetwork()) {
+            return;
+          }
+        const contract = getContractInstance(contractAddress, EducationHub.abi);
+        const tx = await contract.completeModule(moduleID, answer);
+        await tx.wait();
+        console.log("Module submitted");
     }
     
 
