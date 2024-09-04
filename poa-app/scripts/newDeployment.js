@@ -1,7 +1,7 @@
 const MasterDeployFactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0xce57eDfD4F6e09c1bde36f959ca539F2Fae17Adb";
+const masterDeployFactoryAddress = "0x7727138ccfb6a94E4Cb4Fca8a4D1aa580C616155";
 
 export async function main(
     memberTypeNames,
@@ -96,9 +96,14 @@ export async function main(
 
     console.log("Deploying new DAO with the following parameters:", params);
 
-    // Create the contract instance and define gas limits
+
+
     const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployFactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(14000000);
+    const gasLimit = ethers.utils.hexlify(15500000);
+
+        // Create the contract instance and define gas limits
+        const gasEstimate = await masterDeployer.estimateGas.deployAll(params);
+        console.log("Estimated gas: ", gasEstimate.toString());
 
     const options = {
       gasLimit: gasLimit,
