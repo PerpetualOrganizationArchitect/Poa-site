@@ -1,7 +1,7 @@
-const MasterDeployfactory = require("../abi/MasterFactory.json");
+const MasterDeployFactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0x1C11938fbC65C38Ae0931Fa81E4522d191939CC9";
+const masterDeployFactoryAddress = "0xce57eDfD4F6e09c1bde36f959ca539F2Fae17Adb";
 
 export async function main(
     memberTypeNames,
@@ -12,6 +12,8 @@ export async function main(
     participationVoteWeight,
     hybridVotingEnabled,
     participationVotingEnabled,
+    electionEnabled,
+    educationHubEnabled,
     logoURL,
     infoIPFSHash,
     votingControlType,
@@ -19,83 +21,96 @@ export async function main(
     quorumPercentagePV,
     username,
     wallet
-  ){
-
+  ) {
     console.log("Creating new DAO...");
-    console.log("these variables", memberTypeNames, executivePermissionNames, POname, quadraticVotingEnabled, democracyVoteWeight, participationVoteWeight, hybridVotingEnabled, participationVotingEnabled, logoURL, infoIPFSHash, votingControlType, quorumPercentageDD, quorumPercentagePV, wallet);
+    console.log("Input parameters:", {
+      memberTypeNames,
+      executivePermissionNames,
+      POname,
+      quadraticVotingEnabled,
+      democracyVoteWeight,
+      participationVoteWeight,
+      hybridVotingEnabled,
+      participationVotingEnabled,
+      electionEnabled,
+      educationHubEnabled,
+      logoURL,
+      infoIPFSHash,
+      votingControlType,
+      quorumPercentageDD,
+      quorumPercentagePV,
+    });
 
-    let contractNames = [];
+    // Initialize contract names dynamically based on enabled features, ensuring proper order
+    let contractNames = [
+      "NFTMembership",           // Always first
+      "DirectDemocracyToken",    // Always second
+      "ParticipationToken",      // Always third
+      "Treasury",                // Always fourth
+      "DirectDemocracyVoting",   // Always fifth
+    ];
+
+    // Depending on voting, insert "HybridVoting" or "ParticipationVoting" in the proper position
     if (hybridVotingEnabled) {
-        contractNames = [
-          "NFTMembership",
-          "DirectDemocracyToken",
-          "ParticipationToken",
-          "Treasury",
-          "DirectDemocracyVoting",
-          "HybridVoting",
-          "TaskManager",
-          "QuickJoin",
-        ];
+      contractNames.push("HybridVoting");  // Added after DirectDemocracyVoting
     } else if (participationVotingEnabled) {
-        contractNames = [
-          "NFTMembership",
-          "DirectDemocracyToken",
-          "ParticipationToken",
-          "Treasury",
-          "DirectDemocracyVoting",
-          "ParticipationVoting",
-          "TaskManager",
-          "QuickJoin",
-        ];
-    } else {
-        contractNames = [
-          "NFTMembership",
-          "DirectDemocracyToken",
-          "ParticipationToken",
-          "Treasury",
-          "DirectDemocracyVoting",
-          "NoVoting",
-          "TaskManager",
-          "QuickJoin",
-        ];
+      contractNames.push("ParticipationVoting");  // Added after DirectDemocracyVoting
     }
 
+    // Always add TaskManager after voting mechanisms
+    contractNames.push("TaskManager");
+
+    // Add Election if enabled
+    if (electionEnabled) {
+      contractNames.push("Election");
+    }
+
+    // Add EducationHub if enabled
+    if (educationHubEnabled) {
+      contractNames.push("EducationHub");
+    }
+
+    // Always add QuickJoin at the end
+    contractNames.push("QuickJoin");
+
+    // Construct params object to pass to the deployAll function
     const params = {
-        memberTypeNames,
-        executivePermissionNames,
-        POname,
-        quadraticVotingEnabled,
-        democracyVoteWeight: ethers.BigNumber.from(democracyVoteWeight),
-        participationVoteWeight: ethers.BigNumber.from(participationVoteWeight),
-        hybridVotingEnabled,
-        participationVotingEnabled,
-        logoURL,
-        infoIPFSHash,
-        votingControlType,
-        contractNames,
-        quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
-        quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
-        username,
-        electionEnabled: true  // Hardcoding electionEnabled to true
+      memberTypeNames,
+      executivePermissionNames,
+      POname,
+      quadraticVotingEnabled,
+      democracyVoteWeight: ethers.BigNumber.from(democracyVoteWeight),
+      participationVoteWeight: ethers.BigNumber.from(participationVoteWeight),
+      hybridVotingEnabled,
+      participationVotingEnabled,
+      logoURL,
+      infoIPFSHash,
+      votingControlType,
+      contractNames,  // Contract names are now aligned properly
+      quorumPercentageDD: ethers.BigNumber.from(quorumPercentageDD),
+      quorumPercentagePV: ethers.BigNumber.from(quorumPercentagePV),
+      username,
+      electionEnabled,
+      educationHubEnabled,
     };
 
-    console.log("Deploying new DAO with the following parameters:");
-    console.log(params);
+    console.log("Deploying new DAO with the following parameters:", params);
 
-    const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployfactory.abi, wallet);
-    const gasLimit = ethers.utils.hexlify(11000000);
+    // Create the contract instance and define gas limits
+    const masterDeployer = new ethers.Contract(masterDeployFactoryAddress, MasterDeployFactory.abi, wallet);
+    const gasLimit = ethers.utils.hexlify(14000000);
 
     const options = {
-        gasLimit: gasLimit,
+      gasLimit: gasLimit,
     };
 
     try {
-        const tx = await masterDeployer.deployAll(params, options);
-        const receipt = await tx.wait();
+      const tx = await masterDeployer.deployAll(params, options);
+      const receipt = await tx.wait();
 
-        console.log("Deployment transaction was successful!");
-        console.log("Transaction hash:", receipt.transactionHash);
+      console.log("Deployment transaction was successful!");
+      console.log("Transaction hash:", receipt.transactionHash);
     } catch (error) {
-        console.error("An error occurred during deployment:", error);
+      console.error("An error occurred during deployment:", error);
     }
-}
+  }
