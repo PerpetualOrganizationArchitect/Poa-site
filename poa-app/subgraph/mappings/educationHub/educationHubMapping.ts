@@ -38,7 +38,7 @@ export function handleModuleIPFS(moduleInfoBytes: Bytes): void {
     return;
   }
 
-  let name = ipfsContent.get("name");
+  let name = ipfsContent.get("title");
   moduleInfoEntity.name = name && !name.isNull() ? name.toString() : "";
 
   let description = ipfsContent.get("description");
@@ -55,6 +55,7 @@ export function handleModuleIPFS(moduleInfoBytes: Bytes): void {
       let answerEntity = new ModuleAnswer(hash + "-" + i.toString());
       answerEntity.moduleInfo = moduleInfoEntity.id;
       answerEntity.answer = answersArray[i].toString();
+      answerEntity.index = i;
       answerEntity.save();
     }
   }
