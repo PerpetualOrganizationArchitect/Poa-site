@@ -30,6 +30,7 @@ export const POProvider = ({ children }) => {
     const [activeTaskAmount, setActiveTaskAmount] = useState(0);
     const [completedTaskAmount, setCompletedTaskAmount] = useState(0);
     const [ptTokenBalance, setPtTokenBalance] = useState(0);
+
     const [quickJoinContractAddress, setQuickJoinContractAddress] = useState('');
     const [treasuryContractAddress, setTreasuryContractAddress] = useState('');
     const [taskManagerContractAddress, setTaskManagerContractAddress] = useState('');
@@ -39,6 +40,8 @@ export const POProvider = ({ children }) => {
     const [ddTokenContractAddress, setDDTokenContractAddress] = useState('');
     const [nftMembershipContractAddress, setNFTMembershipContractAddress] = useState('');
     const [votingContractAddress, setVotingContractAddress] = useState('');
+    const [educationHubAddress, setEducationHubAddress] = useState('');
+
     const [leaderboardData, setLeaderboardData] = useState({});
     const [poContextLoading, setPoContextLoading] = useState(true);
     const [rules, setRules] = useState(null); // Add rules state
@@ -87,6 +90,7 @@ export const POProvider = ({ children }) => {
             setNFTMembershipContractAddress(po.NFTMembership?.id || '');
             setQuickJoinContractAddress(po.QuickJoinContract?.id || '');
             setVotingContractAddress(po.HybridVoting?.id || po.ParticipationVoting?.id || '');
+            setEducationHubAddress(po.EducationHubContract?.id || '');
 
             fetchLeaderboardData(combinedID, po.Users).then(data => {
                 setLeaderboardData(data);
@@ -121,6 +125,7 @@ export const POProvider = ({ children }) => {
         ddTokenContractAddress,
         nftMembershipContractAddress,
         votingContractAddress,
+        educationHubAddress,
         loading,
         error,
         leaderboardData,
@@ -143,6 +148,7 @@ export const POProvider = ({ children }) => {
         ddTokenContractAddress,
         nftMembershipContractAddress,
         votingContractAddress,
+        educationHubAddress,
         loading,
         error,
         leaderboardData,

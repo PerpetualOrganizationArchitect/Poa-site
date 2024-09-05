@@ -62,6 +62,46 @@ export class ApprovalForAll__Params {
   }
 }
 
+export class ExecutiveDowngraded extends ethereum.Event {
+  get params(): ExecutiveDowngraded__Params {
+    return new ExecutiveDowngraded__Params(this);
+  }
+}
+
+export class ExecutiveDowngraded__Params {
+  _event: ExecutiveDowngraded;
+
+  constructor(event: ExecutiveDowngraded) {
+    this._event = event;
+  }
+
+  get downgradedExecutive(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get downgrader(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class MemberRemoved extends ethereum.Event {
+  get params(): MemberRemoved__Params {
+    return new MemberRemoved__Params(this);
+  }
+}
+
+export class MemberRemoved__Params {
+  _event: MemberRemoved;
+
+  constructor(event: MemberRemoved) {
+    this._event = event;
+  }
+
+  get user(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class OwnershipTransferred extends ethereum.Event {
   get params(): OwnershipTransferred__Params {
     return new OwnershipTransferred__Params(this);
@@ -182,6 +222,29 @@ export class NFTMembership extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  checkIsExecutive(user: Address): boolean {
+    let result = super.call(
+      "checkIsExecutive",
+      "checkIsExecutive(address):(bool)",
+      [ethereum.Value.fromAddress(user)],
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_checkIsExecutive(user: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "checkIsExecutive",
+      "checkIsExecutive(address):(bool)",
+      [ethereum.Value.fromAddress(user)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   checkMemberTypeByAddress(user: Address): string {
     let result = super.call(
       "checkMemberTypeByAddress",
@@ -203,6 +266,29 @@ export class NFTMembership extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  electionContract(): Address {
+    let result = super.call(
+      "electionContract",
+      "electionContract():(address)",
+      [],
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_electionContract(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "electionContract",
+      "electionContract():(address)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   executiveRoleNames(param0: BigInt): string {
@@ -264,6 +350,21 @@ export class NFTMembership extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  getQuickJoin(): Address {
+    let result = super.call("getQuickJoin", "getQuickJoin():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_getQuickJoin(): ethereum.CallResult<Address> {
+    let result = super.tryCall("getQuickJoin", "getQuickJoin():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   isApprovedForAll(owner: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",
@@ -311,6 +412,29 @@ export class NFTMembership extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  lastDowngradeTime(param0: Address): BigInt {
+    let result = super.call(
+      "lastDowngradeTime",
+      "lastDowngradeTime(address):(uint256)",
+      [ethereum.Value.fromAddress(param0)],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_lastDowngradeTime(param0: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "lastDowngradeTime",
+      "lastDowngradeTime(address):(uint256)",
+      [ethereum.Value.fromAddress(param0)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   memberTypeImages(param0: string): string {
@@ -593,6 +717,92 @@ export class ChangeMembershipTypeCall__Outputs {
   }
 }
 
+export class DowngradeExecutiveCall extends ethereum.Call {
+  get inputs(): DowngradeExecutiveCall__Inputs {
+    return new DowngradeExecutiveCall__Inputs(this);
+  }
+
+  get outputs(): DowngradeExecutiveCall__Outputs {
+    return new DowngradeExecutiveCall__Outputs(this);
+  }
+}
+
+export class DowngradeExecutiveCall__Inputs {
+  _call: DowngradeExecutiveCall;
+
+  constructor(call: DowngradeExecutiveCall) {
+    this._call = call;
+  }
+
+  get executive(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class DowngradeExecutiveCall__Outputs {
+  _call: DowngradeExecutiveCall;
+
+  constructor(call: DowngradeExecutiveCall) {
+    this._call = call;
+  }
+}
+
+export class GetQuickJoinCall extends ethereum.Call {
+  get inputs(): GetQuickJoinCall__Inputs {
+    return new GetQuickJoinCall__Inputs(this);
+  }
+
+  get outputs(): GetQuickJoinCall__Outputs {
+    return new GetQuickJoinCall__Outputs(this);
+  }
+}
+
+export class GetQuickJoinCall__Inputs {
+  _call: GetQuickJoinCall;
+
+  constructor(call: GetQuickJoinCall) {
+    this._call = call;
+  }
+}
+
+export class GetQuickJoinCall__Outputs {
+  _call: GetQuickJoinCall;
+
+  constructor(call: GetQuickJoinCall) {
+    this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
+  }
+}
+
+export class GiveUpExecutiveRoleCall extends ethereum.Call {
+  get inputs(): GiveUpExecutiveRoleCall__Inputs {
+    return new GiveUpExecutiveRoleCall__Inputs(this);
+  }
+
+  get outputs(): GiveUpExecutiveRoleCall__Outputs {
+    return new GiveUpExecutiveRoleCall__Outputs(this);
+  }
+}
+
+export class GiveUpExecutiveRoleCall__Inputs {
+  _call: GiveUpExecutiveRoleCall;
+
+  constructor(call: GiveUpExecutiveRoleCall) {
+    this._call = call;
+  }
+}
+
+export class GiveUpExecutiveRoleCall__Outputs {
+  _call: GiveUpExecutiveRoleCall;
+
+  constructor(call: GiveUpExecutiveRoleCall) {
+    this._call = call;
+  }
+}
+
 export class MintDefaultNFTCall extends ethereum.Call {
   get inputs(): MintDefaultNFTCall__Inputs {
     return new MintDefaultNFTCall__Inputs(this);
@@ -653,6 +863,36 @@ export class MintNFTCall__Outputs {
   _call: MintNFTCall;
 
   constructor(call: MintNFTCall) {
+    this._call = call;
+  }
+}
+
+export class RemoveMemberCall extends ethereum.Call {
+  get inputs(): RemoveMemberCall__Inputs {
+    return new RemoveMemberCall__Inputs(this);
+  }
+
+  get outputs(): RemoveMemberCall__Outputs {
+    return new RemoveMemberCall__Outputs(this);
+  }
+}
+
+export class RemoveMemberCall__Inputs {
+  _call: RemoveMemberCall;
+
+  constructor(call: RemoveMemberCall) {
+    this._call = call;
+  }
+
+  get user(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class RemoveMemberCall__Outputs {
+  _call: RemoveMemberCall;
+
+  constructor(call: RemoveMemberCall) {
     this._call = call;
   }
 }
@@ -793,6 +1033,36 @@ export class SetApprovalForAllCall__Outputs {
   _call: SetApprovalForAllCall;
 
   constructor(call: SetApprovalForAllCall) {
+    this._call = call;
+  }
+}
+
+export class SetElectionContractCall extends ethereum.Call {
+  get inputs(): SetElectionContractCall__Inputs {
+    return new SetElectionContractCall__Inputs(this);
+  }
+
+  get outputs(): SetElectionContractCall__Outputs {
+    return new SetElectionContractCall__Outputs(this);
+  }
+}
+
+export class SetElectionContractCall__Inputs {
+  _call: SetElectionContractCall;
+
+  constructor(call: SetElectionContractCall) {
+    this._call = call;
+  }
+
+  get _electionContract(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetElectionContractCall__Outputs {
+  _call: SetElectionContractCall;
+
+  constructor(call: SetElectionContractCall) {
     this._call = call;
   }
 }

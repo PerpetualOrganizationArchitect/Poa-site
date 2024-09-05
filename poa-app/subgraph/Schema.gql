@@ -57,6 +57,7 @@ type PTToken @entity {
   mintEvents: [PTTokenMintEvent!]! @derivedFrom(field: "token")
   taskManagerAddress: Bytes
   supply: BigInt!
+  tokenRequests: [TokenRequest!] @derivedFrom(field: "token")
 }
 
 type PTTokenMintEvent @entity {
@@ -64,6 +65,22 @@ type PTTokenMintEvent @entity {
   token: PTToken! @link
   to: Bytes!
   amount: BigInt!
+}
+
+type TokenRequest @entity {
+  id: ID!
+  token: PTToken! @link
+  user: User! @link
+  ipfsHash: String!
+  amount: BigInt!
+  requestInfo: TokenRequestInfo! @link
+  approved: Boolean!
+}
+
+type TokenRequestInfo @entity {
+  id: ID!
+  title: String!
+  description: String!
 }
 
 ##nft 
@@ -110,6 +127,35 @@ type NFTChangeTypeEvent @entity {
   newMemberType: String!
 }
 
+## elections 
+
+type ElectionContract @entity {
+  id: ID!
+  contractAddress: Bytes!
+  POname: String!
+  elections: [Election!]! @derivedFrom(field: "electionContract")
+  votingContractAddress: Bytes!
+}
+
+type Election @entity {
+  id: ID!
+  proposalId: BigInt!
+  isActive: Boolean!
+  winningCandidateIndex: BigInt
+  hasValidWinner: Boolean!
+  candidates: [Candidate!] @derivedFrom(field: "election")
+  electionContract: ElectionContract! @link
+}
+
+type Candidate @entity {
+  id: ID!
+  election: Election! @link
+  candidateAddress: Bytes!
+  candidateName: String!
+  isWinner: Boolean!
+}
+
+
 ## treasury 
 
 type Treasury @entity {
@@ -141,6 +187,46 @@ type TreasuryDeposit @entity {
   sender: Bytes!
   amount: BigInt!
   token: Bytes!
+}
+
+## education hub 
+
+type EducationHubContract @entity {
+  id: ID!
+  POname: String!
+  contractAddress: Bytes!
+  modules: [Module!] @derivedFrom(field: "educationHub")
+}
+
+type Module @entity {
+  id: ID!
+  educationHub: EducationHubContract! @link
+  name: String!
+  ipfsHash: String!
+  info: ModuleInfo! @link
+  payout: BigInt!
+  completetions: [ModuleCompletion!] @derivedFrom(field: "module")
+}
+
+type ModuleInfo @entity {
+  id: ID!
+  name: String!
+  description: String!
+  link: String!
+  answers: [ModuleAnswer!] @derivedFrom(field: "moduleInfo")
+}
+
+type ModuleAnswer @entity {
+  id: ID!
+  moduleInfo: ModuleInfo! @link
+  answer: String!
+  index: Int!
+}
+
+type ModuleCompletion @entity {
+  id: ID!
+  module: Module! @link
+  user: User @link
 }
 
 ## parcitipation voting 
@@ -230,6 +316,8 @@ type DDProposal @entity {
   votes: [DDVote!] @derivedFrom(field: "proposal")
   winningOptionIndex: BigInt
   validWinner: Boolean
+  electionEnabled: Boolean!
+  election: Election @link
 }
 
 type DDPollOption @entity {
@@ -405,13 +493,15 @@ type PerpetualOrganization @entity {
   logoHash: String
   NFTMembership: NFTMembership! @link
   registry: Registry @link
-  DirectDemocracyToken: DDToken @liknk
+  DirectDemocracyToken: DDToken @link
   ParticipationToken: PTToken @link
   Treasury: Treasury @link
   TaskManager: TaskManager @link
   ParticipationVoting: PTVoting @link
   DirectDemocracyVoting: DDVoting @link
   HybridVoting: HybridVoting @link
+  ElectionContract: ElectionContract @link
+  EducationHubContract: EducationHubContract @link
   QuickJoinContract: QuickJoinContract @link
   Users: [User!] @derivedFrom(field: "organization")
   totalMembers: BigInt!
@@ -434,6 +524,8 @@ type User @entity {
   Account: Account @link
   totalVotes: BigInt!
   dateJoined: BigInt!
+  modulesCompleted: [ModuleCompletion!] @derivedFrom(field: "user")
+  tokenRequests: [TokenRequest!] @derivedFrom(field: "user")
 }
 
 type Account @entity {

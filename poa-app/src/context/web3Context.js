@@ -14,6 +14,7 @@ import Treasury from "../../abi/Treasury.json";
 import DirectDemocracyToken from '../../abi/DirectDemocracyToken.json';
 import AccountManager from '../../abi/AccountManager.json';
 import QuickJoin from '../../abi/QuickJoin.json';
+import EducationHub from '../../abi/EducationHub.json';
 
 import {
     useAccount
@@ -47,7 +48,7 @@ export const Web3Provider = ({ children }) => {
     
     const { addToIpfs, fetchFromIpfs } = useIPFScontext();
 
-    const AccountManagerAddress = "0x7ba94351D24A4a0A81ea8CE49a7d333e3be11208";
+    const AccountManagerAddress = "0x33DCAB56A777aF4e714477430d70D9832eeB7269";
 
     const getContractInstance = (contractAddress, contractABI) => {
         return new ethers.Contract(contractAddress, contractABI, signer);
@@ -267,6 +268,26 @@ export const Web3Provider = ({ children }) => {
 
 
     // NFT Membership
+
+    async function checkIsExecutive(contractAddress, userAddress) {
+        if (!checkNetwork()) {
+            return;
+        }
+
+        console.log("contract address", contractAddress);
+    
+        const contract = getContractInstance(contractAddress, NFTMembership.abi);
+        try {
+            const isExec = await contract.checkIsExecutive(userAddress);
+            console.log(`Is ${userAddress} an executive?`, isExec);
+            return isExec;
+        } catch (error) {
+            console.error("Error checking executive status:", error);
+            return false; // default return value if there's an error
+        }
+    }
+    
+
     async function mintNFT(contractAddress, membershipType) {
         if (!checkNetwork()) {
             return;
@@ -391,12 +412,73 @@ export const Web3Provider = ({ children }) => {
         }
 
     }
+
+    // education hub 
+
+
+    async function createEduModule(contractAddress, moduleTitle, moduleDescription, payout, answers, correctAnswer) {
+
+        if (!checkNetwork()) {
+            return;
+          }
+        
+        const contract = getContractInstance(contractAddress, EducationHub.abi);
+
+        const data =({
+            title: moduleTitle,
+            description: moduleDescription,
+            answers: answers,
+
+        });
+
+        const ipfsHash = await addToIpfs(JSON.stringify(data));
+
+
+
+        //find correct answer index
+
+        let correctAnswerIndex = answers.indexOf(correctAnswer);
+
+        // log all deployment params 
+        console.log("moduleTitle: ", moduleTitle);
+        console.log("ipfsHash: ", ipfsHash.path);
+        console.log("payout: ", payout);
+        console.log("correctAnswerIndex: ", correctAnswerIndex);
+
+        const nftMembershipAddress = await contract.nftMembership();
+        console.log("NFT Membership Address:", nftMembershipAddress);
+
+        try {
+            const tx = await contract.createModule(moduleTitle, ipfsHash.path, payout, correctAnswerIndex, {gasLimit: ethers.utils.hexlify(8000000),
+                gasPrice: ethers.utils.parseUnits("51", "gwei")
+            });
+            await tx.wait();
+          } catch (error) {
+            if (error.error && error.error.message) {
+              console.log("Revert reason:", error.error.message);
+            } else {
+              console.log("Error:", error);
+            }
+          }
+          
+        console.log("Module created");
+    }
+
+    async function submitEduModule(contractAddress, moduleID, answer) {
+        if (!checkNetwork()) {
+            return;
+          }
+        const contract = getContractInstance(contractAddress, EducationHub.abi);
+        const tx = await contract.completeModule(moduleID, answer);
+        await tx.wait();
+        console.log("Module submitted");
+    }
     
 
     
     return (
         <Web3Context.Provider value={{address, chainId,quickJoinNoUser, quickJoinWithUser, sendToTreasury,changeUsername, submitTask, editTaskWeb3, signer, isNetworkModalOpen,
-            closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser}}>
+            closeNetworkModal, mintDDtokens, mintDefaultNFT, mintNFT, setAccount, ddVote,  getWinnerDDVoting, completeTask, ipfsAddTask, createTask, createProject, claimTask, ipfsAddTask, updateTask, createProposalDDVoting, createNewUser, createEduModule, checkIsExecutive}}>
         {children}
         </Web3Context.Provider>
     );

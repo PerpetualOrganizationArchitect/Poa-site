@@ -128,6 +128,38 @@ export const FETCH_ALL_PO_DATA = gql`
         executiveRoles
         memberTypeNames
       }
+      EducationHubContract {  
+        id
+        modules {
+          id
+          name
+          ipfsHash
+          payout
+          completetions {
+            id
+            user {
+              id
+              Account {
+                userName
+              }
+            }
+          }
+        }
+      }
+      ElectionContract {   
+        id
+        elections {
+          id
+          proposalId
+          isActive
+          winningCandidateIndex
+          candidates {
+            id
+            candidateName
+            isWinner
+          }
+        }
+      }
       Users(orderBy: ptTokenBalance, orderDirection: desc) {
         id
         ptTokenBalance

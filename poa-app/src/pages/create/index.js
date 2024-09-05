@@ -622,6 +622,8 @@ const ArchitectPage = () => {
         orgDetails.hybridVotingEnabled,
         orgDetails.participationVotingEnabled,
         orgDetails.logoURL,
+        true,
+        true,
         orgDetails.infoIPFSHash,
         orgDetails.votingControlType,
         orgDetails.directDemocracyQuorum,

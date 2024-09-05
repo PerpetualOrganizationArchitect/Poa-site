@@ -49,14 +49,16 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
     name: string,
     symbol: string,
     POname: string,
+    nftMembershipAddress: Address,
   ): Address {
     let result = super.call(
       "createParticipationToken",
-      "createParticipationToken(string,string,string):(address)",
+      "createParticipationToken(string,string,string,address):(address)",
       [
         ethereum.Value.fromString(name),
         ethereum.Value.fromString(symbol),
         ethereum.Value.fromString(POname),
+        ethereum.Value.fromAddress(nftMembershipAddress),
       ],
     );
 
@@ -67,14 +69,16 @@ export class ParticipationTokenFactory extends ethereum.SmartContract {
     name: string,
     symbol: string,
     POname: string,
+    nftMembershipAddress: Address,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createParticipationToken",
-      "createParticipationToken(string,string,string):(address)",
+      "createParticipationToken(string,string,string,address):(address)",
       [
         ethereum.Value.fromString(name),
         ethereum.Value.fromString(symbol),
         ethereum.Value.fromString(POname),
+        ethereum.Value.fromAddress(nftMembershipAddress),
       ],
     );
     if (result.reverted) {
@@ -112,6 +116,10 @@ export class CreateParticipationTokenCall__Inputs {
 
   get POname(): string {
     return this._call.inputValues[2].value.toString();
+  }
+
+  get nftMembershipAddress(): Address {
+    return this._call.inputValues[3].value.toAddress();
   }
 }
 

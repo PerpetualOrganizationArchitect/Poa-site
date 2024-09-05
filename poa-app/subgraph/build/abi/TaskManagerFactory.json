@@ -1,55 +1,55 @@
 [
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "TaskManager",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "POname",
-        "type": "string"
-      }
-    ],
-    "name": "TaskManagerCreated",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_nftMembership",
-        "type": "address"
-      },
-      {
-        "internalType": "string[]",
-        "name": "_allowedRoleNames",
-        "type": "string[]"
-      },
-      {
-        "internalType": "string",
-        "name": "POname",
-        "type": "string"
-      }
-    ],
+    "type": "function",
     "name": "createTaskManager",
+    "inputs": [
+      {
+        "name": "_token",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_nftMembership",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_allowedRoleNames",
+        "type": "string[]",
+        "internalType": "string[]"
+      },
+      {
+        "name": "POname",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
     "outputs": [
       {
-        "internalType": "address",
         "name": "",
-        "type": "address"
+        "type": "address",
+        "internalType": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "TaskManagerCreated",
+    "inputs": [
+      {
+        "name": "TaskManager",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "POname",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
   }
 ]

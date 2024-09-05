@@ -1,7 +1,6 @@
-import { Address, dataSource, log } from "@graphprotocol/graph-ts";
+import {log } from "@graphprotocol/graph-ts";
 import { TokenCreated } from "../../generated/DirectDemocracyTokenFactory/DirectDemocracyTokenFactory";
 import { DDTokenCreated, DDToken, DDAllowedRoleName, PerpetualOrganization } from "../../generated/schema";
-import { DataSourceContext } from "@graphprotocol/graph-ts";
 import {DirectDemocracyToken as tokenTemplate} from "../../generated/templates";
 
 export function handleTokenCreated(event: TokenCreated): void {

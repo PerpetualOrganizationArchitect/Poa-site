@@ -1,60 +1,60 @@
 [
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "quickJoinAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "POname",
-        "type": "string"
-      }
-    ],
-    "name": "QuickJoinDeployed",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_membershipNFTAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_directDemocracyTokenAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_accountManagerAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "_POname",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_masterDeployAddress",
-        "type": "address"
-      }
-    ],
+    "type": "function",
     "name": "createQuickJoin",
+    "inputs": [
+      {
+        "name": "_membershipNFTAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_directDemocracyTokenAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_accountManagerAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_POname",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_masterDeployAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
     "outputs": [
       {
-        "internalType": "address",
         "name": "",
-        "type": "address"
+        "type": "address",
+        "internalType": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "QuickJoinDeployed",
+    "inputs": [
+      {
+        "name": "quickJoinAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "POname",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
   }
 ]

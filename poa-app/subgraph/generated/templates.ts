@@ -6,6 +6,34 @@ import {
   DataSourceContext,
 } from "@graphprotocol/graph-ts";
 
+export class EducationHub extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("EducationHub", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "EducationHub",
+      [address.toHex()],
+      context,
+    );
+  }
+}
+
+export class ElectionContract extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("ElectionContract", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "ElectionContract",
+      [address.toHex()],
+      context,
+    );
+  }
+}
+
 export class DirectDemocracyToken extends DataSourceTemplate {
   static create(address: Address): void {
     DataSourceTemplate.create("DirectDemocracyToken", [address.toHex()]);
@@ -149,5 +177,25 @@ export class taskInfo extends DataSourceTemplate {
 
   static createWithContext(cid: string, context: DataSourceContext): void {
     DataSourceTemplate.createWithContext("taskInfo", [cid], context);
+  }
+}
+
+export class moduleInfo extends DataSourceTemplate {
+  static create(cid: string): void {
+    DataSourceTemplate.create("moduleInfo", [cid]);
+  }
+
+  static createWithContext(cid: string, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext("moduleInfo", [cid], context);
+  }
+}
+
+export class tokenRequestInfo extends DataSourceTemplate {
+  static create(cid: string): void {
+    DataSourceTemplate.create("tokenRequestInfo", [cid]);
+  }
+
+  static createWithContext(cid: string, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext("tokenRequestInfo", [cid], context);
   }
 }
