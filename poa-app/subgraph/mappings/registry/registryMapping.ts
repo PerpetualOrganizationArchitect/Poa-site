@@ -1,7 +1,10 @@
-import { log } from "@graphprotocol/graph-ts"
-import {ContractAdded, ContractUpgraded, VotingControlAddressSet, Initialized} from "../../generated/templates/Registry/Registry"
-import {Registry, ValidContract,} from "../../generated/schema"
+import { log, DataSourceContext, DataSourceTemplate } from "@graphprotocol/graph-ts"
+import {ContractAdded, ContractUpgraded, VotingControlAddressSet, Initialized, infoChange, logoChange} from "../../generated/templates/Registry/Registry"
+import {Registry, ValidContract,PerpetualOrganization} from "../../generated/schema"
 import { dataSource } from '@graphprotocol/graph-ts'
+
+let POHASH_KEY = "POHASH";
+let PONAME_KEY = "PONAME";
 
 export function handleContractAdded(event: ContractAdded): void {
   log.info("Triggered handleContractAdded", [])
@@ -69,5 +72,42 @@ export function handleInitialized(event: Initialized): void {
     }
 
 
+}
+
+export function handleInfoChange(event: infoChange ): void{
+    log.info("Triggered handleInfoChange", [])
+
+    let po = PerpetualOrganization.load(event.params.POname);
+    if (po != null) {
+
+        let context = new DataSourceContext();
+        log.info("Setting context for PO: {}", [event.params.POname]);
+        context.setString(POHASH_KEY, event.params.ipfsHash);
+        context.setString(PONAME_KEY, event.params.POname);
+
+        log.info("Creating infoIPFS template with hash: {}", [event.params.ipfsHash]);
+        DataSourceTemplate.createWithContext("infoIpfs", [event.params.ipfsHash], context);
+        po.aboutInfo = event.params.ipfsHash;
+        po.save();
+       
+    }
+
+}
+
+export function handleLogoChnage(event: logoChange): void{
+    log.info("Triggered handleLogoChange", [])
+
+    let registry = Registry.load(dataSource.address().toHex())
+
+    if (registry != null) {
+        registry.logoHash = event.params.newLogo;
+        registry.save();
+    }
+
+    let po = PerpetualOrganization.load(event.params.POname);
+    if (po != null) {
+        po.logoHash = event.params.newLogo;
+        po.save();
+    }
 
 }
