@@ -111,15 +111,15 @@ export class Voted__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get optionIndex(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
+  get optionIndices(): Array<BigInt> {
+    return this._event.parameters[2].value.toBigIntArray();
+  }
+
+  get weights(): Array<BigInt> {
+    return this._event.parameters[3].value.toBigIntArray();
   }
 
   get voteWeightPT(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
-
-  get voteWeightDDT(): BigInt {
     return this._event.parameters[4].value.toBigInt();
   }
 }
@@ -911,8 +911,12 @@ export class VoteCall__Inputs {
     return this._call.inputValues[1].value.toAddress();
   }
 
-  get _optionIndex(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
+  get _optionIndices(): Array<BigInt> {
+    return this._call.inputValues[2].value.toBigIntArray();
+  }
+
+  get _weights(): Array<BigInt> {
+    return this._call.inputValues[3].value.toBigIntArray();
   }
 }
 

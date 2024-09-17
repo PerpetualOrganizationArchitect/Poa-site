@@ -414,9 +414,14 @@
         "internalType": "address"
       },
       {
-        "name": "_optionIndex",
-        "type": "uint256",
-        "internalType": "uint256"
+        "name": "_optionIndices",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "_weights",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
       }
     ],
     "outputs": [],
@@ -531,19 +536,19 @@
         "internalType": "address"
       },
       {
-        "name": "optionIndex",
-        "type": "uint256",
+        "name": "optionIndices",
+        "type": "uint256[]",
         "indexed": false,
-        "internalType": "uint256"
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "weights",
+        "type": "uint256[]",
+        "indexed": false,
+        "internalType": "uint256[]"
       },
       {
         "name": "voteWeightPT",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      },
-      {
-        "name": "voteWeightDDT",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"

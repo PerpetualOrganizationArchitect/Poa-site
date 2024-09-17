@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/ParticipationVoting/ParticipationVoting"
-import { PTProposal, PTPollOption,PTVote , PTVoting, User} from "../../generated/schema"
+import { PTProposal, PTPollOption,PTVote , PTVoting, User, PTVoteWeight} from "../../generated/schema"
 
 export function handleNewProposal(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
@@ -56,22 +56,35 @@ export function handleVoted(event: Voted): void {
       user.totalVotes = user.totalVotes.plus(BigInt.fromI32(1));
       user.save();
     }
-    vote.optionIndex = event.params.optionIndex;
-    vote.voteWeight = event.params.voteWeight;
     vote.save();
   
-    proposal.totalVotes = proposal.totalVotes.plus(event.params.voteWeight);
+    proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(1));
     proposal.save();
 
-    //update option votes
-    let optionId = proposalId + "-" + event.params.optionIndex.toString();
-    let option = PTPollOption.load(optionId);
-    if (!option) {
-      log.error("Option not found: {}", [optionId]);
-      return;
+    for (let i = 0; i < event.params.optionIndices.length; i++) {
+      let optionIndex = event.params.optionIndices[i];
+      let weight = event.params.weights[i];
+
+      let voteWeightId = voteId + "-" + optionIndex.toString();
+      let voteWeight = new PTVoteWeight(voteWeightId);
+      voteWeight.vote = voteId;
+      voteWeight.user = contract.POname+'-' + event.params.voter.toHex();
+      voteWeight.optionIndex = optionIndex;
+      voteWeight.voteWeight = weight.times(event.params.totalVoteWeight);
+
+      voteWeight.save();
+
+      // Update option vote tally
+      let optionId = proposalId + "-" + optionIndex.toString();
+      let option = PTPollOption.load(optionId);
+      if (!option) {
+          log.error("Option not found: {}", [optionId]);
+          return;
+      }
+
+      option.votes = option.votes.plus(weight.times(event.params.totalVoteWeight));
+      option.save();
     }
-    option.votes = option.votes.plus(event.params.voteWeight);
-    option.save();
   }
   
   export function handlePollOptionNames(event: PollOptionNames): void {

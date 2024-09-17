@@ -98,6 +98,50 @@ export class VotingControlAddressSet__Params {
   }
 }
 
+export class infoChange extends ethereum.Event {
+  get params(): infoChange__Params {
+    return new infoChange__Params(this);
+  }
+}
+
+export class infoChange__Params {
+  _event: infoChange;
+
+  constructor(event: infoChange) {
+    this._event = event;
+  }
+
+  get ipfsHash(): string {
+    return this._event.parameters[0].value.toString();
+  }
+
+  get POname(): string {
+    return this._event.parameters[1].value.toString();
+  }
+}
+
+export class logoChange extends ethereum.Event {
+  get params(): logoChange__Params {
+    return new logoChange__Params(this);
+  }
+}
+
+export class logoChange__Params {
+  _event: logoChange;
+
+  constructor(event: logoChange) {
+    this._event = event;
+  }
+
+  get newLogo(): string {
+    return this._event.parameters[0].value.toString();
+  }
+
+  get POname(): string {
+    return this._event.parameters[1].value.toString();
+  }
+}
+
 export class Registry extends ethereum.SmartContract {
   static bind(address: Address): Registry {
     return new Registry("Registry", address);
@@ -212,6 +256,25 @@ export class Registry extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
   }
+
+  nftMembership(): Address {
+    let result = super.call("nftMembership", "nftMembership():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_nftMembership(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "nftMembership",
+      "nftMembership():(address)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
 }
 
 export class ConstructorCall extends ethereum.Call {
@@ -294,6 +357,66 @@ export class AddContractCall__Outputs {
   _call: AddContractCall;
 
   constructor(call: AddContractCall) {
+    this._call = call;
+  }
+}
+
+export class ChangeLogoCall extends ethereum.Call {
+  get inputs(): ChangeLogoCall__Inputs {
+    return new ChangeLogoCall__Inputs(this);
+  }
+
+  get outputs(): ChangeLogoCall__Outputs {
+    return new ChangeLogoCall__Outputs(this);
+  }
+}
+
+export class ChangeLogoCall__Inputs {
+  _call: ChangeLogoCall;
+
+  constructor(call: ChangeLogoCall) {
+    this._call = call;
+  }
+
+  get newLogo(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+}
+
+export class ChangeLogoCall__Outputs {
+  _call: ChangeLogoCall;
+
+  constructor(call: ChangeLogoCall) {
+    this._call = call;
+  }
+}
+
+export class ChangeOrgInfoCall extends ethereum.Call {
+  get inputs(): ChangeOrgInfoCall__Inputs {
+    return new ChangeOrgInfoCall__Inputs(this);
+  }
+
+  get outputs(): ChangeOrgInfoCall__Outputs {
+    return new ChangeOrgInfoCall__Outputs(this);
+  }
+}
+
+export class ChangeOrgInfoCall__Inputs {
+  _call: ChangeOrgInfoCall;
+
+  constructor(call: ChangeOrgInfoCall) {
+    this._call = call;
+  }
+
+  get ipfsHash(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+}
+
+export class ChangeOrgInfoCall__Outputs {
+  _call: ChangeOrgInfoCall;
+
+  constructor(call: ChangeOrgInfoCall) {
     this._call = call;
   }
 }

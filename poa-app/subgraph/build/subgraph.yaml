@@ -8,7 +8,7 @@ dataSources:
     name: UniversalAccountRegistry
     network: polygon-amoy
     source:
-      address: "0x33DCAB56A777aF4e714477430d70D9832eeB7269"
+      address: "0x695f1FfB4A4Fc1BAEB322943DcEf3349fA47f748"
       abi: AccountManager
       startBlock: 11566500
     mapping:
@@ -30,7 +30,7 @@ dataSources:
     name: DirectDemocracyTokenFactory
     network: polygon-amoy
     source:
-      address: "0xBBEA85A307887394F76DAB60A2cDD78a005FC42f"
+      address: "0x54E64587BaE1B6e21E3B1c5043821CdE64044F80"
       abi: DirectDemocracyTokenFactory
       startBlock: 11566500
     mapping:
@@ -50,7 +50,7 @@ dataSources:
     name: ParticipationTokenFactory
     network: polygon-amoy
     source:
-      address: "0x17fC558a12FB355D9BBbaAD72f125FAD6a737785"
+      address: "0xE9547a83DDf011C7923da22Fdedaa56A7DD8857d"
       abi: ParticipationTokenFactory
       startBlock: 11566500
     mapping:
@@ -70,7 +70,7 @@ dataSources:
     name: NFTMembershipFactory
     network: polygon-amoy
     source:
-      address: "0x4d2A2792c085421Cf7444Ae296949FEbc48DFc14"
+      address: "0x1d7AFF18b67e9CdDB91B16dE4AA66585Cf4eAe11"
       abi: NFTMembershipFactory
       startBlock: 11566500
     mapping:
@@ -90,7 +90,7 @@ dataSources:
     name: TreasuryFactory
     network: polygon-amoy
     source:
-      address: "0xC1BE5F5DEd51e114f38d12f7e71f8b99c0c9197B"
+      address: "0x4e0471B17278259d2efDBE63477bB481CceeEf47"
       abi: TreasuryFactory
       startBlock: 11566500
     mapping:
@@ -110,7 +110,7 @@ dataSources:
     name: ParticipationVotingFactory
     network: polygon-amoy
     source:
-      address: "0x3293952dB859b5d09ff412258F5DB7d80007E211"
+      address: "0x170A95ED190db46693483Fe489cB8fFf69AdA6D0"
       abi: ParticipationVotingFactory
       startBlock: 11566500
     mapping:
@@ -130,7 +130,7 @@ dataSources:
     name: DirectDemocracyVotingFactory
     network: polygon-amoy
     source:
-      address: "0xA2895f2445C1a97c1f5ed6128D5969d5C7fDf393"
+      address: "0xD0E03B513639762C94F9f44F36e60D66E9DcDCb2"
       abi: DirectDemocracyVotingFactory
       startBlock: 11566500
     mapping:
@@ -150,7 +150,7 @@ dataSources:
     name: HybridVotingFactory
     network: polygon-amoy
     source:
-      address: "0xa0833075A70bA143dD50Ad02271614876BEfEc0C"
+      address: "0x9C1930B6FF2ee6b2C5245F334736328c7bE4da59"
       abi: HybridVotingFactory
       startBlock: 11566500
     mapping:
@@ -170,7 +170,7 @@ dataSources:
     name: TaskManagerFactory
     network: polygon-amoy
     source:
-      address: "0xF1027840908aB68D64ba4De2f08E29A99CE1f2d0"
+      address: "0x8EFDbD43d800C3E8E18C3f8d173cC269eD36e07d"
       abi: TaskManagerFactory
       startBlock: 11566500
     mapping:
@@ -190,7 +190,7 @@ dataSources:
     name: RegistryFactory
     network: polygon-amoy
     source:
-      address: "0xb8D3bcB64099105eA32a04B6807Ab2A252d44b02"
+      address: "0x980fC45E36187970D9d418E1b458Aa74038C9236"
       abi: RegistryFactory
       startBlock: 11566500
     mapping:
@@ -210,7 +210,7 @@ dataSources:
     name: QuickJoinFactory
     network: polygon-amoy
     source:
-      address: "0x1695222292Df48375A411EDb29aBa7285296Fe54"
+      address: "0x328B998AeABfF4C5fBd0fa2c134c897881995f20"
       abi: QuickJoinFactory
       startBlock: 11566500
     mapping:
@@ -230,7 +230,7 @@ dataSources:
     name: ElectionContractFactory
     network: polygon-amoy
     source:
-      address: "0xB282cF777493e27c2367D43c5672dD4E39de1295"
+      address: "0x1cEfCcecc400aC9737b3dF3153921654824d326d"
       abi: ElectionContractFactory
       startBlock: 11566500
     mapping:
@@ -250,7 +250,7 @@ dataSources:
     name: EducationHubFactory
     network: polygon-amoy
     source:
-      address: "0x477BAaD98C382A1A01c4A970958e5b5aA2538CED"
+      address: "0xAe7F3c25a142217734d78aF0d2137Ac05B1f4241"
       abi: EducationHubFactory
       startBlock: 11566500
     mapping:
@@ -423,7 +423,7 @@ templates:
           handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
-        - event: Voted(indexed uint256,indexed address,uint256,uint256)
+        - event: Voted(indexed uint256,indexed address,uint256[],uint256[],uint256)
           handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256,bool)
           handler: handleWinnerAnnounced
@@ -451,7 +451,7 @@ templates:
           handler: handlePollCreated
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
-        - event: Voted(indexed uint256,indexed address,uint256)
+        - event: Voted(indexed uint256,indexed address,uint256[],uint256[])
           handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256,bool)
           handler: handleWinnerAnnounced
@@ -479,7 +479,7 @@ templates:
           handler: handleNewProposal
         - event: PollOptionNames(indexed uint256,indexed uint256,string)
           handler: handlePollOptionNames
-        - event: Voted(indexed uint256,indexed address,uint256,uint256,uint256)
+        - event: Voted(indexed uint256,indexed address,uint256[],uint256[],uint256)
           handler: handleVoted
         - event: WinnerAnnounced(indexed uint256,uint256,bool)
           handler: handleWinnerAnnounced
