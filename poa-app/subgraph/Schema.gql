@@ -330,9 +330,16 @@ type DDPollOption @entity {
 type DDVote @entity {
   id: ID!
   proposal: DDProposal! @link
+  DDVoteWeights: [DDVoteWeight!] @derivedFrom(field: "vote")
+  voter: User @link
+}
+
+type DDVoteWeight @entity {
+  id: ID!
+  vote: DDVote! @link
+  user: User @link
   optionIndex: BigInt!
   voteWeight: BigInt!
-  voter: User @link
 }
 
 ## hybrid voting 

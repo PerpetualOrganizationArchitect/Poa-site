@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced, ElectionContractSet } from "../../generated/templates/DirectDemocracyVoting/DirectDemocracyVoting"
-import { DDProposal, DDPollOption,DDVote, DDVoting, User } from "../../generated/schema"
+import { DDProposal, DDPollOption,DDVote, DDVoting, User, DDVoteWeight } from "../../generated/schema"
 
 export function handlePollCreated(event: NewProposal): void {
   log.info("Triggered handleNewProposal", []);
@@ -55,8 +55,7 @@ export function handleVoted(event: Voted): void {
     }
 
     vote.voter = contract.POname+'-' + event.params.voter.toHex();
-    vote.optionIndex = event.params.optionIndex;
-    vote.voteWeight = BigInt.fromI32(100);
+    
     vote.save();
 
     let user = User.load(contract.POname+'-' + event.params.voter.toHex());
@@ -65,18 +64,33 @@ export function handleVoted(event: Voted): void {
       user.save();
     }
   
-    proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(100));
+    proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(1));
     proposal.save();
 
-    //update option votes
-    let optionId = proposalId + "-" + event.params.optionIndex.toString();
-    let option = DDPollOption.load(optionId);
-    if (!option) {
-      log.error("Option not found: {}", [optionId]);
-      return;
+    for (let i = 0; i < event.params.optionIndices.length; i++) {
+      let optionIndex = event.params.optionIndices[i];
+      let weight = event.params.weights[i];
+
+      let voteWeightId = voteId + "-" + optionIndex.toString();
+      let voteWeight = new DDVoteWeight(voteWeightId);
+      voteWeight.vote = voteId;
+      voteWeight.user = user.id;
+      voteWeight.optionIndex = BigInt.fromI32(optionIndex);
+      voteWeight.voteWeight = weight;
+
+      voteWeight.save();
+
+      // Update option vote tally
+      let optionId = proposalId + "-" + optionIndex.toString();
+      let option = DDPollOption.load(optionId);
+      if (!option) {
+          log.error("Option not found: {}", [optionId]);
+          return;
+      }
+
+      option.votes = option.votes.plus(weight);
+      option.save();
     }
-    option.votes = option.votes.plus(BigInt.fromI32(100));
-    option.save();
 
   }
   
