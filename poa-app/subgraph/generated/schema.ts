@@ -3105,6 +3105,86 @@ export class PTVote extends Entity {
     }
   }
 
+  get PTVoteWeights(): PTVoteWeightLoader {
+    return new PTVoteWeightLoader(
+      "PTVote",
+      this.get("id")!.toString(),
+      "PTVoteWeights",
+    );
+  }
+}
+
+export class PTVoteWeight extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PTVoteWeight entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PTVoteWeight must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("PTVoteWeight", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): PTVoteWeight | null {
+    return changetype<PTVoteWeight | null>(
+      store.get_in_block("PTVoteWeight", id),
+    );
+  }
+
+  static load(id: string): PTVoteWeight | null {
+    return changetype<PTVoteWeight | null>(store.get("PTVoteWeight", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get vote(): string {
+    let value = this.get("vote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set vote(value: string) {
+    this.set("vote", Value.fromString(value));
+  }
+
+  get user(): string | null {
+    let value = this.get("user");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set user(value: string | null) {
+    if (!value) {
+      this.unset("user");
+    } else {
+      this.set("user", Value.fromString(<string>value));
+    }
+  }
+
   get optionIndex(): BigInt {
     let value = this.get("optionIndex");
     if (!value || value.kind == ValueKind.NULL) {
@@ -4127,8 +4207,8 @@ export class HybridProposal extends Entity {
     this.set("description", Value.fromString(value));
   }
 
-  get totalVotesDD(): BigInt {
-    let value = this.get("totalVotesDD");
+  get totalVotes(): BigInt {
+    let value = this.get("totalVotes");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -4136,21 +4216,8 @@ export class HybridProposal extends Entity {
     }
   }
 
-  set totalVotesDD(value: BigInt) {
-    this.set("totalVotesDD", Value.fromBigInt(value));
-  }
-
-  get totalVotesPT(): BigInt {
-    let value = this.get("totalVotesPT");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set totalVotesPT(value: BigInt) {
-    this.set("totalVotesPT", Value.fromBigInt(value));
+  set totalVotes(value: BigInt) {
+    this.set("totalVotes", Value.fromBigInt(value));
   }
 
   get timeInMinutes(): BigInt {
@@ -4389,8 +4456,8 @@ export class HybridPollOption extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get votes(): BigInt {
-    let value = this.get("votes");
+  get votesPT(): BigInt {
+    let value = this.get("votesPT");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -4398,8 +4465,21 @@ export class HybridPollOption extends Entity {
     }
   }
 
-  set votes(value: BigInt) {
-    this.set("votes", Value.fromBigInt(value));
+  set votesPT(value: BigInt) {
+    this.set("votesPT", Value.fromBigInt(value));
+  }
+
+  get votesDD(): BigInt {
+    let value = this.get("votesDD");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set votesDD(value: BigInt) {
+    this.set("votesDD", Value.fromBigInt(value));
   }
 }
 
@@ -4469,6 +4549,88 @@ export class HybridVote extends Entity {
       this.unset("voter");
     } else {
       this.set("voter", Value.fromString(<string>value));
+    }
+  }
+
+  get HybridVoteWeights(): HybridVoteWeightLoader {
+    return new HybridVoteWeightLoader(
+      "HybridVote",
+      this.get("id")!.toString(),
+      "HybridVoteWeights",
+    );
+  }
+}
+
+export class HybridVoteWeight extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save HybridVoteWeight entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type HybridVoteWeight must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("HybridVoteWeight", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): HybridVoteWeight | null {
+    return changetype<HybridVoteWeight | null>(
+      store.get_in_block("HybridVoteWeight", id),
+    );
+  }
+
+  static load(id: string): HybridVoteWeight | null {
+    return changetype<HybridVoteWeight | null>(
+      store.get("HybridVoteWeight", id),
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get vote(): string {
+    let value = this.get("vote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set vote(value: string) {
+    this.set("vote", Value.fromString(value));
+  }
+
+  get user(): string | null {
+    let value = this.get("user");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set user(value: string | null) {
+    if (!value) {
+      this.unset("user");
+    } else {
+      this.set("user", Value.fromString(<string>value));
     }
   }
 
@@ -6402,6 +6564,24 @@ export class PTVoteLoader extends Entity {
   }
 }
 
+export class PTVoteWeightLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): PTVoteWeight[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<PTVoteWeight[]>(value);
+  }
+}
+
 export class DDProposalLoader extends Entity {
   _entity: string;
   _field: string;
@@ -6525,6 +6705,24 @@ export class HybridVoteLoader extends Entity {
   load(): HybridVote[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<HybridVote[]>(value);
+  }
+}
+
+export class HybridVoteWeightLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): HybridVoteWeight[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<HybridVoteWeight[]>(value);
   }
 }
 

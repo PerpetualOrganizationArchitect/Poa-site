@@ -1,7 +1,7 @@
 import { log} from "@graphprotocol/graph-ts"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { NewProposal, Voted, PollOptionNames, WinnerAnnounced } from "../../generated/templates/HybridVoting/HybridVoting"
-import { HybridProposal, HybridPollOption,HybridVote, HybridVoting, User } from "../../generated/schema"
+import { HybridProposal, HybridPollOption,HybridVote, HybridVoting, User, HybridVoteWeight } from "../../generated/schema"
 
 
 export function handleNewProposal(event: NewProposal): void {
@@ -23,8 +23,7 @@ export function handleNewProposal(event: NewProposal): void {
     newProposal.transferRecipient = event.params.transferRecipient;
     newProposal.transferEnabled = event.params.transferEnabled;
     newProposal.experationTimestamp = event.params.creationTimestamp.plus(event.params.timeInMinutes.times(BigInt.fromI32(60)));
-    newProposal.totalVotesDD = BigInt.fromI32(0);
-    newProposal.totalVotesPT = BigInt.fromI32(0);
+    newProposal.totalVotes = BigInt.fromI32(0);
     newProposal.voting = event.address.toHex();
     newProposal.transferAddress = event.params.transferToken;
     newProposal.validWinner = false;
@@ -53,25 +52,15 @@ export function handleVoted(event: Voted): void {
     }
 
     vote.voter = contract.POname + '-' + event.params.voter.toHex();
-    vote.optionIndex = event.params.optionIndex;
-
+  
 
 
     let votePT = event.params.voteWeightPT;
-    let voteDD = event.params.voteWeightDDT;
+    let voteDD = BigInt.fromI32(100);
 
-    let scalingFactor = BigInt.fromI32(1000000000);
 
-    let normalizedVotePT = proposal.totalVotesPT.isZero() ? BigInt.fromI32(0) : votePT.times(scalingFactor).div(proposal.totalVotesPT);
-    let normalizedVoteDD = proposal.totalVotesDD.isZero() ? BigInt.fromI32(0) : voteDD.times(scalingFactor).div(proposal.totalVotesDD);
-
-    let weightedVotePT = normalizedVotePT.times((contract.percentPT)).div(scalingFactor); 
-    let weightedVoteDD = normalizedVoteDD.times((contract.percentDD)).div(scalingFactor); 
-
-    vote.voteWeightPT = weightedVotePT;
-    vote.voteWeightDD = weightedVoteDD;
-    proposal.totalVotesPT = proposal.totalVotesPT.plus(weightedVotePT);
-    proposal.totalVotesDD = proposal.totalVotesDD.plus(weightedVoteDD);
+    proposal.totalVotes = proposal.totalVotes.plus(BigInt.fromI32(1));
+    
     vote.save();
 
     let user = User.load(contract.POname + '-' + event.params.voter.toHex());
@@ -79,16 +68,38 @@ export function handleVoted(event: Voted): void {
       user.totalVotes = user.totalVotes.plus(BigInt.fromI32(1));
       user.save();
     }
+    
+    for (let i = 0; i < event.params.optionIndices.length; i++) {
+      let optionIndex = event.params.optionIndices[i];
+      let weight = event.params.weights[i];
 
-    // Update option votes
-    let optionId = proposalId + "-" + event.params.optionIndex.toString();
-    let option = HybridPollOption.load(optionId);
-    if (!option) {
-      log.error("Option not found: {}", [optionId]);
-      return;
+      let voteWeightId = voteId + "-" + optionIndex.toString();
+      let voteWeight = new HybridVoteWeight(voteWeightId);
+      voteWeight.vote = voteId;
+      voteWeight.user = contract.POname+'-' + event.params.voter.toHex();
+      voteWeight.optionIndex = optionIndex;
+
+      let weightedPT = weight.times(votePT);
+      let weightedDD = weight.times(voteDD);
+
+      voteWeight.voteWeightPT = weightedPT;
+      voteWeight.voteWeightDD = weightedDD; 
+
+      voteWeight.save();
+
+      // Update option vote tally
+      let optionId = proposalId + "-" + optionIndex.toString();
+      let option = HybridPollOption.load(optionId);
+      if (!option) {
+          log.error("Option not found: {}", [optionId]);
+          return;
+      }
+
+      option.votesPT = option.votesPT.plus(weight.times(votePT));
+      option.votesDD = option.votesDD.plus(weight.times(voteDD));
+      option.save();
     }
-    option.votes = option.votes.plus(weightedVotePT.plus(weightedVoteDD));
-    option.save();
+
   }
 
   
@@ -100,7 +111,8 @@ export function handleVoted(event: Voted): void {
     let option = new HybridPollOption(optionId);
     option.proposal = proposalId;
     option.name = event.params.name;
-    option.votes = BigInt.fromI32(0);
+    option.votesPT = BigInt.fromI32(0);
+    option.votesDD = BigInt.fromI32(0);
     option.save();
   }
   

@@ -74,8 +74,8 @@ export function handleVoted(event: Voted): void {
       let voteWeightId = voteId + "-" + optionIndex.toString();
       let voteWeight = new DDVoteWeight(voteWeightId);
       voteWeight.vote = voteId;
-      voteWeight.user = user.id;
-      voteWeight.optionIndex = BigInt.fromI32(optionIndex);
+      voteWeight.user = contract.POname + '-' + event.params.voter.toHex();
+      voteWeight.optionIndex = optionIndex;
       voteWeight.voteWeight = weight;
 
       voteWeight.save();

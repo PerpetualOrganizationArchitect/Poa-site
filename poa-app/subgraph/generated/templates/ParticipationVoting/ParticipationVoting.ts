@@ -118,6 +118,10 @@ export class Voted__Params {
   get weights(): Array<BigInt> {
     return this._event.parameters[3].value.toBigIntArray();
   }
+
+  get totalVoteWeight(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
+  }
 }
 
 export class WinnerAnnounced extends ethereum.Event {
