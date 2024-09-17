@@ -1,7 +1,7 @@
 const MasterDeployFactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0x9c7E12c012e608cac9832122F425774aB0fA0f8F";
+const masterDeployFactoryAddress = "0x6CC3Bd852079c7C974Ac1D56382B8c7d520AD001";
 
 export async function main(
     memberTypeNames,
@@ -107,6 +107,7 @@ export async function main(
 
     const options = {
       gasLimit: gasLimit,
+      gasPrice: ethers.utils.parseUnits("55", "gwei"),
     };
 
     try {

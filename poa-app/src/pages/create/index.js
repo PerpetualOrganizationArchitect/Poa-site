@@ -447,7 +447,7 @@ const ArchitectPage = () => {
         if (orgDetails.hybridVotingEnabled) {
           setOrgDetails((prevDetails) => ({
             ...prevDetails,
-            hybridVoteQuorum: parseInt(input, 10),
+            participationVoteQuorum: parseInt(input, 10),
           }));
         } else if (orgDetails.participationVotingEnabled) {
           setOrgDetails((prevDetails) => ({
@@ -609,7 +609,7 @@ const ArchitectPage = () => {
 
   const deployOrg = async () => {
     console.log("Deploying organization with the following details:", orgDetails);
-    const quorum = orgDetails.participationVoteQuorum || orgDetails.hybridVoteQuorum;
+    const quorum = orgDetails.participationVoteQuorum 
     setIsDeploying(true);
     try {
       await main(
