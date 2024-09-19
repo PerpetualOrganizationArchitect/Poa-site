@@ -38,6 +38,11 @@ export const Web3Provider = ({ children }) => {
     const provider = useEthersProvider();
     const signer = useEthersSigner();
 
+    const gasOptions = {
+        gasLimit: 100000, // Example gas limit
+        gasPrice: ethers.utils.parseUnits('51', 'gwei'), 
+    };
+
     useEffect(() => {
         console.log("provider: ", provider )
         console.log("address1: ", address)
@@ -75,7 +80,7 @@ export const Web3Provider = ({ children }) => {
           }
         const address = AccountManagerAddress;
         const contract = getContractInstance(address, AccountManager.abi);
-        const tx = await contract.registerAccount(username);
+        const tx = await contract.registerAccount(username, gasOptions);
     }
 
     async function changeUsername(username) {
@@ -84,7 +89,7 @@ export const Web3Provider = ({ children }) => {
           }
         const address = AccountManagerAddress;
         const contract = getContractInstance(address, AccountManager.abi);
-        const tx = await contract.changeUsername(username);
+        const tx = await contract.changeUsername(username, gasOptions);
     }
 
 
@@ -92,7 +97,7 @@ export const Web3Provider = ({ children }) => {
 
     async function createProposalHybridVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend) {
         const contract = getContractInstance(contractAddress, HybridVoting.abi);
-        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend);
+        const tx = await contract.createProposal(proposalName, proposalDescription, proposalDuration, options, recieverAddress, triggerSpendIndex, amount, canSend, gasOptions);
         await tx.wait();
         console.log("Proposal created");
     }
@@ -130,7 +135,8 @@ export const Web3Provider = ({ children }) => {
             recieverAddress,
             amountConverted,
             canSend,
-            tokenAddress
+            tokenAddress,
+            gasOptions
         );
         await tx.wait();
         console.log("Proposal created");
@@ -143,7 +149,7 @@ export const Web3Provider = ({ children }) => {
           }
         const voterAddress = account;
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
-        const tx = await contract.vote(proposalID, voterAddress, optionIndex);
+        const tx = await contract.vote(proposalID, voterAddress, optionIndex, gasOptions);
         await tx.wait();
         console.log("Voted");
     }
@@ -153,7 +159,7 @@ export const Web3Provider = ({ children }) => {
             return;
           }
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
-        const winner = await contract.announceWinner(proposalID);
+        const winner = await contract.announceWinner(proposalID, gasOptions);
         console.log("Winner: ", winner);
         return winner;
     }
@@ -179,7 +185,7 @@ export const Web3Provider = ({ children }) => {
             return;
           }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
-        const tx = await contract.createProject(projectName);
+        const tx = await contract.createProject(projectName, gasOptions);
         await tx.wait();
         console.log("Project created");
     }
@@ -193,7 +199,7 @@ export const Web3Provider = ({ children }) => {
         let ipfsHashString = ipfsHash.path;
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         console.log("creating task")
-        const tx = await contract.createTask(payout,ipfsHashString, projectName);
+        const tx = await contract.createTask(payout,ipfsHashString, projectName, gasOptions);
         await tx.wait();
         console.log("Task created");
     }
@@ -210,7 +216,7 @@ export const Web3Provider = ({ children }) => {
 
 
 
-        const tx = await contract.claimTask(newTaskID);
+        const tx = await contract.claimTask(newTaskID, gasOptions);
         await tx.wait();
         console.log("Task claimed");
     }
@@ -221,7 +227,7 @@ export const Web3Provider = ({ children }) => {
           }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
-        const tx = await contract.completeTask(newTaskID);
+        const tx = await contract.completeTask(newTaskID, gasOptions);
         await tx.wait();
         console.log("Task completed");
     }
@@ -233,7 +239,7 @@ export const Web3Provider = ({ children }) => {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
 
         const newTaskID = taskID.split("-")[0];
-        const tx = await contract.updateTask(newTaskID, payout, ipfsHash);
+        const tx = await contract.updateTask(newTaskID, payout, ipfsHash, gasOptions);
         await tx.wait();
         console.log("Task updated");
     }
@@ -244,7 +250,7 @@ export const Web3Provider = ({ children }) => {
           }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
-        const tx = await contract.submitTask(newTaskID, ipfsHash);
+        const tx = await contract.submitTask(newTaskID, ipfsHash, gasOptions);
         await tx.wait();
         console.log("Task submitted");
     }
@@ -262,7 +268,7 @@ export const Web3Provider = ({ children }) => {
         let newTaskID = taskID.split("-")[0];
 
 
-        const tx = await contract.updateTask(newTaskID, payout,ipfsHashString);
+        const tx = await contract.updateTask(newTaskID, payout,ipfsHashString, gasOptions);
         await tx.wait();
     }
 
@@ -278,7 +284,7 @@ export const Web3Provider = ({ children }) => {
     
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
         try {
-            const isExec = await contract.checkIsExecutive(userAddress);
+            const isExec = await contract.checkIsExecutive(userAddress, gasOptions);
             console.log(`Is ${userAddress} an executive?`, isExec);
             return isExec;
         } catch (error) {
@@ -294,7 +300,7 @@ export const Web3Provider = ({ children }) => {
           }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
         
-        const tx = await contract.mintNFT(account, membershipType);
+        const tx = await contract.mintNFT(account, membershipType, gasOptions);
         await tx.wait();
         console.log("NFT minted");
     }
@@ -304,14 +310,14 @@ export const Web3Provider = ({ children }) => {
             return;
           }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
-        const tx = await contract.mintDefaultNFT();
+        const tx = await contract.mintDefaultNFT(gasOptions);
         await tx.wait();
         console.log("Default NFT minted");
     }
 
     async function updateNFT(contractAddress, userAddress, membershipType) {
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
-        const tx = await contract.changeMembershipType(userAddress, membershipType);
+        const tx = await contract.changeMembershipType(userAddress, membershipType, gasOptions);
         await tx.wait();
         console.log("NFT updated");
     }
@@ -337,7 +343,7 @@ export const Web3Provider = ({ children }) => {
             return;
           }
         const contract = getContractInstance(contractAddress, DirectDemocracyToken.abi);
-        const tx = await contract.mint();
+        const tx = await contract.mint(gasOptions);
         await tx.wait();
         console.log("Tokens minted");
     }
@@ -386,7 +392,7 @@ export const Web3Provider = ({ children }) => {
 
         try {
             const contract = getContractInstance(contractAddress, QuickJoin.abi);
-            const tx= await contract.quickJoinNoUser(username);
+            const tx= await contract.quickJoinNoUser(username, gasOptions);
             await tx.wait();
             console.log("User joined with new username ");
         }
@@ -403,7 +409,7 @@ export const Web3Provider = ({ children }) => {
 
         try {
             const contract = getContractInstance(contractAddress, QuickJoin.abi);
-            const tx= await contract.quickJoinWithUser();
+            const tx= await contract.quickJoinWithUser(gasOptions);
             await tx.wait();
             console.log("User joined with existing username ");
         }
@@ -469,7 +475,7 @@ export const Web3Provider = ({ children }) => {
             return;
           }
         const contract = getContractInstance(contractAddress, EducationHub.abi);
-        const tx = await contract.completeModule(moduleID, answer);
+        const tx = await contract.completeModule(moduleID, answer, gasOptions);
         await tx.wait();
         console.log("Module submitted");
     }
