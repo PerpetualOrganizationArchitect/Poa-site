@@ -259,18 +259,22 @@ const UserprofileHub = () => {
                   <VStack mt="1" align={'flex-start'} spacing={3}>
                   <Box mt="2" alignSelf="flex-start" mr="3">
                     <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
-                  </Box>
-                  <Button 
-                      size="sm"
-                      onClick={openExecutiveMenu}
-                      alignSelf="start"
-                      justifySelf="end"
-                      colorScheme="teal"
-                    >
-                      Executive Menu
-                    </Button>
-                    <ExecutiveMenuModal isOpen={isExecutiveMenuOpen} onClose={closeExecutiveMenu} />
-                  </VStack>
+                    </Box>
+                      {isExec && (
+                        <>
+                          <Button 
+                            size="sm"
+                            onClick={openExecutiveMenu}
+                            alignSelf="start"
+                            justifySelf="end"
+                            colorScheme="teal"
+                          >
+                            Executive Menu
+                          </Button>
+                          <ExecutiveMenuModal isOpen={isExecutiveMenuOpen} onClose={closeExecutiveMenu} />
+                        </>
+                      )}
+                      </VStack>
                   
                 </HStack>
                 
