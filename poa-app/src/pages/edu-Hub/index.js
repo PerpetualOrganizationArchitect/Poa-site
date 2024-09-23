@@ -7,7 +7,7 @@ import QuizModal from '@/components/eduHub/QuizModal';
 // Glass layer style
 const glassLayerStyle = {
   backdropFilter: 'blur(20px)',
-  backgroundColor: 'rgba(0, 0, 0, 0.71)', // Adjust opacity for glass effect
+  backgroundColor: 'rgba(0, 0, 0, 0.73)', // Adjust opacity for glass effect
   border: '1px solid rgba(255, 255, 255, 0.25)',
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
 };
@@ -15,7 +15,6 @@ const glassLayerStyle = {
 const EducationHub = () => {
   const { poContextLoading } = usePOContext();
   const containerRef = useRef();
-
 
   const educationModels = [
     {
@@ -43,7 +42,6 @@ const EducationHub = () => {
       quizLink: '/quiz/what-is-perpetual-org',
     },
   ];
-  
 
   return (
     <>
@@ -54,29 +52,62 @@ const EducationHub = () => {
         </Center>
       ) : (
         <Box position="relative" ref={containerRef}>
-          <Box p={6} bg="transparent" borderRadius="lg" mx="auto" mt={6} maxWidth="1200px">
-            <Heading as="h2" size="lg" mb={8} textAlign="center" color="white">Education Hub</Heading>
-            <Grid templateColumns="repeat(3, 1fr)" gap={8}>
+          {/* Glass Layer for Heading and Description */}
+          <Box
+            p={5}
+            sx={glassLayerStyle}
+            borderRadius="lg"
+            mx="auto"
+            mt={6}
+            maxWidth="800px"
+            textAlign="center"
+          >
+            <Heading as="h2" size="lg" color="white" mb={3}>
+              Education Hub
+            </Heading>
+            <Text fontSize="lg" color="gray.100">
+              Learn and take short quizzes to earn tokens
+            </Text>
+          </Box>
+
+          <Box p={6} bg="transparent" borderRadius="lg" mx="auto" mt={2} maxWidth="1200px">
+            {/* Responsive Grid for Education Models */}
+            <Grid 
+              templateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} // Adjust columns based on screen size
+              gap={8}
+            >
               {educationModels.map(model => (
                 <GridItem
                   key={model.id}
                   borderRadius="md"
                   p={6}
-                  sx={glassLayerStyle}  // Applying glass layer style here
+                  sx={glassLayerStyle}
                   transition="all 0.3s ease"
                   display="flex"
                   flexDirection="column"
-                  justifyContent="space-between" // Ensure space is distributed to push buttons down
+                  justifyContent="space-between"
                 >
                   <Box mb={6}>
-                    <Heading as="h3" fontSize="27" mb={6} color="white">{model.title}</Heading>
-                    <Text fontSize="16" color="gray.300">{model.description}</Text>
+                    <Heading as="h3" fontSize="27" mb={6} color="white">
+                      {model.title}
+                    </Heading>
+                    <Text fontSize="16" color="gray.200">
+                      {model.description}
+                    </Text>
                   </Box>
-                  <Box mt="auto">  {/* This ensures the reward stays at the bottom */}
-                    <Text mb={2} fontSize="lg" fontWeight={"bold"} color="white" >Reward: {model.payout}</Text>
+                  <Box mt="auto">
+                    <Text mb={2} fontSize="lg" fontWeight="bold" color="white">
+                      Reward: {model.payout}
+                    </Text>
                     <Flex justifyContent="space-between" alignItems="center" mt={4}>
                       <Link href={model.link} isExternal>
-                        <Button _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }} size={"lg"} colorScheme="green">Learn</Button>
+                        <Button
+                          _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
+                          size="lg"
+                          colorScheme="green"
+                        >
+                          Learn
+                        </Button>
                       </Link>
                       <QuizModal quizId={model.id} />
                     </Flex>
@@ -89,7 +120,6 @@ const EducationHub = () => {
       )}
     </>
   );
-  
 };
 
 export default EducationHub;
