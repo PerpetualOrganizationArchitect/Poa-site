@@ -83,7 +83,7 @@ export const FETCH_ALL_PO_DATA = gql`
             id
             name
             votesPT
-            votesDDgit 
+            votesDD
           }
         }
       }

@@ -109,6 +109,7 @@ const UserprofileHub = () => {
   };
 
   const [userInfo, setUserInfo] = useState({});
+  const [isExec, setIsExec] = useState(false);
 
   useEffect(() => {
     if (userData) {
@@ -128,6 +129,10 @@ const UserprofileHub = () => {
         nextTierThreshold: progressData.nextTierThreshold
       };
       setUserInfo(userInfo);
+
+      if (userInfo.memberStatus === "Executive") {
+        setIsExec(true);
+      }
     }
   }, [userData, graphUsername]);
 
