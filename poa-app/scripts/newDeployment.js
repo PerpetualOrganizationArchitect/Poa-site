@@ -1,7 +1,7 @@
 const MasterDeployFactory = require("../abi/MasterFactory.json");
 const { ethers } = require("ethers");
 
-const masterDeployFactoryAddress = "0x6CC3Bd852079c7C974Ac1D56382B8c7d520AD001";
+const masterDeployFactoryAddress = "0xa303C508D460915bfACCeAD65921BBAB2ED5964c";
 
 export async function main(
     memberTypeNames,
@@ -50,7 +50,7 @@ export async function main(
       "DirectDemocracyVoting",   // Always fifth
     ];
 
-    // Depending on voting, insert "HybridVoting" or "ParticipationVoting" in the proper position
+    
     if (hybridVotingEnabled) {
       contractNames.push("HybridVoting");  // Added after DirectDemocracyVoting
     } else if (participationVotingEnabled) {

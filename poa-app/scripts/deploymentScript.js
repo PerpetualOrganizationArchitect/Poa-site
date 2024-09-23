@@ -52,7 +52,7 @@ async function deployDirectDemocracyToken(wallet) {
   const DirectDemocracyTokenFactoryAbi = DirectDemocracyTokenFactory.abi;
 
   const factory = new ethers.ContractFactory(DirectDemocracyTokenFactoryAbi, DirectDemocracyTokenFactoryBytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -68,7 +68,7 @@ async function deployDirectDemocracyToken(wallet) {
 
 async function deployEducationHubFactory(wallet) {
   const factory = new ethers.ContractFactory(EducationHubFactoryABI.abi, EducationHubFactoryABI.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -88,7 +88,7 @@ async function deployDirectDemocracyVoting( wallet, ddtokenAddress) {
 
     const factory = new ethers.ContractFactory(DirectDemocracyVotingFactoryAbi, DirectDemocracyVotingFactoryBytecode, wallet);
 
-    const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+    const gasPrice = ethers.utils.parseUnits('55', 'gwei');
     const gasLimit = 6000000;
 
     const contract = await factory.deploy({
@@ -105,7 +105,7 @@ async function deployDirectDemocracyVoting( wallet, ddtokenAddress) {
 async function deployNFTMembership(wallet) {
   const factory = new ethers.ContractFactory(NFTMembershipFactory.abi, NFTMembershipFactory.bytecode, wallet);
 
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -119,7 +119,7 @@ async function deployNFTMembership(wallet) {
 
 async function deployParticipationToken(wallet) {
   const factory = new ethers.ContractFactory(ParticipationTokenFactory.abi, ParticipationTokenFactory.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -133,7 +133,7 @@ async function deployParticipationToken(wallet) {
 
 async function deployTreasury(wallet) {
   const factory = new ethers.ContractFactory(TreasuryFactory.abi, TreasuryFactory.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -147,7 +147,7 @@ async function deployTreasury(wallet) {
 
 async function deployParticipationVoting(wallet) {
   const factory = new ethers.ContractFactory(ParticipationVotingFactory.abi, ParticipationVotingFactory.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -161,7 +161,7 @@ async function deployParticipationVoting(wallet) {
 
 async function deployHybridVoting(wallet) {
   const factory = new ethers.ContractFactory(HybridVotingFactory.abi, HybridVotingFactory.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -175,7 +175,7 @@ async function deployHybridVoting(wallet) {
 
 async function deployTaskManager(wallet) {
   const factory = new ethers.ContractFactory(TaskManagerFactory.abi, TaskManagerFactory.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -207,7 +207,7 @@ async function deployMasterDeployFactory(wallet, directDemocracyTokenFactory, di
 async function deployRegistry(wallet) {
   const factory = new ethers.ContractFactory(RegistryFactory.abi, RegistryFactory.bytecode, wallet);
   
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -221,7 +221,7 @@ async function deployRegistry(wallet) {
 
 async function deployAccountManager(wallet) {
   const factory = new ethers.ContractFactory(AccountManager.abi, AccountManager.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -235,7 +235,7 @@ async function deployAccountManager(wallet) {
 
 async function deployQuickJoinFactory(wallet) {
   const factory = new ethers.ContractFactory(QuickJoinFactory.abi, QuickJoinFactory.bytecode, wallet);
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({
@@ -250,7 +250,7 @@ async function deployQuickJoinFactory(wallet) {
 async function deployElectionContractFactory(wallet) {
   const factory = new ethers.ContractFactory(ElectionContractFactory.abi, ElectionContractFactory.bytecode, wallet);
   
-  const gasPrice = ethers.utils.parseUnits('25', 'gwei');
+  const gasPrice = ethers.utils.parseUnits('55', 'gwei');
   const gasLimit = 6000000;
 
   const contract = await factory.deploy({

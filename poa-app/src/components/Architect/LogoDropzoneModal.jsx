@@ -35,6 +35,7 @@ const LogoDropzoneModal = ({ isOpen, onSave, onClose }) => {
           const ipfsUrl = `${addedData.path}`;
           onSave(ipfsUrl); 
           setUploadStatus("success");
+          console.log("Logo uploaded to IPFS:", ipfsUrl);
         } catch (error) {
           console.error("Error uploading logo to IPFS:", error);
           setUploadStatus("error");

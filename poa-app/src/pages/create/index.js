@@ -281,8 +281,8 @@ const ArchitectPage = () => {
 
 
     const displayText = useBreakpointValue({
-      base: "Alpha", 
-      md: "This is AlphaV2 on Polygon Amoy. There may be some bugs. Please report in our discord." 
+      base: "Beta", 
+      md: "This is BetaV1 on Polygon Amoy. There may be some bugs. Please report in our discord." 
     });
 
   const pinLogoFile = async (ipfsUrl) => {
@@ -608,7 +608,7 @@ const ArchitectPage = () => {
   };
 
   const deployOrg = async () => {
-    console.log("Deploying organization with the following details:", orgDetails);
+    console.log("1 Deploying organization with the following details:", orgDetails);
     const quorum = orgDetails.participationVoteQuorum 
     setIsDeploying(true);
     try {
@@ -621,9 +621,9 @@ const ArchitectPage = () => {
         orgDetails.participationVoteWeight,
         orgDetails.hybridVotingEnabled,
         orgDetails.participationVotingEnabled,
+        true,
+        true,
         orgDetails.logoURL,
-        true,
-        true,
         orgDetails.infoIPFSHash,
         orgDetails.votingControlType,
         orgDetails.directDemocracyQuorum,
