@@ -17,33 +17,33 @@ const EducationHub = () => {
   const containerRef = useRef();
 
 
-  // Sample education models
   const educationModels = [
     {
       id: 1,
-      title: 'Intro to DAOs',
-      link: 'https://example.com/dao-intro',
+      title: 'Learn More About Demo Org',
+      link: 'https://example.com/demo-org',
       payout: '10 Tokens',
-      description: 'Learn about the basics of DAOs Testing length of description im gonna see how long looks ok and what i should maybe limi a description too lets seeee loinge longer longer longer longer logner ',
-      quizLink: '/quiz/dao-intro',
+      description: 'Learn more about this organization even though it is just a demo org.',
+      quizLink: '/quiz/demo-org',
     },
     {
       id: 2,
-      title: 'Understanding Smart Contracts',
-      link: 'https://example.com/smart-contracts',
-      payout: '15 Tokens',
-      description: 'Learn about smart contracts and how they work',
-      quizLink: '/quiz/smart-contracts',
+      title: 'How to Deploy a Perpetual Organization',
+      link: 'https://example.com/deploy-perpetual-org',
+      payout: '10 Tokens',
+      description: 'Interested in launching your own? We guide you step-by-step through the process of deploying a Perpetual Organization.',
+      quizLink: '/quiz/deploy-perpetual-org',
     },
     {
       id: 3,
-      title: 'Voting Mechanisms in DAOs',
-      link: 'https://example.com/voting-daos',
-      payout: '20 Tokens',
-      description: 'Learn about different voting mechanisms in DAOs',
-      quizLink: '/quiz/voting-daos',
+      title: 'What is a Perpetual Organization?',
+      link: 'https://example.com/what-is-perpetual-org',
+      payout: '15 Tokens',
+      description: 'A Perpetual Organization is a decentralized, self-sustaining group that empowers its members to own and manage their work collaboratively. Learn more about how Perpetual Organizations empower your community.',
+      quizLink: '/quiz/what-is-perpetual-org',
     },
   ];
+  
 
   return (
     <>
@@ -69,8 +69,8 @@ const EducationHub = () => {
                   justifyContent="space-between" // Ensure space is distributed to push buttons down
                 >
                   <Box mb={6}>
-                    <Heading as="h3" size="lg" mb={6} color="white">{model.title}</Heading>
-                    <Text fontSize="md" color="gray.300">{model.description}</Text>
+                    <Heading as="h3" fontSize="27" mb={6} color="white">{model.title}</Heading>
+                    <Text fontSize="16" color="gray.300">{model.description}</Text>
                   </Box>
                   <Box mt="auto">  {/* This ensures the reward stays at the bottom */}
                     <Text mb={2} fontSize="lg" fontWeight={"bold"} color="white" >Reward: {model.payout}</Text>
