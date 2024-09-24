@@ -11,7 +11,7 @@ const glassLayerStyle = {
   backgroundColor: "rgba(0, 0, 0, .8)",
 };
 
-const HeadingVote = ({ selectedTab }) => {
+const HeadingVote = ({ selectedTab, PTVoteType }) => {
   return (
     <Flex
       align="center"
@@ -31,12 +31,18 @@ const HeadingVote = ({ selectedTab }) => {
       <div className="glass" style={glassLayerStyle} />
 
       <Heading color="ghostwhite" size="2xl">
-        {selectedTab === 0 ? "Democracy Voting" : "Hybrid Voting"}
+        {selectedTab === 0 
+          ? "Democracy Voting" 
+          : PTVoteType === "Hybrid" 
+          ? "Hybrid Voting" 
+          : "Participation Voting"}
       </Heading>
 
       <Text mt={2} color="ghostwhite" fontSize="md" fontWeight="bold">
         {selectedTab === 0
           ? "Equal Vote for All"
+          : PTVoteType === "Hybrid" 
+          ? "Combination of Direct and Weighted Votes" 
           : "Participation Based Voting"}
       </Text>
 

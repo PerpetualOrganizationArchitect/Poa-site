@@ -62,6 +62,7 @@ const Voting = () => {
   const {
     createProposalDDVoting,
     getWinnerDDVoting,
+    createProposalParticipationVoting,
     ddVote,
     account
   } = useWeb3Context();
@@ -87,7 +88,10 @@ const Voting = () => {
 
 
 
-  const PTVoteType = Array.isArray(hybridVotingOngoing) ? "Hybrid" : "Participation";
+  const PTVoteType = (Array.isArray(hybridVotingOngoing) && hybridVotingOngoing.length > 0) ? "Hybrid" : "Participation";
+  console.log("hybridVotingOngoing", hybridVotingOngoing);
+  console.log("participationVotingOngoing", participationVotingOngoing);
+  console.log("PTVoteType", PTVoteType);
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
 
   const [showDetermineWinner, setShowDetermineWinner] = useState({});
@@ -319,7 +323,7 @@ const Voting = () => {
   
       console.log("voting contract address", votingContractAddress);
       if (votingTypeSelected === "Participation") {
-        return createProposalDDVoting(
+        return createProposalParticipationVoting(
           votingContractAddress,
           proposal.name,
           proposal.description,
@@ -333,7 +337,7 @@ const Voting = () => {
       }
   
       if (votingTypeSelected === "Hybrid") {
-        return createProposalDDVoting(
+        return createProposalParticipationVoting(
           votingContractAddress,
           proposal.name,
           proposal.description,
@@ -388,7 +392,7 @@ const Voting = () => {
         </Center>
       ) : (
         <Container maxW="container.2xl" py={4} px={"3.8%"}>
-          <HeadingVote selectedTab={selectedTab} />
+          <HeadingVote selectedTab={selectedTab} PTVoteType={PTVoteType} />
           <Tabs
             index={selectedTab}
             isFitted

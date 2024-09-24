@@ -131,9 +131,9 @@ export const Web3Provider = ({ children }) => {
     }
 
     // Hybrid Voting
-    async function createProposalHybridVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, receiverAddress, triggerSpendIndex, amount, canSend) {
+    async function createProposalParticipationVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, receiverAddress, triggerSpendIndex, amount, canSend) {
         const contract = getContractInstance(contractAddress, HybridVoting.abi);
-
+        let tokenAddress = "0x0000000000000000000000000000000000001010";
         try {
             // Estimate gas
             const gasEstimate = await contract.estimateGas.createProposal(
@@ -144,7 +144,8 @@ export const Web3Provider = ({ children }) => {
                 receiverAddress,
                 triggerSpendIndex,
                 amount,
-                canSend
+                canSend,
+                tokenAddress
             );
             const gasLimit = gasEstimate.mul(120).div(100);
             const gasOptions = {
@@ -161,6 +162,7 @@ export const Web3Provider = ({ children }) => {
                 triggerSpendIndex,
                 amount,
                 canSend,
+                tokenAddress,
                 gasOptions
             );
             await tx.wait();
@@ -854,7 +856,8 @@ export const Web3Provider = ({ children }) => {
             createNewUser,
             createEduModule,
             checkIsExecutive,
-            updateNFT
+            updateNFT,
+            createProposalParticipationVoting
         }}>
             {children}
         </Web3Context.Provider>

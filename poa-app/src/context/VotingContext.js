@@ -52,9 +52,25 @@ export const VotingProvider = ({ children, id }) => {
       setHybridVotingCompleted(perpetualOrganization.HybridVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
       setDemocracyVotingCompleted(perpetualOrganization.DirectDemocracyVoting?.proposals.filter(proposal => proposal.winningOptionIndex));
 
-      const ddVoting = data.perpetualOrganization.DirectDemocracyVoting?.proposals.map(proposal => ({ ...proposal, type: 'Direct Democracy' }));
-      const hybridVoting = data.perpetualOrganization.HybridVoting?.proposals.map(proposal => ({ ...proposal, type: 'Hybrid' }));
-      const participationVoting = data.perpetualOrganization.ParticipationVoting?.proposals.map(proposal => ({ ...proposal, type: 'Participation' }));
+      const ddVoting = data.perpetualOrganization.DirectDemocracyVoting?.proposals.map(proposal => ({ 
+        votingTypeId: data.perpetualOrganization.DirectDemocracyVoting.id,  // Mapping the voting type id
+        ...proposal, 
+        type: 'Direct Democracy' 
+      }));
+      
+      const hybridVoting = data.perpetualOrganization.HybridVoting?.proposals.map(proposal => ({ 
+        votingTypeId: data.perpetualOrganization.HybridVoting.id,  // Mapping the voting type id
+        ...proposal, 
+        type: 'Hybrid' 
+      }));
+      
+      const participationVoting = data.perpetualOrganization.ParticipationVoting?.proposals.map(proposal => ({ 
+       
+        votingTypeId: data.perpetualOrganization.ParticipationVoting.id,  // Mapping the voting type id
+        ...proposal, 
+        type: 'Participation' 
+      }));
+      
   
       if (ddVoting) {
           setDemocracyVotingOngoing(ddVoting);
