@@ -853,7 +853,8 @@ export const Web3Provider = ({ children }) => {
             createProposalDDVoting,
             createNewUser,
             createEduModule,
-            checkIsExecutive
+            checkIsExecutive,
+            updateNFT
         }}>
             {children}
         </Web3Context.Provider>

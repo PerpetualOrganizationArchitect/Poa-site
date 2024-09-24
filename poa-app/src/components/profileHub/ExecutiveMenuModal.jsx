@@ -20,7 +20,7 @@ import { usePOContext } from '@/context/POContext';
 const ExecutiveMenuModal = ({ isOpen, onClose }) => {
   const [addressToMint, setAddressToMint] = useState('');
   const [loading, setLoading] = useState(false);
-  const { mintNFT } = useWeb3Context();
+  const { updateNFT } = useWeb3Context();
   const toast = useToast();
 
     const {nftMembershipContractAddress} = usePOContext();
@@ -40,7 +40,7 @@ const ExecutiveMenuModal = ({ isOpen, onClose }) => {
     try {
       
       const membershipType = "Executive"; 
-      await mintNFT(nftMembershipContractAddress, membershipType); 
+      await updateNFT(nftMembershipContractAddress, addressToMint, membershipType);
       toast({
         title: "Success",
         description: `NFT minted for ${addressToMint}`,
