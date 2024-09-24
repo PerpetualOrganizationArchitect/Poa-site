@@ -252,28 +252,38 @@ export const Web3Provider = ({ children }) => {
         }
     }
 
-    async function ddVote(contractAddress, proposalID, optionIndex) {
+    async function ddVote(contractAddress, proposalID, optionIndices, weights) {
         if (!checkNetwork()) {
             return;
         }
+        
         const voterAddress = account;
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
-
+        
         try {
-            const gasEstimate = await contract.estimateGas.vote(proposalID, voterAddress, optionIndex);
+            // Ensure the total weight is 100
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            if (totalWeight !== 100) {
+                throw new Error("Total weight must sum to 100");
+            }
+    
+            // Estimate gas
+            const gasEstimate = await contract.estimateGas.vote(proposalID, voterAddress, optionIndices, weights);
             const gasLimit = gasEstimate.mul(127).div(100);
             const gasOptions = {
                 gasLimit: gasLimit,
                 gasPrice: GAS_PRICE,
             };
-
-            const tx = await contract.vote(proposalID, voterAddress, optionIndex, gasOptions);
+    
+            // Send vote transaction
+            const tx = await contract.vote(proposalID, voterAddress, optionIndices, weights, gasOptions);
             await tx.wait();
             console.log("Voted in DD voting");
         } catch (error) {
             console.error("Error voting in DD voting:", error);
         }
     }
+    
 
     async function getWinnerDDVoting(contractAddress, proposalID) {
         if (!checkNetwork()) {

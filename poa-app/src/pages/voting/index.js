@@ -318,6 +318,7 @@ const Voting = () => {
   const handlePollCreated = () => {
     const run = () => {
       const last = proposal.type === "transferFunds";
+      
   
       console.log("voting contract address", votingContractAddress);
       if (votingTypeSelected === "Participation") {
@@ -1129,8 +1130,23 @@ const Voting = () => {
                         >
                           <option value="normal">Normal</option>
                           <option value="transferFunds">Transfer Funds</option>
+                          <option value="election">Election</option> {/* New election proposal type */}
                         </Select>
                     </FormControl>
+                    {proposal.type === 'election' && (
+                        <>
+                          <FormControl>
+                            <FormLabel>Election Candidates (comma separated)</FormLabel>
+                            <Textarea
+                              name="options"
+                              value={proposal.options.join(", ")}
+                              onChange={handleOptionsChange}
+                              placeholder="Candidate 1, Candidate 2, Candidate 3"
+                              required
+                            />
+                          </FormControl>
+                        </>
+                      )}
                     {proposal.type === 'transferFunds' && (
                       <>
                         <FormControl>
