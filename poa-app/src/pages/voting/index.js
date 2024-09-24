@@ -38,7 +38,7 @@ import { useWeb3Context } from "@/context/web3Context";
 import { usePOContext } from "@/context/POContext";
 import { useVotingContext } from "@/context/VotingContext";
 import CompletedPollModal from "@/templateComponents/studentOrgDAO/voting/CompletedPollModal";
-
+import { useAccount } from "wagmi";
 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import HeadingVote from "@/templateComponents/studentOrgDAO/voting/header";
@@ -68,7 +68,7 @@ const Voting = () => {
   
   const { isOpen: isCompletedOpen, onOpen: onCompletedOpen, onClose: onCompletedClose } = useDisclosure();
 
-
+  const { address} = useAccount();
   const {
     directDemocracyVotingContractAddress,
     votingContractAddress, 
@@ -317,6 +317,7 @@ const Voting = () => {
     const run = () => {
       const last = proposal.type === "transferFunds";
   
+      console.log("voting contract address", votingContractAddress);
       if (votingTypeSelected === "Participation") {
         return createProposalDDVoting(
           votingContractAddress,
@@ -325,7 +326,7 @@ const Voting = () => {
           proposal.time,
           proposal.options,
           last ? proposal.transferOption : 0,
-          last ? proposal.transferAddress : account,
+          last ? proposal.transferAddress : address,
           last ? proposal.transferAmount : '0',
           last
         );
@@ -339,9 +340,9 @@ const Voting = () => {
           proposal.time,
           proposal.options,
           last ? proposal.transferOption : 0,
-          last ? proposal.transferAddress : account,
+          last ? proposal.transferAddress : address,
           last ? proposal.transferAmount : '0',
-          last
+          last 
         );
       }
   
@@ -353,7 +354,7 @@ const Voting = () => {
           proposal.time,
           proposal.options,
           last ? proposal.transferOption : 0,
-          last ? proposal.transferAddress : account,
+          last ? proposal.transferAddress : address,
           last ? proposal.transferAmount : '0',
           last
         );
