@@ -62,6 +62,7 @@ const Voting = () => {
   const {
     createProposalDDVoting,
     getWinnerDDVoting,
+    createProposalParticipationVoting,
     ddVote,
     account
   } = useWeb3Context();
@@ -87,7 +88,8 @@ const Voting = () => {
 
 
 
-  const PTVoteType = Array.isArray(hybridVotingOngoing) ? "Hybrid" : "Participation";
+  const PTVoteType = (Array.isArray(hybridVotingOngoing) && hybridVotingOngoing.length > 0) ? "Hybrid" : "Participation";
+  
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
 
   const [showDetermineWinner, setShowDetermineWinner] = useState({});
@@ -316,10 +318,11 @@ const Voting = () => {
   const handlePollCreated = () => {
     const run = () => {
       const last = proposal.type === "transferFunds";
+      
   
       console.log("voting contract address", votingContractAddress);
       if (votingTypeSelected === "Participation") {
-        return createProposalDDVoting(
+        return createProposalParticipationVoting(
           votingContractAddress,
           proposal.name,
           proposal.description,
@@ -333,7 +336,7 @@ const Voting = () => {
       }
   
       if (votingTypeSelected === "Hybrid") {
-        return createProposalDDVoting(
+        return createProposalParticipationVoting(
           votingContractAddress,
           proposal.name,
           proposal.description,
@@ -388,7 +391,7 @@ const Voting = () => {
         </Center>
       ) : (
         <Container maxW="container.2xl" py={4} px={"3.8%"}>
-          <HeadingVote selectedTab={selectedTab} />
+          <HeadingVote selectedTab={selectedTab} PTVoteType={PTVoteType} />
           <Tabs
             index={selectedTab}
             isFitted
@@ -1127,8 +1130,23 @@ const Voting = () => {
                         >
                           <option value="normal">Normal</option>
                           <option value="transferFunds">Transfer Funds</option>
+                          <option value="election">Election</option> {/* New election proposal type */}
                         </Select>
                     </FormControl>
+                    {proposal.type === 'election' && (
+                        <>
+                          <FormControl>
+                            <FormLabel>Election Candidates (comma separated)</FormLabel>
+                            <Textarea
+                              name="options"
+                              value={proposal.options.join(", ")}
+                              onChange={handleOptionsChange}
+                              placeholder="Candidate 1, Candidate 2, Candidate 3"
+                              required
+                            />
+                          </FormControl>
+                        </>
+                      )}
                     {proposal.type === 'transferFunds' && (
                       <>
                         <FormControl>

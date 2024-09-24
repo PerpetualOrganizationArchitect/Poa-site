@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import {
   Modal,
   ModalOverlay,
@@ -28,7 +27,6 @@ const glassLayerStyle = {
   backgroundColor: "rgba(33, 33, 33, 0.97)",
 };
 
-
 const PollModal = ({
   onOpen,
   isOpen,
@@ -40,34 +38,37 @@ const PollModal = ({
   selectedOption,
   setSelectedOption,
 }) => {
-
-
   const router = useRouter();
   const { userDAO } = router.query;
-
 
   const handleModalClose = () => {
     onClose();
     router.push(`/voting/?userDAO=${userDAO}`);
   };
 
-
-  
-
   const vote = () => {
-
     console.log("selectedOption", selectedOption);
     console.log("selectedPoll", selectedPoll.id);
-
-
-    //make selected poll id be the part of string before -
+  
+    // Get the number of options from the selectedPoll
+    const optionIndices = selectedPoll?.options?.map((_, index) => index);
+    console.log("optionIndices", optionIndices);
+  
+    // Ensure weights array is correctly updated with 100% for the selected option and 0% for others
+    const weights = selectedPoll?.options?.map((_, index) => {
+      return index === parseInt(selectedOption) ? 100 : 0;
+    });
+  
+    // Ensure the selected option is correctly treated as an integer
+    console.log("weights", weights);
+  
+    // Make selected poll id be the part of string before "-"
     let newPollId = selectedPoll.id.split("-")[0];
-
-    
-    handleVote(contractAddress, newPollId, selectedOption);
+  
+    // Pass the contractAddress, newPollId, optionIndices, and weights to handleVote
+    handleVote(contractAddress, newPollId, optionIndices, weights);
   };
-
-
+  
 
   return (
     <Modal onOpen={onOpen} isOpen={isOpen} onClose={handleModalClose}>

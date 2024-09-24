@@ -79,6 +79,7 @@ export const FETCH_ALL_PO_DATA = gql`
           creationTimestamp
           description
           winningOptionIndex
+          validWinner
           options {
             id
             name
@@ -97,6 +98,7 @@ export const FETCH_ALL_PO_DATA = gql`
           creationTimestamp
           description
           winningOptionIndex
+          validWinner
           options {
             id
             name
@@ -114,6 +116,7 @@ export const FETCH_ALL_PO_DATA = gql`
           creationTimestamp
           description
           winningOptionIndex
+          validWinner
           options {
             id
             name

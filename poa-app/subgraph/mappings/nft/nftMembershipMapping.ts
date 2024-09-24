@@ -48,8 +48,9 @@ export function handleMintedNFT(event: MintEvent): void {
 export function handleMembershipTypeChanged(event: membershipTypeChanged): void {
   log.info("Triggered handleMembershipTypeChanged", []);
   let entity = new NFTChangeTypeEvent(event.transaction.hash.toHex() + "-" + event.logIndex.toString());
-  entity.membership = event.params.newMemberType;
+  entity.membership = event.address.toHex();
   entity.user = event.params.user;
+  entity.newMemberType = event.params.newMemberType;
   entity.save();
 
   
