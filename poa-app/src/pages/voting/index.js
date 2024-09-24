@@ -89,9 +89,7 @@ const Voting = () => {
 
 
   const PTVoteType = (Array.isArray(hybridVotingOngoing) && hybridVotingOngoing.length > 0) ? "Hybrid" : "Participation";
-  console.log("hybridVotingOngoing", hybridVotingOngoing);
-  console.log("participationVotingOngoing", participationVotingOngoing);
-  console.log("PTVoteType", PTVoteType);
+  
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
 
   const [showDetermineWinner, setShowDetermineWinner] = useState({});
