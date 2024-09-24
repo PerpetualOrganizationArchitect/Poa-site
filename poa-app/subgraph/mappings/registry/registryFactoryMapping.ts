@@ -27,6 +27,8 @@ export function handleRegistryContractCreated(event: RegistryContractCreatedEven
     if (po != null) {
         po.registry = newRegistry.id;
         po.logoHash = event.params.logoURL;
+
+        log.info("logoHash is", [event.params.logoURL]);
     
 
         let context = new DataSourceContext();

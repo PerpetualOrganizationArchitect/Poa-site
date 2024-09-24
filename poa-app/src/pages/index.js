@@ -96,7 +96,7 @@ export default function Home() {
           fontWeight="bold"
           zIndex={2}
         >
-          Alpha
+          Beta
         </Box>
         <Image
           src="/images/poa_logo.png"

@@ -82,7 +82,8 @@ export const FETCH_ALL_PO_DATA = gql`
           options {
             id
             name
-            votes
+            votesPT
+            votesDD
           }
         }
       }

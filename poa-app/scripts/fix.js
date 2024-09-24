@@ -4,10 +4,10 @@
 const Web3 = require('web3');
 
 // Connect to the Mumbai testnet
-const web3 = new Web3('');
+const web3 = new Web3('https://rpc-amoy.polygon.technology/');
 
 // Replace with your account address
-const accountAddress = '0x06e6620C67255d308A466293070206176288A67B';
+const accountAddress = '0x1310cEdD03Cc8F6aE50F2Fb93848070FACB042b8';
 const privateKey = '';
 
 

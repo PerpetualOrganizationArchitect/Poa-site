@@ -16,6 +16,7 @@ import {
   Badge,
   Spinner,
   Center,
+  Button
 } from '@chakra-ui/react';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -30,6 +31,7 @@ import OngoingPolls from '@/components/userPage/OngoingPolls';
 import UserProposals from '@/components/userPage/UserProposals';
 import { useRouter } from 'next/router';
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
+import ExecutiveMenuModal from '@/components/profileHub/ExecutiveMenuModal';
 
 const UserprofileHub = () => {
 
@@ -48,6 +50,10 @@ const UserprofileHub = () => {
   const [showDevMenu, setShowDevMenu] = useState(false);
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
   const [notLoaded, setNotLoaded] = useState(true);
+
+  const [isExecutiveMenuOpen, setExecutiveMenuOpen] = useState(false);
+  const openExecutiveMenu = () => setExecutiveMenuOpen(true);
+  const closeExecutiveMenu = () => setExecutiveMenuOpen(false);
   
 
   const glassLayerStyle = {
@@ -103,6 +109,7 @@ const UserprofileHub = () => {
   };
 
   const [userInfo, setUserInfo] = useState({});
+  const [isExec, setIsExec] = useState(false);
 
   useEffect(() => {
     if (userData) {
@@ -122,6 +129,10 @@ const UserprofileHub = () => {
         nextTierThreshold: progressData.nextTierThreshold
       };
       setUserInfo(userInfo);
+
+      if (userInfo.memberStatus === "Executive") {
+        setIsExec(true);
+      }
     }
   }, [userData, graphUsername]);
 
@@ -171,7 +182,7 @@ const UserprofileHub = () => {
                 boxShadow="lg"
                 position="relative"
                 zIndex={2}
-               
+
               >
                 <div style={glassLayerStyle} />
                 <VStack position="relative" borderTopRadius="2xl" align="flex-start">
@@ -250,11 +261,30 @@ const UserprofileHub = () => {
                     </HStack>
                   </VStack>
                   <Spacer />
+                  <VStack mt="1" align={'flex-start'} spacing={3}>
                   <Box mt="2" alignSelf="flex-start" mr="3">
                     <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
-                  </Box>
+                    </Box>
+                      {isExec && (
+                        <>
+                          <Button 
+                            size="sm"
+                            onClick={openExecutiveMenu}
+                            alignSelf="start"
+                            justifySelf="end"
+                            colorScheme="teal"
+                          >
+                            Executive Menu
+                          </Button>
+                          <ExecutiveMenuModal isOpen={isExecutiveMenuOpen} onClose={closeExecutiveMenu} />
+                        </>
+                      )}
+                      </VStack>
+                  
                 </HStack>
+                
               </Box>
+              
               <Box w="100%" pt={4} borderRadius="2xl" bg="transparent" position="relative" zIndex={2}>
                 <div style={glassLayerStyle} />
                 <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
@@ -266,7 +296,7 @@ const UserprofileHub = () => {
                 <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
                   {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : recommendedTasks)?.slice(0, 3).map((task) => (
                     <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
-                      <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
+                      <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
                           <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
                             {task.taskInfo.name}
@@ -327,7 +357,7 @@ const UserprofileHub = () => {
                   {userData && userData.completedTasks && userData.completedTasks.length > 0 ? (
                     userData.completedTasks.map((task) => (
                       <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
-                        <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
+                        <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}`}>
                           <VStack textColor="white" align="stretch" spacing={3}>
                             <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
                               {task.taskInfo.name}
@@ -353,8 +383,8 @@ const UserprofileHub = () => {
       </Box>
     </>
   );
-  
-  
+
+
 };
 
 export default UserprofileHub;

@@ -58,6 +58,16 @@ const Navbar = () => {
           >
             Voting
           </Link>
+          <Link
+            as={NextLink}
+            href={`/edu-Hub/?userDAO=${userDAO}`}
+            color="white"
+            fontWeight="extrabold"
+            fontSize="xl"
+            mx={"2%"}
+          >
+            Learn & Earn
+          </Link>
           <LoginButton />
         </Flex>
       </Flex>
