@@ -21,7 +21,7 @@ const AutoPlayVideo1 = () => {
           controls
           playsInline
           muted
-          src="/video/demo.mp4" 
+          src="/video/poaDemo-9-21.mp4" 
         />
     </Box>
   );

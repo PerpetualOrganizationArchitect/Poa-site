@@ -16,6 +16,7 @@ export const VotingProvider = ({ children, id }) => {
   const [democracyVotingOngoing, setDemocracyVotingOngoing] = useState([]);
   const [democracyVotingCompleted, setDemocracyVotingCompleted] = useState([]);
   const [ongoingPolls, setOngoingPolls] = useState([]);
+  const [votingType, setVotingType] = useState('Participation');
 
     const { address } = useAccount();
     const router = useRouter();
@@ -47,8 +48,10 @@ export const VotingProvider = ({ children, id }) => {
     if (data) {
       console.log('data', data);
       const { perpetualOrganization } = data;
-
-      // Separate ongoing and completed proposals based on `winningOptionIndex`
+  
+      // Set voting type to Participation or Hybrid
+      setVotingType(perpetualOrganization.ParticipationVoting ? 'Participation' : 'Hybrid');
+      
       setParticipationVotingCompleted(
         perpetualOrganization.ParticipationVoting?.proposals.filter(
           proposal => proposal.winningOptionIndex !== null
@@ -64,7 +67,7 @@ export const VotingProvider = ({ children, id }) => {
           proposal => proposal.winningOptionIndex !== null
         )
       );
-
+  
       // Filter out ongoing (active) proposals
       const ddVoting = perpetualOrganization.DirectDemocracyVoting?.proposals
         .filter(proposal => proposal.winningOptionIndex === null)  // Ongoing if no winningOptionIndex
@@ -73,15 +76,19 @@ export const VotingProvider = ({ children, id }) => {
           ...proposal,
           type: 'Direct Democracy',
         }));
-
+  
       const hybridVoting = perpetualOrganization.HybridVoting?.proposals
         .filter(proposal => proposal.winningOptionIndex === null)  // Ongoing if no winningOptionIndex
         .map(proposal => ({
           votingTypeId: perpetualOrganization.HybridVoting.id,
           ...proposal,
           type: 'Hybrid',
+          options: proposal.options.map(option => ({
+            ...option,
+            votes: option.votesPT + option.votesDD, // Combine votesPT and votesDD
+          }))
         }));
-
+  
       const participationVoting = perpetualOrganization.ParticipationVoting?.proposals
         .filter(proposal => proposal.winningOptionIndex === null)  // Ongoing if no winningOptionIndex
         .map(proposal => ({
@@ -89,7 +96,7 @@ export const VotingProvider = ({ children, id }) => {
           ...proposal,
           type: 'Participation',
         }));
-
+  
       // Update state for ongoing proposals
       if (ddVoting) {
         setDemocracyVotingOngoing(ddVoting);
@@ -100,7 +107,7 @@ export const VotingProvider = ({ children, id }) => {
       if (participationVoting) {
         setParticipationVotingOngoing(participationVoting);
       }
-
+  
       // Combine all ongoing polls into one array
       const polls = [
         ...(ddVoting || []),
@@ -111,6 +118,7 @@ export const VotingProvider = ({ children, id }) => {
       console.log('polls', polls);
     }
   }, [data]);
+  
 
   const contextValue = useMemo(() => ({
     participationVotingOngoing,
@@ -121,7 +129,8 @@ export const VotingProvider = ({ children, id }) => {
     democracyVotingCompleted,
     loading,
     error,
-    ongoingPolls
+    ongoingPolls,
+    votingType
   }), [
     participationVotingOngoing,
     participationVotingCompleted,
@@ -132,6 +141,7 @@ export const VotingProvider = ({ children, id }) => {
     loading,
     error,
     ongoingPolls,
+    votingType
   ]);
 
   return (

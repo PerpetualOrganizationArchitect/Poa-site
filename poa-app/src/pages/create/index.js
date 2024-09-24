@@ -84,9 +84,13 @@ const ArchitectPage = () => {
   const router = useRouter();
   const selectionRef = useRef(null);
 
+  console.log("address", address);
   const {data: graphUsername} = useQuery(FETCH_USERNAME, {
     variables: { id: address?.toLowerCase() },
     skip: !address,
+    onCompleted: (data) => {
+      console.log("graphUsername query", data);
+    }
   }
   );
 
@@ -186,7 +190,8 @@ const ArchitectPage = () => {
   }, [address, currentStep]);
   
   useEffect(() => {
-    if (currentStep === steps.ASK_USERNAME && address) {
+    if (currentStep === steps.ASK_USERNAME && address && graphUsername) {
+      console.log("graphUsername", graphUsername);
       if (graphUsername.account == null && orgDetails.username === "") {
         addMessage("#### What username would you like to use?");
       } else if (graphUsername.account != null ) {

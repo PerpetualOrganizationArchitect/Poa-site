@@ -3,8 +3,8 @@ import { Box, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFoote
 
 const mockQuiz = {
     id: 1,
-    question: "What is the capital of France?",
-    choices: ["Berlin", "Madrid", "Paris", "Rome"]
+    question: "How do you deploy a Perpetual Org?",
+    choices: ["With Poa", "No idea", "No clue", "Code it yourself"]
 };
 
 const QuizModal = ({ quizId }) => {

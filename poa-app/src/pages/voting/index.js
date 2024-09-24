@@ -82,13 +82,16 @@ const Voting = () => {
     democracyVotingCompleted,
     participationVotingCompleted,
     participationVotingOngoing,
+    votingType
 
 
   } = useVotingContext();
 
 
 
-  const PTVoteType = (Array.isArray(hybridVotingOngoing) && hybridVotingOngoing.length > 0) ? "Hybrid" : "Participation";
+  const PTVoteType = votingType;
+  
+  
   
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
 
