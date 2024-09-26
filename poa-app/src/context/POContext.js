@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { FETCH_PO_DATA, FETCH_ALL_PO_DATA } from '../util/queries';
+import { FETCH_ALL_PO_DATA } from '../util/queries'; // Ensure your query includes EducationHubContract data
 import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
 
@@ -44,23 +44,21 @@ export const POProvider = ({ children }) => {
 
     const [leaderboardData, setLeaderboardData] = useState({});
     const [poContextLoading, setPoContextLoading] = useState(true);
-    const [rules, setRules] = useState(null); // Add rules state
+    const [rules, setRules] = useState(null);
+
+    const [educationModules, setEducationModules] = useState([]); // New state for modules
 
     const [account, setAccount] = useState('0x00');
     const router = useRouter();
     const poName = router.query.userDAO || '';
-    
 
     useEffect(() => {
         if (address) {
             setAccount(address);
         }
-    }
-    , [address]);
+    }, [address]);
 
     const combinedID = `${poName}-${account?.toLowerCase()}`;
-
-
 
     const { data, error, loading } = useQuery(FETCH_ALL_PO_DATA, {
         variables: { id: account?.toLowerCase(), poName: poName, combinedID: combinedID },
@@ -75,9 +73,9 @@ export const POProvider = ({ children }) => {
         if (data) {
             const po = data.perpetualOrganization;
             setLogoHash(po.logoHash);
-            setTreasuryContractAddress(po.Treasury?.id);
+            setTreasuryContractAddress(po.Treasury?.id || '');
             setPODescription(po.aboutInfo?.description || 'No description provided or IPFS content still being indexed');
-            setPoMembers(po.totalMembers);
+            setPoMembers(po.totalMembers || 0);
             setActiveTaskAmount(po.TaskManager?.activeTaskAmount || 0);
             setCompletedTaskAmount(po.TaskManager?.completedTaskAmount || 0);
             setPtTokenBalance(po.ParticipationToken?.supply || 0);
@@ -91,6 +89,10 @@ export const POProvider = ({ children }) => {
             setQuickJoinContractAddress(po.QuickJoinContract?.id || '');
             setVotingContractAddress(po.HybridVoting?.id || po.ParticipationVoting?.id || '');
             setEducationHubAddress(po.EducationHubContract?.id || '');
+
+            // Fetch modules from EducationHubContract
+            const modules = po.EducationHubContract?.modules || [];
+            setEducationModules(modules);
 
             fetchLeaderboardData(combinedID, po.Users).then(data => {
                 setLeaderboardData(data);
@@ -130,7 +132,8 @@ export const POProvider = ({ children }) => {
         error,
         leaderboardData,
         poContextLoading,
-        rules, 
+        rules,
+        educationModules, // Include modules in context
     }), [
         poDescription,
         poLinks,
@@ -154,6 +157,7 @@ export const POProvider = ({ children }) => {
         leaderboardData,
         poContextLoading,
         rules,
+        educationModules, 
     ]);
 
     return (

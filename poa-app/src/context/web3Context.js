@@ -771,7 +771,7 @@ export const Web3Provider = ({ children }) => {
     }
 
     // Education Hub
-    async function createEduModule(contractAddress, moduleTitle, moduleDescription, payout, answers, correctAnswer) {
+    async function createEduModule(contractAddress, moduleTitle, moduleDescription, moduleLink, payout, answers, correctAnswer) {
         if (!checkNetwork()) {
             return;
         }
@@ -781,6 +781,7 @@ export const Web3Provider = ({ children }) => {
         const data = {
             title: moduleTitle,
             description: moduleDescription,
+            link: moduleLink,
             answers: answers,
         };
 
@@ -815,27 +816,36 @@ export const Web3Provider = ({ children }) => {
         }
     }
 
-    async function submitEduModule(contractAddress, moduleID, answer) {
-        if (!checkNetwork()) {
-            return;
-        }
+    async function completeModule(contractAddress, moduleId, answer) {
         const contract = getContractInstance(contractAddress, EducationHub.abi);
+      
+        
+        const [actualModuleId, address] = moduleId.split('-');
 
+        
+        if (!actualModuleId) {
+            console.error(`Invalid moduleId: ${moduleId}`);
+            return false;
+        }
+    
         try {
-            const gasEstimate = await contract.estimateGas.completeModule(moduleID, answer);
-            const gasLimit = gasEstimate.mul(127).div(100);
-            const gasOptions = {
-                gasLimit: gasLimit,
+            console.log(`Completing module ${actualModuleId} with answer ${answer}`);
+            const gasEstimate = await contract.estimateGas.completeModule(actualModuleId, answer);
+            const gasLimit = gasEstimate.mul(127).div(100); // Add a buffer for gas limit
+    
+            const tx = await contract.completeModule(actualModuleId, answer, {
+                gasLimit,
                 gasPrice: GAS_PRICE,
-            };
-
-            const tx = await contract.completeModule(moduleID, answer, gasOptions);
+            });
             await tx.wait();
-            console.log("Module submitted");
+            console.log(`Module ${actualModuleId} completed by user.`);
+            return true;
         } catch (error) {
-            console.error("Error submitting education module:", error);
+            console.error(`Error completing module ${moduleId}:`, error);
+            return false;
         }
     }
+    
 
     return (
         <Web3Context.Provider value={{
@@ -867,7 +877,8 @@ export const Web3Provider = ({ children }) => {
             createEduModule,
             checkIsExecutive,
             updateNFT,
-            createProposalParticipationVoting
+            createProposalParticipationVoting, 
+            completeModule
         }}>
             {children}
         </Web3Context.Provider>

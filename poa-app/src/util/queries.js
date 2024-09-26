@@ -139,6 +139,16 @@ export const FETCH_ALL_PO_DATA = gql`
           name
           ipfsHash
           payout
+          info{
+            id
+            description
+            link
+            answers{
+              id
+              answer 
+              index
+            }
+          }
           completetions {
             id
             user {
