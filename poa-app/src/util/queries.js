@@ -143,6 +143,7 @@ export const FETCH_ALL_PO_DATA = gql`
             id
             description
             link
+            question
             answers{
               id
               answer 

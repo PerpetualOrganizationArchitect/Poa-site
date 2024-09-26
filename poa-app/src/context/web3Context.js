@@ -771,7 +771,7 @@ export const Web3Provider = ({ children }) => {
     }
 
     // Education Hub
-    async function createEduModule(contractAddress, moduleTitle, moduleDescription, moduleLink, payout, answers, correctAnswer) {
+    async function createEduModule(contractAddress, moduleTitle, moduleDescription, moduleLink, moduleQuestion, payout, answers, correctAnswer) {
         if (!checkNetwork()) {
             return;
         }

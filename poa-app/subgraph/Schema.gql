@@ -212,6 +212,7 @@ type ModuleInfo @entity {
   id: ID!
   name: String!
   description: String!
+  question: String!
   link: String!
   answers: [ModuleAnswer!] @derivedFrom(field: "moduleInfo")
 }
