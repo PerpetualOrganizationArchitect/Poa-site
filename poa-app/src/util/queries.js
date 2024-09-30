@@ -194,6 +194,12 @@ export const FETCH_ALL_PO_DATA = gql`
       ddTokenBalance
       totalVotes
       dateJoined
+      modulesCompleted{
+        id
+        module{
+          id
+        }
+      }
       memberType {
         memberTypeName
         imageURL

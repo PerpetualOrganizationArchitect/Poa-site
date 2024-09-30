@@ -80,6 +80,7 @@ export function handleModuleCompleted(event: ModuleCompletedEvent): void {
     }
 
   moduleCompletion.user = educationHub.POname + "-" + event.params.completer.toHex();
+  moduleCompletion.module = event.params.id.toHex() + "-" + event.address.toHex()
   moduleCompletion.save();
 
 }

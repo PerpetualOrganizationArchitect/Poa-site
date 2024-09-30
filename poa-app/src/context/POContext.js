@@ -133,7 +133,7 @@ export const POProvider = ({ children }) => {
         leaderboardData,
         poContextLoading,
         rules,
-        educationModules, // Include modules in context
+        educationModules, 
     }), [
         poDescription,
         poLinks,
