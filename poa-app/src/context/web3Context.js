@@ -66,7 +66,7 @@ export const Web3Provider = ({ children }) => {
     };
 
     // Import the notification context functions
-    const { addNotification } = useNotificationContext();
+    const { addNotification, updateNotification } = useNotificationContext();
 
     // Helper function to estimate gas and return gas options
     const getGasOptions = async (contractMethod, args = []) => {
@@ -96,9 +96,10 @@ export const Web3Provider = ({ children }) => {
         }
         const address = AccountManagerAddress;
         const contract = getContractInstance(address, AccountManager.abi);
+        const notificationId = addNotification('Creating new user...', 'loading');
 
         try {
-            addNotification('Creating new user...', 'loading');
+          
 
             // Estimate gas
             const gasEstimate = await contract.estimateGas.registerAccount(username);
@@ -111,10 +112,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.registerAccount(username, gasOptions);
             await tx.wait();
             console.log("User registered");
-            addNotification('User registered successfully!', 'success');
+            updateNotification(notificationId,'User registered successfully!', 'success');
         } catch (error) {
             console.error("Error creating new user:", error);
-            addNotification('Error creating new user.', 'error');
+            updateNotification(notificationId,'Error creating new user.', 'error');
         }
     }
 
@@ -126,8 +127,10 @@ export const Web3Provider = ({ children }) => {
         const address = AccountManagerAddress;
         const contract = getContractInstance(address, AccountManager.abi);
 
+        const notificationId = addNotification('Changing username...', 'loading');
+
         try {
-            addNotification('Changing username...', 'loading');
+          
 
             // Estimate gas
             const gasEstimate = await contract.estimateGas.changeUsername(username);
@@ -140,10 +143,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.changeUsername(username, gasOptions);
             await tx.wait();
             console.log("Username changed");
-            addNotification('Username changed successfully!', 'success');
+            updateNotification(notificationId,'Username changed successfully!', 'success');
         } catch (error) {
             console.error("Error changing username:", error);
-            addNotification('Error changing username.', 'error');
+            updateNotification(notificationId,'Error changing username.', 'error');
         }
     }
 
@@ -154,8 +157,11 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, HybridVoting.abi);
         let tokenAddress = "0x0000000000000000000000000000000000001010";
+
+        const notificationId = addNotification('Creating participation proposal...', 'loading');
+
         try {
-            addNotification('Creating participation proposal...', 'loading');
+          
 
             // Estimate gas
             const gasEstimate = await contract.estimateGas.createProposal(
@@ -189,10 +195,10 @@ export const Web3Provider = ({ children }) => {
             );
             await tx.wait();
             console.log("Hybrid proposal created");
-            addNotification('Participation proposal created successfully!', 'success');
+            updateNotification(notificationId,'Participation proposal created successfully!', 'success');
         } catch (error) {
             console.error("Error creating hybrid proposal:", error);
-            addNotification('Error creating participation proposal.', 'error');
+            updateNotification(notificationId,'Error creating participation proposal.', 'error');
         }
     }
 
@@ -203,8 +209,10 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, HybridVoting.abi);
 
+        const notificationId = addNotification('Casting hybrid vote...', 'loading');
+
         try {
-            addNotification('Casting hybrid vote...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.vote(proposalID, voterAddress, optionIndex);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -216,10 +224,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.vote(proposalID, voterAddress, optionIndex, gasOptions);
             await tx.wait();
             console.log("Voted in hybrid voting");
-            addNotification('Hybrid vote cast successfully!', 'success');
+            updateNotification(notificationId,'Hybrid vote cast successfully!', 'success');
         } catch (error) {
             console.error("Error voting in hybrid voting:", error);
-            addNotification('Error casting hybrid vote.', 'error');
+            updateNotification(notificationId,'Error casting hybrid vote.', 'error');
         }
     }
 
@@ -235,8 +243,10 @@ export const Web3Provider = ({ children }) => {
         let amountConverted = ethers.utils.parseUnits(amount, 18);
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
 
+        const notificationId = addNotification('Creating Direct Democracy proposal...', 'loading');
+
         try {
-            addNotification('Creating Direct Democracy proposal...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.createProposal(
                 proposalName,
@@ -275,10 +285,10 @@ export const Web3Provider = ({ children }) => {
             );
             await tx.wait();
             console.log("DD proposal created");
-            addNotification('Direct Democracy proposal created successfully!', 'success');
+            updateNotification(notificationId,'Direct Democracy proposal created successfully!', 'success');
         } catch (error) {
             console.error("Error creating DD proposal:", error);
-            addNotification('Error creating Direct Democracy proposal.', 'error');
+            updateNotification(notificationId,'Error creating Direct Democracy proposal.', 'error');
         }
     }
 
@@ -291,8 +301,10 @@ export const Web3Provider = ({ children }) => {
         const voterAddress = account;
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
 
+        const notificationId = addNotification('Casting Direct Democracy vote...', 'loading');
+
         try {
-            addNotification('Casting Direct Democracy vote...', 'loading');
+           
 
             // Ensure the total weight is 100
             const totalWeight = weights.reduce((a, b) => a + b, 0);
@@ -312,10 +324,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.vote(proposalID, voterAddress, optionIndices, weights, gasOptions);
             await tx.wait();
             console.log("Voted in DD voting");
-            addNotification('Direct Democracy vote cast successfully!', 'success');
+            updateNotification(notificationId,'Direct Democracy vote cast successfully!', 'success');
         } catch (error) {
             console.error("Error voting in DD voting:", error);
-            addNotification('Error casting Direct Democracy vote.', 'error');
+            updateNotification(notificationId,'Error casting Direct Democracy vote.', 'error');
         }
     }
 
@@ -326,8 +338,10 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
 
+        const notificationId = addNotification('Announcing winner...', 'loading');
+
         try {
-            addNotification('Announcing winner...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.announceWinner(proposalID);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -339,10 +353,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.announceWinner(proposalID, gasOptions);
             await tx.wait();
             console.log("Winner announced");
-            addNotification('Winner announced successfully!', 'success');
+            updateNotification(notificationId,'Winner announced successfully!', 'success');
         } catch (error) {
             console.error("Error announcing winner:", error);
-            addNotification('Error announcing winner.', 'error');
+            updateNotification(notificationId,'Error announcing winner.', 'error');
         }
     }
 
@@ -353,8 +367,10 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, ParticipationVoting.abi);
 
+        const notificationId = addNotification('Creating participation proposal...', 'loading');
+
         try {
-            addNotification('Creating participation proposal...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.createProposal(
                 proposalName,
@@ -385,10 +401,10 @@ export const Web3Provider = ({ children }) => {
             );
             await tx.wait();
             console.log("Participation proposal created");
-            addNotification('Participation proposal created successfully!', 'success');
+            updateNotification(notificationId,'Participation proposal created successfully!', 'success');
         } catch (error) {
             console.error("Error creating participation proposal:", error);
-            addNotification('Error creating participation proposal.', 'error');
+            updateNotification(notificationId,'Error creating participation proposal.', 'error');
         }
     }
 
@@ -399,8 +415,10 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, ParticipationVoting.abi);
 
+        const notificationId = addNotification('Casting participation vote...', 'loading');
+
         try {
-            addNotification('Casting participation vote...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.vote(proposalID, voterAddress, optionIndex);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -412,10 +430,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.vote(proposalID, voterAddress, optionIndex, gasOptions);
             await tx.wait();
             console.log("Voted in participation voting");
-            addNotification('Participation vote cast successfully!', 'success');
+            updateNotification(notificationId,'Participation vote cast successfully!', 'success');
         } catch (error) {
             console.error("Error voting in participation voting:", error);
-            addNotification('Error casting participation vote.', 'error');
+            updateNotification(notificationId,'Error casting participation vote.', 'error');
         }
     }
 
@@ -426,8 +444,10 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
 
+        const notificationId = addNotification('Creating project...', 'loading');
+
         try {
-            addNotification('Creating project...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.createProject(projectName);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -439,10 +459,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.createProject(projectName, gasOptions);
             await tx.wait();
             console.log("Project created");
-            addNotification('Project created successfully!', 'success');
+            updateNotification(notificationId,'Project created successfully!', 'success');
         } catch (error) {
             console.error("Error creating project:", error);
-            addNotification('Error creating project.', 'error');
+            updateNotification(notificationId,'Error creating project.', 'error');
         }
     }
 
@@ -455,8 +475,10 @@ export const Web3Provider = ({ children }) => {
         let ipfsHashString = ipfsHash.path;
         const contract = getContractInstance(contractAddress, TaskManager.abi);
 
+        const notificationId = addNotification('Creating task...', 'loading');
+
         try {
-            addNotification('Creating task...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.createTask(payout, ipfsHashString, projectName);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -468,10 +490,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.createTask(payout, ipfsHashString, projectName, gasOptions);
             await tx.wait();
             console.log("Task created");
-            addNotification('Task created successfully!', 'success');
+            updateNotification(notificationId,'Task created successfully!', 'success');
         } catch (error) {
             console.error("Error creating task:", error);
-            addNotification('Error creating task.', 'error');
+            updateNotification(notificationId,'Error creating task.', 'error');
         }
     }
 
@@ -482,9 +504,10 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
+        const notificationId = addNotification('Claiming task...', 'loading');
 
         try {
-            addNotification('Claiming task...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.claimTask(newTaskID);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -496,10 +519,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.claimTask(newTaskID, gasOptions);
             await tx.wait();
             console.log("Task claimed");
-            addNotification('Task claimed successfully!', 'success');
+            updateNotification(notificationId,'Task claimed successfully!', 'success');
         } catch (error) {
             console.error("Error claiming task:", error);
-            addNotification('Error claiming task.', 'error');
+            updateNotification(notificationId,'Error claiming task.', 'error');
         }
     }
 
@@ -511,8 +534,10 @@ export const Web3Provider = ({ children }) => {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
 
+        const notificationId = addNotification('Completing task...', 'loading');
+
         try {
-            addNotification('Completing task...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.completeTask(newTaskID);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -524,10 +549,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.completeTask(newTaskID, gasOptions);
             await tx.wait();
             console.log("Task completed");
-            addNotification('Task completed successfully!', 'success');
+            updateNotification(notificationId,'Task completed successfully!', 'success');
         } catch (error) {
             console.error("Error completing task:", error);
-            addNotification('Error completing task.', 'error');
+            updateNotification(notificationId,'Error completing task.', 'error');
         }
     }
 
@@ -539,8 +564,10 @@ export const Web3Provider = ({ children }) => {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
 
+        const notificationId = addNotification('Updating task...', 'loading');
+
         try {
-            addNotification('Updating task...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.updateTask(newTaskID, payout, ipfsHash);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -552,10 +579,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.updateTask(newTaskID, payout, ipfsHash, gasOptions);
             await tx.wait();
             console.log("Task updated");
-            addNotification('Task updated successfully!', 'success');
+            updateNotification(notificationId,'Task updated successfully!', 'success');
         } catch (error) {
             console.error("Error updating task:", error);
-            addNotification('Error updating task.', 'error');
+            updateNotification(notificationId,'Error updating task.', 'error');
         }
     }
 
@@ -567,8 +594,10 @@ export const Web3Provider = ({ children }) => {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
 
+        const notificationId = addNotification('Submitting task...', 'loading');
+
         try {
-            addNotification('Submitting task...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.submitTask(newTaskID, ipfsHash);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -580,10 +609,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.submitTask(newTaskID, ipfsHash, gasOptions);
             await tx.wait();
             console.log("Task submitted");
-            addNotification('Task submitted successfully!', 'success');
+            updateNotification(notificationId,'Task submitted successfully!', 'success');
         } catch (error) {
             console.error("Error submitting task:", error);
-            addNotification('Error submitting task.', 'error');
+            updateNotification(notificationId,'Error submitting task.', 'error');
         }
     }
 
@@ -597,8 +626,10 @@ export const Web3Provider = ({ children }) => {
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         let newTaskID = taskID.split("-")[0];
 
+        const notificationId = addNotification('Editing task...', 'loading');
+
         try {
-            addNotification('Editing task...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.updateTask(newTaskID, payout, ipfsHashString);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -610,10 +641,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.updateTask(newTaskID, payout, ipfsHashString, gasOptions);
             await tx.wait();
             console.log("Task edited");
-            addNotification('Task edited successfully!', 'success');
+            updateNotification(notificationId,'Task edited successfully!', 'success');
         } catch (error) {
             console.error("Error editing task:", error);
-            addNotification('Error editing task.', 'error');
+            updateNotification(notificationId,'Error editing task.', 'error');
         }
     }
 
@@ -623,16 +654,18 @@ export const Web3Provider = ({ children }) => {
             return;
         }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
+
+        const notificationId = addNotification('Checking executive status...', 'loading');
         try {
-            addNotification('Checking executive status...', 'loading');
+           
 
             const isExec = await contract.checkIsExecutive(userAddress);
             console.log(`Is ${userAddress} an executive?`, isExec);
-            addNotification(`Executive status: ${isExec}`, isExec ? 'success' : 'error');
+            updateNotification(notificationId,`Executive status: ${isExec}`, isExec ? 'success' : 'error');
             return isExec;
         } catch (error) {
             console.error("Error checking executive status:", error);
-            addNotification('Error checking executive status.', 'error');
+            updateNotification(notificationId,'Error checking executive status.', 'error');
             return false;
         }
     }
@@ -643,8 +676,10 @@ export const Web3Provider = ({ children }) => {
             return;
         }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
+        const notificationId = addNotification('Minting NFT...', 'loading');
+
         try {
-            addNotification('Minting NFT...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.mintNFT(account, membershipType);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -656,10 +691,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.mintNFT(account, membershipType, gasOptions);
             await tx.wait();
             console.log("NFT minted");
-            addNotification('NFT minted successfully!', 'success');
+            updateNotification(notificationId,'NFT minted successfully!', 'success');
         } catch (error) {
             console.error("Error minting NFT:", error);
-            addNotification('Error minting NFT.', 'error');
+            updateNotification(notificationId,'Error minting NFT.', 'error');
         }
     }
 
@@ -669,8 +704,11 @@ export const Web3Provider = ({ children }) => {
             return;
         }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
+
+        const notificationId = addNotification('Minting default NFT...', 'loading');
+
         try {
-            addNotification('Minting default NFT...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.mintDefaultNFT();
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -682,18 +720,21 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.mintDefaultNFT(gasOptions);
             await tx.wait();
             console.log("Default NFT minted");
-            addNotification('Default NFT minted successfully!', 'success');
+            updateNotification(notificationId,'Default NFT minted successfully!', 'success');
         } catch (error) {
             console.error("Error minting default NFT:", error);
-            addNotification('Error minting default NFT.', 'error');
+            updateNotification(notificationId,'Error minting default NFT.', 'error');
         }
     }
 
     // NFT Membership - Update NFT
     async function updateNFT(contractAddress, userAddress, membershipType) {
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
+
+        const notificationId = addNotification('Updating NFT...', 'loading');
+
         try {
-            addNotification('Updating NFT...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.changeMembershipType(userAddress, membershipType);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -705,18 +746,21 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.changeMembershipType(userAddress, membershipType, gasOptions);
             await tx.wait();
             console.log("NFT updated");
-            addNotification('NFT updated successfully!', 'success');
+            updateNotification(notificationId,'NFT updated successfully!', 'success');
         } catch (error) {
             console.error("Error updating NFT:", error);
-            addNotification('Error updating NFT.', 'error');
+            updateNotification(notificationId,'Error updating NFT.', 'error');
         }
     }
 
     // NFT Membership - Set Image URL
     async function setImageURL(contractAddress, memberTypeName, imageURL) {
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
+
+        const notificationId = addNotification('Setting image URL...', 'loading');
+
         try {
-            addNotification('Setting image URL...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.setMemberTypeImage(memberTypeName, imageURL);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -728,10 +772,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.setMemberTypeImage(memberTypeName, imageURL, gasOptions);
             await tx.wait();
             console.log("Image URL updated");
-            addNotification('Image URL updated successfully!', 'success');
+            updateNotification(notificationId,'Image URL updated successfully!', 'success');
         } catch (error) {
             console.error("Error setting image URL:", error);
-            addNotification('Error setting image URL.', 'error');
+            updateNotification(notificationId,'Error setting image URL.', 'error');
         }
     }
 
@@ -741,8 +785,12 @@ export const Web3Provider = ({ children }) => {
             return;
         }
         const contract = getContractInstance(contractAddress, Treasury.abi);
+
+        const notificationId = addNotification('Transferring funds...', 'loading');
+
+
         try {
-            addNotification('Transferring funds...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.receiveTokens(tokenAddress, amount);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -754,18 +802,19 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.receiveTokens(tokenAddress, amount, gasOptions);
             await tx.wait();
             console.log("Funds transferred");
-            addNotification('Funds transferred successfully!', 'success');
+            updateNotification(notificationId,'Funds transferred successfully!', 'success');
         } catch (error) {
             console.error("Error transferring funds:", error);
-            addNotification('Error transferring funds.', 'error');
+            updateNotification(notificationId,'Error transferring funds.', 'error');
         }
     }
 
     // Treasury - Send to Treasury
     async function sendToTreasury(contractAddress, tokenAddress, amount) {
+        const notificationId = addNotification('Sending tokens to treasury...', 'loading');
         try {
             const contract = getContractInstance(contractAddress, Treasury.abi);
-            addNotification('Sending tokens to treasury...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.receiveTokens(tokenAddress, account, amount);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -777,10 +826,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.receiveTokens(tokenAddress, account, amount, gasOptions);
             await tx.wait();
             console.log("Tokens sent to treasury");
-            addNotification('Tokens sent to treasury successfully!', 'success');
+            updateNotification(notificationId,'Tokens sent to treasury successfully!', 'success');
         } catch (error) {
             console.error("Error sending tokens to treasury:", error);
-            addNotification('Error sending tokens to treasury.', 'error');
+            updateNotification(notificationId,'Error sending tokens to treasury.', 'error');
         }
     }
 
@@ -790,8 +839,11 @@ export const Web3Provider = ({ children }) => {
             return;
         }
         const contract = getContractInstance(contractAddress, DirectDemocracyToken.abi);
+
+        const notificationId = addNotification('Minting tokens...', 'loading');
+
         try {
-            addNotification('Minting tokens...', 'loading');
+           
 
             const gasEstimate = await contract.estimateGas.mint();
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -803,10 +855,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.mint(gasOptions);
             await tx.wait();
             console.log("Tokens minted");
-            addNotification('Tokens minted successfully!', 'success');
+            updateNotification(notificationId,'Tokens minted successfully!', 'success');
         } catch (error) {
             console.error("Error minting tokens:", error);
-            addNotification('Error minting tokens.', 'error');
+            updateNotification(notificationId,'Error minting tokens.', 'error');
         }
     }
 
@@ -819,10 +871,12 @@ export const Web3Provider = ({ children }) => {
             return;
         }
 
+        const notificationId = addNotification('Joining without user...', 'loading');
+
         try {
             const contract = getContractInstance(contractAddress, QuickJoin.abi);
 
-            addNotification('Joining without user...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.quickJoinNoUser(username);
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -839,10 +893,10 @@ export const Web3Provider = ({ children }) => {
 
             console.log("Transaction mined:", receipt.transactionHash);
             console.log("User joined successfully with username:", username);
-            addNotification('User joined successfully!', 'success');
+            updateNotification(notificationId,'User joined successfully!', 'success');
         } catch (error) {
             console.error("Error during quickJoinNoUser:", error);
-            addNotification('Error joining user.', 'error');
+            updateNotification(notificationId,'Error joining user.', 'error');
 
             if (error.reason) {
                 console.error("Revert reason:", error.reason);
@@ -868,10 +922,12 @@ export const Web3Provider = ({ children }) => {
             return;
         }
 
+        const notificationId = addNotification('Joining with existing user...', 'loading');
+
         try {
             const contract = getContractInstance(contractAddress, QuickJoin.abi);
 
-            addNotification('Joining with existing user...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.quickJoinWithUser();
             const gasLimit = gasEstimate.mul(127).div(100);
@@ -883,10 +939,10 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.quickJoinWithUser(gasOptions);
             await tx.wait();
             console.log("User joined with existing username");
-            addNotification('User joined successfully!', 'success');
+            updateNotification(notificationId,'User joined successfully!', 'success');
         } catch (error) {
             console.error("Error joining with existing username:", error);
-            addNotification('Error joining user.', 'error');
+            updateNotification(notificationId,'Error joining user.', 'error');
         }
     }
 
@@ -910,8 +966,10 @@ export const Web3Provider = ({ children }) => {
 
         let correctAnswerIndex = answers.indexOf(correctAnswer);
 
+        const notificationId = addNotification('Creating education module...', 'loading');
+
         try {
-            addNotification('Creating education module...', 'loading');
+          
 
             const gasEstimate = await contract.estimateGas.createModule(
                 moduleTitle,
@@ -934,10 +992,10 @@ export const Web3Provider = ({ children }) => {
             );
             await tx.wait();
             console.log("Module created");
-            addNotification('Education module created successfully!', 'success');
+            updateNotification(notificationId,'Education module created successfully!', 'success');
         } catch (error) {
             console.error("Error creating education module:", error);
-            addNotification('Error creating education module.', 'error');
+            updateNotification(notificationId,'Error creating education module.', 'error');
         }
     }
 
@@ -949,12 +1007,14 @@ export const Web3Provider = ({ children }) => {
 
         if (!actualModuleId) {
             console.error(`Invalid moduleId: ${moduleId}`);
-            addNotification('Invalid module ID.', 'error');
+            updateNotification(notificationId,'Invalid module ID.', 'error');
             return false;
         }
 
+        const notificationId = addNotification('Completing module...', 'loading');
+
         try {
-            addNotification('Completing module...', 'loading');
+          
 
             console.log(`Completing module ${actualModuleId} with answer ${answer}`);
             const gasEstimate = await contract.estimateGas.completeModule(actualModuleId, answer);
@@ -966,11 +1026,11 @@ export const Web3Provider = ({ children }) => {
             });
             await tx.wait();
             console.log(`Module ${actualModuleId} completed by user.`);
-            addNotification('Module completed successfully!', 'success');
+            updateNotification(notificationId,'Module completed successfully!', 'success');
             return true;
         } catch (error) {
             console.error(`Error completing module ${moduleId}:`, error);
-            addNotification('Error completing module.', 'error');
+            updateNotification(notificationId,'Error completing module.', 'error');
             return false;
         }
     }
