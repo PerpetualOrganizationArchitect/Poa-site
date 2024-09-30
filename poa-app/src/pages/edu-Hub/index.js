@@ -43,7 +43,8 @@ const EducationHub = () => {
   // Form state
   const [moduleTitle, setModuleTitle] = useState('');
   const [moduleDescription, setModuleDescription] = useState('');
-  const [moduleLink, setModuleLink] = useState(''); // New link state
+  const [moduleLink, setModuleLink] = useState(''); 
+  const [moduleQuestion, setModuleQuestion] = useState(''); 
   const [payout, setPayout] = useState(0);
   const [answers, setAnswers] = useState(['', '', '', '']);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null);
@@ -69,7 +70,8 @@ const EducationHub = () => {
         educationHubAddress,
         moduleTitle,
         moduleDescription,
-        moduleLink, // Include link
+        moduleLink, 
+        moduleQuestion,
         payout,
         answers,
         selectedAnswer
@@ -85,6 +87,7 @@ const EducationHub = () => {
       setModuleTitle('');
       setModuleDescription('');
       setModuleLink('');
+      setModuleQuestion('');
       setPayout(0);
       setAnswers(['', '', '', '']);
       setCorrectAnswerIndex(null);
@@ -132,13 +135,29 @@ const EducationHub = () => {
             <Text fontSize="lg" color="gray.100">
               Learn and take short quizzes to earn tokens
             </Text>
+                
             {isExecutive && (
-              <Button mt={4} colorScheme="teal" onClick={onOpen}>
-                Add New Module
-              </Button>
-            )}
+            <Button
+              onClick={onOpen}
+              colorScheme="blue"
+              position="absolute"
+              top="13px"
+              right="13px"
+              width="40px"              
+              height="40px"     
+              size="lg"
+              p="0"
+              borderRadius="full"
+              boxShadow="xl"
+              _hover={{ transform: 'scale(1.1)' }}
+            >
+              <Box as="span" fontSize="4xl">+</Box>
+            </Button>
+          )}
           </Box>
+  
 
+  
           {/* Add Module Modal */}
           <Modal isOpen={isOpen} onClose={onClose} size="lg">
             <ModalOverlay />
@@ -146,6 +165,7 @@ const EducationHub = () => {
               <ModalHeader>Add New Module</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
+                {/* Module Form */}
                 <FormControl isRequired mb={4}>
                   <FormLabel>Module Title</FormLabel>
                   <Input
@@ -168,6 +188,14 @@ const EducationHub = () => {
                     placeholder="Enter module link (optional)"
                     value={moduleLink}
                     onChange={(e) => setModuleLink(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl isRequired mb={4}>
+                  <FormLabel>Quiz Question</FormLabel>
+                  <Input
+                    placeholder="Enter quiz question"
+                    value={moduleQuestion}
+                    onChange={(e) => setModuleQuestion(e.target.value)}
                   />
                 </FormControl>
                 <FormControl isRequired mb={4}>
@@ -214,6 +242,7 @@ const EducationHub = () => {
                   isDisabled={
                     !moduleTitle ||
                     !moduleDescription ||
+                    !moduleQuestion || 
                     payout <= 0 ||
                     answers.some((ans) => !ans) ||
                     correctAnswerIndex === null
@@ -227,7 +256,7 @@ const EducationHub = () => {
               </ModalFooter>
             </ModalContent>
           </Modal>
-
+  
           <Box p={6} bg="transparent" borderRadius="lg" mx="auto" mt={2} maxWidth="1200px">
             <Grid
               templateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
@@ -294,6 +323,7 @@ const EducationHub = () => {
       )}
     </>
   );
+  
 };
 
 export default EducationHub;

@@ -81,7 +81,7 @@ const QuizModal = ({ module }) => {
           <ModalHeader>{module.name} Quiz</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text mb={4}>{module.info?.description}</Text>
+            <Text mb={4}>{module.info?.question}</Text>
             <RadioGroup onChange={setSelectedAnswerIndex} value={selectedAnswerIndex}>
               <Stack direction="column">
                 {module.info?.answers?.map((answerObj) => (

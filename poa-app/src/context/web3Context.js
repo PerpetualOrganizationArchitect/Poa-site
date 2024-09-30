@@ -782,6 +782,7 @@ export const Web3Provider = ({ children }) => {
             title: moduleTitle,
             description: moduleDescription,
             link: moduleLink,
+            question: moduleQuestion,
             answers: answers,
         };
 
