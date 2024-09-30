@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Spinner,
@@ -26,14 +26,19 @@ import {
   FormErrorMessage,
   useDisclosure,
   useToast,
+  Progress, 
+  Icon, 
 } from '@chakra-ui/react';
+import { CheckIcon } from '@chakra-ui/icons'; 
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { usePOContext } from '@/context/POContext';
 import { useWeb3Context } from '@/context/web3Context';
+import { useUserContext } from '@/context/UserContext';
 import QuizModal from '@/components/eduHub/QuizModal';
 
 const EducationHub = () => {
   const { poContextLoading, educationModules, nftMembershipContractAddress, educationHubAddress } = usePOContext();
+  const { completedModules } = useUserContext();
   const { createEduModule, checkIsExecutive, address } = useWeb3Context();
   const [isExecutive, setIsExecutive] = useState(false);
   const [isLoadingExecCheck, setIsLoadingExecCheck] = useState(true);
@@ -51,7 +56,7 @@ const EducationHub = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Check if the user is an executive
-  React.useEffect(() => {
+  useEffect(() => {
     const checkExecutiveStatus = async () => {
       if (nftMembershipContractAddress && address) {
         const execStatus = await checkIsExecutive(nftMembershipContractAddress, address);
@@ -106,6 +111,25 @@ const EducationHub = () => {
     }
   };
 
+
+  const totalModules = educationModules.length;
+  const completedModuleIds = completedModules?.map((module) => module.id) || [];
+  const modulesCompletedCount = completedModules?.length || 0;
+  const progressPercentage = totalModules ? (modulesCompletedCount / totalModules) * 100 : 0;
+
+  // Sort modules: uncompleted first
+  const sortedModules = [...educationModules].sort((a, b) => {
+    const aCompleted = completedModuleIds.includes(a.id);
+    const bCompleted = completedModuleIds.includes(b.id);
+    if (aCompleted && !bCompleted) {
+      return 1; 
+    } else if (!aCompleted && bCompleted) {
+      return -1; 
+    } else {
+      return 0; 
+    }
+  });
+
   return (
     <>
       <Navbar />
@@ -115,6 +139,7 @@ const EducationHub = () => {
         </Center>
       ) : (
         <Box position="relative">
+          {/* Main Box */}
           <Box
             p={5}
             sx={{
@@ -135,29 +160,42 @@ const EducationHub = () => {
             <Text fontSize="lg" color="gray.100">
               Learn and take short quizzes to earn tokens
             </Text>
-                
-            {isExecutive && (
-            <Button
-              onClick={onOpen}
-              colorScheme="blue"
-              position="absolute"
-              top="13px"
-              right="13px"
-              width="40px"              
-              height="40px"     
-              size="lg"
-              p="0"
-              borderRadius="full"
-              boxShadow="xl"
-              _hover={{ transform: 'scale(1.1)' }}
-            >
-              <Box as="span" fontSize="4xl">+</Box>
-            </Button>
-          )}
-          </Box>
-  
 
-  
+            {/* Progress Bar */}
+            <Box mt={6} display="flex" flexDirection="column" alignItems="center">
+              <Progress
+                value={progressPercentage}
+                size="lg"
+                colorScheme="green"
+                borderRadius="md"
+                w="50%" 
+              />
+              <Text color="gray.200" mt={2} fontSize="sm">
+                {modulesCompletedCount} of {totalModules} modules completed
+              </Text>
+            </Box>
+
+
+            {isExecutive && (
+              <Button
+                onClick={onOpen}
+                colorScheme="blue"
+                position="absolute"
+                top="13px"
+                right="13px"
+                width="40px"
+                height="40px"
+                size="lg"
+                p="0"
+                borderRadius="full"
+                boxShadow="xl"
+                _hover={{ transform: 'scale(1.1)' }}
+              >
+                <Box as="span" fontSize="4xl">+</Box>
+              </Button>
+            )}
+          </Box>
+
           {/* Add Module Modal */}
           <Modal isOpen={isOpen} onClose={onClose} size="lg">
             <ModalOverlay />
@@ -256,74 +294,88 @@ const EducationHub = () => {
               </ModalFooter>
             </ModalContent>
           </Modal>
-  
+
           <Box p={6} bg="transparent" borderRadius="lg" mx="auto" mt={2} maxWidth="1200px">
             <Grid
               templateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
               gap={8}
             >
-              {educationModules.map((module) => (
-                <GridItem
-                  key={module.id}
-                  borderRadius="md"
-                  p={6}
-                  sx={{
-                    backdropFilter: 'blur(20px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.73)',
-                    border: '1px solid rgba(255, 255, 255, 0.25)',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  }}
-                  transition="all 0.3s ease"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="space-between"
-                >
-                  <Box mb={6}>
-                    <Heading as="h3" fontSize="27" mb={6} color="white">
-                      {module.name}
-                    </Heading>
-                    <Text fontSize="16" color="gray.200">
-                      {module.info?.description}
-                    </Text>
-                  </Box>
-                  <Box mt="auto">
-                    <Text mb={2} fontSize="lg" fontWeight="bold" color="white">
-                      Reward: {module.payout} Tokens
-                    </Text>
-                    <Flex justifyContent="space-between" alignItems="center" mt={4}>
-                      {module.info?.link ? (
-                        <ChakraLink href={module.info.link} isExternal>
-                          <Button
-                            _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
-                            size="lg"
-                            colorScheme="green"
-                          >
-                            Learn
-                          </Button>
-                        </ChakraLink>
-                      ) : (
-                        <ChakraLink href={`https://ipfs.io/ipfs/${module.ipfsHash}`} isExternal>
-                          <Button
-                            _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
-                            size="lg"
-                            colorScheme="green"
-                          >
-                            Learn
-                          </Button>
-                        </ChakraLink>
-                      )}
-                      <QuizModal module={module} />
-                    </Flex>
-                  </Box>
-                </GridItem>
-              ))}
+              {sortedModules.map((module) => {
+                const isCompleted = completedModuleIds.includes(module.id);
+                return (
+                  <GridItem
+                    key={module.id}
+                    borderRadius="md"
+                    p={6}
+                    position="relative" // To position the check mark
+                    sx={{
+                      backdropFilter: 'blur(20px)',
+                      backgroundColor: 'rgba(0, 0, 0, 0.73)',
+                      border: '1px solid rgba(255, 255, 255, 0.25)',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}
+                    transition="all 0.3s ease"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                  >
+                    {/* Check Mark for Completed Modules */}
+                    {isCompleted && (
+                      <Box
+                        position="absolute"
+                        top="10px"
+                        right="10px"
+                        color="green.400"
+                      >
+                        <Icon as={CheckIcon} w={6} h={6} />
+                      </Box>
+                    )}
+                    <Box mb={6}>
+                      <Heading as="h3" fontSize="27" mb={6} color="white">
+                        {module.name}
+                      </Heading>
+                      <Text fontSize="16" color="gray.200">
+                        {module.info?.description}
+                      </Text>
+                    </Box>
+                    <Box mt="auto">
+                      <Text mb={2} fontSize="lg" fontWeight="bold" color="white">
+                        Reward: {module.payout} Tokens
+                      </Text>
+                      <Flex justifyContent="space-between" alignItems="center" mt={4}>
+                        {module.info?.link ? (
+                          <ChakraLink href={module.info.link} isExternal>
+                            <Button
+                              _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
+                              size="lg"
+                              colorScheme="green"
+                            >
+                              Learn
+                            </Button>
+                          </ChakraLink>
+                        ) : (
+                          <ChakraLink href={`https://ipfs.io/ipfs/${module.ipfsHash}`} isExternal>
+                            <Button
+                              _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
+                              size="lg"
+                              colorScheme="green"
+                            >
+                              Learn
+                            </Button>
+                          </ChakraLink>
+                        )}
+                        <QuizModal module={module} />
+                      </Flex>
+                    </Box>
+                  </GridItem>
+                );
+              })}
             </Grid>
           </Box>
         </Box>
       )}
     </>
   );
-  
 };
 
 export default EducationHub;
