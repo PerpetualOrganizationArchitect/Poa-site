@@ -655,17 +655,16 @@ export const Web3Provider = ({ children }) => {
         }
         const contract = getContractInstance(contractAddress, NFTMembership.abi);
 
-        const notificationId = addNotification('Checking executive status...', 'loading');
+        
         try {
-           
 
             const isExec = await contract.checkIsExecutive(userAddress);
             console.log(`Is ${userAddress} an executive?`, isExec);
-            updateNotification(notificationId,`Executive status: ${isExec}`, isExec ? 'success' : 'error');
+           
             return isExec;
         } catch (error) {
             console.error("Error checking executive status:", error);
-            updateNotification(notificationId,'Error checking executive status.', 'error');
+            
             return false;
         }
     }
