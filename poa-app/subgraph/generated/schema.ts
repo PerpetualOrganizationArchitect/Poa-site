@@ -2352,6 +2352,19 @@ export class ModuleInfo extends Entity {
     this.set("description", Value.fromString(value));
   }
 
+  get question(): string {
+    let value = this.get("question");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set question(value: string) {
+    this.set("question", Value.fromString(value));
+  }
+
   get link(): string {
     let value = this.get("link");
     if (!value || value.kind == ValueKind.NULL) {

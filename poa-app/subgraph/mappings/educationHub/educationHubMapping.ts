@@ -47,6 +47,9 @@ export function handleModuleIPFS(moduleInfoBytes: Bytes): void {
   let link = ipfsContent.get("link");
   moduleInfoEntity.link = link && !link.isNull() ? link.toString() : "";
 
+  let question = ipfsContent.get("question");
+  moduleInfoEntity.question = question && !question.isNull() ? question.toString() : "";
+
   // Handling ModuleAnswer within ModuleInfo
   let answers = ipfsContent.get("answers");
   if (answers && !answers.isNull() && answers.kind == JSONValueKind.ARRAY) {
@@ -77,6 +80,7 @@ export function handleModuleCompleted(event: ModuleCompletedEvent): void {
     }
 
   moduleCompletion.user = educationHub.POname + "-" + event.params.completer.toHex();
+  moduleCompletion.module = event.params.id.toHex() + "-" + event.address.toHex()
   moduleCompletion.save();
 
 }

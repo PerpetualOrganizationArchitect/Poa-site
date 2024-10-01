@@ -7,6 +7,7 @@ import { ProjectProvider } from "@/context/ProjectContext";
 import { UserProvider } from "@/context/UserContext";
 import { POProvider } from "@/context/POContext";
 import { VotingProvider } from "@/context/VotingContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -31,6 +32,7 @@ import {
 import NetworkModalControl from "@/components/NetworkModalControl";
 import { ApolloProvider } from '@apollo/client';
 import client from '../util//apolloClient';
+import Notification from '@/components/Notifications';
 
 
 
@@ -72,14 +74,17 @@ function MyApp({ Component, pageProps }) {
                 <VotingProvider>
                   <ProjectProvider>
                   <UserProvider>
-                    <Web3Provider>
-                      <DataBaseProvider>
-                        <ChakraProvider theme={theme}>
-                          <NetworkModalControl />  
-                          <Component {...pageProps} />
-                        </ChakraProvider>
-                      </DataBaseProvider>
-                    </Web3Provider>
+                    <NotificationProvider>
+                      <Web3Provider>
+                        <DataBaseProvider>
+                          <ChakraProvider theme={theme}>
+                            <NetworkModalControl />
+                            <Notification />  
+                            <Component {...pageProps} />
+                          </ChakraProvider>
+                        </DataBaseProvider>
+                      </Web3Provider>
+                    </NotificationProvider>
                     </UserProvider>
                   </ProjectProvider>
                 </VotingProvider>

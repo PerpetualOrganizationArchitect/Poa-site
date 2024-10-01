@@ -139,6 +139,17 @@ export const FETCH_ALL_PO_DATA = gql`
           name
           ipfsHash
           payout
+          info{
+            id
+            description
+            link
+            question
+            answers{
+              id
+              answer 
+              index
+            }
+          }
           completetions {
             id
             user {
@@ -183,6 +194,12 @@ export const FETCH_ALL_PO_DATA = gql`
       ddTokenBalance
       totalVotes
       dateJoined
+      modulesCompleted{
+        id
+        module{
+          id
+        }
+      }
       memberType {
         memberTypeName
         imageURL

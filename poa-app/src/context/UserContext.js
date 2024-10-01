@@ -17,6 +17,7 @@ export const UserProvider = ({ children }) => {
     const [hasMemberNFT, setHasMemberNFT] = useState(false);
     const [claimedTasks, setClaimedTasks] = useState([]);
     const [userProposals, setUserProposals] = useState([]);
+    const [completedModules, setCompletedModules] = useState([]); // New state for completed modules
     const [userDataLoading, setUserDataLoading] = useState(true);
     const router = useRouter();
     const { userDAO } = router.query;
@@ -53,6 +54,10 @@ export const UserProvider = ({ children }) => {
             const userTasks = user?.tasks || [];
             const tasksCompleted = userTasks.filter(task => task.completed).length;
 
+            // Extract the completed modules
+            const completedModulesList = user?.modulesCompleted?.map(mc => mc.module) || [];
+            setCompletedModules(completedModulesList); // Set the completed modules
+
             setGraphUsername(username);
             setHasExecNFT(hasExecNFT);
             setHasMemberNFT(hasMemberNFT);
@@ -78,7 +83,6 @@ export const UserProvider = ({ children }) => {
             ];
 
             const currentTime = Math.floor(Date.now() / 1000); 
-
 
             proposals.sort((a, b) => {
                 const aIsCompleted = a.experationTimestamp < currentTime;
@@ -111,8 +115,9 @@ export const UserProvider = ({ children }) => {
         hasExecNFT,
         hasMemberNFT,
         claimedTasks,
+        completedModules, 
         error,
-    }), [userDataLoading, userProposals, userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, error]);
+    }), [userDataLoading, userProposals, userData, graphUsername, hasExecNFT, hasMemberNFT, claimedTasks, completedModules, error]);
 
     return (
         <UserContext.Provider value={contextValue}>
