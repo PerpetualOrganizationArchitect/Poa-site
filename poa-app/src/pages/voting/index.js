@@ -117,7 +117,6 @@ const Voting = () => {
   const getWinner = async (address, proposalId) => {
     const newID = proposalId.split("-")[0];
     const tx = await getWinnerDDVoting(address, newID);
-    await tx.wait();
   };
   
 

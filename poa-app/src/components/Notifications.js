@@ -1,7 +1,12 @@
 import React from 'react';
-import { Box, Icon, Text, CloseButton, VStack } from '@chakra-ui/react';
+import { Box, Icon, Text, CloseButton, VStack, keyframes } from '@chakra-ui/react';
 import { useNotificationContext } from '@/context/NotificationContext';
 import { FiLoader, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 
 const Notification = () => {
   const { notifications, removeNotification } = useNotificationContext();
@@ -52,6 +57,8 @@ const Notification = () => {
                 ? 'green.500'
                 : 'red.500'
             }
+            
+            animation={status === 'loading' ? `${spin} 2s linear infinite` : undefined}
           />
           <Text flex="1">{message}</Text>
           {status === 'error' && (
