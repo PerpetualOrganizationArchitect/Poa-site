@@ -46,7 +46,7 @@ export const POProvider = ({ children }) => {
     const [poContextLoading, setPoContextLoading] = useState(true);
     const [rules, setRules] = useState(null);
 
-    const [educationModules, setEducationModules] = useState([]); // New state for modules
+    const [educationModules, setEducationModules] = useState([]); 
 
     const [account, setAccount] = useState('0x00');
     const router = useRouter();
