@@ -445,12 +445,13 @@ const PerpetualOrgDashboard = () => {
               </VStack>
               <Box p={4}>
                 {educationModules && educationModules.length > 0 ? (
-                  <VStack spacing={4} align="flex-start">
-                    {educationModules.map((module) => (
+                  <HStack spacing={4} align="flex-start">
+                    {educationModules.slice(0,3).map((module) => (
                       <Box
                         key={module.id}
                         w="100%"
                         maxW="33%"
+                        h="auto"
                         p={4}
                         borderRadius="xl"
                         bg="black"
@@ -473,7 +474,7 @@ const PerpetualOrgDashboard = () => {
                         </HStack>
                       </Box>
                     ))}
-                  </VStack>
+                  </HStack>
                 ) : (
                   <Text pl={6} fontSize="lg" mt={2}>
                     No modules available at this time.
