@@ -359,7 +359,7 @@ const PerpetualOrgDashboard = () => {
                   boxShadow="lg"
                   position="relative"
                   zIndex={2}
-                  _hover={{ boxShadow: "md", transform: "scale(1.03)" }}
+                  _hover={{ boxShadow: "md", transform: "scale(1.02)" }}
                 >
                   <div style={glassLayerStyle} />
                   <VStack pb={1} align="flex-start" position="relative" borderTopRadius="2xl">
@@ -419,9 +419,7 @@ const PerpetualOrgDashboard = () => {
                         View Full Constitution
                       </Button>
                     </Link2>
-                    <Text fontSize="sm" mb={0} mt="2" ml="6" color="gray.500">
-                      See the full constitution for explanations and full rules.
-                    </Text>
+
                   </HStack>
                 </Box>
               </Box>
@@ -461,7 +459,7 @@ const PerpetualOrgDashboard = () => {
                           <Text fontSize="xl" fontWeight="bold">
                             {module.name}
                           </Text>
-                          <HStack  mt={4} justifyContent="space-between">
+                          <HStack  mt={6} justifyContent="space-between">
                         {/* <Text mt={2}>{module.description}</Text> */}
                         <Link2 href={`/modules/${module.id}`}>
                           

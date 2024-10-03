@@ -14,6 +14,7 @@ async function fetchLeaderboardData(id, users) {
             id: user.id,
             name: user.Account.userName,
             token: user.ptTokenBalance,
+            type: user.memberType.memberTypeName,
         }));
     } else {
         console.error("No user data available");
