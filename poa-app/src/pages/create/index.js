@@ -303,14 +303,18 @@ const ArchitectPage = () => {
       </Box>
 
       {/* Right Content Area for Input Forms */}
-      <Box width={["100%", "65%"]} overflowY="auto" p={6}>
+      <Box width={["100%", "65%"]} overflowY="auto" p={8}>
         {currentStep === steps.ORGANIZATION_DETAILS && (
           <>
             {/* Organization Details Form */}
-            <Stack spacing={4}>
+            <Stack spacing={6} p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
+              <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
+                Describe Your Organization
+              </Text>
               <FormControl id="orgName" isRequired>
-                <FormLabel>Organization Name</FormLabel>
+                <FormLabel fontSize="lg" fontWeight="medium">Organization Name</FormLabel>
                 <Input
+                  size="lg"
                   placeholder="Enter your organization name"
                   value={orgDetails.POname}
                   onChange={(e) =>
@@ -319,8 +323,9 @@ const ArchitectPage = () => {
                 />
               </FormControl>
               <FormControl id="orgDescription" isRequired>
-                <FormLabel>Organization Description</FormLabel>
+                <FormLabel fontSize="lg" fontWeight="medium">Organization Description</FormLabel>
                 <Textarea
+                  size="lg"
                   placeholder="Enter a brief description"
                   value={orgDetails.description}
                   onChange={(e) =>
@@ -329,15 +334,15 @@ const ArchitectPage = () => {
                 />
               </FormControl>
               <FormControl id="orgLinks">
-                <FormLabel>Organization Links</FormLabel>
-                <Button onClick={() => setIsLinksModalOpen(true)}>
+                <FormLabel fontSize="lg" fontWeight="medium">Organization Links</FormLabel>
+                <Button size="lg" onClick={() => setIsLinksModalOpen(true)}>
                   {linksAdded ? "Edit Links" : "Add Links"}
                 </Button>
                 {linksAdded && <Badge colorScheme="green" ml={2}>Links Added</Badge>}
               </FormControl>
               <FormControl id="orgLogo">
-                <FormLabel>Organization Logo</FormLabel>
-                <Button onClick={() => setIsLogoModalOpen(true)}>
+                <FormLabel fontSize="lg" fontWeight="medium">Organization Logo</FormLabel>
+                <Button size="lg" onClick={() => setIsLogoModalOpen(true)}>
                   {logoUploaded ? "Change Logo" : "Upload Logo"}
                 </Button>
                 {logoUploaded && <Badge colorScheme="green" ml={2}>Logo Uploaded</Badge>}
@@ -346,7 +351,8 @@ const ArchitectPage = () => {
 
             {/* Next Button */}
             <Button
-              mt={4}
+              mt={6}
+              size="lg"
               colorScheme="teal"
               onClick={handleNextStep}
               isDisabled={!orgDetails.POname || !orgDetails.description}
@@ -359,19 +365,18 @@ const ArchitectPage = () => {
         {currentStep === steps.VOTING_FEATURES && (
           <>
             {/* Voting Features Selection */}
-            <Text fontSize="xl" fontWeight="bold" mb={4}>
-              Select Voting Features
-            </Text>
-            <Stack spacing={4}>
+            <Stack spacing={6} p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
+              <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
+                Select Voting Features
+              </Text>
               <FormControl isRequired>
-                <FormLabel>Enable Direct Democracy</FormLabel>
+                <FormLabel fontSize="lg" fontWeight="medium">Enable Direct Democracy</FormLabel>
                 <Checkbox
+                  size="lg"
+                  colorScheme="teal"
                   isChecked={orgDetails.directDemocracyEnabled}
                   onChange={(e) =>
-                    setOrgDetails({
-                      ...orgDetails,
-                      directDemocracyEnabled: e.target.checked,
-                    })
+                    setOrgDetails({ ...orgDetails, directDemocracyEnabled: e.target.checked })
                   }
                 >
                   Direct Democracy
@@ -379,25 +384,24 @@ const ArchitectPage = () => {
               </FormControl>
               {orgDetails.directDemocracyEnabled && (
                 <FormControl isRequired>
-                  <FormLabel>Direct Democracy Approval Percentage (Quorum)</FormLabel>
+                  <FormLabel fontSize="lg" fontWeight="medium">Direct Democracy Approval Percentage (Quorum)</FormLabel>
                   <Input
                     type="number"
+                    size="lg"
                     placeholder="Enter approval percentage"
                     value={orgDetails.directDemocracyQuorum}
                     onChange={(e) => {
                       const value = parseInt(e.target.value, 10);
-                      setOrgDetails({
-                        ...orgDetails,
-                        directDemocracyQuorum: value,
-                      });
+                      setOrgDetails({ ...orgDetails, directDemocracyQuorum: value });
                     }}
                   />
                 </FormControl>
               )}
               <FormControl>
-                <FormLabel>Select Voting Type (Choose One)</FormLabel>
+                <FormLabel fontSize="lg" fontWeight="medium">Select Voting Type (Choose One)</FormLabel>
                 <Select
                   placeholder="Select voting type"
+                  size="lg"
                   value={
                     orgDetails.hybridVotingEnabled
                       ? "Hybrid"
@@ -418,73 +422,74 @@ const ArchitectPage = () => {
                   <option value="Participation">Participation-Based Voting</option>
                 </Select>
               </FormControl>
+
               {orgDetails.hybridVotingEnabled && (
                 <>
                   <FormControl>
-                    <FormLabel>Hybrid Voting Weights</FormLabel>
-                    <Button onClick={() => setIsWeightModalOpen(true)}>
+                    <FormLabel fontSize="lg" fontWeight="medium">Hybrid Voting Weights</FormLabel>
+                    <Button
+                      size="lg"
+                      onClick={() => setIsWeightModalOpen(true)}
+                      bg="teal.500"
+                      color="white"
+                      _hover={{ bg: "teal.600" }}
+                    >
                       {hybridWeightsSet ? "Edit Weights" : "Set Weights"}
                     </Button>
                     {hybridWeightsSet && <Badge colorScheme="green" ml={2}>Weights Set</Badge>}
-                    
                   </FormControl>
                   <FormControl isRequired>
-                    <FormLabel>Hybrid Voting Approval Percentage (Quorum)</FormLabel>
+                    <FormLabel fontSize="lg" fontWeight="medium">Hybrid Voting Approval Percentage (Quorum)</FormLabel>
                     <Input
                       type="number"
+                      size="lg"
                       placeholder="Enter approval percentage"
                       value={orgDetails.hybridVoteQuorum}
                       onChange={(e) => {
                         const value = parseInt(e.target.value, 10);
-                        setOrgDetails({
-                          ...orgDetails,
-                          hybridVoteQuorum: value,
-                        });
+                        setOrgDetails({ ...orgDetails, hybridVoteQuorum: value });
                       }}
                     />
                   </FormControl>
                 </>
               )}
+
               {orgDetails.participationVotingEnabled && (
                 <FormControl isRequired>
-                  <FormLabel>Participation Voting Approval Percentage (Quorum)</FormLabel>
+                  <FormLabel fontSize="lg" fontWeight="medium">Participation Voting Approval Percentage (Quorum)</FormLabel>
                   <Input
                     type="number"
+                    size="lg"
                     placeholder="Enter approval percentage"
                     value={orgDetails.participationVoteQuorum}
                     onChange={(e) => {
                       const value = parseInt(e.target.value, 10);
-                      setOrgDetails({
-                        ...orgDetails,
-                        participationVoteQuorum: value,
-                      });
+                      setOrgDetails({ ...orgDetails, participationVoteQuorum: value });
                     }}
                   />
                 </FormControl>
               )}
+
               <FormControl>
-                <FormLabel>Enable Quadratic Voting</FormLabel>
+                <FormLabel fontSize="lg" fontWeight="medium">Enable Quadratic Voting</FormLabel>
                 <Checkbox
+                  size="lg"
+                  colorScheme="teal"
                   isChecked={orgDetails.quadraticVotingEnabled}
                   onChange={(e) =>
-                    setOrgDetails({
-                      ...orgDetails,
-                      quadraticVotingEnabled: e.target.checked,
-                    })
+                    setOrgDetails({ ...orgDetails, quadraticVotingEnabled: e.target.checked })
                   }
                 >
                   Quadratic Voting
                 </Checkbox>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Voting Contract Control</FormLabel>
+                <FormLabel fontSize="lg" fontWeight="medium">Voting Contract Control</FormLabel>
                 <Select
+                  size="lg"
                   value={orgDetails.votingControlType}
                   onChange={(e) =>
-                    setOrgDetails({
-                      ...orgDetails,
-                      votingControlType: e.target.value,
-                    })
+                    setOrgDetails({ ...orgDetails, votingControlType: e.target.value })
                   }
                 >
                   {orgDetails.directDemocracyEnabled && (
@@ -498,34 +503,46 @@ const ArchitectPage = () => {
                   )}
                 </Select>
               </FormControl>
+              {/* Next Button */}
+              <Button
+                mt={6}
+                size="lg"
+                colorScheme="teal"
+                onClick={handleNextStep}
+              >
+                Next
+              </Button>
             </Stack>
 
-            {/* Next Button */}
-            <Button mt={4} colorScheme="teal" onClick={handleNextStep}>
-              Next
-            </Button>
           </>
         )}
 
         {currentStep === steps.ADDITIONAL_SETTINGS && (
           <>
             {/* Additional Settings */}
-            <Text fontSize="xl" fontWeight="bold" mb={4}>
-              Additional Settings
-            </Text>
-            <Stack spacing={4}>
+            <Stack spacing={6} p={6} border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
+              <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
+                Additional Settings
+              </Text>
               <FormControl>
-                <FormLabel>Do you want to add more roles?</FormLabel>
-                <Button onClick={() => setIsMemberSpecificationModalOpen(true)}>
+                <FormLabel fontSize="lg" fontWeight="medium">Do you want to add more roles?</FormLabel>
+                <Button
+                  size="lg"
+                  colorScheme="teal"
+                  onClick={() => setIsMemberSpecificationModalOpen(true)}
+                >
                   Add Roles
                 </Button>
               </FormControl>
+              <Button
+                mt={6}
+                size="lg"
+                colorScheme="teal"
+                onClick={handleNextStep}
+              >
+                Next
+              </Button>
             </Stack>
-
-            {/* Next Button */}
-            <Button mt={4} colorScheme="teal" onClick={handleNextStep}>
-              Next
-            </Button>
           </>
         )}
 
@@ -537,14 +554,17 @@ const ArchitectPage = () => {
         />
         <WeightModal
           isOpen={isWeightModalOpen}
-          onSave={()=>{handleWeight; setHybridWeightsSet(true);}}
+          onSave={() => {
+            handleWeight();
+            setHybridWeightsSet(true);
+          }}
           onClose={() => setIsWeightModalOpen(false)}
         />
         <LinksModal
           isOpen={isLinksModalOpen}
           onSave={(links) => {
             setOrgDetails({ ...orgDetails, links });
-            setLinksAdded(true); 
+            setLinksAdded(true);
           }}
           onClose={() => setIsLinksModalOpen(false)}
         />
@@ -566,7 +586,7 @@ const ArchitectPage = () => {
           isOpen={isLogoModalOpen}
           onSave={(ipfsUrl) => {
             setOrgDetails({ ...orgDetails, logoURL: ipfsUrl });
-            setLogoUploaded(true); 
+            setLogoUploaded(true);
           }}
           onClose={() => setIsLogoModalOpen(false)}
         />
