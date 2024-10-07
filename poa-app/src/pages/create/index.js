@@ -1,5 +1,3 @@
-// ArchitectPage.js
-
 import React, { useState, useEffect, useRef } from "react";
 import {
   Spinner,
@@ -18,6 +16,7 @@ import {
   Select,
   Badge,
 } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"; // Import icons for collapse toggle
 import OpenAI from "openai";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
@@ -57,6 +56,8 @@ const ArchitectPage = () => {
   const [openai, setOpenai] = useState(null);
   const [isInputVisible, setIsInputVisible] = useState(true);
   const [currentStep, setCurrentStep] = useState(steps.ORGANIZATION_DETAILS);
+
+  const [isCollapsed, setIsCollapsed] = useState(false); // State for collapse toggle
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Default", "Executive"],
@@ -267,43 +268,60 @@ const ArchitectPage = () => {
   const [logoUploaded, setLogoUploaded] = useState(false); 
   const [hybridWeightsSet, setHybridWeightsSet] = useState(false);
 
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed); // Toggle function for collapse
+
   return (
     <Flex height="100vh" overflow="hidden">
       {/* Left Sidebar for Chat Bot */}
       <Box
-        width={["100%", "35%"]}
+        width={isCollapsed ? "5%" : ["100%", "35%"]} // Adjust width based on isCollapsed state
         borderRight="1px solid #e2e8f0"
         overflowY="auto"
         overflowX="hidden"
         position="relative"
         p={4}
       >
-        {/* Conversation Log */}
-        <Box overflowY="auto" width="full" pt="2" pb="100px">
-          <ConversationLog messages={messages} />
-        </Box>
-        {/* Input Box */}
-        {isInputVisible && (
-          <Box
-            position="absolute"
-            bottom="0"
-            width="full"
-            p={2}
-            bg="white"
-            borderTop="1px solid #e2e8f0"
-          >
-            <ArchitectInput
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              onSubmit={handleSendClick}
-              isDisabled={isWaiting}
-            />
-          </Box>
+        {/* Collapse/Expand Button */}
+        <Button
+          position="absolute"
+          top="10px"
+          right="-20px"
+          onClick={toggleCollapse}
+          borderRadius="full"
+          colorScheme="teal"
+        >
+          {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />} {/* Icon changes */}
+        </Button>
+
+        {/* Only show chat content if not collapsed */}
+        {!isCollapsed && (
+          <>
+            <Box overflowY="auto" width="full" pt="20" pb="100px">
+              <ConversationLog messages={messages} />
+            </Box>
+            {isInputVisible && (
+              <Box
+                position="absolute"
+                bottom="0"
+                width="full"
+                p={2}
+                bg="white"
+                borderTop="1px solid #e2e8f0"
+              >
+                <ArchitectInput
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  onSubmit={handleSendClick}
+                  isDisabled={isWaiting}
+                />
+              </Box>
+            )}
+          </>
         )}
       </Box>
 
       {/* Right Content Area for Input Forms */}
-      <Box width={["100%", "65%"]} overflowY="auto" p={8}>
+      <Box width={isCollapsed ? "95%" : ["100%", "65%"]} overflowY="auto" p={8}>
         {currentStep === steps.ORGANIZATION_DETAILS && (
           <>
             {/* Organization Details Form */}
