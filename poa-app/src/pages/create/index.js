@@ -181,6 +181,16 @@ const ArchitectPage = () => {
     }
   };
 
+  const handleBackStep = () => {
+    if (currentStep === steps.VOTING_FEATURES) {
+      setCurrentStep(steps.ORGANIZATION_DETAILS);
+    } else if (currentStep === steps.ADDITIONAL_SETTINGS) {
+      setCurrentStep(steps.VOTING_FEATURES);
+    } else if (currentStep === steps.CONFIRMATION) {
+      setCurrentStep(steps.ADDITIONAL_SETTINGS);
+    }
+  };
+
   const createAndUploadJson = async () => {
     const jsonData = {
       description: orgDetails.description,
@@ -418,18 +428,26 @@ const ArchitectPage = () => {
                   </Badge>
                 )}
               </FormControl>
+              {/* Next and Back Buttons */}
+              <Flex justifyContent="space-between" mt={6}>
+                <Button
+                  size="lg"
+                  colorScheme="gray"
+                  onClick={handleBackStep}
+                  isDisabled={currentStep === steps.ORGANIZATION_DETAILS}
+                >
+                  Back
+                </Button>
+                <Button
+                  size="lg"
+                  colorScheme="teal"
+                  onClick={handleNextStep}
+                  isDisabled={!orgDetails.POname || !orgDetails.description}
+                >
+                  Next
+                </Button>
+              </Flex>
             </Stack>
-  
-            {/* Next Button */}
-            <Button
-              mt={6}
-              size="lg"
-              colorScheme="teal"
-              onClick={handleNextStep}
-              isDisabled={!orgDetails.POname || !orgDetails.description}
-            >
-              Next
-            </Button>
           </>
         )}
   
@@ -439,6 +457,7 @@ const ArchitectPage = () => {
             <Stack
               spacing={6}
               p={6}
+              bg="white"
               border="1px solid"
               borderColor="gray.200"
               borderRadius="md"
@@ -621,15 +640,24 @@ const ArchitectPage = () => {
                   )}
                 </Select>
               </FormControl>
-              {/* Next Button */}
-              <Button
-                mt={6}
-                size="lg"
-                colorScheme="teal"
-                onClick={handleNextStep}
-              >
-                Next
-              </Button>
+              {/* Next and Back Buttons */}
+              <Flex justifyContent="space-between" mt={6}>
+                <Button
+                  size="lg"
+                  colorScheme="gray"
+                  onClick={handleBackStep}
+                  isDisabled={currentStep === steps.ORGANIZATION_DETAILS}
+                >
+                  Back
+                </Button>
+                <Button
+                  size="lg"
+                  colorScheme="teal"
+                  onClick={handleNextStep}
+                >
+                  Next
+                </Button>
+              </Flex>
             </Stack>
           </>
         )}
@@ -644,6 +672,7 @@ const ArchitectPage = () => {
               borderColor="gray.200"
               borderRadius="md"
               boxShadow="md"
+              bg="white"
             >
               <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
                 Additional Settings
@@ -660,14 +689,24 @@ const ArchitectPage = () => {
                   Add Roles
                 </Button>
               </FormControl>
-              <Button
-                mt={6}
-                size="lg"
-                colorScheme="teal"
-                onClick={handleNextStep}
-              >
-                Next
-              </Button>
+              {/* Next and Back Buttons */}
+              <Flex justifyContent="space-between" mt={6}>
+                <Button
+                  size="lg"
+                  colorScheme="gray"
+                  onClick={handleBackStep}
+                  isDisabled={currentStep === steps.ORGANIZATION_DETAILS}
+                >
+                  Back
+                </Button>
+                <Button
+                  size="lg"
+                  colorScheme="teal"
+                  onClick={handleNextStep}
+                >
+                  Next
+                </Button>
+              </Flex>
             </Stack>
           </>
         )}
@@ -724,8 +763,6 @@ const ArchitectPage = () => {
       </Box>
     </Flex>
   );
-  
-  
 };
 
 export default ArchitectPage;
