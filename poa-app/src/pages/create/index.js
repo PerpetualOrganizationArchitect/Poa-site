@@ -19,8 +19,16 @@ import {
   HStack,
   VStack,
   Progress,
+  IconButton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"; // Import icons for collapse toggle
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons"; 
 import OpenAI from "openai";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
@@ -33,6 +41,8 @@ import Deployer from "@/components/Architect/TempDeployer";
 import { useWeb3Context } from "@/context/web3Context";
 import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
+import { useRouter } from "next/router";
+
 
 const steps = {
   ORGANIZATION_DETAILS: "ORGANIZATION_DETAILS",
@@ -71,6 +81,22 @@ const ArchitectPage = () => {
   const [currentStep, setCurrentStep] = useState(steps.ORGANIZATION_DETAILS);
 
   const [isCollapsed, setIsCollapsed] = useState(false); 
+
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleExitClick = () => {
+    setIsExitModalOpen(true);
+  };
+
+  const handleExitConfirm = () => {
+    setIsExitModalOpen(false);
+    router.push("/landing"); 
+  };
+
+  const handleExitCancel = () => {
+    setIsExitModalOpen(false);
+  };
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Default", "Executive"],
@@ -294,7 +320,7 @@ const ArchitectPage = () => {
   const toggleCollapse = () => setIsCollapsed(!isCollapsed); 
 
   const Header = ({ step, description, progress }) => (
-    <Box mt="16" mb={6} p={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
+    <Box mt="14" mb={6} p={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
       <Text fontSize="2xl" fontWeight="bold" mb={2} color="gray.700">
         {step}
       </Text>
@@ -313,7 +339,19 @@ const ArchitectPage = () => {
   };
 
   return (
+    
     <Flex height="100vh" overflow="hidden">
+      {/* Exit Button */}
+      <Box position="absolute" top="30px" right="50px">
+        <IconButton
+          onClick={handleExitClick}
+          colorScheme="gray"
+          aria-label="Exit"
+          icon={<CloseIcon />}
+          size="lg"
+          isRound 
+        />
+      </Box>
       {/* Left Sidebar for Chat Bot */}
       <Box
         width={isCollapsed ? "126px" : ["100%", "33%"]}
@@ -390,7 +428,7 @@ const ArchitectPage = () => {
       <Box
         width={isCollapsed ? "100%" : ["100%", "67%"]}
         overflowY="auto"
-        p={8}
+        p={12}
       >
         <Header
           step={currentStep.replace(/_/g, " ")}
@@ -742,6 +780,7 @@ const ArchitectPage = () => {
         )}
   
         {/* Modals and Additional Components */}
+        
         <MemberSpecificationModal
           isOpen={isMemberSpecificationModalOpen}
           onSave={handleSaveMemberRole}
@@ -785,6 +824,24 @@ const ArchitectPage = () => {
           }}
           onClose={() => setIsLogoModalOpen(false)}
         />
+        {/* Exit Confirmation Modal */}
+        <Modal isOpen={isExitModalOpen} onClose={handleExitCancel}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Are you sure?</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              All progress will be lost. Do you really want to stop creating your organization?
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="red" mr={3} onClick={handleExitConfirm}>
+                Yes, Exit
+              </Button>
+              <Button variant="ghost" onClick={handleExitCancel}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
         {isDeploying && (
           <Center>
             <Spinner mb="4" size="xl" />
