@@ -16,7 +16,7 @@ const ArchitectInput = ({ value, onChange, onSubmit, isDisabled }) => {
   };
 
   return (
-    <Box ml="13%" mr="13%" mt="4" mb="4">
+    <Box ml="13%" mr="13%" mt="4" mb="8">
       <InputGroup>
         <Input
           value={value}
@@ -35,8 +35,8 @@ const ArchitectInput = ({ value, onChange, onSubmit, isDisabled }) => {
           boxShadow="md"
           _focus={{
             borderColor: "blue.500",
-            boxShadow: "0 0 0 2px rgba(0, 23, 255, 0.3)", // Subtle outer glow on focus
-            outline: "none", // Remove default outline
+            boxShadow: "0 0 0 2px rgba(0, 23, 255, 0.3)", 
+            outline: "none", 
           }}
         />
         <InputRightElement>

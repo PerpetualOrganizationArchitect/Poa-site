@@ -357,7 +357,7 @@ const ArchitectPage = () => {
         width={isCollapsed ? "126px" : ["100%", "33%"]}
         overflow="hidden"
         position="relative"
-        p={isCollapsed ? 0 : 4}
+        p={isCollapsed ? 0 : 0}
         borderRight={isCollapsed ? "none" : "1px solid #e2e8f0"}
       >
         {/* Only show content if not collapsed */}
@@ -374,13 +374,16 @@ const ArchitectPage = () => {
             >
               <ChevronLeftIcon />
             </Button>
-            <Box overflowY="auto" width="full" pt="2" pb="100px">
+            <Box overflowY="auto" width="full" pt="4" pb="100px"  pl="3" pr="3">
               <Image
                 mb="2"
+                ml="1"
+                mt="2"
                 src="/images/high_res_poa.png"
                 alt="Poa Logo"
                 width="100px"
                 height="100px"
+
               />
               <ConversationLog messages={messages} />
             </Box>
@@ -389,9 +392,10 @@ const ArchitectPage = () => {
                 position="absolute"
                 bottom="0"
                 width="full"
-                p={2}
+                p={0}
                 bg="white"
                 borderTop="1px solid #e2e8f0"
+                
               >
                 <ArchitectInput
                   value={userInput}
