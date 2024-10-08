@@ -15,7 +15,10 @@ import {
   Checkbox,
   Select,
   Badge,
-  Image
+  Image,
+  HStack,
+  VStack,
+  Progress,
 } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"; // Import icons for collapse toggle
 import OpenAI from "openai";
@@ -38,6 +41,15 @@ const steps = {
   CONFIRMATION: "CONFIRMATION",
 };
 
+const stepDescriptions = {
+  ORGANIZATION_DETAILS: "Describe your organization to help contributors understand your goals and vision.",
+  VOTING_FEATURES: "Select the voting features that best suit your organization's needs.",
+  ADDITIONAL_SETTINGS: "Configure additional settings for your organization.",
+  CONFIRMATION: "Review and confirm your organization's details before deployment.",
+};
+
+
+
 const ArchitectPage = () => {
   const { signer, address } = useWeb3Context();
   const { addToIpfs } = useIPFScontext();
@@ -58,7 +70,7 @@ const ArchitectPage = () => {
   const [isInputVisible, setIsInputVisible] = useState(true);
   const [currentStep, setCurrentStep] = useState(steps.ORGANIZATION_DETAILS);
 
-  const [isCollapsed, setIsCollapsed] = useState(false); // State for collapse toggle
+  const [isCollapsed, setIsCollapsed] = useState(false); 
 
   const [orgDetails, setOrgDetails] = useState({
     membershipTypeNames: ["Default", "Executive"],
@@ -77,7 +89,7 @@ const ArchitectPage = () => {
     directDemocracyQuorum: 51,
     hybridVoteQuorum: 51,
     participationVoteQuorum: 51,
-    directDemocracyEnabled: true, // Added to control direct democracy
+    directDemocracyEnabled: true, 
     username: "",
   });
 
@@ -281,11 +293,30 @@ const ArchitectPage = () => {
 
   const toggleCollapse = () => setIsCollapsed(!isCollapsed); 
 
+  const Header = ({ step, description, progress }) => (
+    <Box mt="16" mb={6} p={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
+      <Text fontSize="2xl" fontWeight="bold" mb={2} color="gray.700">
+        {step}
+      </Text>
+      <Text fontSize="md" color="gray.500" mb={6}>
+        {description}
+      </Text>
+      <Progress   value={progress} size="lg" borderRadius={"lg"} colorScheme="blue" />
+      <Text mr="2" fontSize="xs" color="gray.500" mt={2} textAlign="right">
+        Step {getCurrentStepIndex() + 1} of {Object.keys(steps).length}
+      </Text>
+    </Box>
+  );
+
+  const getCurrentStepIndex = () => {
+    return Object.keys(steps).indexOf(currentStep);
+  };
+
   return (
     <Flex height="100vh" overflow="hidden">
       {/* Left Sidebar for Chat Bot */}
       <Box
-        width={isCollapsed ? "126px" : ["100%", "35%"]}
+        width={isCollapsed ? "126px" : ["100%", "33%"]}
         overflow="hidden"
         position="relative"
         p={isCollapsed ? 0 : 4}
@@ -357,10 +388,15 @@ const ArchitectPage = () => {
   
       {/* Right Content Area for Input Forms */}
       <Box
-        width={isCollapsed ? "100%" : ["100%", "65%"]}
+        width={isCollapsed ? "100%" : ["100%", "67%"]}
         overflowY="auto"
         p={8}
       >
+        <Header
+          step={currentStep.replace(/_/g, " ")}
+          description={stepDescriptions[currentStep]}
+          progress={(getCurrentStepIndex() + 1) * (100 / Object.keys(steps).length)}
+        />
         {currentStep === steps.ORGANIZATION_DETAILS && (
           <>
             {/* Organization Details Form */}
@@ -373,9 +409,6 @@ const ArchitectPage = () => {
               borderRadius="md"
               boxShadow="md"
             >
-              <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
-                Describe Your Organization
-              </Text>
               <FormControl id="orgName" isRequired>
                 <FormLabel fontSize="lg" fontWeight="medium">
                   Organization Name
@@ -391,7 +424,7 @@ const ArchitectPage = () => {
               </FormControl>
               <FormControl id="orgDescription" isRequired>
                 <FormLabel fontSize="lg" fontWeight="medium">
-                  Organization Description
+                  Description
                 </FormLabel>
                 <Textarea
                   size="lg"
@@ -402,32 +435,35 @@ const ArchitectPage = () => {
                   }
                 />
               </FormControl>
-              <FormControl id="orgLinks">
-                <FormLabel fontSize="lg" fontWeight="medium">
-                  Organization Links
-                </FormLabel>
-                <Button size="lg" onClick={() => setIsLinksModalOpen(true)}>
-                  {linksAdded ? "Edit Links" : "Add Links"}
-                </Button>
-                {linksAdded && (
-                  <Badge colorScheme="green" ml={2}>
-                    Links Added
-                  </Badge>
-                )}
-              </FormControl>
-              <FormControl id="orgLogo">
-                <FormLabel fontSize="lg" fontWeight="medium">
-                  Organization Logo
-                </FormLabel>
-                <Button size="lg" onClick={() => setIsLogoModalOpen(true)}>
-                  {logoUploaded ? "Change Logo" : "Upload Logo"}
-                </Button>
-                {logoUploaded && (
-                  <Badge colorScheme="green" ml={2}>
-                    Logo Uploaded
-                  </Badge>
-                )}
-              </FormControl>
+              <HStack spacing={4}>
+                <FormControl id="orgLinks">
+                  <FormLabel fontSize="lg" fontWeight="medium">
+                    Organization Links
+                  </FormLabel>
+                  <Button size="lg" onClick={() => setIsLinksModalOpen(true)}>
+                    {linksAdded ? "Edit Links" : "Add Links"}
+                  </Button>
+                  {linksAdded && (
+                    <Badge colorScheme="green" ml={2}>
+                      Links Added
+                    </Badge>
+                  )}
+                </FormControl>
+                
+                <FormControl id="orgLogo">
+                  <FormLabel fontSize="lg" fontWeight="medium">
+                    Organization Logo
+                  </FormLabel>
+                  <Button size="lg" onClick={() => setIsLogoModalOpen(true)}>
+                    {logoUploaded ? "Change Logo" : "Upload Logo"}
+                  </Button>
+                  {logoUploaded && (
+                    <Badge colorScheme="green" ml={2}>
+                      Logo Uploaded
+                    </Badge>
+                  )}
+                </FormControl>
+              </HStack>
               {/* Next and Back Buttons */}
               <Flex justifyContent="space-between" mt={6}>
                 <Button
@@ -463,9 +499,6 @@ const ArchitectPage = () => {
               borderRadius="md"
               boxShadow="md"
             >
-              <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
-                Select Voting Features
-              </Text>
               <FormControl isRequired>
                 <FormLabel fontSize="lg" fontWeight="medium">
                   Enable Direct Democracy
@@ -674,9 +707,6 @@ const ArchitectPage = () => {
               boxShadow="md"
               bg="white"
             >
-              <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
-                Additional Settings
-              </Text>
               <FormControl>
                 <FormLabel fontSize="lg" fontWeight="medium">
                   Do you want to add more roles?
