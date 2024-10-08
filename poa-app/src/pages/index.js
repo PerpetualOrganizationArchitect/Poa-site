@@ -14,6 +14,41 @@ export default function Home() {
     router.push("/browser");
   };
 
+  const jsonLD = {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": "Poa",
+    "url": "https://poa.community",
+    "logo": "https://poa.community/images/high_res_poa.png",
+    "sameAs": ["https://twitter.com/PoaPerpetual"],
+    "description": "Poa is a no code DAO builder that makes it easy to create and join fully community owned censorship resistant organizations called Perpetual Organizations. Poa leverages web3 tech to keep the Perpetual Organizations fully community owned and operated."
+  };
+
+  const breadcrumb = {
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://poa.community"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Docs",
+        "item": "https://poa.community/docs"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "AlphaV1",
+        "item": "https://poa.community/docs/AlphaV1"
+      }
+    ]
+  };
+
   return (
     <>
       <Head>
@@ -30,42 +65,16 @@ export default function Home() {
         <meta name="twitter:title" content="Poa - Perpetual Organization Architect" />
         <meta name="twitter:description" content="Poa helps you create and manage fully worker-owned DAOs with no coding required. Start building your community-driven organization today with Poa." />
         <meta name="twitter:image" content="https://poa.community/images/high_res_poa.png" />
-        <script type="application/ld+json">
-          {`
-          {
-            "@context": "http://schema.org",
-            "@type": "Organization",
-            "name": "Poa",
-            "url": "https://poa.community",
-            "logo": "https://poa.community/images/high_res_poa.png",
-            "sameAs": ["https://twitter.com/PoaPerpetual"],
-            "description": "Poa is a no code DAO builder that makes it easy to create and join fully community owned censorship resistant organizations called Perpetual Organizations. Poa leverages web3 tech to keep the Perpetual Organizations fully community owned and operated.",
-            "breadcrumb": {
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Home",
-                  "item": "https://poa.community"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": "Docs",
-                  "item": "https://poa.community/docs"
-                },
-                {
-                  "@type": "ListItem",
-                  "position": 3,
-                  "name": "AlphaV1",
-                  "item": "https://poa.community/docs/AlphaV1"
-                }
-              ]
-            }
-          }
-          `}
-        </script>
+
+        {/* JSON-LD Scripts */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        />
       </Head>
       <Flex
         direction="column"
