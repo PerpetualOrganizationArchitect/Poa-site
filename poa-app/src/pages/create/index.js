@@ -15,7 +15,6 @@ import {
   Checkbox,
   Badge,
   Image,
-  HStack,
   Progress,
   IconButton,
   Modal,
@@ -28,6 +27,9 @@ import {
   Tooltip,
   ButtonGroup,
   FormErrorMessage,
+  Collapse,
+  useBreakpointValue,
+  HStack,
 } from "@chakra-ui/react";
 import {
   ChevronLeftIcon,
@@ -329,32 +331,75 @@ const ArchitectPage = () => {
 
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
+  // Responsive values using useBreakpointValue
+  const formPadding = useBreakpointValue({ base: 3, lg: 4, xl: 6 });
+  const formSpacing = useBreakpointValue({ base: 4, lg: 6, xl: 8 });
+  const componentSize = useBreakpointValue({ base: "md", lg: "lg", xl: "xl" });
+  const labelFontSize = useBreakpointValue({ base: "md", lg: "lg", xl: "xl" });
+  const headerFontSize = useBreakpointValue({
+    base: "lg",
+    lg: "xl",
+    xl: "2xl",
+  });
+  const inputSize = useBreakpointValue({ base: "md", lg: "lg", xl: "lg" });
+  const buttonSize = useBreakpointValue({ base: "md", lg: "lg", xl: "lg" });
+  const progressSize = useBreakpointValue({ base: "sm", lg: "md", xl: "lg" });
+
+  const exitButtonTop = useBreakpointValue({
+    base: "8px",
+    lg: "8px",
+    xl: "12px",
+  });
+  const exitButtonRight = useBreakpointValue({
+    base: "10px",
+    lg: "16px",
+    xl: "25px",
+  });
+  const exitButtonSize = useBreakpointValue({ base: "md", lg: "md", xl: "lg" });
+
   const Header = ({ step, description, progress }) => (
     <Box
-      mt="14"
-      mb={6}
-      p={6}
+      mt={{ base: "8", lg: "10", xl: "12" }}
+      mb={4}
+      p={formPadding}
       bg="white"
       border="1px solid"
       borderColor="gray.200"
       borderRadius="md"
       boxShadow="md"
     >
-      <Text fontSize="2xl" fontWeight="bold" mb={2} color="gray.700">
+      <Text
+        fontSize={headerFontSize}
+        fontWeight="bold"
+        mb={2}
+        color="gray.700"
+      >
         {step}
       </Text>
-      <Text fontSize="md" color="gray.500" mb={6}>
+      <Text
+        fontSize={{ base: "sm", lg: "md", xl: "lg" }}
+        color="gray.500"
+        mb={4}
+      >
         {description}
       </Text>
-      <Progress
-        value={progress}
-        size="lg"
-        borderRadius={"lg"}
-        colorScheme="blue"
-      />
-      <Text mr="2" fontSize="xs" color="gray.500" mt={2} textAlign="right">
-        Step {getCurrentStepIndex() + 1} of {Object.keys(steps).length}
-      </Text>
+      <HStack justify="space-between">
+        <Progress
+          value={progress}
+          size={progressSize}
+          borderRadius="lg"
+          colorScheme="blue"
+          flex="1" 
+        />
+        <Text
+          fontSize="xs"
+          color="gray.500"
+          whiteSpace="nowrap" 
+          ml={2} 
+        >
+          Step {getCurrentStepIndex() + 1} of {Object.keys(steps).length}
+        </Text>
+    </HStack>
     </Box>
   );
 
@@ -448,25 +493,35 @@ const ArchitectPage = () => {
   };
 
   return (
-    <Flex height="100vh" overflow="hidden">
+    <Flex
+      height="100vh"
+      overflow="hidden"
+      direction={{ base: "column", md: "row" }}
+    >
       {/* Exit Button */}
-      <Box position="absolute" top="30px" right="40px">
+      <Box position="absolute" top={exitButtonTop} right={exitButtonRight}>
         <IconButton
           onClick={handleExitClick}
-          colorScheme="gray"
+          colorScheme="blackAlpha"
           aria-label="Exit"
           icon={<CloseIcon />}
-          size="lg"
+          size={exitButtonSize}
           isRound
         />
       </Box>
       {/* Left Sidebar for Chat Bot */}
       <Box
-        width={isCollapsed ? "129px" : ["100%", "40%"]}
+        width={
+          isCollapsed
+            ? "129px"
+            : { base: "100%", md: "100%", lg: "40%" }
+        }
         overflow="hidden"
         position="relative"
         p={0}
-        borderRight={isCollapsed ? "none" : "1px solid #e2e8f0"}
+        borderRight={
+          isCollapsed ? "none" : { base: "none", lg: "1px solid #e2e8f0" }
+        }
       >
         {/* Only show content if not collapsed */}
         {!isCollapsed ? (
@@ -490,15 +545,14 @@ const ArchitectPage = () => {
               pl="3"
               pr="3"
             >
-              <Image
-                mb="2"
-                ml="1"
-                mt="2"
-                src="/images/high_res_poa.png"
-                alt="Poa Logo"
-                width="100px"
-                height="100px"
-              />
+              <Center mb="4">
+                <Image
+                  src="/images/high_res_poa.png"
+                  alt="Poa Logo"
+                  width={{ base: "80px", md: "100px" }}
+                  height={{ base: "80px", md: "100px" }}
+                />
+              </Center>
               <ConversationLog messages={messages} />
             </Box>
             {isInputVisible && (
@@ -540,36 +594,43 @@ const ArchitectPage = () => {
           </Box>
         )}
       </Box>
-
+  
       {/* Right Content Area for Input Forms */}
       <Box
-        width={isCollapsed ? "100%" : ["100%", "60%"]}
+        width={
+          isCollapsed
+            ? "100%"
+            : { base: "100%", md: "100%", lg: "60%" }
+        }
         overflowY="auto"
-        p={10}
+        p={formPadding}
       >
         <Header
           step={currentStep.replace(/_/g, " ")}
           description={stepDescriptions[currentStep]}
-          progress={(getCurrentStepIndex() + 1) * (100 / Object.keys(steps).length)}
+          progress={
+            (getCurrentStepIndex() + 1) * (100 / Object.keys(steps).length)
+          }
         />
+  
         {currentStep === steps.ORGANIZATION_DETAILS && (
           <>
             {/* Organization Details Form */}
             <Stack
               bg="white"
-              spacing={6}
-              p={6}
+              spacing={formSpacing}
+              p={formPadding}
               border="1px solid"
               borderColor="gray.200"
               borderRadius="md"
               boxShadow="md"
             >
               <FormControl id="orgName" isRequired>
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Organization Name
                 </FormLabel>
                 <Input
-                  size="lg"
+                  size={inputSize}
                   placeholder="Enter your organization name"
                   value={orgDetails.POname}
                   onChange={(e) =>
@@ -578,11 +639,11 @@ const ArchitectPage = () => {
                 />
               </FormControl>
               <FormControl id="orgDescription" isRequired>
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Description
                 </FormLabel>
                 <Textarea
-                  size="lg"
+                  size={inputSize}
                   placeholder="Enter a brief description"
                   value={orgDetails.description}
                   onChange={(e) =>
@@ -593,12 +654,18 @@ const ArchitectPage = () => {
                   }
                 />
               </FormControl>
-              <HStack spacing={4}>
+              <Stack
+                spacing={4}
+                direction={{ base: "column", md: "row" }}
+              >
                 <FormControl id="orgLinks">
-                  <FormLabel fontSize="lg" fontWeight="medium">
+                  <FormLabel fontSize={labelFontSize} fontWeight="medium">
                     Organization Links
                   </FormLabel>
-                  <Button size="lg" onClick={() => setIsLinksModalOpen(true)}>
+                  <Button
+                    size={buttonSize}
+                    onClick={() => setIsLinksModalOpen(true)}
+                  >
                     {linksAdded ? "Edit Links" : "Add Links"}
                   </Button>
                   {linksAdded && (
@@ -607,12 +674,15 @@ const ArchitectPage = () => {
                     </Badge>
                   )}
                 </FormControl>
-
+  
                 <FormControl id="orgLogo">
-                  <FormLabel fontSize="lg" fontWeight="medium">
+                  <FormLabel fontSize={labelFontSize} fontWeight="medium">
                     Organization Logo
                   </FormLabel>
-                  <Button size="lg" onClick={() => setIsLogoModalOpen(true)}>
+                  <Button
+                    size={buttonSize}
+                    onClick={() => setIsLogoModalOpen(true)}
+                  >
                     {logoUploaded ? "Change Logo" : "Upload Logo"}
                   </Button>
                   {logoUploaded && (
@@ -621,19 +691,24 @@ const ArchitectPage = () => {
                     </Badge>
                   )}
                 </FormControl>
-              </HStack>
+              </Stack>
               {/* Next and Back Buttons */}
-              <Flex justifyContent="space-between" mt={6}>
+              <Flex
+                justifyContent="space-between"
+                mt={4}
+                direction={{ base: "column", md: "row" }}
+              >
                 <Button
-                  size="lg"
+                  size={buttonSize}
                   colorScheme="gray"
                   onClick={handleBackStep}
                   isDisabled={currentStep === steps.ORGANIZATION_DETAILS}
+                  mb={{ base: 2, md: 0 }}
                 >
                   Back
                 </Button>
                 <Button
-                  size="lg"
+                  size={buttonSize}
                   colorScheme="teal"
                   onClick={handleNextStep}
                   isDisabled={!orgDetails.POname || !orgDetails.description}
@@ -644,13 +719,13 @@ const ArchitectPage = () => {
             </Stack>
           </>
         )}
-
+  
         {currentStep === steps.VOTING_FEATURES && (
           <>
             {/* Voting Features Selection */}
             <Stack
-              spacing={6}
-              p={6}
+              spacing={formSpacing}
+              p={formPadding}
               bg="white"
               border="1px solid"
               borderColor="gray.200"
@@ -662,7 +737,7 @@ const ArchitectPage = () => {
                 isRequired
                 isInvalid={errors.directDemocracyQuorum}
               >
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Direct Democracy Approval Percentage (Quorum)
                   <Tooltip
                     label="Set the required approval percentage for direct democracy decisions. Ask Poa if you have further questions."
@@ -673,7 +748,7 @@ const ArchitectPage = () => {
                 </FormLabel>
                 <Input
                   type="number"
-                  size="lg"
+                  size={inputSize}
                   placeholder="Enter approval percentage"
                   value={orgDetails.directDemocracyQuorum || ""}
                   onChange={(e) => {
@@ -689,10 +764,10 @@ const ArchitectPage = () => {
                   {errors.directDemocracyQuorum}
                 </FormErrorMessage>
               </FormControl>
-
+  
               {/* Voting Type Selection */}
               <FormControl isRequired>
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Select Voting Type
                   <Tooltip
                     label="Choose between Hybrid or Participation-Based voting. Ask Poa if you have further questions."
@@ -701,7 +776,7 @@ const ArchitectPage = () => {
                     <InfoIcon ml={2} />
                   </Tooltip>
                 </FormLabel>
-                <ButtonGroup size="lg" isAttached variant="outline">
+                <ButtonGroup size={buttonSize} isAttached variant="outline">
                   <Button
                     leftIcon={<SettingsIcon />}
                     variant={
@@ -738,16 +813,16 @@ const ArchitectPage = () => {
                   </Button>
                 </ButtonGroup>
               </FormControl>
-
+  
               {/* Hybrid Voting Settings */}
               {orgDetails.hybridVotingEnabled && (
-                <>
+                <Collapse in={orgDetails.hybridVotingEnabled} animateOpacity>
                   <FormControl
                     isRequired
                     isInvalid={errors.voteWeights}
                     mt={4}
                   >
-                    <FormLabel fontSize="lg" fontWeight="medium">
+                    <FormLabel fontSize={labelFontSize} fontWeight="medium">
                       Vote Weight Distribution
                       <Tooltip
                         label="Set the percentage split between Direct Democracy and Participation-Based Voting. The total must equal 100%."
@@ -756,8 +831,11 @@ const ArchitectPage = () => {
                         <InfoIcon ml={2} />
                       </Tooltip>
                     </FormLabel>
-                    <Flex>
-                      <Box mr={4}>
+                    <Stack
+                      direction={{ base: "column", md: "row" }}
+                      spacing={4}
+                    >
+                      <Box>
                         <FormLabel>Direct Democracy (%)</FormLabel>
                         <Input
                           type="number"
@@ -767,6 +845,7 @@ const ArchitectPage = () => {
                           onChange={(e) =>
                             handleVoteWeightChange("democracy", e.target.value)
                           }
+                          size={inputSize}
                         />
                       </Box>
                       <Box>
@@ -782,20 +861,21 @@ const ArchitectPage = () => {
                               e.target.value
                             )
                           }
+                          size={inputSize}
                         />
                       </Box>
-                    </Flex>
+                    </Stack>
                     <FormErrorMessage>
                       {errors.voteWeights}
                     </FormErrorMessage>
                   </FormControl>
-
+  
                   <FormControl
                     isRequired
                     isInvalid={errors.hybridVoteQuorum}
                     mt={4}
                   >
-                    <FormLabel fontSize="lg" fontWeight="medium">
+                    <FormLabel fontSize={labelFontSize} fontWeight="medium">
                       Hybrid Voting Approval Percentage (Quorum)
                       <Tooltip
                         label="Set the required approval percentage for hybrid voting decisions. Ask Poa if you have further questions."
@@ -806,7 +886,7 @@ const ArchitectPage = () => {
                     </FormLabel>
                     <Input
                       type="number"
-                      size="lg"
+                      size={inputSize}
                       placeholder="Enter approval percentage"
                       value={orgDetails.hybridVoteQuorum || ""}
                       onChange={(e) => {
@@ -822,48 +902,53 @@ const ArchitectPage = () => {
                       {errors.hybridVoteQuorum}
                     </FormErrorMessage>
                   </FormControl>
-                </>
+                </Collapse>
               )}
-
+  
               {/* Participation Voting Settings */}
               {orgDetails.participationVotingEnabled && (
-                <FormControl
-                  isRequired
-                  isInvalid={errors.participationVoteQuorum}
-                  mt={4}
+                <Collapse
+                  in={orgDetails.participationVotingEnabled}
+                  animateOpacity
                 >
-                  <FormLabel fontSize="lg" fontWeight="medium">
-                    Participation Voting Approval Percentage (Quorum)
-                    <Tooltip
-                      label="Set the required approval percentage for participation-based voting decisions. Ask Poa if you have further questions."
-                      fontSize="md"
-                    >
-                      <InfoIcon ml={2} />
-                    </Tooltip>
-                  </FormLabel>
-                  <Input
-                    type="number"
-                    size="lg"
-                    placeholder="Enter approval percentage"
-                    value={orgDetails.participationVoteQuorum || ""}
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value, 10);
-                      setOrgDetails({
-                        ...orgDetails,
-                        participationVoteQuorum: value,
-                      });
-                    }}
-                    aria-describedby="participation-vote-quorum-helper"
-                  />
-                  <FormErrorMessage>
-                    {errors.participationVoteQuorum}
-                  </FormErrorMessage>
-                </FormControl>
+                  <FormControl
+                    isRequired
+                    isInvalid={errors.participationVoteQuorum}
+                    mt={4}
+                  >
+                    <FormLabel fontSize={labelFontSize} fontWeight="medium">
+                      Participation Voting Approval Percentage (Quorum)
+                      <Tooltip
+                        label="Set the required approval percentage for participation-based voting decisions. Ask Poa if you have further questions."
+                        fontSize="md"
+                      >
+                        <InfoIcon ml={2} />
+                      </Tooltip>
+                    </FormLabel>
+                    <Input
+                      type="number"
+                      size={inputSize}
+                      placeholder="Enter approval percentage"
+                      value={orgDetails.participationVoteQuorum || ""}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10);
+                        setOrgDetails({
+                          ...orgDetails,
+                          participationVoteQuorum: value,
+                        });
+                      }}
+                      aria-describedby="participation-vote-quorum-helper"
+                    />
+                    <FormErrorMessage>
+                      {errors.participationVoteQuorum}
+                    </FormErrorMessage>
+                  </FormControl>
+                </Collapse>
               )}
-
+  
               {/* Quadratic Voting Option */}
               <FormControl mt={4}>
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Enable Quadratic Voting
                   <Tooltip
                     label="Quadratic Voting allows users to express the intensity of their preferences. Ask Poa if you have further questions."
@@ -873,7 +958,7 @@ const ArchitectPage = () => {
                   </Tooltip>
                 </FormLabel>
                 <Checkbox
-                  size="lg"
+                  size={componentSize}
                   colorScheme="teal"
                   isChecked={orgDetails.quadraticVotingEnabled}
                   onChange={(e) =>
@@ -886,14 +971,14 @@ const ArchitectPage = () => {
                   Quadratic Voting
                 </Checkbox>
               </FormControl>
-
+  
               {/* Voting Contract Control */}
               <FormControl
                 isRequired
                 isInvalid={errors.votingControlType}
                 mt={4}
               >
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Voting Contract Control
                   <Tooltip
                     label="Select which voting mechanism controls the voting contract. Ask Poa if you have further questions."
@@ -902,7 +987,7 @@ const ArchitectPage = () => {
                     <InfoIcon ml={2} />
                   </Tooltip>
                 </FormLabel>
-                <ButtonGroup size="lg" isAttached variant="outline">
+                <ButtonGroup size={buttonSize} isAttached variant="outline">
                   <Button
                     variant={
                       orgDetails.votingControlType === "DirectDemocracy"
@@ -966,29 +1051,25 @@ const ArchitectPage = () => {
                   {errors.votingControlType}
                 </FormErrorMessage>
               </FormControl>
-
+  
               {/* Next and Back Buttons */}
-              <Flex justifyContent="space-between" mt={6}>
+              <Flex
+                justifyContent="space-between"
+                mt={4}
+                direction={{ base: "column", md: "row" }}
+              >
                 <Button
-                  size="lg"
+                  size={buttonSize}
                   colorScheme="gray"
                   onClick={handleBackStep}
-                  isDisabled={currentStep === steps.ORGANIZATION_DETAILS}
+                  mb={{ base: 2, md: 0 }}
                 >
                   Back
                 </Button>
                 <Button
-                  size="lg"
+                  size={buttonSize}
                   colorScheme="teal"
                   onClick={onNext}
-                  isDisabled={
-                    !orgDetails.directDemocracyQuorum ||
-                    (orgDetails.hybridVotingEnabled &&
-                      (!orgDetails.hybridVoteQuorum || errors.voteWeights)) ||
-                    (orgDetails.participationVotingEnabled &&
-                      !orgDetails.participationVoteQuorum) ||
-                    !orgDetails.votingControlType
-                  }
                 >
                   Next
                 </Button>
@@ -996,13 +1077,13 @@ const ArchitectPage = () => {
             </Stack>
           </>
         )}
-
+  
         {currentStep === steps.ADDITIONAL_SETTINGS && (
           <>
             {/* Additional Settings */}
             <Stack
-              spacing={6}
-              p={6}
+              spacing={formSpacing}
+              p={formPadding}
               border="1px solid"
               borderColor="gray.200"
               borderRadius="md"
@@ -1010,11 +1091,11 @@ const ArchitectPage = () => {
               bg="white"
             >
               <FormControl>
-                <FormLabel fontSize="lg" fontWeight="medium">
+                <FormLabel fontSize={labelFontSize} fontWeight="medium">
                   Do you want to add more roles?
                 </FormLabel>
                 <Button
-                  size="lg"
+                  size={buttonSize}
                   colorScheme="teal"
                   onClick={() => setIsMemberSpecificationModalOpen(true)}
                 >
@@ -1022,25 +1103,31 @@ const ArchitectPage = () => {
                 </Button>
               </FormControl>
               {/* Next and Back Buttons */}
-              <Flex justifyContent="space-between" mt={6}>
+              <Flex
+                justifyContent="space-between"
+                mt={4}
+                direction={{ base: "column", md: "row" }}
+              >
                 <Button
-                  size="lg"
+                  size={buttonSize}
                   colorScheme="gray"
                   onClick={handleBackStep}
-                  isDisabled={currentStep === steps.ORGANIZATION_DETAILS}
+                  mb={{ base: 2, md: 0 }}
                 >
                   Back
                 </Button>
-                <Button size="lg" colorScheme="teal" onClick={handleNextStep}>
+                <Button
+                  size={buttonSize}
+                  colorScheme="teal"
+                  onClick={handleNextStep}
+                >
                   Next
                 </Button>
               </Flex>
             </Stack>
           </>
         )}
-
         {/* Modals and Additional Components */}
-
         <MemberSpecificationModal
           isOpen={isMemberSpecificationModalOpen}
           onSave={handleSaveMemberRole}
