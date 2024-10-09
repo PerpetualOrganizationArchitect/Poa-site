@@ -778,7 +778,7 @@ const ArchitectPage = () => {
                 </FormLabel>
                 <ButtonGroup size={buttonSize} isAttached variant="outline">
                   <Button
-                    leftIcon={<SettingsIcon />}
+                    // leftIcon={<SettingsIcon />}
                     variant={
                       orgDetails.hybridVotingEnabled ? "solid" : "outline"
                     }
@@ -794,7 +794,7 @@ const ArchitectPage = () => {
                     Hybrid
                   </Button>
                   <Button
-                    leftIcon={<SettingsIcon />}
+                    // leftIcon={<SettingsIcon />}
                     variant={
                       orgDetails.participationVotingEnabled
                         ? "solid"
