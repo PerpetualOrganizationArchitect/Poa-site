@@ -13,11 +13,9 @@ import {
   Textarea,
   Stack,
   Checkbox,
-  Select,
   Badge,
   Image,
   HStack,
-  VStack,
   Progress,
   IconButton,
   Modal,
@@ -27,12 +25,19 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  Tooltip,
+  ButtonGroup,
+  FormErrorMessage,
 } from "@chakra-ui/react";
-import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons"; 
+import {
+  ChevronLeftIcon,
+  CloseIcon,
+  InfoIcon,
+  SettingsIcon,
+} from "@chakra-ui/icons";
 import OpenAI from "openai";
 import ArchitectInput from "@/components/Architect/ArchitectInput";
 import MemberSpecificationModal from "@/components/Architect/MemberSpecificationModal";
-import WeightModal from "@/components/Architect/WeightModal";
 import LogoDropzoneModal from "@/components/Architect/LogoDropzoneModal";
 import ConfirmationModal from "@/components/Architect/ConfirmationModal";
 import LinksModal from "@/components/Architect/LinksModal";
@@ -43,7 +48,6 @@ import { useIPFScontext } from "@/context/ipfsContext";
 import { main } from "../../../scripts/newDeployment";
 import { useRouter } from "next/router";
 
-
 const steps = {
   ORGANIZATION_DETAILS: "ORGANIZATION_DETAILS",
   VOTING_FEATURES: "VOTING_FEATURES",
@@ -52,22 +56,24 @@ const steps = {
 };
 
 const stepDescriptions = {
-  ORGANIZATION_DETAILS: "Describe your organization to help contributors understand your goals and vision.",
-  VOTING_FEATURES: "Select the voting features that best suit your organization's needs.",
+  ORGANIZATION_DETAILS:
+    "Describe your organization to help contributors understand your goals and vision.",
+  VOTING_FEATURES:
+    "Select the voting features that best suit your organization's needs.",
   ADDITIONAL_SETTINGS: "Configure additional settings for your organization.",
-  CONFIRMATION: "Review and confirm your organization's details before deployment.",
+  CONFIRMATION:
+    "Review and confirm your organization's details before deployment.",
 };
-
-
 
 const ArchitectPage = () => {
   const { signer, address } = useWeb3Context();
   const { addToIpfs } = useIPFScontext();
   const toast = useToast();
+  const router = useRouter();
 
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] = useState(false);
-  const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
+  const [isMemberSpecificationModalOpen, setIsMemberSpecificationModalOpen] =
+    useState(false);
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
   const [isLinksModalOpen, setIsLinksModalOpen] = useState(false);
   const [userInput, setUserInput] = useState("");
@@ -80,10 +86,9 @@ const ArchitectPage = () => {
   const [isInputVisible, setIsInputVisible] = useState(true);
   const [currentStep, setCurrentStep] = useState(steps.ORGANIZATION_DETAILS);
 
-  const [isCollapsed, setIsCollapsed] = useState(false); 
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
-  const router = useRouter();
 
   const handleExitClick = () => {
     setIsExitModalOpen(true);
@@ -91,7 +96,7 @@ const ArchitectPage = () => {
 
   const handleExitConfirm = () => {
     setIsExitModalOpen(false);
-    router.push("/landing"); 
+    router.push("/landing");
   };
 
   const handleExitCancel = () => {
@@ -105,17 +110,17 @@ const ArchitectPage = () => {
     description: "",
     links: [],
     quadraticVotingEnabled: false,
-    democracyVoteWeight: 100,
-    participationVoteWeight: 0,
+    democracyVoteWeight: 50,
+    participationVoteWeight: 50,
     hybridVotingEnabled: false,
     participationVotingEnabled: false,
     logoURL: "",
     infoIPFSHash: "",
-    votingControlType: "DirectDemocracy",
-    directDemocracyQuorum: 51,
-    hybridVoteQuorum: 51,
-    participationVoteQuorum: 51,
-    directDemocracyEnabled: true, 
+    votingControlType: "",
+    directDemocracyQuorum: "",
+    hybridVoteQuorum: "",
+    participationVoteQuorum: "",
+    directDemocracyEnabled: true,
     username: "",
   });
 
@@ -135,7 +140,9 @@ const ArchitectPage = () => {
     });
     setOpenai(openai);
 
-    const assistant = await openai.beta.assistants.retrieve("asst_HopuEd843XXuOmDlfRCCfT7k");
+    const assistant = await openai.beta.assistants.retrieve(
+      "asst_HopuEd843XXuOmDlfRCCfT7k"
+    );
     const thread = await openai.beta.threads.create();
     setAssistant(assistant);
     setThread(thread);
@@ -148,7 +155,10 @@ const ArchitectPage = () => {
   };
 
   const addMessage = (text, speaker = "Poa", isTyping = false) => {
-    setMessages((prevMessages) => [...prevMessages, { speaker, text, isTyping }]);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { speaker, text, isTyping },
+    ]);
   };
 
   const handleSendClick = () => {
@@ -165,8 +175,13 @@ const ArchitectPage = () => {
   const askChatBot = async (input) => {
     setIsWaiting(true);
     addMessage("", "Poa", true);
-    await openai.beta.threads.messages.create(thread.id, { role: "user", content: input });
-    const run = await openai.beta.threads.runs.create(thread.id, { assistant_id: assistant.id });
+    await openai.beta.threads.messages.create(thread.id, {
+      role: "user",
+      content: input,
+    });
+    const run = await openai.beta.threads.runs.create(thread.id, {
+      assistant_id: assistant.id,
+    });
     let response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
 
     while (response.status === "in_progress" || response.status === "queued") {
@@ -184,7 +199,11 @@ const ArchitectPage = () => {
       setMessages((prevMessages) =>
         prevMessages.map((msg, index) =>
           index === prevMessages.length - 1
-            ? { ...msg, text: lastMessage.content[0]["text"].value, isTyping: false }
+            ? {
+                ...msg,
+                text: lastMessage.content[0]["text"].value,
+                isTyping: false,
+              }
             : msg
         )
       );
@@ -197,7 +216,8 @@ const ArchitectPage = () => {
       if (!orgDetails.POname || !orgDetails.description) {
         toast({
           title: "Incomplete Information",
-          description: "Please provide both organization name and description.",
+          description:
+            "Please provide both organization name and description.",
           status: "warning",
           duration: 5000,
           isClosable: true,
@@ -304,30 +324,34 @@ const ArchitectPage = () => {
     }));
   };
 
-  const handleWeight = ({ participationWeight, democracyWeight }) => {
-    setOrgDetails((prevDetails) => ({
-      ...prevDetails,
-      democracyVoteWeight: democracyWeight,
-      participationVoteWeight: participationWeight,
-    }));
-    setIsWeightModalOpen(false);
-  };
+  const [linksAdded, setLinksAdded] = useState(false);
+  const [logoUploaded, setLogoUploaded] = useState(false);
 
-  const [linksAdded, setLinksAdded] = useState(false); 
-  const [logoUploaded, setLogoUploaded] = useState(false); 
-  const [hybridWeightsSet, setHybridWeightsSet] = useState(false);
-
-  const toggleCollapse = () => setIsCollapsed(!isCollapsed); 
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   const Header = ({ step, description, progress }) => (
-    <Box mt="14" mb={6} p={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="md" boxShadow="md">
+    <Box
+      mt="14"
+      mb={6}
+      p={6}
+      bg="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="md"
+      boxShadow="md"
+    >
       <Text fontSize="2xl" fontWeight="bold" mb={2} color="gray.700">
         {step}
       </Text>
       <Text fontSize="md" color="gray.500" mb={6}>
         {description}
       </Text>
-      <Progress   value={progress} size="lg" borderRadius={"lg"} colorScheme="blue" />
+      <Progress
+        value={progress}
+        size="lg"
+        borderRadius={"lg"}
+        colorScheme="blue"
+      />
       <Text mr="2" fontSize="xs" color="gray.500" mt={2} textAlign="right">
         Step {getCurrentStepIndex() + 1} of {Object.keys(steps).length}
       </Text>
@@ -338,26 +362,110 @@ const ArchitectPage = () => {
     return Object.keys(steps).indexOf(currentStep);
   };
 
+  // Validation function
+  const validateQuorum = (value) => {
+    if (value < 0 || value > 100 || isNaN(value)) {
+      return "Please enter a valid percentage between 0 and 100.";
+    }
+    return "";
+  };
+
+  // State for form errors
+  const [errors, setErrors] = useState({});
+
+  // Handler for Next button click
+  const onNext = () => {
+    const newErrors = {};
+    if (!orgDetails.directDemocracyQuorum) {
+      newErrors.directDemocracyQuorum = "This field is required.";
+    } else {
+      const errorMsg = validateQuorum(orgDetails.directDemocracyQuorum);
+      if (errorMsg) newErrors.directDemocracyQuorum = errorMsg;
+    }
+
+    if (orgDetails.hybridVotingEnabled) {
+      if (!orgDetails.hybridVoteQuorum) {
+        newErrors.hybridVoteQuorum = "This field is required.";
+      } else {
+        const errorMsg = validateQuorum(orgDetails.hybridVoteQuorum);
+        if (errorMsg) newErrors.hybridVoteQuorum = errorMsg;
+      }
+      if (
+        orgDetails.democracyVoteWeight + orgDetails.participationVoteWeight !==
+        100
+      ) {
+        newErrors.voteWeights =
+          "The total weight must equal 100%. Please adjust the values.";
+      }
+    }
+
+    if (orgDetails.participationVotingEnabled) {
+      if (!orgDetails.participationVoteQuorum) {
+        newErrors.participationVoteQuorum = "This field is required.";
+      } else {
+        const errorMsg = validateQuorum(orgDetails.participationVoteQuorum);
+        if (errorMsg) newErrors.participationVoteQuorum = errorMsg;
+      }
+    }
+
+    if (!orgDetails.votingControlType) {
+      newErrors.votingControlType = "Please select a voting control type.";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      handleNextStep();
+    } else {
+      toast({
+        title: "Form validation error",
+        description: "Please fix the errors before proceeding.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Handler for interconnected input fields
+  const handleVoteWeightChange = (field, value) => {
+    const intValue = parseInt(value) || 0;
+    if (intValue < 0 || intValue > 100) return;
+
+    if (field === "democracy") {
+      setOrgDetails({
+        ...orgDetails,
+        democracyVoteWeight: intValue,
+        participationVoteWeight: 100 - intValue,
+      });
+    } else {
+      setOrgDetails({
+        ...orgDetails,
+        participationVoteWeight: intValue,
+        democracyVoteWeight: 100 - intValue,
+      });
+    }
+  };
+
   return (
-    
     <Flex height="100vh" overflow="hidden">
       {/* Exit Button */}
-      <Box position="absolute" top="30px" right="50px">
+      <Box position="absolute" top="30px" right="40px">
         <IconButton
           onClick={handleExitClick}
           colorScheme="gray"
           aria-label="Exit"
           icon={<CloseIcon />}
           size="lg"
-          isRound 
+          isRound
         />
       </Box>
       {/* Left Sidebar for Chat Bot */}
       <Box
-        width={isCollapsed ? "126px" : ["100%", "33%"]}
+        width={isCollapsed ? "129px" : ["100%", "40%"]}
         overflow="hidden"
         position="relative"
-        p={isCollapsed ? 0 : 0}
+        p={0}
         borderRight={isCollapsed ? "none" : "1px solid #e2e8f0"}
       >
         {/* Only show content if not collapsed */}
@@ -374,7 +482,14 @@ const ArchitectPage = () => {
             >
               <ChevronLeftIcon />
             </Button>
-            <Box overflowY="auto" width="full" pt="4" pb="100px"  pl="3" pr="3">
+            <Box
+              overflowY="auto"
+              width="full"
+              pt="4"
+              pb="100px"
+              pl="3"
+              pr="3"
+            >
               <Image
                 mb="2"
                 ml="1"
@@ -383,7 +498,6 @@ const ArchitectPage = () => {
                 alt="Poa Logo"
                 width="100px"
                 height="100px"
-
               />
               <ConversationLog messages={messages} />
             </Box>
@@ -395,7 +509,6 @@ const ArchitectPage = () => {
                 p={0}
                 bg="white"
                 borderTop="1px solid #e2e8f0"
-                
               >
                 <ArchitectInput
                   value={userInput}
@@ -427,12 +540,12 @@ const ArchitectPage = () => {
           </Box>
         )}
       </Box>
-  
+
       {/* Right Content Area for Input Forms */}
       <Box
-        width={isCollapsed ? "100%" : ["100%", "67%"]}
+        width={isCollapsed ? "100%" : ["100%", "60%"]}
         overflowY="auto"
-        p={12}
+        p={10}
       >
         <Header
           step={currentStep.replace(/_/g, " ")}
@@ -473,7 +586,10 @@ const ArchitectPage = () => {
                   placeholder="Enter a brief description"
                   value={orgDetails.description}
                   onChange={(e) =>
-                    setOrgDetails({ ...orgDetails, description: e.target.value })
+                    setOrgDetails({
+                      ...orgDetails,
+                      description: e.target.value,
+                    })
                   }
                 />
               </FormControl>
@@ -491,7 +607,7 @@ const ArchitectPage = () => {
                     </Badge>
                   )}
                 </FormControl>
-                
+
                 <FormControl id="orgLogo">
                   <FormLabel fontSize="lg" fontWeight="medium">
                     Organization Logo
@@ -528,7 +644,7 @@ const ArchitectPage = () => {
             </Stack>
           </>
         )}
-  
+
         {currentStep === steps.VOTING_FEATURES && (
           <>
             {/* Voting Features Selection */}
@@ -541,104 +657,158 @@ const ArchitectPage = () => {
               borderRadius="md"
               boxShadow="md"
             >
-              <FormControl isRequired>
+              {/* Direct Democracy Quorum */}
+              <FormControl
+                isRequired
+                isInvalid={errors.directDemocracyQuorum}
+              >
                 <FormLabel fontSize="lg" fontWeight="medium">
-                  Enable Direct Democracy
+                  Direct Democracy Approval Percentage (Quorum)
+                  <Tooltip
+                    label="Set the required approval percentage for direct democracy decisions. Ask Poa if you have further questions."
+                    fontSize="md"
+                  >
+                    <InfoIcon ml={2} />
+                  </Tooltip>
                 </FormLabel>
-                <Checkbox
+                <Input
+                  type="number"
                   size="lg"
-                  colorScheme="teal"
-                  isChecked={orgDetails.directDemocracyEnabled}
-                  onChange={(e) =>
-                    setOrgDetails({
-                      ...orgDetails,
-                      directDemocracyEnabled: e.target.checked,
-                    })
-                  }
-                >
-                  Direct Democracy
-                </Checkbox>
-              </FormControl>
-              {orgDetails.directDemocracyEnabled && (
-                <FormControl isRequired>
-                  <FormLabel fontSize="lg" fontWeight="medium">
-                    Direct Democracy Approval Percentage (Quorum)
-                  </FormLabel>
-                  <Input
-                    type="number"
-                    size="lg"
-                    placeholder="Enter approval percentage"
-                    value={orgDetails.directDemocracyQuorum}
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value, 10);
-                      setOrgDetails({
-                        ...orgDetails,
-                        directDemocracyQuorum: value,
-                      });
-                    }}
-                  />
-                </FormControl>
-              )}
-              <FormControl>
-                <FormLabel fontSize="lg" fontWeight="medium">
-                  Select Voting Type (Choose One)
-                </FormLabel>
-                <Select
-                  placeholder="Select voting type"
-                  size="lg"
-                  value={
-                    orgDetails.hybridVotingEnabled
-                      ? "Hybrid"
-                      : orgDetails.participationVotingEnabled
-                      ? "Participation"
-                      : ""
-                  }
+                  placeholder="Enter approval percentage"
+                  value={orgDetails.directDemocracyQuorum || ""}
                   onChange={(e) => {
-                    const value = e.target.value;
+                    const value = parseInt(e.target.value, 10);
                     setOrgDetails({
                       ...orgDetails,
-                      hybridVotingEnabled: value === "Hybrid",
-                      participationVotingEnabled: value === "Participation",
+                      directDemocracyQuorum: value,
                     });
                   }}
-                >
-                  <option value="Hybrid">Hybrid Voting</option>
-                  <option value="Participation">
-                    Participation-Based Voting
-                  </option>
-                </Select>
+                  aria-describedby="direct-democracy-quorum-helper"
+                />
+                <FormErrorMessage>
+                  {errors.directDemocracyQuorum}
+                </FormErrorMessage>
               </FormControl>
-  
+
+              {/* Voting Type Selection */}
+              <FormControl isRequired>
+                <FormLabel fontSize="lg" fontWeight="medium">
+                  Select Voting Type
+                  <Tooltip
+                    label="Choose between Hybrid or Participation-Based voting. Ask Poa if you have further questions."
+                    fontSize="md"
+                  >
+                    <InfoIcon ml={2} />
+                  </Tooltip>
+                </FormLabel>
+                <ButtonGroup size="lg" isAttached variant="outline">
+                  <Button
+                    leftIcon={<SettingsIcon />}
+                    variant={
+                      orgDetails.hybridVotingEnabled ? "solid" : "outline"
+                    }
+                    onClick={() =>
+                      setOrgDetails({
+                        ...orgDetails,
+                        hybridVotingEnabled: true,
+                        participationVotingEnabled: false,
+                      })
+                    }
+                    aria-pressed={orgDetails.hybridVotingEnabled}
+                  >
+                    Hybrid
+                  </Button>
+                  <Button
+                    leftIcon={<SettingsIcon />}
+                    variant={
+                      orgDetails.participationVotingEnabled
+                        ? "solid"
+                        : "outline"
+                    }
+                    onClick={() =>
+                      setOrgDetails({
+                        ...orgDetails,
+                        hybridVotingEnabled: false,
+                        participationVotingEnabled: true,
+                      })
+                    }
+                    aria-pressed={orgDetails.participationVotingEnabled}
+                  >
+                    Participation-Based
+                  </Button>
+                </ButtonGroup>
+              </FormControl>
+
+              {/* Hybrid Voting Settings */}
               {orgDetails.hybridVotingEnabled && (
                 <>
-                  <FormControl>
+                  <FormControl
+                    isRequired
+                    isInvalid={errors.voteWeights}
+                    mt={4}
+                  >
                     <FormLabel fontSize="lg" fontWeight="medium">
-                      Hybrid Voting Weights
+                      Vote Weight Distribution
+                      <Tooltip
+                        label="Set the percentage split between Direct Democracy and Participation-Based Voting. The total must equal 100%."
+                        fontSize="md"
+                      >
+                        <InfoIcon ml={2} />
+                      </Tooltip>
                     </FormLabel>
-                    <Button
-                      size="lg"
-                      onClick={() => setIsWeightModalOpen(true)}
-                      bg="teal.500"
-                      color="white"
-                      _hover={{ bg: "teal.600" }}
-                    >
-                      {hybridWeightsSet ? "Edit Weights" : "Set Weights"}
-                    </Button>
-                    {hybridWeightsSet && (
-                      <Badge colorScheme="green" ml={2}>
-                        Weights Set
-                      </Badge>
-                    )}
+                    <Flex>
+                      <Box mr={4}>
+                        <FormLabel>Direct Democracy (%)</FormLabel>
+                        <Input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={orgDetails.democracyVoteWeight}
+                          onChange={(e) =>
+                            handleVoteWeightChange("democracy", e.target.value)
+                          }
+                        />
+                      </Box>
+                      <Box>
+                        <FormLabel>Participation-Based (%)</FormLabel>
+                        <Input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={orgDetails.participationVoteWeight}
+                          onChange={(e) =>
+                            handleVoteWeightChange(
+                              "participation",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Box>
+                    </Flex>
+                    <FormErrorMessage>
+                      {errors.voteWeights}
+                    </FormErrorMessage>
                   </FormControl>
-                  <FormControl isRequired>
+
+                  <FormControl
+                    isRequired
+                    isInvalid={errors.hybridVoteQuorum}
+                    mt={4}
+                  >
                     <FormLabel fontSize="lg" fontWeight="medium">
                       Hybrid Voting Approval Percentage (Quorum)
+                      <Tooltip
+                        label="Set the required approval percentage for hybrid voting decisions. Ask Poa if you have further questions."
+                        fontSize="md"
+                      >
+                        <InfoIcon ml={2} />
+                      </Tooltip>
                     </FormLabel>
                     <Input
                       type="number"
                       size="lg"
                       placeholder="Enter approval percentage"
-                      value={orgDetails.hybridVoteQuorum}
+                      value={orgDetails.hybridVoteQuorum || ""}
                       onChange={(e) => {
                         const value = parseInt(e.target.value, 10);
                         setOrgDetails({
@@ -646,21 +816,36 @@ const ArchitectPage = () => {
                           hybridVoteQuorum: value,
                         });
                       }}
+                      aria-describedby="hybrid-vote-quorum-helper"
                     />
+                    <FormErrorMessage>
+                      {errors.hybridVoteQuorum}
+                    </FormErrorMessage>
                   </FormControl>
                 </>
               )}
-  
+
+              {/* Participation Voting Settings */}
               {orgDetails.participationVotingEnabled && (
-                <FormControl isRequired>
+                <FormControl
+                  isRequired
+                  isInvalid={errors.participationVoteQuorum}
+                  mt={4}
+                >
                   <FormLabel fontSize="lg" fontWeight="medium">
                     Participation Voting Approval Percentage (Quorum)
+                    <Tooltip
+                      label="Set the required approval percentage for participation-based voting decisions. Ask Poa if you have further questions."
+                      fontSize="md"
+                    >
+                      <InfoIcon ml={2} />
+                    </Tooltip>
                   </FormLabel>
                   <Input
                     type="number"
                     size="lg"
                     placeholder="Enter approval percentage"
-                    value={orgDetails.participationVoteQuorum}
+                    value={orgDetails.participationVoteQuorum || ""}
                     onChange={(e) => {
                       const value = parseInt(e.target.value, 10);
                       setOrgDetails({
@@ -668,13 +853,24 @@ const ArchitectPage = () => {
                         participationVoteQuorum: value,
                       });
                     }}
+                    aria-describedby="participation-vote-quorum-helper"
                   />
+                  <FormErrorMessage>
+                    {errors.participationVoteQuorum}
+                  </FormErrorMessage>
                 </FormControl>
               )}
-  
-              <FormControl>
+
+              {/* Quadratic Voting Option */}
+              <FormControl mt={4}>
                 <FormLabel fontSize="lg" fontWeight="medium">
                   Enable Quadratic Voting
+                  <Tooltip
+                    label="Quadratic Voting allows users to express the intensity of their preferences. Ask Poa if you have further questions."
+                    fontSize="md"
+                  >
+                    <InfoIcon ml={2} />
+                  </Tooltip>
                 </FormLabel>
                 <Checkbox
                   size="lg"
@@ -690,31 +886,87 @@ const ArchitectPage = () => {
                   Quadratic Voting
                 </Checkbox>
               </FormControl>
-              <FormControl isRequired>
+
+              {/* Voting Contract Control */}
+              <FormControl
+                isRequired
+                isInvalid={errors.votingControlType}
+                mt={4}
+              >
                 <FormLabel fontSize="lg" fontWeight="medium">
                   Voting Contract Control
+                  <Tooltip
+                    label="Select which voting mechanism controls the voting contract. Ask Poa if you have further questions."
+                    fontSize="md"
+                  >
+                    <InfoIcon ml={2} />
+                  </Tooltip>
                 </FormLabel>
-                <Select
-                  size="lg"
-                  value={orgDetails.votingControlType}
-                  onChange={(e) =>
-                    setOrgDetails({
-                      ...orgDetails,
-                      votingControlType: e.target.value,
-                    })
-                  }
-                >
-                  {orgDetails.directDemocracyEnabled && (
-                    <option value="DirectDemocracy">Direct Democracy</option>
-                  )}
+                <ButtonGroup size="lg" isAttached variant="outline">
+                  <Button
+                    variant={
+                      orgDetails.votingControlType === "DirectDemocracy"
+                        ? "solid"
+                        : "outline"
+                    }
+                    onClick={() =>
+                      setOrgDetails({
+                        ...orgDetails,
+                        votingControlType: "DirectDemocracy",
+                      })
+                    }
+                    aria-pressed={
+                      orgDetails.votingControlType === "DirectDemocracy"
+                    }
+                  >
+                    Direct Democracy
+                  </Button>
                   {orgDetails.hybridVotingEnabled && (
-                    <option value="Hybrid">Hybrid</option>
+                    <Button
+                      variant={
+                        orgDetails.votingControlType === "Hybrid"
+                          ? "solid"
+                          : "outline"
+                      }
+                      onClick={() =>
+                        setOrgDetails({
+                          ...orgDetails,
+                          votingControlType: "Hybrid",
+                        })
+                      }
+                      aria-pressed={
+                        orgDetails.votingControlType === "Hybrid"
+                      }
+                    >
+                      Hybrid
+                    </Button>
                   )}
                   {orgDetails.participationVotingEnabled && (
-                    <option value="Participation">Participation-Based</option>
+                    <Button
+                      variant={
+                        orgDetails.votingControlType === "Participation"
+                          ? "solid"
+                          : "outline"
+                      }
+                      onClick={() =>
+                        setOrgDetails({
+                          ...orgDetails,
+                          votingControlType: "Participation",
+                        })
+                      }
+                      aria-pressed={
+                        orgDetails.votingControlType === "Participation"
+                      }
+                    >
+                      Participation-Based
+                    </Button>
                   )}
-                </Select>
+                </ButtonGroup>
+                <FormErrorMessage>
+                  {errors.votingControlType}
+                </FormErrorMessage>
               </FormControl>
+
               {/* Next and Back Buttons */}
               <Flex justifyContent="space-between" mt={6}>
                 <Button
@@ -728,7 +980,15 @@ const ArchitectPage = () => {
                 <Button
                   size="lg"
                   colorScheme="teal"
-                  onClick={handleNextStep}
+                  onClick={onNext}
+                  isDisabled={
+                    !orgDetails.directDemocracyQuorum ||
+                    (orgDetails.hybridVotingEnabled &&
+                      (!orgDetails.hybridVoteQuorum || errors.voteWeights)) ||
+                    (orgDetails.participationVotingEnabled &&
+                      !orgDetails.participationVoteQuorum) ||
+                    !orgDetails.votingControlType
+                  }
                 >
                   Next
                 </Button>
@@ -736,7 +996,7 @@ const ArchitectPage = () => {
             </Stack>
           </>
         )}
-  
+
         {currentStep === steps.ADDITIONAL_SETTINGS && (
           <>
             {/* Additional Settings */}
@@ -771,32 +1031,20 @@ const ArchitectPage = () => {
                 >
                   Back
                 </Button>
-                <Button
-                  size="lg"
-                  colorScheme="teal"
-                  onClick={handleNextStep}
-                >
+                <Button size="lg" colorScheme="teal" onClick={handleNextStep}>
                   Next
                 </Button>
               </Flex>
             </Stack>
           </>
         )}
-  
+
         {/* Modals and Additional Components */}
-        
+
         <MemberSpecificationModal
           isOpen={isMemberSpecificationModalOpen}
           onSave={handleSaveMemberRole}
           onClose={() => setIsMemberSpecificationModalOpen(false)}
-        />
-        <WeightModal
-          isOpen={isWeightModalOpen}
-          onSave={(weights) => {
-            handleWeight(weights);
-            setHybridWeightsSet(true);
-          }}
-          onClose={() => setIsWeightModalOpen(false)}
         />
         <LinksModal
           isOpen={isLinksModalOpen}
@@ -835,14 +1083,17 @@ const ArchitectPage = () => {
             <ModalHeader>Are you sure?</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              All progress will be lost. Do you really want to stop creating your organization?
+              All progress will be lost. Do you really want to stop creating
+              your organization?
             </ModalBody>
 
             <ModalFooter>
               <Button colorScheme="red" mr={3} onClick={handleExitConfirm}>
                 Yes, Exit
               </Button>
-              <Button variant="ghost" onClick={handleExitCancel}>Cancel</Button>
+              <Button variant="ghost" onClick={handleExitCancel}>
+                Cancel
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
