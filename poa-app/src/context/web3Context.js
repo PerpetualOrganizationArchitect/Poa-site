@@ -501,6 +501,7 @@ export const Web3Provider = ({ children }) => {
             const tx = await contract.createTask(payout, ipfsHashString, projectName, gasOptions);
             await tx.wait();
             console.log("Task created");
+            console.log("tx", tx);
             updateNotification(notificationId,'Task created successfully!', 'success');
             refetch();
         } catch (error) {
@@ -514,6 +515,8 @@ export const Web3Provider = ({ children }) => {
         if (!checkNetwork()) {
             return;
         }
+
+        console.log("Claiming task with ID:", taskID);
         const contract = getContractInstance(contractAddress, TaskManager.abi);
         const newTaskID = taskID.split("-")[0];
         const notificationId = addNotification('Claiming task...', 'loading');

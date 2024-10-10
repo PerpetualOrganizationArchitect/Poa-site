@@ -523,7 +523,7 @@ const ArchitectPage = () => {
         overflow="hidden"
         position="relative"
         p={0}
-        bg={isCollapsed ? "transparent" : "rgba(0, 0, 0, 0.77)"}
+        bg={isCollapsed ? "transparent" : "rgba(0, 0, 0, 0.45)"}
         borderRight={
           isCollapsed ? "none" : { base: "none", lg: "none" }
         }
