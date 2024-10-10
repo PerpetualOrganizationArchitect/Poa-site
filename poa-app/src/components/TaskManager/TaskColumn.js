@@ -12,7 +12,7 @@ import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useProjectContext } from '@/context/ProjectContext';
 
-// ... inside TaskColumn component, before return statement
+
 const glassLayerStyle = {
   position: 'absolute',
   width: '100%',

@@ -1,10 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {useDataBaseContext} from './dataBaseContext';
+import { useDataBaseContext } from './dataBaseContext';
 import { useWeb3Context } from './web3Context';
 import { usePOContext } from './POContext';
-
-import { useToast } from '@chakra-ui/react';
-
 
 const TaskBoardContext = createContext();
 
@@ -12,108 +9,136 @@ export const useTaskBoard = () => {
   return useContext(TaskBoardContext);
 };
 
-export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, onUpdateColumns, account }) => {
-  const toast=useToast();
+export const TaskBoardProvider = ({
+  children,
+  initialColumns,
+  onColumnChange,
+  onUpdateColumns,
+  account,
+}) => {
   const [taskColumns, setTaskColumns] = useState(initialColumns);
   const { getUsernameByAddress, selectedProject } = useDataBaseContext();
-  const{claimTask, updateTask, ipfsAddTask, completeTask, editTaskWeb3, submitTask} = useWeb3Context();
-  const {taskManagerContractAddress} = usePOContext();
-
+  const {
+    claimTask,
+    updateTask,
+    ipfsAddTask,
+    completeTask,
+    editTaskWeb3,
+    submitTask,
+  } = useWeb3Context();
+  const { taskManagerContractAddress } = usePOContext();
 
   useEffect(() => {
     setTaskColumns(initialColumns);
   }, [initialColumns]);
 
-  const moveTask = async(draggedTask, sourceColumnId, destColumnId, newIndex, submissionData, claimedBy) => {
+  const moveTask = async (
+    draggedTask,
+    sourceColumnId,
+    destColumnId,
+    newIndex,
+    submissionData,
+    claimedBy
+  ) => {
+    // Save previous state to revert in case of error
+    const previousTaskColumns = JSON.parse(JSON.stringify(taskColumns));
 
-    
-    if (destColumnId==='inReview' && submissionData===undefined)
-    {
-      
-      
-      toast({
-        title:"Invalid Submission",
-        description: "Please Enter a submission",
-        status: "error",
-        duration: 3500,
-        isClosable: true
-      });
-
-      return;
-    }
-
-
+    // Optimistically update the UI
     const newTaskColumns = [...taskColumns];
-
-    const sourceColumn = newTaskColumns.find((column) => column.id === sourceColumnId);
+    const sourceColumn = newTaskColumns.find(
+      (column) => column.id === sourceColumnId
+    );
     const destColumn = newTaskColumns.find((column) => column.id === destColumnId);
 
-    if(destColumnId!=='open'){
-      const sourceTaskIndex = sourceColumn.tasks.findIndex((task) => task.id === draggedTask.id);
-      sourceColumn.tasks.splice(sourceTaskIndex, 1);
+    // Remove the task from the source column
+    if (sourceColumn) {
+      const sourceTaskIndex = sourceColumn.tasks.findIndex(
+        (task) => task.id === draggedTask.id
+      );
+      if (sourceTaskIndex > -1) {
+        sourceColumn.tasks.splice(sourceTaskIndex, 1);
+      }
     }
 
-    
+    // Prepare the updated task
     const updatedTask = {
       ...draggedTask,
-      name: draggedTask.name,
-      description: draggedTask.description,
-      difficulty: draggedTask.difficulty,
-      estHours: draggedTask.estHours,
-      submission: destColumnId === 'inReview' ? submissionData : draggedTask.submission,
-      claimedBy: destColumnId === 'inProgress' ? claimedBy : (destColumnId === 'open' ? '' : draggedTask.claimedBy),
+      submission:
+        destColumnId === 'inReview' ? submissionData : draggedTask.submission,
+      claimedBy:
+        destColumnId === 'inProgress'
+          ? claimedBy
+          : destColumnId === 'open'
+          ? ''
+          : draggedTask.claimedBy,
     };
 
-    if (destColumnId === 'inProgress') {
-        await claimTask(taskManagerContractAddress, draggedTask.id);
-    }
-    if (destColumnId === 'inReview') {
-      console.log("in review triggger")
-        const ipfsHash = await ipfsAddTask(draggedTask.name, draggedTask.description,"In Review", draggedTask.difficulty, draggedTask.estHours, submissionData);
-        let ipfsHashString = ipfsHash.path;
-        console.log("ipfsHashString: ", ipfsHashString);
-        console.log("draggedTask.id: ", draggedTask.id);
-        console.log("draggedTask.Payout: ", draggedTask.Payout);
-      await submitTask(taskManagerContractAddress, draggedTask.id, ipfsHashString);
+    // Add the task to the destination column
+    if (destColumn) {
+      destColumn.tasks.splice(newIndex, 0, updatedTask);
     }
 
-    if (destColumnId === 'completed') {
-        await completeTask(taskManagerContractAddress, draggedTask.id);
-
-    }
-
-    destColumn.tasks = [...destColumn.tasks, updatedTask];
+    // Update the state optimistically
     setTaskColumns(newTaskColumns);
 
-    // Call the onColumnChange prop when the columns are updated
-    if (onUpdateColumns) {
-      onUpdateColumns(newTaskColumns);
+    // Perform the Web3 operations asynchronously
+    try {
+      if (destColumnId === 'inProgress') {
+        await claimTask(taskManagerContractAddress, draggedTask.id);
+      } else if (destColumnId === 'inReview') {
+        if (!submissionData) {
+          throw new Error('Please enter a submission.');
+        }
+        const ipfsHash = await ipfsAddTask(
+          draggedTask.name,
+          draggedTask.description,
+          'In Review',
+          draggedTask.difficulty,
+          draggedTask.estHours,
+          submissionData
+        );
+        const ipfsHashString = ipfsHash.path;
+        await submitTask(taskManagerContractAddress, draggedTask.id, ipfsHashString);
+      } else if (destColumnId === 'completed') {
+        await completeTask(taskManagerContractAddress, draggedTask.id);
+      }
+
+      // Call the onUpdateColumns prop when the columns are updated
+      if (onUpdateColumns) {
+        onUpdateColumns(newTaskColumns);
+      }
+
+
+    } catch (error) {
+      // Revert the UI changes if there is an error
+      setTaskColumns(previousTaskColumns);
+
+
     }
-    return true;
   };
 
   const addTask = async (task, destColumnId) => {
-
+    // Calculate kubixPayout
     const calculateKubixPayout = (difficulty, estimatedHours) => {
-    
       const difficulties = {
         easy: { baseKubix: 1, multiplier: 16.5 },
         medium: { baseKubix: 4, multiplier: 24 },
         hard: { baseKubix: 10, multiplier: 30 },
         veryHard: { baseKubix: 25, multiplier: 37.5 },
       };
-      
+
       const { baseKubix, multiplier } = difficulties[difficulty];
-      const totalKubix = Math.round(baseKubix + (multiplier * estimatedHours));
+      const totalKubix = Math.round(baseKubix + multiplier * estimatedHours);
       return totalKubix;
-  
     };
-  
+
     const kubixPayout = calculateKubixPayout(task.difficulty, task.estHours);
 
-    console.log("task: ", task)
-    const newTaskColumns = [...taskColumns];
+    // Save previous state
+    const previousTaskColumns = JSON.parse(JSON.stringify(taskColumns));
 
+    // Optimistically update the UI
+    const newTaskColumns = [...taskColumns];
     const destColumn = newTaskColumns.find((column) => column.id === destColumnId);
 
     const newTask = {
@@ -122,70 +147,127 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
       kubixPayout: kubixPayout,
     };
 
-
-
-    destColumn.tasks.push(newTask);
+    if (destColumn) {
+      destColumn.tasks.push(newTask);
+    }
 
     setTaskColumns(newTaskColumns);
 
-    // Call the onUpdateColumns prop when the columns are updated
-    if (onUpdateColumns) {
-      await onUpdateColumns(newTaskColumns);
+    try {
+      // Perform Web3 operation asynchronously
+      await ipfsAddTask(
+        taskManagerContractAddress,
+        kubixPayout,
+        task.description,
+        selectedProject.name,
+        task.estHours,
+        task.difficulty,
+        'Open',
+        task.name
+      );
+
+      // Call the onUpdateColumns prop when the columns are updated
+      if (onUpdateColumns) {
+        onUpdateColumns(newTaskColumns);
+      }
+
+
+    } catch (error) {
+      // Revert the UI changes if there is an error
+      setTaskColumns(previousTaskColumns);
+
     }
   };
 
-  //a function to edit a task
-  const editTask = async(updatedTask, destColumnId, destTaskIndex, projectName) => {
-    
-    
-    
+  const editTask = async (updatedTask, destColumnId, destTaskIndex, projectName) => {
+    // Save previous state
+    const previousTaskColumns = JSON.parse(JSON.stringify(taskColumns));
+
+    // Optimistically update the UI
     const newTaskColumns = [...taskColumns];
     const destColumn = newTaskColumns.find((column) => column.id === destColumnId);
 
     const calculatePayout = (difficulty, estimatedHours) => {
-    
       const difficulties = {
         easy: { base: 1, multiplier: 16.5 },
         medium: { base: 4, multiplier: 24 },
         hard: { base: 10, multiplier: 30 },
         veryHard: { base: 25, multiplier: 37.5 },
       };
-      
+
       const { base, multiplier } = difficulties[difficulty];
-      const total = Math.round(base + (multiplier * estimatedHours));
+      const total = Math.round(base + multiplier * estimatedHours);
       return total;
-  
     };
-  
-    let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
-
-
+    const Payout = calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
     const newTask = {
       ...updatedTask,
       Payout: Payout,
     };
 
-    await editTaskWeb3(taskManagerContractAddress,  Payout, updatedTask.description, projectName, updatedTask.estHours, updatedTask.difficulty, "Open", updatedTask.name, updatedTask.id);
-    destColumn.tasks.splice(destTaskIndex, 1, newTask);
-
+    if (destColumn && destColumn.tasks[destTaskIndex]) {
+      destColumn.tasks.splice(destTaskIndex, 1, newTask);
+    }
 
     setTaskColumns(newTaskColumns);
 
-    if (onUpdateColumns) {
-      await onUpdateColumns(newTaskColumns);
+    try {
+      // Perform Web3 operation asynchronously
+      await editTaskWeb3(
+        taskManagerContractAddress,
+        Payout,
+        updatedTask.description,
+        projectName,
+        updatedTask.estHours,
+        updatedTask.difficulty,
+        'Open',
+        updatedTask.name,
+        updatedTask.id
+      );
+
+      if (onUpdateColumns) {
+        onUpdateColumns(newTaskColumns);
+      }
+
+
+    } catch (error) {
+      // Revert the UI changes if there is an error
+      setTaskColumns(previousTaskColumns);
+
     }
   };
 
-  const deleteTask = async(taskId, columnId) => {
+  const deleteTask = async (taskId, columnId) => {
+    // Save previous state
+    const previousTaskColumns = JSON.parse(JSON.stringify(taskColumns));
+
+    // Optimistically update the UI
     const newTaskColumns = [...taskColumns];
     const column = newTaskColumns.find((col) => col.id === columnId);
-    const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
-    column.tasks.splice(taskIndex, 1);
+    if (column) {
+      const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
+      if (taskIndex > -1) {
+        column.tasks.splice(taskIndex, 1);
+      }
+    }
+
     setTaskColumns(newTaskColumns);
-    if (onUpdateColumns) {
-      await onUpdateColumns(newTaskColumns);
+
+    try {
+      // Perform any Web3 operation if necessary
+      // For example, await deleteTaskWeb3(taskId);
+
+      if (onUpdateColumns) {
+        onUpdateColumns(newTaskColumns);
+      }
+
+
+    } catch (error) {
+      // Revert the UI changes if there is an error
+      setTaskColumns(previousTaskColumns);
+
     }
   };
 
@@ -199,6 +281,8 @@ export const TaskBoardProvider = ({ children, initialColumns, onColumnChange, on
   };
 
   return (
-    <TaskBoardContext.Provider value={value}>{children}</TaskBoardContext.Provider>
+    <TaskBoardContext.Provider value={value}>
+      {children}
+    </TaskBoardContext.Provider>
   );
 };

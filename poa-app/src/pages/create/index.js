@@ -187,7 +187,7 @@ const ArchitectPage = () => {
     let response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
 
     while (response.status === "in_progress" || response.status === "queued") {
-      await new Promise((resolve) => setTimeout(resolve, 250));
+      await new Promise((resolve) => setTimeout(resolve, 200));
       response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
     }
 

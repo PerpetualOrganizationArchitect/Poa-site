@@ -34,7 +34,7 @@ export const VotingProvider = ({ children, id }) => {
 
     const combinedID = `${poName}-${account?.toLowerCase()}`;
 
-  const  { data, loading, error } = useQuery(FETCH_ALL_PO_DATA, {
+  const  { data, loading, error, refetch } = useQuery(FETCH_ALL_PO_DATA, {
     variables: { id: account?.toLowerCase(), poName: poName, combinedID: combinedID },
     skip: !account || !poName || !combinedID,
     fetchPolicy:'cache-first',
@@ -130,7 +130,8 @@ export const VotingProvider = ({ children, id }) => {
     loading,
     error,
     ongoingPolls,
-    votingType
+    votingType,
+    refetch,
   }), [
     participationVotingOngoing,
     participationVotingCompleted,
@@ -141,7 +142,8 @@ export const VotingProvider = ({ children, id }) => {
     loading,
     error,
     ongoingPolls,
-    votingType
+    votingType,
+    refetch,
   ]);
 
   return (

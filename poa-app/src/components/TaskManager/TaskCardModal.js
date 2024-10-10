@@ -80,25 +80,11 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
     if (columnId === 'open') {
       if (hasMemberNFT) {
         try {
-          console.log("start1")
           await moveTask(task, columnId, 'inProgress', 0, " ", account);
           
-          toast({
-            title: "Task claimed.",
-            description: "Your task was successfully claimed.",
-            stas: "success",
-            duration: 3000,
-            isClosable: true
-          });
         }
         catch (error) {
-          toast({
-            title: "Error",
-            description: "There was an error claiming the task.",
-            status: "error",
-            duration: 3500,
-            isClosable: true
-          });
+
           console.error("Error moving task:", error);
         }
       } else {
