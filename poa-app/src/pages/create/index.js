@@ -124,7 +124,10 @@ const ArchitectPage = () => {
     participationVoteQuorum: "",
     directDemocracyEnabled: true,
     username: "",
+    electionHubEnabled: false,
+    educationHubEnabled: false,
   });
+  
 
   const initChatBotCalled = useRef(false);
 
@@ -295,8 +298,8 @@ const ArchitectPage = () => {
         orgDetails.participationVoteWeight,
         orgDetails.hybridVotingEnabled,
         orgDetails.participationVotingEnabled,
-        true,
-        true,
+        orgDetails.electionHubEnabled,
+        orgDetails.educationHubEnabled,
         orgDetails.logoURL,
         orgDetails.infoIPFSHash,
         orgDetails.votingControlType,
@@ -1106,6 +1109,58 @@ const ArchitectPage = () => {
                   Add Roles
                 </Button>
               </FormControl>
+                {/* Learn and Earn Option */}
+                <FormControl>
+                      <FormLabel fontSize={labelFontSize} fontWeight="medium">
+                        Enable Learn and Earn
+                        <Tooltip
+                          label="Learn and Earn lets users learn about the organization or other topics and earn tokens."
+                          fontSize="md"
+                        >
+                          <InfoIcon ml={2} />
+                        </Tooltip>
+                      </FormLabel>
+                      <Checkbox
+                        size={componentSize}
+                        colorScheme="teal"
+                        isChecked={orgDetails.educationHubEnabled}
+                        onChange={(e) =>
+                          setOrgDetails({
+                            ...orgDetails,
+                            educationHubEnabled: e.target.checked,
+                          })
+                        }
+                      >
+                        Learn and Earn
+                      </Checkbox>
+                    </FormControl>
+
+                    {/* Elections Option */}
+                    <FormControl>
+                      <FormLabel fontSize={labelFontSize} fontWeight="medium">
+                        Enable Elections
+                        <Tooltip
+                          label="Elections give the ability for the community to elect new executives."
+                          fontSize="md"
+                        >
+                          <InfoIcon ml={2} />
+                        </Tooltip>
+                      </FormLabel>
+                      <Checkbox
+                        size={componentSize}
+                        colorScheme="teal"
+                        isChecked={orgDetails.electionHubEnabled}
+                        onChange={(e) =>
+                          setOrgDetails({
+                            ...orgDetails,
+                            electionHubEnabled: e.target.checked,
+                          })
+                        }
+                      >
+                        Elections
+                      </Checkbox>
+                    </FormControl>
+
               {/* Next and Back Buttons */}
               <Flex
                 justifyContent="space-between"
