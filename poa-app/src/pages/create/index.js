@@ -367,6 +367,7 @@ const ArchitectPage = () => {
       borderColor="gray.200"
       borderRadius="md"
       boxShadow="md"
+
     >
       <Text
         fontSize={headerFontSize}
@@ -519,8 +520,9 @@ const ArchitectPage = () => {
         overflow="hidden"
         position="relative"
         p={0}
+        bg={isCollapsed ? "transparent" : "rgba(0, 0, 0, 0.77)"}
         borderRight={
-          isCollapsed ? "none" : { base: "none", lg: "1px solid #e2e8f0" }
+          isCollapsed ? "none" : { base: "none", lg: "none" }
         }
       >
         {/* Only show content if not collapsed */}
@@ -553,6 +555,7 @@ const ArchitectPage = () => {
                   height={{ base: "80px", md: "100px" }}
                 />
               </Center>
+
               <ConversationLog messages={messages} />
             </Box>
             {isInputVisible && (
@@ -561,7 +564,7 @@ const ArchitectPage = () => {
                 bottom="0"
                 width="full"
                 p={0}
-                bg="white"
+                bg="gray.100"
                 borderTop="1px solid #e2e8f0"
               >
                 <ArchitectInput
@@ -571,6 +574,7 @@ const ArchitectPage = () => {
                   isDisabled={isWaiting}
                 />
               </Box>
+
             )}
           </>
         ) : (
@@ -709,7 +713,7 @@ const ArchitectPage = () => {
                 </Button>
                 <Button
                   size={buttonSize}
-                  colorScheme="teal"
+                  colorScheme="blue"
                   onClick={handleNextStep}
                   isDisabled={!orgDetails.POname || !orgDetails.description}
                 >
@@ -1068,7 +1072,7 @@ const ArchitectPage = () => {
                 </Button>
                 <Button
                   size={buttonSize}
-                  colorScheme="teal"
+                  colorScheme="blue"
                   onClick={onNext}
                 >
                   Next
@@ -1118,7 +1122,7 @@ const ArchitectPage = () => {
                 </Button>
                 <Button
                   size={buttonSize}
-                  colorScheme="teal"
+                  colorScheme="blue"
                   onClick={handleNextStep}
                 >
                   Next
