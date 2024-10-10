@@ -88,7 +88,7 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       if (title === 'Open') {
         let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
-        let hexTaskCount = taskCount.toString(16);  // Convert taskCount to hex
+        let hexTaskCount = taskCount.toString(16); 
         let newTaskId = `0x${hexTaskCount}-${taskManagerContractAddress}`;
 
         let newTask = {

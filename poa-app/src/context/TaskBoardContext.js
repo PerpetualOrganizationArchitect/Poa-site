@@ -111,6 +111,7 @@ export const TaskBoardProvider = ({
 
     } catch (error) {
       // Revert the UI changes if there is an error
+      console.error('Error moving task:', error);
       setTaskColumns(previousTaskColumns);
 
 
