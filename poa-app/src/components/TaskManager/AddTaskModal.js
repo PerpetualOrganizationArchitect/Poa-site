@@ -37,14 +37,6 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
       setLoading(true);
       await onAddTask({ name, description, difficulty, estHours });
 
-      // Show a toast notification when a task is successfully added
-      toast({
-        title: "Task added.",
-        description: "Your task was successfully added.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
 
       setLoading(false);
       setDescription('');

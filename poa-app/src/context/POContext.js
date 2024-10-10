@@ -14,6 +14,7 @@ async function fetchLeaderboardData(id, users) {
             id: user.id,
             name: user.Account.userName,
             token: user.ptTokenBalance,
+            type: user.memberType.memberTypeName,
         }));
     } else {
         console.error("No user data available");
@@ -46,7 +47,7 @@ export const POProvider = ({ children }) => {
     const [poContextLoading, setPoContextLoading] = useState(true);
     const [rules, setRules] = useState(null);
 
-    const [educationModules, setEducationModules] = useState([]); // New state for modules
+    const [educationModules, setEducationModules] = useState([]); 
 
     const [account, setAccount] = useState('0x00');
     const router = useRouter();

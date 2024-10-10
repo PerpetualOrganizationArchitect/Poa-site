@@ -12,7 +12,7 @@ import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useProjectContext } from '@/context/ProjectContext';
 
-// ... inside TaskColumn component, before return statement
+
 const glassLayerStyle = {
   position: 'absolute',
   width: '100%',
@@ -88,16 +88,20 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       if (title === 'Open') {
         let Payout= calculatePayout(updatedTask.difficulty, updatedTask.estHours);
 
+        let hexTaskCount = taskCount.toString(16); 
+        let newTaskId = `0x${hexTaskCount}-${taskManagerContractAddress}`;
+
         let newTask = {
           ...updatedTask,
-          id: `0x${taskCount}-${taskManagerContractAddress}`,
+          id: `${newTaskId}`,
           claimedBy: "",
           claimerUsername: "",
           submission: "",
           Payout: Payout
         };
-        await createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
         moveTask(newTask, 'open', 'open', 0, " ", 0);
+        await createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);
+       
        
       }
     };
