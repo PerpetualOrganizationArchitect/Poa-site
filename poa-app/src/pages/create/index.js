@@ -288,6 +288,11 @@ const ArchitectPage = () => {
 
   const deployOrg = async () => {
     setIsDeploying(true);
+    
+    const quorum = orgDetails.hybridVotingEnabled
+      ? orgDetails.hybridVoteQuorum
+      : orgDetails.participationVoteQuorum;
+    
     try {
       await main(
         orgDetails.membershipTypeNames,
@@ -304,7 +309,7 @@ const ArchitectPage = () => {
         orgDetails.infoIPFSHash,
         orgDetails.votingControlType,
         orgDetails.directDemocracyQuorum,
-        orgDetails.participationVoteQuorum,
+        quorum,
         orgDetails.username,
         signer
       );
