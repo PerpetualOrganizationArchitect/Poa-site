@@ -133,10 +133,21 @@ export default function Home() {
           color="gray.700"
           w={["95%", "65%"]}
         >
-          Unite your Community, simplify Collaboration, and manage funds Collectively with Poa
+          Unite your Community, simplify Collaboration, and manage funds Collectively with Poa. 
+        </Text>
+        <Text
+          mt="8"
+           zIndex={1}
+          fontSize={["14px", "17px", "19px"]}
+          fontWeight="600"
+          textAlign="center"
+          color="gray.600"
+          w={["95%", "65%"]}
+        > 
+        Voting power is based on Membership and Contribution, not capital
         </Text>
 
-        <Flex  justifyContent={["center", "center", "center"]} direction={["column", "column", "row"]} gap={12} mt={["16", "14"]} mb={["14"]} zIndex={1}>
+        <Flex  justifyContent={["center", "center", "center"]} direction={["column", "column", "row"]} gap={12} mt={["16", "14"]} mb={["6"]} zIndex={1}>
           <Box
             _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }}
             onClick={() => router.push("/create")}
