@@ -68,7 +68,15 @@ const EducationHub = () => {
   }, [nftMembershipContractAddress, address]);
 
   const handleAddModule = async () => {
-    setIsSubmitting(true);
+          // Reset form
+          setModuleTitle('');
+          setModuleDescription('');
+          setModuleLink('');
+          setModuleQuestion('');
+          setPayout(0);
+          setAnswers(['', '', '', '']);
+          setCorrectAnswerIndex(null);
+          onClose();
     try {
       const selectedAnswer = answers[correctAnswerIndex];
       await createEduModule(
@@ -88,15 +96,7 @@ const EducationHub = () => {
         duration: 5000,
         isClosable: true,
       });
-      // Reset form
-      setModuleTitle('');
-      setModuleDescription('');
-      setModuleLink('');
-      setModuleQuestion('');
-      setPayout(0);
-      setAnswers(['', '', '', '']);
-      setCorrectAnswerIndex(null);
-      onClose();
+
     } catch (error) {
       console.error("Error creating module:", error);
       toast({
