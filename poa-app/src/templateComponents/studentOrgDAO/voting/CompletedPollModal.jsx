@@ -24,7 +24,7 @@ const glassLayerStyle = {
   backgroundColor: "rgba(33, 33, 33, 0.97)",
 };
 
-const CompletedPollModal = ({ onOpen, isOpen, onClose, selectedPoll }) => {
+const CompletedPollModal = ({ onOpen, isOpen, onClose, selectedPoll, voteType }) => {
   const router = useRouter();
   const { userDAO } = router.query;
 
@@ -76,7 +76,14 @@ const CompletedPollModal = ({ onOpen, isOpen, onClose, selectedPoll }) => {
               </Text>
               {selectedPoll?.options?.map((option, index) => (
                 <Text key={index}>
-                  {option.name}: {ethers.BigNumber.from(option.votes).toNumber()} votes
+                  {option.name}:{" "}
+                  {voteType === 'Hybrid' ? (
+                    // Show percentage for Hybrid type
+                    `${option.currentPercentage || 0}%`
+                  ) : (
+                    // Fallback to showing votes, handle invalid BigNumber values
+                    `${option.votes ? ethers.BigNumber.from(option.votes).toNumber() : 0} votes`
+                  )}
                 </Text>
               ))}
             </VStack>

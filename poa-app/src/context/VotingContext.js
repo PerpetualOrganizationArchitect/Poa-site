@@ -85,7 +85,7 @@ export const VotingProvider = ({ children, id }) => {
           type: 'Hybrid',
           options: proposal.options.map(option => ({
             ...option,
-            votes: option.votesPT + option.votesDD, // Combine votesPT and votesDD
+            votes: option.currentPercentage, // Combine votesPT and votesDD
           }))
         }));
   
