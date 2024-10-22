@@ -6,7 +6,7 @@ import AboutPreview from "@/components/profileHub/AboutPreview";
 import YourPerpetualOrganizations from "@/components/profileHub/YourPerpetualOrganizations";
 import PoaPreview from "@/components/profileHub/PoaPreview";
 
-// Convert Chakra UI components to motion components
+
 const MotionBox = motion(Box);
 const MotionFlex = motion(Flex);
 
@@ -17,7 +17,7 @@ const profileHubPage = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2, // Stagger the animations of children
+        staggerChildren: 0.2, 
       },
     },
   };

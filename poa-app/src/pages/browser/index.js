@@ -3,7 +3,7 @@ import Layout from "../../components/Layout";
 import { useprofileHubContext } from "../../context/profileHubContext";
 import { useIPFScontext } from "@/context/ipfsContext";
 import Link from "next/link";
-import { Flex, VStack, Box, Text, Image } from "@chakra-ui/react";
+import { Flex, VStack, Box, Text, Image, Heading, Grid, GridItem } from "@chakra-ui/react";
 
 const BrowserPage = () => {
   const { perpetualOrganizations, setprofileHubLoaded } = useprofileHubContext();
@@ -11,7 +11,6 @@ const BrowserPage = () => {
   const [images, setImages] = useState({});
 
   useEffect(() => {
-    console.log("dash");
     if (perpetualOrganizations.length === 0) {
       setprofileHubLoaded(true);
     } else {
@@ -30,43 +29,78 @@ const BrowserPage = () => {
       <Flex
         direction="column"
         align="center"
-        h="100vh"
+        minH="100vh"
         pt="3rem"
+       
       >
-        <Text mt="70px" textAlign="center" fontSize="2xl" fontWeight="bold" color="gray.800">
-          Browse and Join a Perpetual Organization
-        </Text>
-        <Flex
-          wrap="wrap"
-          justify="center"
-          align="center"
-          maxW="66%"
-          mt="2rem"
+        {/* Hero Section */}
+        <Box
+          w="100%"
+          bgSize="cover"
+          bgPosition="center"
+          py="70px"
+          textAlign="center"
+         
+        >
+          <Heading as="h1" size={["md","2xl"]} fontWeight="bold">
+            Browse and Join a Perpetual Organization
+          </Heading>
+          <Text mt="4" ml="2" mr="2" fontSize={["xs","xl"]}>
+            Discover communities that share your interests and passions
+          </Text>
+        </Box>
+        {/* Cards Grid */}
+        <Grid
+          templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
+          gap={6}
+          maxW="80%"
+          px="2rem"
         >
           {perpetualOrganizations.map((po) => (
-            <Link href={`/home?userDAO=${po.id}`} key={po.id}>
-              <Box
-                border="1px"
-                borderRadius="md"
-                m="1rem"
-                p="1rem"
-                boxShadow="base"
-                _hover={{ transform: "scale(1.05)", transition: "transform 0.3s", boxShadow: "lg" }}
-                w="220px" 
-              >
-                <VStack>
-                  <Text fontWeight={"bold"} fontSize="24px">{po.id}</Text>
-                  <Text fontSize="16px">{po.aboutInfo?.description}</Text>
-                  <Image 
-                    width="150px" 
-                    src={images[po.id] || '/images/poa_logo.png'} 
-                    alt={po.id} 
-                  />
-                </VStack>
-              </Box>
-            </Link>
+            <GridItem key={po.id}>
+              <Link href={`/home?userDAO=${po.id}`}>
+                <Box
+                  bg="rgba(0, 0, 0, 0.73)"
+                  backdropFilter="blur(10px)"
+                  borderRadius="lg"
+                  p="1.5rem"
+                  boxShadow="lg"
+                  _hover={{
+                    transform: "scale(1.05)",
+                    transition: "transform 0.3s",
+                    boxShadow: "xl",
+                  }}
+                  textAlign="center"
+                >
+                  <VStack spacing="1rem">
+                    <Image
+                      width={["55%", "45%"]}
+                      height="auto"
+                      src={images[po.id] || '/images/poa_logo.png'}
+                      alt={po.id}
+                      borderRadius="xl"
+                      bg="white"
+                      boxShadow="md"
+                    />
+                    <Text fontWeight="700" fontSize="21px" color="white">
+                      {po.id}
+                    </Text>
+                    {po.aboutInfo?.description && (
+                      <Text fontWeight={"500"} fontSize="16px" color="gray.100">
+                        {po.aboutInfo.description}
+                      </Text>
+                    )}
+                    {po.totalMembers && (
+                      <Text fontSize="14px" color="gray.200">
+                        {po.totalMembers} Members
+                      </Text>
+                    )}
+                  </VStack>
+                </Box>
+              </Link>
+            </GridItem>
           ))}
-        </Flex>
+        </Grid>
       </Flex>
     </>
   );

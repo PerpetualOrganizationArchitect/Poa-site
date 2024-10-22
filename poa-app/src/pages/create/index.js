@@ -507,6 +507,28 @@ const ArchitectPage = () => {
       overflow="hidden"
       direction={{ base: "column", md: "row" }}
     >
+            {/* Beta Badge */}
+          {isCollapsed? null :
+          <>
+          <Box
+          position="absolute"
+          top="14px"
+          left="14px"
+          display={["none", "none", "block"]}
+          bg="red.500"
+          color="white"
+          fontSize={"12px"}
+          w="100px"
+          px={3}
+          py={3}
+          borderRadius="md"
+          fontWeight="500"
+          zIndex={2}
+        >
+          Beta on Polygon Amoy
+        </Box>
+        </>
+        }
       {/* Exit Button */}
       <Box position="absolute" top={exitButtonTop} right={exitButtonRight}>
         <IconButton

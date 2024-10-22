@@ -17,6 +17,7 @@ import Link2 from "next/link";
 import Typist from "react-typist";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { usePOContext } from "@/context/POContext";
+import { useIPFScontext } from "@/context/ipfsContext";
 
 
 // CSS for the wave animation
@@ -61,7 +62,7 @@ const glassLayerStyle = {
   zIndex: -1,
   borderRadius: 'inherit',
   backdropFilter: 'blur(20px)',
-  backgroundColor: 'rgba(0, 0, 0, .6)',
+  backgroundColor: 'rgba(0, 0, 0, .7)',
 };
 
 const WaveBackground = styled.div`
@@ -93,6 +94,22 @@ const Home = () => {
 
   const router = useRouter();
   const { userDAO } = router.query;
+
+  const { fetchImageFromIpfs } = useIPFScontext();
+
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      console.log('logoHash', logoHash);
+      if (logoHash) {
+        const imageUrl = await fetchImageFromIpfs(logoHash);
+        setImage(imageUrl);
+      }
+    };
+
+    fetchImage();
+  }, [logoHash]);
 
   return (
     <>
@@ -140,10 +157,9 @@ const Home = () => {
             <Heading as="h1" size="2xl" color="white" mt="8">
               Welcome to {userDAO} 
             </Heading>
-            <Text fontSize="md" color="white" mt={6}>
-              A Perpetual Organization built with Poa. Fully owned and controlled by the {userDAO} community itself. Learn more about how to build your own censorship-resistant, fully worker-owned organization here. Cut out middlemen and investors with Poa.
+            <Text fontSize="lg" color="white" mt={6}>
+              A Perpetual Organization built with Poa. Fully owned and controlled by the {userDAO} community itself. Learn more about how to build your own censorship-resistant, fully community-owned organization at <Link2 href="https://poa.community" isExternal>https://poa.community</Link2>
             </Text>
-
             <Link2 href={`/user/?userDAO=${userDAO}`}>
               <Button
                 size="lg"
@@ -189,7 +205,17 @@ const Home = () => {
             >
               {poDescription}
             </Text>
-            {/* add links here */}
+            <Image
+              src={image}
+              alt="Organization Logo"
+              borderRadius="xl"
+              boxShadow="md"
+              width="50%"
+              height="auto"
+              bg="white"
+              mb="4"
+            />
+
           </Container>
         </Box>
       </VStack>
