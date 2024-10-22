@@ -352,7 +352,7 @@ export default function Home() {
                     transform: "scale(1.05)",
                     transition: "transform 0.3s",
                   }}
-                  onClick={() => router.push("/about")}
+                  onClick={() => router.push("/docs/perpetualOrganization/")}
                 >
                   Learn More
                 </Button>
@@ -473,7 +473,7 @@ export default function Home() {
                     transform: "scale(1.05)",
                     transition: "transform 0.3s",
                   }}
-                  onClick={() => router.push("/about")}
+                  onClick={() => router.push("/docs/perpetualOrganization/")}
                 >
                   Learn More
                 </Button>
