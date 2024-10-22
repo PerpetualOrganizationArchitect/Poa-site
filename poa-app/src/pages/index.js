@@ -221,7 +221,7 @@ export default function Home() {
         <Text
           mt={["10", "10"]}
           zIndex={1}
-          fontSize={["16px", "19px", "21px"]}
+          fontSize={["17px", "21px", "23px"]}
           fontWeight="700"
           textAlign="center"
           color="gray.700"
@@ -234,7 +234,7 @@ export default function Home() {
           mt="8"
           zIndex={1}
           fontSize={["14px", "16px", "19px"]}
-          fontWeight="600"
+          fontWeight="500"
           textAlign="center"
           color="gray.600"
           w={["95%", "65%"]}
@@ -249,7 +249,7 @@ export default function Home() {
           justifyContent={["center", "center", "center"]}
           direction={["column", "column", "row"]}
           gap={12}
-          mt={["16", "14"]}
+          mt={["15", "12"]}
           mb={["6"]}
           zIndex={1}
         >

@@ -42,10 +42,10 @@ const BrowserPage = () => {
           textAlign="center"
          
         >
-          <Heading as="h1" size="2xl" fontWeight="bold">
+          <Heading as="h1" size={["md","2xl"]} fontWeight="bold">
             Browse and Join a Perpetual Organization
           </Heading>
-          <Text mt="4" fontSize="xl">
+          <Text mt="4" ml="2" mr="2" fontSize={["xs","xl"]}>
             Discover communities that share your interests and passions.
           </Text>
         </Box>
@@ -74,19 +74,19 @@ const BrowserPage = () => {
                 >
                   <VStack spacing="1rem">
                     <Image
-                      width="100px"
-                      height="100px"
+                      width={["55%", "45%"]}
+                      height="auto"
                       src={images[po.id] || '/images/poa_logo.png'}
                       alt={po.id}
-                      borderRadius="full"
+                      borderRadius="xl"
                       bg="white"
                       boxShadow="md"
                     />
-                    <Text fontWeight="bold" fontSize="20px" color="white">
+                    <Text fontWeight="700" fontSize="21px" color="white">
                       {po.id}
                     </Text>
                     {po.aboutInfo?.description && (
-                      <Text fontSize="14px" color="gray.100">
+                      <Text fontWeight={"500"} fontSize="16px" color="gray.100">
                         {po.aboutInfo.description}
                       </Text>
                     )}
