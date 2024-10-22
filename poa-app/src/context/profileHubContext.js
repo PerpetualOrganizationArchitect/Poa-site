@@ -57,6 +57,7 @@ export const ProfileHubProvider = ({ children }) => {
         perpetualOrganizations {
               id
               logoHash
+              totalMembers
               aboutInfo{
                 description
                 links{

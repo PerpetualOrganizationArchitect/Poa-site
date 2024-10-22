@@ -14,7 +14,8 @@ const Navigation = () => {
       justify="space-between"
       wrap="wrap"
       padding="1rem"
-      bgGradient= "linear(to-r, orange.200, pink.200)"
+      bg="rgba(0, 0, 0, 0.03)"
+      backdropFilter="blur(6px)"
       position="fixed"
       top={0}
       w="100%"
