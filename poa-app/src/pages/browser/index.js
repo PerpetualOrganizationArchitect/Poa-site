@@ -46,7 +46,7 @@ const BrowserPage = () => {
             Browse and Join a Perpetual Organization
           </Heading>
           <Text mt="4" ml="2" mr="2" fontSize={["xs","xl"]}>
-            Discover communities that share your interests and passions.
+            Discover communities that share your interests and passions
           </Text>
         </Box>
         {/* Cards Grid */}
