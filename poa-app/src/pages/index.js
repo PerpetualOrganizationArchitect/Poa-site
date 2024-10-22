@@ -66,6 +66,11 @@ export default function Home() {
         <meta name="twitter:description" content="Poa helps you create and manage fully worker-owned DAOs with no coding required. Start building your community-driven organization today with Poa." />
         <meta name="twitter:image" content="https://poa.community/images/high_res_poa.png" />
 
+        {/* Import Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+
         {/* JSON-LD Scripts */}
         <script
           type="application/ld+json"
@@ -83,6 +88,7 @@ export default function Home() {
         minH="100vh"
         p={6}
         position="relative"
+        fontFamily="Inter, sans-serif"
       >
         <Box
           position="absolute"
@@ -130,8 +136,9 @@ export default function Home() {
             "-webkit-text-fill-color": "transparent",
             textShadow: "1px 1px 10px rgba(255, 255, 255, 0.5)",
           }}
+          fontFamily="Roboto, sans-serif"
         >
-          Build Organizations Owned Fully by Your Community
+          Quickly Build Organizations Owned Fully by Your Community
         </Text>
         <Text
           mt={["10", "10"]}
@@ -141,17 +148,20 @@ export default function Home() {
           textAlign="center"
           color="gray.700"
           w={["95%", "65%"]}
+          fontFamily="Inter, sans-serif"
         >
-          Unite your Community, simplify Collaboration, and manage funds Collectively with Poa. 
+          Manage Projects, Track Participation, and Govern Collectively with Poa
         </Text>
         <Text
           mt="8"
            zIndex={1}
-          fontSize={["14px", "17px", "19px"]}
+          fontSize={["14px", "16px", "19px"]}
           fontWeight="600"
           textAlign="center"
           color="gray.600"
           w={["95%", "65%"]}
+          display={["none", "none", "block"]}
+          fontFamily="Inter, sans-serif"
         > 
         Voting power is based on Membership and Contribution, not capital
         </Text>
@@ -174,11 +184,11 @@ export default function Home() {
                 height={[100, 140, 180, 220]}
               />
               <Box borderRadius="2xl" bg="white" p={[3, 4]}>
-                <Text fontWeight="500" fontSize={["13px", "15px", "17px"]} color="black.900">
-                  Hi, I'm Poa, and I'll help you Customize your own Perpetual Organization!
+                <Text fontWeight="400" fontSize={["12px", "14px", "16px"]} color="black.900" fontFamily="Inter, sans-serif">
+                  Hi, I'm Poa! I'll help you Customize your own Community-powered Organization!
                 </Text>
-                <Text mt={3} fontSize={["14px", "16px", "18px"]} color="black.900" fontWeight="800">
-                  Let's Chat! Click me to get started.
+                <Text mt={3} fontSize={["15px", "17px", "19px"]} color="black.900" fontWeight="800" fontFamily="Roboto, sans-serif">
+                 Build your Organization for Free in Minutes
                 </Text>
               </Box>
             </HStack>
@@ -186,7 +196,7 @@ export default function Home() {
           <Box  mb="6" maxW={["100%", "100%", "650px"]} flex="1" order={[1, 1, 2]}>
             <VStack display={["flex", "flex", "none"]} spacing={4} bg="blue.200" borderRadius="3xl" p={6}>
               <Box borderRadius="2xl" bg="white" p={[4, 4]}>
-                <Text fontWeight="600" fontSize={["16px", "16px", "18px"]} color="black.900">
+                <Text fontWeight="600" fontSize={["16px", "16px", "18px"]} color="black.900" fontFamily="Roboto, sans-serif">
                   What is a{" "}
                   <Text
                     as="span"
@@ -198,11 +208,12 @@ export default function Home() {
                       textShadow: "1px 1px 10px rgba(255, 255, 255, 0.5)",
                     }}
                     fontSize={["16px", "16px", "18px"]}
+                    fontFamily="Roboto, sans-serif"
                   >
                     Perpetual Organization
                   </Text>
                 </Text>
-                <Text mt={2} color="black.900" fontSize={["13px", "14px", "16px"]} fontWeight="500">
+                <Text mt={2} color="black.900" fontSize={["13px", "14px", "16px"]} fontWeight="500" fontFamily="Inter, sans-serif">
                   POs are community-owned, unstoppable organizations based on contribution and democracy, not investment.
                 </Text>
                 <Button size="sm" mt={4} colorScheme="blue" variant="outline" _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }} onClick={() => router.push("/about")}>
@@ -223,17 +234,16 @@ export default function Home() {
                 cursor="pointer"
                 mt="2" 
               >
-                <Text mt="-1" fontSize={["23px", "23px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
+                <Text mt="-1" fontSize={["23px", "23px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")} fontFamily="Roboto, sans-serif">
                   Explore
                 </Text>
-                <Text mt="2" fontSize={["12px", "14px", "16px"]} fontWeight="bold" color="white">
+                <Text mt="2" fontSize={["12px", "14px", "16px"]} fontWeight="bold" color="white" fontFamily="Inter, sans-serif">
                   Discover and join existing Perpetual Organizations
                 </Text>
               </Box>
             </VStack>
             <HStack display={["none", "none", "flex"]} spacing={8} bg="blue.200" borderRadius="3xl" p={6} justifyContent="center">
               <Box
-                
                 bg={useColorModeValue("gray.800", "white")}
                 borderRadius="xl"
                 p={5}
@@ -246,15 +256,15 @@ export default function Home() {
                 maxW={["100%", "100%", "600px"]}
                 flex="1"
               >
-                <Text mt="-2" fontSize={["16px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")}>
+                <Text mt="-2" fontSize={["16px", "22px", "30px"]} fontWeight="bold" color={useColorModeValue("lightgreen", "white")} fontFamily="Roboto, sans-serif">
                   Explore
                 </Text>
-                <Text mt="2"  mb="-2" fontSize={["12px", "12px", "14px"]} color="white">
+                <Text mt="2"  mb="-2" fontSize={["12px", "12px", "14px"]} color="white" fontFamily="Inter, sans-serif">
                   Discover and join existing Perpetual Organizations
                 </Text>
               </Box>
               <Box  borderRadius="2xl" bg="white" p={[2, 4]}>
-                <Text fontWeight="500" fontSize={["12px", "14px", "20px"]} color="black.900">
+                <Text fontWeight="500" fontSize={["12px", "14px", "20px"]} color="black.900" fontFamily="Roboto, sans-serif">
                   What is a{" "}
                   <Text
                     as="span"
@@ -269,7 +279,7 @@ export default function Home() {
                     Perpetual Organization
                   </Text>
                 </Text>
-                <Text mt={2} color="black.900" fontSize={["12px", "14px", "16px"]} fontWeight="400">
+                <Text mt={2} color="black.900" fontSize={["12px", "14px", "16px"]} fontWeight="400" fontFamily="Inter, sans-serif">
                   POs are community-owned, unstoppable organizations based on contribution and democracy, not investment.
                 </Text>
                 <Button size="md" mt={4} colorScheme="blue" variant="outline" _hover={{ transform: "scale(1.05)", transition: "transform 0.3s" }} onClick={() => router.push("/about")}>
@@ -282,7 +292,7 @@ export default function Home() {
         <AutoPlayVideo1 />
 
         <VStack mt="14" zIndex={"4"}>
-          <Text fontSize={["sm", "xl"]} fontWeight="bold" textColor={"gray.900"}>
+          <Text fontSize={["sm", "xl"]} fontWeight="bold" textColor={"gray.900"} fontFamily="Roboto, sans-serif">
             Join our Community
           </Text>
           <HStack spacing={4} align="center">
