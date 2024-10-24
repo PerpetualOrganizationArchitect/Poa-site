@@ -8,6 +8,7 @@ import { UserProvider } from "@/context/UserContext";
 import { POProvider } from "@/context/POContext";
 import { VotingProvider } from "@/context/VotingContext";
 import { NotificationProvider } from "@/context/NotificationContext";
+import {MagicProvider} from "@/context/magicContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,
@@ -64,6 +65,7 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }) {
   return (
+    <MagicProvider>
     <WagmiProvider config={config}>
       <ApolloProvider client={client}>
       <QueryClientProvider client={queryClient}>
@@ -95,6 +97,7 @@ function MyApp({ Component, pageProps }) {
       </QueryClientProvider>
       </ApolloProvider>
     </WagmiProvider>
+    </MagicProvider>
   );
 }
 

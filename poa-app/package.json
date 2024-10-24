@@ -27,6 +27,7 @@
     "html-to-text": "^9.0.5",
     "ipfs-http-client": "^60.0.1",
     "katex": "^0.16.10",
+    "magic-sdk": "^28.15.0",
     "markdown-to-jsx": "^7.4.7",
     "marked": "^12.0.2",
     "next": "^14.2.3",
