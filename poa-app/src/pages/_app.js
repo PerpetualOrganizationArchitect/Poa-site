@@ -8,7 +8,7 @@ import { UserProvider } from "@/context/UserContext";
 import { POProvider } from "@/context/POContext";
 import { VotingProvider } from "@/context/VotingContext";
 import { NotificationProvider } from "@/context/NotificationContext";
-import {MagicProvider} from "@/context/magicContext";
+import {MagicProvider} from "@/context/MagicContext";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
   getDefaultConfig,

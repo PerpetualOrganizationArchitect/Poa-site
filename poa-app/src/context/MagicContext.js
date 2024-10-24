@@ -8,7 +8,7 @@ const MagicContext = createContext({
 // Custom hook to use Magic
 export const useMagic = () => useContext(MagicContext);
 
-const MagicProvider = ({ children }) => {
+export const MagicProvider = ({ children }) => {
   const [magic, setMagic] = useState(null);
 
   useEffect(() => {
@@ -34,4 +34,4 @@ const MagicProvider = ({ children }) => {
   return <MagicContext.Provider value={value}>{children}</MagicContext.Provider>;
 };
 
-export default MagicProvider;
+

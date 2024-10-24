@@ -15,6 +15,8 @@ import AccountManager from '../../abi/AccountManager.json';
 import QuickJoin from '../../abi/QuickJoin.json';
 import EducationHub from '../../abi/EducationHub.json';
 
+import useWeb3 from './useWeb3';
+
 import { useAccount } from "wagmi";
 import { useEthersProvider, useEthersSigner } from '@/components/ProviderConverter';
 
@@ -32,14 +34,12 @@ export const Web3Provider = ({ children }) => {
     const [isNetworkModalOpen, setNetworkModalOpen] = useState(false);
     const [account, setAccount] = useState("0x00");
 
-    const { address, chainId } = useAccount();
-    const provider = useEthersProvider();
-    const signer = useEthersSigner();
-
+    // const { address, chainId } = useAccount();
+    const { provider, signer, address, chainId } = useWeb3(); 
     const {refetch} = useVotingContext();
 
-    // Define a uniform gas price of 43 Gwei
-    const GAS_PRICE = ethers.utils.parseUnits('43', 'gwei');
+
+    const GAS_PRICE = ethers.utils.parseUnits('49', 'gwei');
 
     useEffect(() => {
         console.log("provider: ", provider);
