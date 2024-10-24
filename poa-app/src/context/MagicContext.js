@@ -16,8 +16,8 @@ export const MagicProvider = ({ children }) => {
     if (process.env.NEXT_PUBLIC_MAGIC_API_KEY) {
       const magicInstance = new Magic(process.env.NEXT_PUBLIC_MAGIC_API_KEY, {
         network: {
-          rpcUrl: 'https://rpc2.sepolia.org/', 
-          chainId: 11155111, 
+          rpcUrl: process.env.NEXT_PUBLIC_INFURA_URL,
+          chainId: 80002,
         },
       });
 

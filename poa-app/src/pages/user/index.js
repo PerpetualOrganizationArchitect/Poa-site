@@ -13,13 +13,13 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import {useAccount} from 'wagmi';
+import { useMagic } from "@/context/MagicContext";
 
 const User = () => {
   const { hasMemberNFT, graphUsername } = useUserContext();
-  const { address } = useAccount();
+ 
   const {quickJoinContractAddress} = usePOContext();
-  const { quickJoinNoUser, quickJoinWithUser } = useWeb3Context();
+  const { quickJoinNoUser, quickJoinWithUser, address } = useWeb3Context();
   const router = useRouter();
   const { userDAO } = router.query;
 
@@ -27,6 +27,7 @@ const User = () => {
   const [loading, setLoading] = useState(false);
   const [dispaly, setDispaly] = useState(true);
   const [isSSR, setIsSSR] = useState(true);
+  const { magic } = useMagic();
 
   useEffect(() => {
     setIsSSR(false);
@@ -37,6 +38,25 @@ const User = () => {
       router.push(`/profileHub/?userDAO=${userDAO}`);
     }
   }, [hasMemberNFT, address]);
+
+  const handleMagicLogin = async () => {
+   
+    try {
+      magic.wallet.connectWithUI();
+      
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleMagicLogin2 = async () => {
+    try {
+      magic.wallet.showUI();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   const setDispalyHandle = async () => {
     setLoading(true);
@@ -72,6 +92,7 @@ const User = () => {
           <Box position="relative">
             <Flex justify="flex-end" p="4">
               <ConnectButton showBalance={false} chainStatus="icon" />
+              <Button onClick={handleMagicLogin2} size="lg" ml={4} bg="blue.500" color="white" _hover={{ bg: "blue.600", boxShadow: "md", transform: "scale(1.05)" }}> Login with Magic </Button>
             </Flex>
           </Box>
           {dispaly && graphUsername ? (
@@ -125,6 +146,16 @@ const User = () => {
           <Text fontWeight="bold" ml="15%" mr="15%" fontSize="xl" textColor="black">
             Already a member? Access by Connecting Wallet.
           </Text>
+          <Button
+            onClick={handleMagicLogin}
+            size="lg"
+            mt={4}
+            bg="blue.500"
+            color="white"
+            _hover={{ bg: "blue.600", boxShadow: "md", transform: "scale(1.05)" }}
+          >
+            Login with Magic
+          </Button>
           <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
         </VStack>
       )}

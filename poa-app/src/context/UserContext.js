@@ -4,13 +4,14 @@ import { useAccount } from 'wagmi';
 import { FETCH_USER_DETAILS, FETCH_PO_AND_USER_DETAILS, FETCH_ALL_PO_DATA } from '../util/queries'; 
 import { useRouter } from 'next/router';
 import { useWeb3Context } from './web3Context';
+import useWeb3  from './useWeb3';
 
 const UserContext = createContext();
 
 export const useUserContext = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-    const { address } = useAccount();
+    const { address } = useWeb3();
     const [userData, setUserData] = useState({});
     const [graphUsername, setGraphUsername] = useState('');
     const [hasExecNFT, setHasExecNFT] = useState(false);
