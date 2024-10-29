@@ -10,9 +10,13 @@ import {
     IconButton,
   } from "@chakra-ui/react";
   import { FaGithub, FaTwitter, FaTelegram, FaEnvelope } from "react-icons/fa";
+  import { RiTwitterXLine } from "react-icons/ri";
+  import Navigation from "@/components/Navigation";
   
   const HudsonPage = () => {
     return (
+    <>
+     <Navigation />
       <Box
         display="flex"
         justifyContent="center"
@@ -20,7 +24,7 @@ import {
         minH="100vh"
       >
         <Box
-          bg="rgba(255, 255, 255, 0.65)" // Glass effect
+          bg="rgba(255, 255, 255, 0.65)" 
           borderRadius="2xl"
           boxShadow="lg"
           backdropFilter="blur(10px)"
@@ -49,15 +53,15 @@ import {
           </Text>
   
           {/* Bio */}
-          <VStack spacing={4} mt={6} mb={6} align="start">
-            <Text color="gray.700" fontSize="md" textAlign="justify">
-              I'm Hudson Headley, passionate about creating decentralized,
-              community-owned structures that empower individuals. My work with Poa
-              focuses on building innovative governance systems and promoting worker
-              ownership within DAOs. Through Poa, I aim to democratize the economy
-              and design systems that align societal incentives for the greater
-              good.
-            </Text>
+          <VStack spacing={4} p="6" align="start">
+          <Text color="gray.700" fontSize="md" textAlign="justify">
+            Hudson is a Protocol Engineer passionate about decentralization, worker ownership, and governance design. 
+            He has been involved with developing many DAOs with various models and is currently developing Poa, a no-code DAO builder geared towards organizations that are fully owned by the community and not by capital. 
+            Hudson hopes to build a space for founders interested in community ownership to experiment and innovate quickly with new governance models.
+            <br /><br />
+            Hudson is also a non-resident fellow at the IDI, where he contributes to governance research, design, and implementation.
+        </Text>
+
           </VStack>
   
           {/* Social & Contact Links */}
@@ -74,7 +78,7 @@ import {
             <Link href="https://twitter.com/hudsonhrh" isExternal>
               <IconButton
                 aria-label="Twitter"
-                icon={<FaTwitter />}
+                icon={<RiTwitterXLine />}
                 colorScheme="blue"
                 size="lg"
                 variant="ghost"
@@ -101,6 +105,7 @@ import {
           </HStack>
         </Box>
       </Box>
+    </>
     );
   };
   
