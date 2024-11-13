@@ -47,7 +47,7 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
   const [submission, setSubmission] = useState('');
   const { moveTask, deleteTask } = useTaskBoard();
   const { hasExecNFT, hasMemberNFT, address: account, fetchUserDetails } = useUserContext();
-  const { getUsernameByAddress, setSelectedProjectId } = useDataBaseContext();
+  const { getUsernameByAddress, setSelectedProject, projects } = useDataBaseContext();
   const router = useRouter();
   const { userDAO } = router.query;
   const toast = useToast();
@@ -55,20 +55,25 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
 
 
   useEffect(() => {
-    console.log("this", router.query);
-    // Using optional chaining to safely access nested properties
     const taskId = router.query.task;
-    const projectId = taskId?.projectId;
+    const projectId = router.query.projectId;
+    console.log("task id link", taskId);
+    console.log("project id link", projectId);
+
+    if (projectId) {
+      const selected = projects.find((project) => project.id === projectId);
+      setSelectedProject(selected);
+    }
 
     if (taskId === task.id) {
-        onOpen();
-        if (projectId) {
-            setSelectedProjectId(projectId);
+
+          console.log("foiund from project id");
+
+
+          onOpen();
         }
-    } else {
-        onClose();
-    }
-}, [router.query, task.id, onOpen]);
+
+  }, [router.query, task.id, onOpen]);
 
   const handleCloseModal = () => {
       onClose(); 
@@ -215,7 +220,7 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
   };
 
   const copyLinkToClipboard = () => {
-    const link = `${window.location.origin}/tasks/?task=${task.id}`;
+    const link = `${window.location.origin}/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`;
     navigator.clipboard.writeText(link).then(() => {
       toast({
         title: "Link copied",

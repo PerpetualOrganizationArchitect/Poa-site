@@ -76,7 +76,7 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
       <TaskCardModal
         isOpen={isOpen}
         onClose={onClose}
-        task={{ id, name, description, difficulty, estHours, Payout, submission, claimedBy, claimerUsername }}
+        task={{ id, name, description, difficulty, estHours, Payout, submission, claimedBy, claimerUsername, projectId }}
         columnId={columnId}
         onEditTask={onEditTask}
         moveTask={moveTask}
