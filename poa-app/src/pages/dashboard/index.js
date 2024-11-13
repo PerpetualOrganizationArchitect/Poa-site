@@ -452,6 +452,7 @@ const PerpetualOrgDashboard = () => {
                         h="auto"
                         p={4}
                         borderRadius="xl"
+                        onClick={() => router.push(`/edu-Hub`)}
                         bg="black"
                         _hover={{ boxShadow: "md", transform: "scale(1.02)" }}
                       >
@@ -461,7 +462,7 @@ const PerpetualOrgDashboard = () => {
                           </Text>
                           <HStack  mt={6} justifyContent="space-between">
                         {/* <Text mt={2}>{module.description}</Text> */}
-                        <Link2 href={`/modules/${module.id}`}>
+                        <Link2 href={`/edu-Hub`}>
                           
                           <Button colorScheme="teal" size="sm">
                             Start Module
