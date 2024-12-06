@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import {
   HStack,
   Text,
@@ -32,7 +32,7 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
-import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon, AddIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { useWeb3Context } from "@/context/web3Context";
 import { usePOContext } from "@/context/POContext";
@@ -64,35 +64,31 @@ const Voting = () => {
     getWinnerDDVoting,
     createProposalParticipationVoting,
     ddVote,
-    account
+    account,
+    createProposalElection
   } = useWeb3Context();
   
   const { isOpen: isCompletedOpen, onOpen: onCompletedOpen, onClose: onCompletedClose } = useDisclosure();
 
-  const { address} = useAccount();
+  const { address } = useAccount();
   const {
     directDemocracyVotingContractAddress,
-    votingContractAddress, 
+    votingContractAddress,
     poContextLoading,
   } = usePOContext();
 
-  const {hybridVotingOngoing,
+  const {
+    hybridVotingOngoing,
     hybridVotingCompleted,
     democracyVotingOngoing,
     democracyVotingCompleted,
     participationVotingCompleted,
     participationVotingOngoing,
     votingType
-
-
   } = useVotingContext();
 
-
-
   const PTVoteType = votingType;
-  
-  
-  
+
   const [votingTypeSelected, setVotingTypeSelected] = useState("Direct Democracy");
 
   const [showDetermineWinner, setShowDetermineWinner] = useState({});
@@ -105,7 +101,6 @@ const Voting = () => {
   
   const updateWinnerStatus = async (expirationTimestamp, proposalId, isHybrid) => {
     const duration = calculateRemainingTime(expirationTimestamp);
-  
     if (duration <= 0 ) {
       setShowDetermineWinner(prevState => ({
         ...prevState,
@@ -119,8 +114,6 @@ const Voting = () => {
     const tx = await getWinnerDDVoting(address, newID);
   };
   
-
-
   const handleTabsChange = (index) => {
     setSelectedTab(index);
     const voteType = index === 0 ? "Direct Democracy" : PTVoteType;
@@ -134,15 +127,12 @@ const Voting = () => {
   const safeVotingOngoing = Array.isArray(selectedTab === 0 ? democracyVotingOngoing : (PTVoteType === "Hybrid" ? hybridVotingOngoing : participationVotingOngoing)) ? (selectedTab === 0 ? democracyVotingOngoing : ( PTVoteType=== "Hybrid" ? hybridVotingOngoing : participationVotingOngoing)) : [];
   const safeVotingCompleted = Array.isArray(selectedTab === 0 ? democracyVotingCompleted : (PTVoteType === "Hybrid" ? hybridVotingCompleted : participationVotingCompleted)) ? (selectedTab === 0 ? democracyVotingCompleted : (PTVoteType === "Hybrid" ? hybridVotingCompleted : participationVotingCompleted)) : [];
   
-
   useEffect(() => {
     safeVotingOngoing.forEach(proposal => {
       updateWinnerStatus(proposal?.experationTimestamp, proposal?.id, proposal?.isHybrid);
     });
   }, [safeVotingOngoing]);
   
-
-
   const displayedOngoingProposals = safeVotingOngoing.slice(
     ongoingStartIndex,
     ongoingStartIndex + proposalDisplayLimit
@@ -174,9 +164,6 @@ const Voting = () => {
     }
   };
 
-
-  
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPoll, setSelectedPoll] = useState(null);
   const [showCreatePoll, setShowCreatePoll] = useState(false);
@@ -184,13 +171,37 @@ const Voting = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [isPollCompleted, setIsPollCompleted] = useState(false);
 
-
-  
-  const defaultProposal = { name: '', description: '', execution: '', time: 0, options: [], type: 'normal', transferAddress: '', transferAmount: '', transferOption: '', id: 0 };
+  const defaultProposal = {
+    name: "",
+    description: "",
+    execution: "",
+    time: 0,
+    options: [],
+    candidateNames: [],
+    candidateAddresses: [],
+    type: "normal",
+    transferAddress: "",
+    transferAmount: "",
+    transferOption: "",
+    id: 0,
+  };
   const [proposal, setProposal] = useState(defaultProposal);
 
+  const [candidateList, setCandidateList] = useState([
+    { name: "", address: "" },
+    { name: "", address: "" },
+  ]);
+
   const handleProposalTypeChange = (e) => {
-    setProposal({ ...proposal, type: e.target.value });
+    const newType = e.target.value;
+    setProposal({ ...proposal, type: newType });
+    if (newType === "election") {
+      // Reset candidates for election type
+      setCandidateList([
+        { name: "", address: "" },
+        { name: "", address: "" },
+      ]);
+    }
   };
 
   const handlePollClick = (poll, isCompleted = false) => {
@@ -203,8 +214,6 @@ const Voting = () => {
       onOpen();
     }
   };
-  
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -220,7 +229,6 @@ const Voting = () => {
     setShowCreatePoll(!showCreatePoll);
   };
 
-  // Add these new handle functions for the new inputs
   const handleTransferAddressChange = (e) => {
     setProposal({ ...proposal, transferAddress: e.target.value });
   };
@@ -233,10 +241,20 @@ const Voting = () => {
     setProposal({ ...proposal, transferOption: e.target.value });
   };
 
+  const handleCandidateChange = (index, field, value) => {
+    const updatedCandidates = [...candidateList];
+    updatedCandidates[index][field] = value;
+    setCandidateList(updatedCandidates);
+  };
+
+  const addCandidate = () => {
+    setCandidateList([...candidateList, { name: "", address: "" }]);
+  };
+
   useEffect(() => {
     if (router.query.poll) {
       const pollID = router.query.poll;
-  
+
       const findPoll = (proposals) => {
         for (const proposal of proposals) {
           if (proposal.id === pollID) {
@@ -245,11 +263,10 @@ const Voting = () => {
         }
         return null;
       };
-  
+
       let pollFound = null;
       let pollType = "";
-  
-      // only search for poll if the voting arrays are not empty
+
       if (Array.isArray(democracyVotingOngoing) && democracyVotingOngoing.length > 0) {
         pollFound = findPoll(democracyVotingOngoing);
         if (pollFound) pollType = "Direct Democracy";
@@ -259,27 +276,27 @@ const Voting = () => {
         pollFound = findPoll(hybridVotingOngoing);
         if (pollFound) pollType = "Hybrid";
       }
-  
+
       if (!pollFound && Array.isArray(participationVotingOngoing) && participationVotingOngoing.length > 0) {
         pollFound = findPoll(participationVotingOngoing);
         if (pollFound) pollType = "Participation";
       }
-  
+
       if (!pollFound && Array.isArray(democracyVotingCompleted) && democracyVotingCompleted.length > 0) {
         pollFound = findPoll(democracyVotingCompleted);
         if (pollFound) pollType = "Direct Democracy";
       }
-  
+
       if (!pollFound && Array.isArray(hybridVotingCompleted) && hybridVotingCompleted.length > 0) {
         pollFound = findPoll(hybridVotingCompleted);
         if (pollFound) pollType = "Hybrid";
       }
-  
+
       if (!pollFound && Array.isArray(participationVotingCompleted) && participationVotingCompleted.length > 0) {
         pollFound = findPoll(participationVotingCompleted);
         if (pollFound) pollType = "Participation";
       }
-  
+
       if (pollFound) {
         setSelectedPoll(pollFound);
         setVotingTypeSelected(pollType);
@@ -311,48 +328,38 @@ const Voting = () => {
     onOpen,
     onCompletedOpen
   ]);
-  
-  
-  
-  
 
-
-  const handlePollCreated = () => {
-    const run = () => {
+  const handlePollCreated = async () => {
+    setLoadingSubmit(true);
+    try {
       const last = proposal.type === "transferFunds";
-      
-  
-      console.log("voting contract address", votingContractAddress);
-      if (votingTypeSelected === "Participation") {
-        return createProposalParticipationVoting(
-          votingContractAddress,
+      const election = proposal.type === "election";
+
+      if (election) {
+        // For an election, the candidate names will serve as the 'options'
+        const candidateNames = candidateList.map(c => c.name);
+        const candidateAddresses = candidateList.map(c => c.address);
+        // Assign candidateNames to proposal.options for the contract call
+        proposal.candidateNames = candidateNames;
+        proposal.candidateAddresses = candidateAddresses;
+        proposal.options = candidateNames;
+
+        await createProposalElection(
+          directDemocracyVotingContractAddress,
           proposal.name,
           proposal.description,
           proposal.time,
-          proposal.options,
-          last ? proposal.transferOption : 0,
-          last ? proposal.transferAddress : address,
-          last ? proposal.transferAmount : '0',
-          last
+          proposal.options,             // options replaced by candidate names
+          proposal.candidateAddresses,  // candidate addresses
+          proposal.candidateNames,      // candidate names
+          0, 
+          "0x0000000000000000000000000000000000000000",
+          "0",
+          false
         );
-      }
-  
-      if (votingTypeSelected === "Hybrid") {
-        return createProposalParticipationVoting(
-          votingContractAddress,
-          proposal.name,
-          proposal.description,
-          proposal.time,
-          proposal.options,
-          last ? proposal.transferOption : 0,
-          last ? proposal.transferAddress : address,
-          last ? proposal.transferAmount : '0',
-          last 
-        );
-      }
-  
-      if (votingTypeSelected === "Direct Democracy") {
-        return createProposalDDVoting(
+      } else {
+        // Normal or Transfer Funds
+        await createProposalDDVoting(
           directDemocracyVotingContractAddress,
           proposal.name,
           proposal.description,
@@ -360,28 +367,19 @@ const Voting = () => {
           proposal.options,
           last ? proposal.transferOption : 0,
           last ? proposal.transferAddress : address,
-          last ? proposal.transferAmount : '0',
+          last ? proposal.transferAmount : "0",
           last
         );
       }
-    };
 
-    //close the modal and reset the proposal
-    setLoadingSubmit(false);
-    setShowCreatePoll(false);
-    setProposal(defaultProposal);
-
-    run()
-      .then(() => {
-       
-      })
-      .catch((error) => {
-        console.error("Error creating poll:", error);
-      });
+      setLoadingSubmit(false);
+      setShowCreatePoll(false);
+      setProposal(defaultProposal);
+    } catch (error) {
+      console.error("Error creating poll:", error);
+      setLoadingSubmit(false);
+    }
   };
-
-
-  
 
   return (
     <>
@@ -400,552 +398,392 @@ const Voting = () => {
             onChange={handleTabsChange}
             mb={6}
           >
-        <TabList
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="3xl"
-          boxShadow="lg"
-          p={6}
-          w="100%"
-          bg="transparent"
-          position="relative"
-          display="flex"
-          zIndex={0}
-          color="rgba(333, 333, 333, 1)"
-        >
-          <div className="glass" style={glassLayerStyle} />
-          <Tab
-            fontSize="2xl"
-            fontWeight="extrabold"
-            color="rgba(333, 333, 333, 1)"
-            _selected={{ backgroundColor: "ghostwhite", color: "black" }}
-          >
-            Direct Democracy
-          </Tab>
-          <Tab
-            fontSize="2xl"
-            fontWeight="extrabold"
-            color="rgba(333, 333, 333, 1)"
-            _selected={{ backgroundColor: "ghostwhite", color: "black" }}
-          >
-            {PTVoteType }
-          </Tab>
-        </TabList>
-
-          <TabPanels>
-            <TabPanel>
-              <Flex
-                align="center"
-                mb={8}
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                borderRadius="3xl"
-                boxShadow="lg"
-                p="2%"
-                w="100%"
-                bg="transparent"
-                position="relative"
-                display="flex"
-                zIndex={0}
+            <TabList
+              alignItems="center"
+              justifyContent="center"
+              borderRadius="3xl"
+              boxShadow="lg"
+              p={6}
+              w="100%"
+              bg="transparent"
+              position="relative"
+              display="flex"
+              zIndex={0}
+              color="rgba(333, 333, 333, 1)"
+            >
+              <div className="glass" style={glassLayerStyle} />
+              <Tab
+                fontSize="2xl"
+                fontWeight="extrabold"
+                color="rgba(333, 333, 333, 1)"
+                _selected={{ backgroundColor: "ghostwhite", color: "black" }}
               >
-                <div className="glass" style={glassLayerStyle} />
-                <Flex w="100%" flexDirection="column">
-                  <VStack alignItems={"flex-start"} spacing={6}>
-                    <HStack w="100%" justifyContent="space-between">
-                      <Heading pl={2} color="rgba(333, 333, 333, 1)">
-                        Ongoing Votes
-                      </Heading>
-                      <Button
-                        fontWeight="black"
-                        p="1%"
-                        w="20%"
-                        bg="green.300"
-                        mt="1%"
-                        onClick={handleCreatePollClick}
-                        _hover={{ bg: "green.400", transform: "scale(1.05)" }}
-                      >
-                        {showCreatePoll ? "Hide Create Vote Form" : "Create Vote"}
-                      </Button>
-                    </HStack>
-                    <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
-                      {displayedOngoingProposals.length > 0 ? (
-                        displayedOngoingProposals.map((proposal, index) => (
+                Direct Democracy
+              </Tab>
+              <Tab
+                fontSize="2xl"
+                fontWeight="extrabold"
+                color="rgba(333, 333, 333, 1)"
+                _selected={{ backgroundColor: "ghostwhite", color: "black" }}
+              >
+                {PTVoteType }
+              </Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <Flex
+                  align="center"
+                  mb={8}
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius="3xl"
+                  boxShadow="lg"
+                  p="2%"
+                  w="100%"
+                  bg="transparent"
+                  position="relative"
+                  display="flex"
+                  zIndex={0}
+                >
+                  <div className="glass" style={glassLayerStyle} />
+                  <Flex w="100%" flexDirection="column">
+                    <VStack alignItems={"flex-start"} spacing={6}>
+                      <HStack w="100%" justifyContent="space-between">
+                        <Heading pl={2} color="rgba(333, 333, 333, 1)">
+                          Ongoing Votes
+                        </Heading>
+                        <Button
+                          fontWeight="black"
+                          p="1%"
+                          w="20%"
+                          bg="green.300"
+                          mt="1%"
+                          onClick={handleCreatePollClick}
+                          _hover={{ bg: "green.400", transform: "scale(1.05)" }}
+                        >
+                          {showCreatePoll ? "Hide Create Vote Form" : "Create Vote"}
+                        </Button>
+                      </HStack>
+                      <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
+                        {displayedOngoingProposals.length > 0 ? (
+                          displayedOngoingProposals.map((proposal, index) => (
+                            <Box
+                              key={index}
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
+                              borderRadius="3xl"
+                              boxShadow="lg"
+                              display="flex"
+                              w="30%"
+                              minW="30%"
+                              maxWidth="30%"
+                              bg="transparent"
+                              position="relative"
+                              color="rgba(333, 333, 333, 1)"
+                              p={2}
+                              zIndex={1}
+                              _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
+                              onClick={() => {
+                                if (!showDetermineWinner[proposal.id]) {
+                                  handlePollClick(proposal);
+                                }
+                              }}
+                            >
+                              <div className="glass" style={glassLayerStyle} />
+                              <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
+                                {showDetermineWinner[proposal.id] ? (
+                                  <Button
+                                    colorScheme="gray"
+                                    size="sm"
+                                    onClick={() => {
+                                      getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
+                                    }}
+                                  >
+                                    Determine Winner
+                                  </Button>
+                                ) : (
+                                  <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp)} />
+                                )}
+                              <Text mt="2"> Voting Options:</Text>
+                              <HStack mb={2} spacing={6}>
+                                {proposal.options.map((option, index) => (
+                                  <Text fontSize="sm" fontWeight="extrabold" key={index}>{option.name}</Text>
+                                ))}
+                              </HStack>
+                            </Box>
+                          ))
+                        ) : (
                           <Box
-                            key={index}
                             flexDirection="column"
                             alignItems="center"
                             justifyContent="center"
                             borderRadius="3xl"
                             boxShadow="lg"
                             display="flex"
-                            w="30%"
-                            minW="30%"
-                            maxWidth="30%"
+                            w="100%"
+                            maxWidth="100%"
                             bg="transparent"
                             position="relative"
-                            color="rgba(333, 333, 333, 1)"
-                            p={2}
+                            p={4}
                             zIndex={1}
-                            _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
-                            onClick={() => {
-                              if (!showDetermineWinner[proposal.id]) {
-                                handlePollClick(proposal);
-                              }
-                            }}
+                            color="rgba(333, 333, 333, 1)"
                           >
                             <div className="glass" style={glassLayerStyle} />
-                            <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                              {showDetermineWinner[proposal.id] ? (
-                                <Button
-                                  colorScheme="gray"
-                                  size="sm"
-                                  onClick={() => {
-                                    console.log("type", proposal.type);
-                                    getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
-                                  }}
-                                >
-                                  Determine Winner
-                                </Button>
-                              ) : (
-                                <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
-                              )}
-                            <Text mt="2"> Voting Options:</Text>
-                            <HStack mb={2} spacing={6}>
-                              {proposal.options.map((option, index) => (
-                                <Text fontSize="sm" fontWeight="extrabold" key={index}>{option.name}</Text>
-                              ))}
-                            </HStack>
-                          </Box>
-                        ))
-                      ) : (
-                        <Box
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          borderRadius="3xl"
-                          boxShadow="lg"
-                          display="flex"
-                          w="100%"
-                          maxWidth="100%"
-                          bg="transparent"
-                          position="relative"
-                          p={4}
-                          zIndex={1}
-                          color="rgba(333, 333, 333, 1)"
-                        >
-                          <div className="glass" style={glassLayerStyle} />
-                          <Flex
-                            flexDirection="column"
-                            alignItems="center"
-                            justifyContent="center"
-                          >
-                            <Text
-                              mb="2"
-                              fontSize="2xl"
-                              fontWeight="extrabold"
-                              pl={12}
-                              pr={12}
-                              pt={14}
-                              pb={14}
+                            <Flex
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
                             >
-                              No Ongoing Votes
-                            </Text>
-                          </Flex>
-                        </Box>
-                      )}
-                      {displayedOngoingProposals.length > 0 && (
-                        <>
-                          <Spacer />
-                          <HStack justifyContent="bottom" spacing={4}>
-                            <IconButton
-                              aria-label="Previous polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: 'transparent' }} 
-                              _active={{ bg: 'transparent' }}
-                              icon={
-                                <ArrowBackIcon 
-                                boxSize="6" 
-                                color="black"
-                                />
-                              }
-                              onClick={handlePreviousProposalsClickOngoing}
-                            />
-                            <IconButton
-                              aria-label="Next polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: 'transparent' }} 
-                              _active={{ bg: 'transparent' }}
-                              icon={
-                                <ArrowForwardIcon 
-                                boxSize="6" 
-                                color="black"
-                                />
-                              }
-                              onClick={handleNextProposalsClickOngoing}
-                            />
-                          </HStack>
-                        </>
-                      )}
-                    </HStack>
-                    <Heading pl={2} color="rgba(333, 333, 333, 1)">
-                      History
-                    </Heading>
-                    <HStack spacing={4} w="100%" justifyContent="flex-start">
-                      {displayedCompletedProposals.length > 0 ? (
-                        displayedCompletedProposals.map((proposal, index) => {
-                          const totalVotes = proposal.totalVotes;
+                              <Text
+                                mb="2"
+                                fontSize="2xl"
+                                fontWeight="extrabold"
+                                pl={12}
+                                pr={12}
+                                pt={14}
+                                pb={14}
+                              >
+                                No Ongoing Votes
+                              </Text>
+                            </Flex>
+                          </Box>
+                        )}
+                        {displayedOngoingProposals.length > 0 && (
+                          <>
+                            <Spacer />
+                            <HStack justifyContent="bottom" spacing={4}>
+                              <IconButton
+                                aria-label="Previous polls"
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: 'transparent' }} 
+                                _active={{ bg: 'transparent' }}
+                                icon={
+                                  <ArrowBackIcon 
+                                  boxSize="6" 
+                                  color="black"
+                                  />
+                                }
+                                onClick={handlePreviousProposalsClickOngoing}
+                              />
+                              <IconButton
+                                aria-label="Next polls"
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: 'transparent' }} 
+                                _active={{ bg: 'transparent' }}
+                                icon={
+                                  <ArrowForwardIcon 
+                                  boxSize="6" 
+                                  color="black"
+                                  />
+                                }
+                                onClick={handleNextProposalsClickOngoing}
+                              />
+                            </HStack>
+                          </>
+                        )}
+                      </HStack>
+                      <Heading pl={2} color="rgba(333, 333, 333, 1)">
+                        History
+                      </Heading>
+                      <HStack spacing={4} w="100%" justifyContent="flex-start">
+                        {displayedCompletedProposals.length > 0 ? (
+                          displayedCompletedProposals.map((proposal, index) => {
+                            const totalVotes = proposal.totalVotes;
                             let WinnerName = proposal.options[proposal.winningOptionIndex]?.name || "No Winner";
+                            if (proposal.validWinner === false) {
+                              WinnerName = "No Winner";
+                            }
 
-                          //if hasWinner is false set WinnerName to "No Winner"
-                          if (proposal.validWinner === false) {
-                            WinnerName = "No Winner";
-                          }
+                            const predefinedColors = [
+                              "red",
+                              "darkblue",
+                              "yellow",
+                              "purple",
+                            ];
+                            const data = [
+                              {
+                                name: "Options",
+                                values: proposal.options.map((option, index) => {
+                                  const color =
+                                    index < predefinedColors.length
+                                      ? predefinedColors[index]
+                                      : `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
+                                  return {
+                                    value: (option.votes / totalVotes) * 100,
+                                    color: color,
+                                  };
+                                }),
+                              },
+                            ];
 
-                          const predefinedColors = [
-                            "red",
-                            "darkblue",
-                            "yellow",
-                            "purple",
-                          ];
-                          const data = [
-                            {
-                              name: "Options",
-                              values: proposal.options.map((option, index) => {
-                                const color =
-                                  index < predefinedColors.length
-                                    ? predefinedColors[index]
-                                    : `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
-                                return {
-                                  value: (option.votes / totalVotes) * 100,
-                                  color: color,
-                                };
-                              }),
-                            },
-                          ];
-
-                          return (
-                            <Box
-                              key={index}
-                              flexDirection="column"
-                              alignItems="center"
-                              justifyContent="center"
-                              borderRadius="3xl"
-                              boxShadow="lg"
-                              display="flex"
-                              w="30%"
-                              minW="30%"
-                              maxWidth="30%"
-                              bg="transparent"
-                              position="relative"
-                              color="rgba(333, 333, 333, 1)"
-                              zIndex={1}
-                              onClick = {() => handlePollClick(proposal, true)}
-                            >
-                              <div className="glass" style={glassLayerStyle} />
-                              <Text
-                                mr="2"
-                                mt="4"
-                                ml="2 "
-                                mb="2"
-                                fontSize={"xl"}
-                                fontWeight="extrabold"
+                            return (
+                              <Box
+                                key={index}
+                                flexDirection="column"
+                                alignItems="center"
+                                justifyContent="center"
+                                borderRadius="3xl"
+                                boxShadow="lg"
+                                display="flex"
+                                w="30%"
+                                minW="30%"
+                                maxWidth="30%"
+                                bg="transparent"
+                                position="relative"
+                                color="rgba(333, 333, 333, 1)"
+                                zIndex={1}
+                                onClick = {() => handlePollClick(proposal, true)}
                               >
-                                {proposal.name}
-                              </Text>
-                              <Flex justifyContent="center">
-                                <BarChart
-                                  width={200}
-                                  height={30}
-                                  layout="vertical"
-                                  data={data}
+                                <div className="glass" style={glassLayerStyle} />
+                                <Text
+                                  mr="2"
+                                  mt="4"
+                                  ml="2 "
+                                  mb="2"
+                                  fontSize={"xl"}
+                                  fontWeight="extrabold"
                                 >
-                                  <XAxis type="number" hide="true" />
-                                  <YAxis type="category" dataKey="name" hide="true" />
-                                  {data[0].values.map((option, index) => (
-                                    <Bar key={index} dataKey={`values[${index}].value`} stackId="a" fill={option.color} />
-                                  ))}
-                                </BarChart>
-                              </Flex>
-                              <Text mb="2" fontSize="xl" fontWeight="extrabold">
-                                Winner: {WinnerName}
-                              </Text>
-                            </Box>
-                          );
-                        })
-                      ) : (
-                        <Box
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          borderRadius="3xl"
-                          boxShadow="lg"
-                          display="flex"
-                          w="100%"
-                          maxWidth="100%"
-                          bg="transparent"
-                          position="relative"
-                          p={4}
-                          zIndex={1}
-                          color="rgba(333, 333, 333, 1)"
-                        >
-                          <div className="glass" style={glassLayerStyle} />
-                          <Flex
-                            flexDirection="column"
-                            alignItems="center"
-                            justifyContent="center"
-                          >
-                            <Text
-                              mb="2"
-                              fontSize="2xl"
-                              fontWeight="extrabold"
-                              pl={12}
-                              pr={12}
-                              pt={14}
-                              pb={14}
-                            >
-                              No History
-                            </Text>
-                          </Flex>
-                        </Box>
-                      )}
-                      {displayedCompletedProposals.length > 0 && (
-                        <>
-                          <Spacer />
-                          <HStack justifyContent="bottom" spacing={-2}>
-                            <IconButton
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
-                              aria-label="Previous history polls"
-                              icon={
-                                <ArrowBackIcon
-                                  boxSize="6"
-                                  color="black"
-                                />
-                              }
-                              onClick={handlePreviousProposalsClickCompleted}
-                            />
-                            <IconButton
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
-                              aria-label="Next history polls"
-                              icon={
-                                <ArrowForwardIcon
-                                  boxSize="6"
-                                  color="black"
-                                />
-                              }
-                              onClick={handleNextProposalsClickCompleted}
-                            />
-                          </HStack>
-                        </>
-                      )}
-                    </HStack>
-                  </VStack>
-                </Flex>
-              </Flex>
-            </TabPanel>
-            <TabPanel>
-              <Flex
-                align="center"
-                mb={8}
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                borderRadius="3xl"
-                boxShadow="lg"
-                p="2%"
-                w="100%"
-                bg="transparent"
-                position="relative"
-                display="flex"
-                zIndex={0}
-              >
-                <div className="glass" style={glassLayerStyle} />
-                <Flex w="100%" flexDirection="column">
-                  <VStack alignItems={"flex-start"} spacing={6}>
-                    <HStack w="100%" justifyContent="space-between">
-                      <Heading pl={2} color="rgba(333, 333, 333, 1)">
-                        Ongoing Votes
-                      </Heading>
-                      <Button
-                        fontWeight="black"
-                        p="1%"
-                        w="20%"
-                        bg="green.300"
-                        mt="1%"
-                        onClick={handleCreatePollClick}
-                        _hover={{ bg: "green.400", transform: "scale(1.05)" }}
-                      >
-                        {showCreatePoll ? "Hide Create Vote Form" : "Create Vote"}
-                      </Button>
-                    </HStack>
-                    <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
-                      {displayedOngoingProposals.length > 0 ? (
-                        displayedOngoingProposals.map((proposal, index) => (
+                                  {proposal.name}
+                                </Text>
+                                <Flex justifyContent="center">
+                                  <BarChart
+                                    width={200}
+                                    height={30}
+                                    layout="vertical"
+                                    data={data}
+                                  >
+                                    <XAxis type="number" hide="true" />
+                                    <YAxis type="category" dataKey="name" hide="true" />
+                                    {data[0].values.map((option, index) => (
+                                      <Bar key={index} dataKey={`values[${index}].value`} stackId="a" fill={option.color} />
+                                    ))}
+                                  </BarChart>
+                                </Flex>
+                                <Text mb="2" fontSize="xl" fontWeight="extrabold">
+                                  Winner: {WinnerName}
+                                </Text>
+                              </Box>
+                            );
+                          })
+                        ) : (
                           <Box
-                            key={index}
                             flexDirection="column"
                             alignItems="center"
                             justifyContent="center"
                             borderRadius="3xl"
                             boxShadow="lg"
                             display="flex"
-                            w="30%"
-                            minW="30%"
-                            maxWidth="30%"
+                            w="100%"
+                            maxWidth="100%"
                             bg="transparent"
                             position="relative"
-                            color="rgba(333, 333, 333, 1)"
-                            p={2}
+                            p={4}
                             zIndex={1}
-                            _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
-                            onClick={() => {
-                              if (!showDetermineWinner[proposal.id]) {
-                                handlePollClick(proposal);
-                              }
-                            }}
+                            color="rgba(333, 333, 333, 1)"
                           >
                             <div className="glass" style={glassLayerStyle} />
-                            <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
-                            {showDetermineWinner[proposal.id] ? (
-                                <Button
-                                  colorScheme="gray"
-                                  size="sm"
-                                  onClick={() => {
-                                    console.log("type", proposal.type);
-                                    getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
-                                  }}
-                                >
-                                  Determine Winner
-                                </Button>
-                              ) : (
-                                <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp, proposal?.id, false)} />
-                              )}
-                            <Text mt="2"> Voting Options:</Text>
-                            <HStack mb={2} spacing={6}>
-                              {proposal.options.map((option, index) => (
-                                <Text fontSize="sm" fontWeight="extrabold" key={index}>{option.name}</Text>
-                              ))}
-                            </HStack>
-                          </Box>
-                        ))
-                      ) : (
-                        <Box
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          borderRadius="3xl"
-                          boxShadow="lg"
-                          display="flex"
-                          w="100%"
-                          maxWidth="100%"
-                          bg="transparent"
-                          position="relative"
-                          p={4}
-                          zIndex={1}
-                          color="rgba(333, 333, 333, 1)"
-                        >
-                          <div className="glass" style={glassLayerStyle} />
-                          <Flex
-                            flexDirection="column"
-                            alignItems="center"
-                            justifyContent="center"
-                          >
-                            <Text
-                              mb="2"
-                              fontSize="2xl"
-                              fontWeight="extrabold"
-                              pl={12}
-                              pr={12}
-                              pt={14}
-                              pb={14}
+                            <Flex
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
                             >
-                              No Ongoing Votes
-                            </Text>
-                          </Flex>
-                        </Box>
-                      )}
-                      {displayedOngoingProposals.length > 0 && (
-                        <>
-                          <Spacer />
-                          <HStack justifyContent="bottom" spacing={4}>
-                            <IconButton
-                              aria-label="Previous polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: 'transparent' }} 
-                              _active={{ bg: 'transparent' }}
-                              icon={
-                                <ArrowBackIcon 
-                                boxSize="6" 
-                                color="black"
-                                />
-                              }
-                              onClick={handlePreviousProposalsClickOngoing}
-                            />
-                            <IconButton
-                              aria-label="Next polls"
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: 'transparent' }} 
-                              _active={{ bg: 'transparent' }}
-                              icon={
-                                <ArrowForwardIcon 
-                                boxSize="6" 
-                                color="black"
-                                />
-                              }
-                              onClick={handleNextProposalsClickOngoing}
-                            />
-                          </HStack>
-                        </>
-                      )}
-                    </HStack>
-                    <Heading pl={2} color="rgba(333, 333, 333, 1)">
-                      History
-                    </Heading>
-                    <HStack spacing={4} w="100%" justifyContent="flex-start">
-                      {displayedCompletedProposals.length > 0 ? (
-                        displayedCompletedProposals.map((proposal, index) => {
-                          const totalVotes = proposal.totalVotes;
-                          let WinnerName = proposal.options[proposal.winningOptionIndex]?.name || "No Winner";
-
-                          //if hasWinner is false set WinnerName to "No Winner"
-                         
-                          if (proposal.validWinner === false) {
-                            WinnerName = "No Winner";
-                          }
-
-                          const predefinedColors = [
-                            "red",
-                            "darkblue",
-                            "yellow",
-                            "purple",
-                          ];
-                          const data = [
-                            {
-                              name: "Options",
-                              values: proposal.options.map((option, index) => {
-                                const color =
-                                  index < predefinedColors.length
-                                    ? predefinedColors[index]
-                                    : `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
-                                return {
-                                  value: (option.votes / totalVotes) * 100,
-                                  color: color,
-                                };
-                              }),
-                            },
-                          ];
-
-                          return (
+                              <Text
+                                mb="2"
+                                fontSize="2xl"
+                                fontWeight="extrabold"
+                                pl={12}
+                                pr={12}
+                                pt={14}
+                                pb={14}
+                              >
+                                No History
+                              </Text>
+                            </Flex>
+                          </Box>
+                        )}
+                        {displayedCompletedProposals.length > 0 && (
+                          <>
+                            <Spacer />
+                            <HStack justifyContent="bottom" spacing={-2}>
+                              <IconButton
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: "transparent" }}
+                                _active={{ bg: "transparent" }}
+                                aria-label="Previous history polls"
+                                icon={
+                                  <ArrowBackIcon
+                                    boxSize="6"
+                                    color="black"
+                                  />
+                                }
+                                onClick={handlePreviousProposalsClickCompleted}
+                              />
+                              <IconButton
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: "transparent" }}
+                                _active={{ bg: "transparent" }}
+                                aria-label="Next history polls"
+                                icon={
+                                  <ArrowForwardIcon
+                                    boxSize="6"
+                                    color="black"
+                                  />
+                                }
+                                onClick={handleNextProposalsClickCompleted}
+                              />
+                            </HStack>
+                          </>
+                        )}
+                      </HStack>
+                    </VStack>
+                  </Flex>
+                </Flex>
+              </TabPanel>
+              <TabPanel>
+                <Flex
+                  align="center"
+                  mb={8}
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius="3xl"
+                  boxShadow="lg"
+                  p="2%"
+                  w="100%"
+                  bg="transparent"
+                  position="relative"
+                  display="flex"
+                  zIndex={0}
+                >
+                  <div className="glass" style={glassLayerStyle} />
+                  <Flex w="100%" flexDirection="column">
+                    <VStack alignItems={"flex-start"} spacing={6}>
+                      <HStack w="100%" justifyContent="space-between">
+                        <Heading pl={2} color="rgba(333, 333, 333, 1)">
+                          Ongoing Votes
+                        </Heading>
+                        <Button
+                          fontWeight="black"
+                          p="1%"
+                          w="20%"
+                          bg="green.300"
+                          mt="1%"
+                          onClick={handleCreatePollClick}
+                          _hover={{ bg: "green.400", transform: "scale(1.05)" }}
+                        >
+                          {showCreatePoll ? "Hide Create Vote Form" : "Create Vote"}
+                        </Button>
+                      </HStack>
+                      <HStack justifyContent={"flex-start"} w="100%" spacing={4}>
+                        {displayedOngoingProposals.length > 0 ? (
+                          displayedOngoingProposals.map((proposal, index) => (
                             <Box
                               key={index}
                               flexDirection="column"
@@ -960,267 +798,442 @@ const Voting = () => {
                               bg="transparent"
                               position="relative"
                               color="rgba(333, 333, 333, 1)"
+                              p={2}
                               zIndex={1}
-                              onClick={() => handlePollClick(proposal, true)}
+                              _hover={{ bg: "black", boxShadow: "md", transform: "scale(1.05)" }}
+                              onClick={() => {
+                                if (!showDetermineWinner[proposal.id]) {
+                                  handlePollClick(proposal);
+                                }
+                              }}
                             >
                               <div className="glass" style={glassLayerStyle} />
-                              <Text
-                                mr="2"
-                                mt="4"
-                                ml="2 "
-                                mb="2"
-                                fontSize={"xl"}
-                                fontWeight="extrabold"
-                              >
-                                {proposal.name}
-                              </Text>
-                              <Flex justifyContent="center">
-                                <BarChart
-                                  width={200}
-                                  height={30}
-                                  layout="vertical"
-                                  data={data}
-                                >
-                                  <XAxis type="number" hide="true" />
-                                  <YAxis type="category" dataKey="name" hide="true" />
-                                  {data[0].values.map((option, index) => (
-                                    <Bar key={index} dataKey={`values[${index}].value`} stackId="a" fill={option.color} />
-                                  ))}
-                                </BarChart>
-                              </Flex>
-                              <Text mb="2" fontSize="xl" fontWeight="extrabold">
-                                Winner: {WinnerName}
-                              </Text>
+                              <Text mb="4" fontSize="xl" fontWeight="extrabold">{proposal.name}</Text>
+                              {showDetermineWinner[proposal.id] ? (
+                                  <Button
+                                    colorScheme="gray"
+                                    size="sm"
+                                    onClick={() => {
+                                      getWinner(proposal.type === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress, proposal.id);
+                                    }}
+                                  >
+                                    Determine Winner
+                                  </Button>
+                                ) : (
+                                  <CountDown duration={calculateRemainingTime(proposal?.experationTimestamp)} />
+                                )}
+                              <Text mt="2"> Voting Options:</Text>
+                              <HStack mb={2} spacing={6}>
+                                {proposal.options.map((option, index) => (
+                                  <Text fontSize="sm" fontWeight="extrabold" key={index}>{option.name}</Text>
+                                ))}
+                              </HStack>
                             </Box>
-                          );
-                        })
-                      ) : (
-                        <Box
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          borderRadius="3xl"
-                          boxShadow="lg"
-                          display="flex"
-                          w="100%"
-                          maxWidth="100%"
-                          bg="transparent"
-                          position="relative"
-                          p={4}
-                          zIndex={1}
-                          color="rgba(333, 333, 333, 1)"
-                        >
-                          <div className="glass" style={glassLayerStyle} />
-                          <Flex
+                          ))
+                        ) : (
+                          <Box
                             flexDirection="column"
                             alignItems="center"
                             justifyContent="center"
+                            borderRadius="3xl"
+                            boxShadow="lg"
+                            display="flex"
+                            w="100%"
+                            maxWidth="100%"
+                            bg="transparent"
+                            position="relative"
+                            p={4}
+                            zIndex={1}
+                            color="rgba(333, 333, 333, 1)"
                           >
-                            <Text
-                              mb="2"
-                              fontSize="2xl"
-                              fontWeight="extrabold"
-                              pl={12}
-                              pr={12}
-                              pt={14}
-                              pb={14}
+                            <div className="glass" style={glassLayerStyle} />
+                            <Flex
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
                             >
-                              No History
-                            </Text>
-                          </Flex>
-                        </Box>
+                              <Text
+                                mb="2"
+                                fontSize="2xl"
+                                fontWeight="extrabold"
+                                pl={12}
+                                pr={12}
+                                pt={14}
+                                pb={14}
+                              >
+                                No Ongoing Votes
+                              </Text>
+                            </Flex>
+                          </Box>
+                        )}
+                        {displayedOngoingProposals.length > 0 && (
+                          <>
+                            <Spacer />
+                            <HStack justifyContent="bottom" spacing={4}>
+                              <IconButton
+                                aria-label="Previous polls"
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: 'transparent' }} 
+                                _active={{ bg: 'transparent' }}
+                                icon={
+                                  <ArrowBackIcon 
+                                  boxSize="6" 
+                                  color="black"
+                                  />
+                                }
+                                onClick={handlePreviousProposalsClickOngoing}
+                              />
+                              <IconButton
+                                aria-label="Next polls"
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: 'transparent' }} 
+                                _active={{ bg: 'transparent' }}
+                                icon={
+                                  <ArrowForwardIcon 
+                                  boxSize="6" 
+                                  color="black"
+                                  />
+                                }
+                                onClick={handleNextProposalsClickOngoing}
+                              />
+                            </HStack>
+                          </>
+                        )}
+                      </HStack>
+                      <Heading pl={2} color="rgba(333, 333, 333, 1)">
+                        History
+                      </Heading>
+                      <HStack spacing={4} w="100%" justifyContent="flex-start">
+                        {displayedCompletedProposals.length > 0 ? (
+                          displayedCompletedProposals.map((proposal, index) => {
+                            const totalVotes = proposal.totalVotes;
+                            let WinnerName = proposal.options[proposal.winningOptionIndex]?.name || "No Winner";
+                            if (proposal.validWinner === false) {
+                              WinnerName = "No Winner";
+                            }
+
+                            const predefinedColors = [
+                              "red",
+                              "darkblue",
+                              "yellow",
+                              "purple",
+                            ];
+                            const data = [
+                              {
+                                name: "Options",
+                                values: proposal.options.map((option, index) => {
+                                  const color =
+                                    index < predefinedColors.length
+                                      ? predefinedColors[index]
+                                      : `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`;
+                                  return {
+                                    value: (option.votes / totalVotes) * 100,
+                                    color: color,
+                                  };
+                                }),
+                              },
+                            ];
+
+                            return (
+                              <Box
+                                key={index}
+                                flexDirection="column"
+                                alignItems="center"
+                                justifyContent="center"
+                                borderRadius="3xl"
+                                boxShadow="lg"
+                                display="flex"
+                                w="30%"
+                                minW="30%"
+                                maxWidth="30%"
+                                bg="transparent"
+                                position="relative"
+                                color="rgba(333, 333, 333, 1)"
+                                zIndex={1}
+                                onClick={() => handlePollClick(proposal, true)}
+                              >
+                                <div className="glass" style={glassLayerStyle} />
+                                <Text
+                                  mr="2"
+                                  mt="4"
+                                  ml="2 "
+                                  mb="2"
+                                  fontSize={"xl"}
+                                  fontWeight="extrabold"
+                                >
+                                  {proposal.name}
+                                </Text>
+                                <Flex justifyContent="center">
+                                  <BarChart
+                                    width={200}
+                                    height={30}
+                                    layout="vertical"
+                                    data={data}
+                                  >
+                                    <XAxis type="number" hide="true" />
+                                    <YAxis type="category" dataKey="name" hide="true" />
+                                    {data[0].values.map((option, index) => (
+                                      <Bar key={index} dataKey={`values[${index}].value`} stackId="a" fill={option.color} />
+                                    ))}
+                                  </BarChart>
+                                </Flex>
+                                <Text mb="2" fontSize="xl" fontWeight="extrabold">
+                                  Winner: {WinnerName}
+                                </Text>
+                              </Box>
+                            );
+                          })
+                        ) : (
+                          <Box
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            borderRadius="3xl"
+                            boxShadow="lg"
+                            display="flex"
+                            w="100%"
+                            maxWidth="100%"
+                            bg="transparent"
+                            position="relative"
+                            p={4}
+                            zIndex={1}
+                            color="rgba(333, 333, 333, 1)"
+                          >
+                            <div className="glass" style={glassLayerStyle} />
+                            <Flex
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              <Text
+                                mb="2"
+                                fontSize="2xl"
+                                fontWeight="extrabold"
+                                pl={12}
+                                pr={12}
+                                pt={14}
+                                pb={14}
+                              >
+                                No History
+                              </Text>
+                            </Flex>
+                          </Box>
+                        )}
+                        {displayedCompletedProposals.length > 0 && (
+                          <>
+                            <Spacer />
+                            <HStack justifyContent="bottom" spacing={-2}>
+                              <IconButton
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: "transparent" }}
+                                _active={{ bg: "transparent" }}
+                                aria-label="Previous history polls"
+                                icon={
+                                  <ArrowBackIcon
+                                    boxSize="6"
+                                    color="black"
+                                  />
+                                }
+                                onClick={handlePreviousProposalsClickCompleted}
+                              />
+                              <IconButton
+                                background="transparent"
+                                border="none"
+                                _hover={{ bg: "transparent" }}
+                                _active={{ bg: "transparent" }}
+                                aria-label="Next history polls"
+                                icon={
+                                  <ArrowForwardIcon
+                                    boxSize="6"
+                                    color="black"
+                                  />
+                                }
+                                onClick={handleNextProposalsClickCompleted}
+                              />
+                            </HStack>
+                          </>
+                        )}
+                      </HStack>
+                    </VStack>
+                  </Flex>
+                </Flex>
+              </TabPanel>
+              <Modal isOpen={showCreatePoll} onClose={handleCreatePollClick}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Create a Vote</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <VStack
+                      as="form"
+                      spacing={4}
+                      mt={8}
+                      w="100%"
+                    >
+                      <FormControl>
+                        <FormLabel>Proposal title</FormLabel>
+                        <Input
+                          type="text"
+                          name="name"
+                          value={proposal.name}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </FormControl>
+                      <FormControl>
+                        <FormLabel>Proposal Description</FormLabel>
+                        <Textarea
+                          name="description"
+                          value={proposal.description}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </FormControl>
+                      <FormControl>
+                        <FormLabel>Time (in Minutes)</FormLabel>
+                        <Input
+                          type="number"
+                          name="time"
+                          value={proposal.time}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </FormControl>
+                      {proposal.type !== "election" && (
+                        <FormControl>
+                          <FormLabel>Options (comma and space separated)</FormLabel>
+                          <Textarea
+                            name="options"
+                            value={proposal.options.join(", ")}
+                            onChange={handleOptionsChange}
+                            placeholder="Option 1, Option 2, Option 3"
+                            required
+                          />
+                        </FormControl>
                       )}
-                      {displayedCompletedProposals.length > 0 && (
+                      <FormControl>
+                        <FormLabel>Proposal Type</FormLabel>
+                          <Select
+                            name="type"
+                            value={proposal.type}
+                            onChange={handleProposalTypeChange}
+                          >
+                            <option value="normal">Normal</option>
+                            <option value="transferFunds">Transfer Funds</option>
+                            <option value="election">Election</option>
+                          </Select>
+                      </FormControl>
+
+                      {proposal.type === "election" && (
                         <>
-                          <Spacer />
-                          <HStack justifyContent="bottom" spacing={-2}>
-                            <IconButton
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
-                              aria-label="Previous history polls"
-                              icon={
-                                <ArrowBackIcon
-                                  boxSize="6"
-                                  color="black"
+                          <FormLabel>Candidates</FormLabel>
+                          {candidateList.map((candidate, index) => (
+                            <HStack key={index} w="100%">
+                              <FormControl>
+                                <Input
+                                  placeholder="Candidate Name"
+                                  value={candidate.name}
+                                  onChange={(e) => handleCandidateChange(index, 'name', e.target.value)}
+                                  required
                                 />
-                              }
-                              onClick={handlePreviousProposalsClickCompleted}
-                            />
-                            <IconButton
-                              background="transparent"
-                              border="none"
-                              _hover={{ bg: "transparent" }}
-                              _active={{ bg: "transparent" }}
-                              aria-label="Next history polls"
-                              icon={
-                                <ArrowForwardIcon
-                                  boxSize="6"
-                                  color="black"
+                              </FormControl>
+                              <FormControl>
+                                <Input
+                                  placeholder="Candidate Address"
+                                  value={candidate.address}
+                                  onChange={(e) => handleCandidateChange(index, 'address', e.target.value)}
+                                  required
                                 />
-                              }
-                              onClick={handleNextProposalsClickCompleted}
-                            />
-                          </HStack>
+                              </FormControl>
+                            </HStack>
+                          ))}
+                          <Button
+                            leftIcon={<AddIcon />}
+                            onClick={addCandidate}
+                            mt={2}
+                            variant="outline"
+                          >
+                            Add Candidate
+                          </Button>
                         </>
                       )}
-                    </HStack>
-                  </VStack>
-                </Flex>
-              </Flex>
-            </TabPanel>
-            <Modal isOpen={showCreatePoll} onClose={handleCreatePollClick}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Create a Vote</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <VStack
-                    as="form"
-                    onSubmit={handlePollCreated}
-                    spacing={4}
-                    mt={8}
-                    w="100%"
-                  >
-                    <FormControl>
-                      <FormLabel>Proposal title</FormLabel>
-                      <Input
-                        type="text"
-                        name="name"
-                        value={proposal.name}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel>Proposal Description</FormLabel>
-                      <Textarea
-                        name="description"
-                        value={proposal.description}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel>Time (in Minutes)</FormLabel>
-                      <Input
-                        type="number"
-                        name="time"
-                        value={proposal.time}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel>Options (comma and space separated)</FormLabel>
-                      <Textarea
-                        name="options"
-                        value={proposal.options.join(", ")}
-                        onChange={handleOptionsChange}
-                        placeholder="Option 1, Option 2, Option 3"
-                        required
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel>Proposal Type</FormLabel>
-                        <Select
-                          name="type"
-                          value={proposal.type}
-                          onChange={handleProposalTypeChange}
-                        >
-                          <option value="normal">Normal</option>
-                          <option value="transferFunds">Transfer Funds</option>
-                          <option value="election">Election</option> {/* New election proposal type */}
-                        </Select>
-                    </FormControl>
-                    {proposal.type === 'election' && (
+
+                      {proposal.type === 'transferFunds' && (
                         <>
                           <FormControl>
-                            <FormLabel>Election Candidates (comma separated)</FormLabel>
-                            <Textarea
-                              name="options"
-                              value={proposal.options.join(", ")}
-                              onChange={handleOptionsChange}
-                              placeholder="Candidate 1, Candidate 2, Candidate 3"
+                            <FormLabel>Transfer Address</FormLabel>
+                            <Input
+                              type="text"
+                              name="transferAddress"
+                              value={proposal.transferAddress}
+                              onChange={handleTransferAddressChange}
+                              required
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <FormLabel>Transfer Amount</FormLabel>
+                            <Input
+                              type="number"
+                              name="transferAmount"
+                              value={proposal.transferAmount}
+                              onChange={handleTransferAmountChange}
+                              required
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <FormLabel>Transfer Option</FormLabel>
+                            <Input
+                              type="number"
+                              name="transferOption"
+                              value={proposal.transferOption}
+                              onChange={handleTransferOptionChange}
                               required
                             />
                           </FormControl>
                         </>
                       )}
-                    {proposal.type === 'transferFunds' && (
-                      <>
-                        <FormControl>
-                          <FormLabel>Transfer Address</FormLabel>
-                          <Input
-                            type="text"
-                            name="transferAddress"
-                            value={proposal.transferAddress}
-                            onChange={handleTransferAddressChange}
-                            required
-                          />
-                        </FormControl>
-                        <FormControl>
-                          <FormLabel>Transfer Amount</FormLabel>
-                          <Input
-                            type="number"
-                            name="transferAmount"
-                            value={proposal.transferAmount}
-                            onChange={handleTransferAmountChange}
-                            required
-                          />
-                        </FormControl>
-                        <FormControl>
-                          <FormLabel>Transfer Option</FormLabel>
-                          <Input
-                            type="number"  
-                            name="transferOption"
-                            value={proposal.transferOption}
-                            onChange={handleTransferOptionChange}
-                            required
-                          />
-                        </FormControl>
-                      </>
-                    )}
-                    <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
-                  </VStack>
-                </ModalBody>
-                
-                <ModalFooter>
-                  <Button
-                    type="submit"
-                    colorScheme="teal"
-                    onClick={handlePollCreated}
-                    isLoading={loadingSubmit}
-                    loadingText="Handling Process"
-                  >
-                    Submit Poll
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          </TabPanels>
-        </Tabs>
-        <PollModal
-          isOpen={isOpen}
-          onClose={onClose}
-          handleVote={ddVote}
-          contractAddress={votingTypeSelected === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress}
-          selectedPoll={selectedPoll}
-          selectedOption={selectedOption}
-          setSelectedOption={setSelectedOption}
-          onOpen={onOpen}
-        />
-        <CompletedPollModal
-          isOpen={isCompletedOpen}
-          onClose={onCompletedClose}
-          selectedPoll={selectedPoll}
-          voteType={votingTypeSelected}
-        />
-      </Container>
-    )}
-  </>
-);
+                      <Text fontSize="md" color="gray.500">Create votes to control treasury and create tasks or projects Coming Soon</Text>
+                    </VStack>
+                  </ModalBody>
+                  
+                  <ModalFooter>
+                    <Button
+                      type="submit"
+                      colorScheme="teal"
+                      onClick={handlePollCreated}
+                      isLoading={loadingSubmit}
+                      loadingText="Handling Process"
+                    >
+                      Submit Poll
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </TabPanels>
+          </Tabs>
+          <PollModal
+            isOpen={isOpen}
+            onClose={onClose}
+            handleVote={ddVote}
+            contractAddress={votingTypeSelected === "Direct Democracy" ? directDemocracyVotingContractAddress : votingContractAddress}
+            selectedPoll={selectedPoll}
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+            onOpen={onOpen}
+          />
+          <CompletedPollModal
+            isOpen={isCompletedOpen}
+            onClose={onCompletedClose}
+            selectedPoll={selectedPoll}
+            voteType={votingTypeSelected}
+          />
+        </Container>
+      )}
+    </>
+  );
 };
 
 export default Voting;

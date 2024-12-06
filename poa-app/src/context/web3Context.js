@@ -237,6 +237,87 @@ export const Web3Provider = ({ children }) => {
         }
     }
 
+    // Create Proposal for Election
+    async function createProposalElection(
+        contractAddress,proposalName,proposalDescription,proposalDuration,options,candidateAddresses,candidateNames,triggerSpendIndex = 0,receiverAddress = "0x0000000000000000000000000000000000000000",amount = "0",
+        canSend = false,
+        electionEnabled = true
+    ) {
+        if (!checkNetwork()) {
+            return;
+        }
+
+        console.log("Creating proposal for election");
+
+        //log all params 
+        console.log("contractAddress",contractAddress);
+        console.log("proposalName",proposalName);
+        console.log("proposalDescription",proposalDescription);
+        console.log("proposalDuration",proposalDuration);
+        console.log("options",options);
+        console.log("triggerSpendIndex",triggerSpendIndex);
+        console.log("receiverAddress",receiverAddress);
+        console.log("amount",amount);
+        console.log("canSend",canSend);
+        console.log("electionEnabled",electionEnabled);
+        console.log("candidateAddresses",candidateAddresses);
+        console.log("candidateNames",candidateNames);
+        
+
+        let tokenAddress = "0x0000000000000000000000000000000000001010";
+        let amountConverted = ethers.utils.parseUnits(amount, 18);
+        const contract = getContractInstance(contractAddress, DirectDemocracyVoting.abi);
+
+        const notificationId = addNotification("Creating Election proposal...", "loading");
+
+        try {
+            // Estimate gas for the election proposal creation
+            const gasEstimate = await contract.estimateGas.createProposal(
+                proposalName,proposalDescription,proposalDuration,options,
+                triggerSpendIndex,
+                receiverAddress,
+                amountConverted,
+                canSend,
+                tokenAddress,
+                electionEnabled,
+                candidateAddresses,
+                candidateNames
+            );
+
+            const gasLimit = gasEstimate.mul(127).div(100); // Add a buffer for gas
+            const gasOptions = {
+                gasLimit: gasLimit,
+                gasPrice: GAS_PRICE,
+            };
+
+            // Send transaction to create the election proposal
+            const tx = await contract.createProposal(
+                proposalName,
+                proposalDescription,
+                proposalDuration,options,triggerSpendIndex,receiverAddress,
+                amountConverted,
+                canSend,
+                tokenAddress,
+                electionEnabled,
+                candidateAddresses,
+                candidateNames,
+                gasOptions
+            );
+
+            // Wait for the transaction to complete
+            await tx.wait();
+
+            // Refetch the proposals to update UI
+            refetch();
+            console.log("Election proposal created");
+            updateNotification(notificationId, "Election proposal created successfully!", "success");
+        } catch (error) {
+            console.error("Error creating election proposal:", error);
+            updateNotification(notificationId, "Error creating Election proposal.", "error");
+        }
+    }
+
+
     // Create Proposal Direct Democracy Voting
     async function createProposalDDVoting(contractAddress, proposalName, proposalDescription, proposalDuration, options, triggerSpendIndex, receiverAddress, amount, canSend, electionEnabled = false,
         candidateAddresses = [],
@@ -244,6 +325,7 @@ export const Web3Provider = ({ children }) => {
         if (!checkNetwork()) {
             return;
         }
+
 
         let tokenAddress = "0x0000000000000000000000000000000000001010";
         let amountConverted = ethers.utils.parseUnits(amount, 18);
@@ -1125,7 +1207,7 @@ export const Web3Provider = ({ children }) => {
             mintDDtokens,
             mintNFT,
             sendToTreasury,
-            // Add other functions as needed
+            createProposalElection
         }}>
             {children}
         </Web3Context.Provider>
