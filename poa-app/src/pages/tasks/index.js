@@ -14,9 +14,11 @@ const Tasks = () => {
   const containerRef = useRef();
 
   useEffect(() => {
-    if (router.query.projectId !== null) {
-      console.log("project id", router.query.projectId);
-      setSelectedProjectId(projects, router.query.projectId);
+    if (router.query.projectId !== undefined) {
+      setSelectedProjectId(router.query.projectId);
+    }
+    else {
+      setSelectedProjectId(projects[0].id);
     }
   }, [router.query.projectId, projects]);
 

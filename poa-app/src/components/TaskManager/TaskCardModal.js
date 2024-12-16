@@ -60,10 +60,6 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
     console.log("task id link", taskId);
     console.log("project id link", projectId);
 
-    if (projectId) {
-      const selected = projects.find((project) => project.id === projectId);
-      setSelectedProject(selected);
-    }
 
     if (taskId === task.id) {
 
@@ -77,9 +73,14 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
 
   const handleCloseModal = () => {
       onClose(); 
-      router.push({ pathname: `/tasks/`, query: { userDAO: userDAO } }, undefined, { shallow: true });
 
-    
+      const { projectId, userDAO } = router.query;
+        
+      router.push(
+        { pathname: `/tasks/`, query: { projectId, userDAO } },
+        undefined,
+        { shallow: true }
+      );
   };
 
   const handleButtonClick = async () => {
@@ -220,7 +221,9 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
   };
 
   const copyLinkToClipboard = () => {
-    const link = `${window.location.origin}/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`;
+    const encodedProjectId = encodeURIComponent(task.projectId);
+    const link = `${window.location.origin}/tasks/?task=${task.id}&projectId=${encodedProjectId}&userDAO=${userDAO}`;
+
     navigator.clipboard.writeText(link).then(() => {
       toast({
         title: "Link copied",
