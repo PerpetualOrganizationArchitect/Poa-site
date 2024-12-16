@@ -139,10 +139,9 @@ const Voting = () => {
   );
 
 
-  const displayedCompletedProposals = safeVotingCompleted.slice(
-    completedStartIndex,
-    completedStartIndex + proposalDisplayLimit
-  );
+  const displayedCompletedProposals = [...safeVotingCompleted]
+  .reverse()
+  .slice(completedStartIndex, completedStartIndex + proposalDisplayLimit);
 
   const handlePreviousProposalsClickOngoing = () => {
     setOngoingStartIndex(Math.max(0, ongoingStartIndex - proposalDisplayLimit));
@@ -564,7 +563,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowBackIcon 
                                   boxSize="6" 
-                                  color="black"
+                                  color="white"
                                   />
                                 }
                                 onClick={handlePreviousProposalsClickOngoing}
@@ -578,7 +577,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowForwardIcon 
                                   boxSize="6" 
-                                  color="black"
+                                  color="white"
                                   />
                                 }
                                 onClick={handleNextProposalsClickOngoing}
@@ -719,7 +718,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowBackIcon
                                     boxSize="6"
-                                    color="black"
+                                    color="white"
                                   />
                                 }
                                 onClick={handlePreviousProposalsClickCompleted}
@@ -733,7 +732,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowForwardIcon
                                     boxSize="6"
-                                    color="black"
+                                    color="white"
                                   />
                                 }
                                 onClick={handleNextProposalsClickCompleted}
@@ -879,7 +878,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowBackIcon 
                                   boxSize="6" 
-                                  color="black"
+                                  color="white"
                                   />
                                 }
                                 onClick={handlePreviousProposalsClickOngoing}
@@ -893,7 +892,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowForwardIcon 
                                   boxSize="6" 
-                                  color="black"
+                                  color="white"
                                   />
                                 }
                                 onClick={handleNextProposalsClickOngoing}
@@ -1034,7 +1033,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowBackIcon
                                     boxSize="6"
-                                    color="black"
+                                    color="white"
                                   />
                                 }
                                 onClick={handlePreviousProposalsClickCompleted}
@@ -1048,7 +1047,7 @@ const Voting = () => {
                                 icon={
                                   <ArrowForwardIcon
                                     boxSize="6"
-                                    color="black"
+                                    color="white"
                                   />
                                 }
                                 onClick={handleNextProposalsClickCompleted}
