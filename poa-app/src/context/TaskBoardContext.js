@@ -25,6 +25,7 @@ export const TaskBoardProvider = ({
     completeTask,
     editTaskWeb3,
     submitTask,
+    deleteTaskWeb3,
   } = useWeb3Context();
   const { taskManagerContractAddress } = usePOContext();
 
@@ -257,8 +258,7 @@ export const TaskBoardProvider = ({
     setTaskColumns(newTaskColumns);
 
     try {
-      // Perform any Web3 operation if necessary
-      // For example, await deleteTaskWeb3(taskId);
+      await deleteTaskWeb3(taskManagerContractAddress, taskId);
 
       if (onUpdateColumns) {
         onUpdateColumns(newTaskColumns);
