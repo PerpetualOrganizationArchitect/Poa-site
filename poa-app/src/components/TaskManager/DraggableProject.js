@@ -5,11 +5,11 @@ import { useDrag } from 'react-dnd';
 const DraggableProject = ({ project, isSelected, onSelectProject, onDeleteProject }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'project',
-    item: { id: project.id },
+    item: { name: project.name },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {
-        onDeleteProject(item.id);
+        onDeleteProject(item.name);
       }
     },
     collect: (monitor) => ({

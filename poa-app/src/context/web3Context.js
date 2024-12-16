@@ -756,6 +756,31 @@ export const Web3Provider = ({ children }) => {
         }
     }
 
+    // Task Manager - Delete Project
+    async function deleteProject(contractAddress, projectName) {
+        if (!checkNetwork()) {
+            return;
+        }
+        const contract = getContractInstance(contractAddress, TaskManager.abi);
+        const notificationId = addNotification('Deleting project...', 'loading');
+        try {
+            const gasEstimate = await contract.estimateGas.deleteProject(projectName);
+            const gasLimit = gasEstimate.mul(133).div(100);
+            const gasOptions = {
+                gasLimit: gasLimit,
+                gasPrice: GAS_PRICE,
+            };
+            const tx = await contract.deleteProject(projectName, gasOptions);
+            await tx.wait();
+            console.log("Project deleted");
+            updateNotification(notificationId,'Project deleted successfully!', 'success');
+            refetch();
+        } catch (error) {
+            console.error("Error deleting project:", error);
+            updateNotification(notificationId,'Error deleting project.', 'error');
+        }
+    }
+
     // NFT Membership - Check Executive
     async function checkIsExecutive(contractAddress, userAddress) {
         if (!checkNetwork()) {
@@ -1207,7 +1232,8 @@ export const Web3Provider = ({ children }) => {
             mintDDtokens,
             mintNFT,
             sendToTreasury,
-            createProposalElection
+            createProposalElection,
+            deleteProject
         }}>
             {children}
         </Web3Context.Provider>

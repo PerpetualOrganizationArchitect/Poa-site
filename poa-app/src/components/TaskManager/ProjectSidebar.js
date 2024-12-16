@@ -16,10 +16,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableProject from './DraggableProject';
 import TrashBin from './TrashBin';
-
-
-
-
+import { usePOContext } from '@/context/POContext';
 
 
 const glassLayerStyle = {
@@ -36,8 +33,9 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
   const [newProjectName, setNewProjectName] = useState('');
   const [showInput, setShowInput] = useState(false);
   let hasExecNFT= true;
-  const { handleDeleteProject } = useDataBaseContext();
-
+  const {deleteProject: handleDeleteProject} = useWeb3Context();
+  
+  const {taskManagerContractAddress} = usePOContext();
 
   
   const handleCreateProject = () => {
@@ -53,9 +51,9 @@ const ProjectSidebar = ({ projects,selectedProject, onSelectProject, onCreatePro
       }
 
   };
-  const onDeleteProject = (projectId) => {
+  const onDeleteProject = (projectName) => {
     if(hasExecNFT){
-      handleDeleteProject(projectId);
+      handleDeleteProject(taskManagerContractAddress,projectName);
     }
     else{
       alert('You must be an executive to delete project');
