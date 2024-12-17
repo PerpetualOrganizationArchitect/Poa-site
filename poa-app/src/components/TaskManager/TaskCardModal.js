@@ -75,9 +75,11 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
       onClose(); 
 
       const { projectId, userDAO } = router.query;
+
+      const safeProjectId = encodeURIComponent(decodeURIComponent(projectId));
         
       router.push(
-        { pathname: `/tasks/`, query: { projectId, userDAO } },
+        { pathname: `/tasks/`, query: { projectId: safeProjectId, userDAO } },
         undefined,
         { shallow: true }
       );

@@ -97,7 +97,8 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
           claimedBy: "",
           claimerUsername: "",
           submission: "",
-          Payout: Payout
+          Payout: Payout,
+          projectId: projectName + "-"+taskManagerContractAddress
         };
         moveTask(newTask, 'open', 'open', 0, " ", 0);
         await createTask(taskManagerContractAddress,Payout,  updatedTask.description, projectName, updatedTask.estHours,  updatedTask.difficulty, "Open", updatedTask.name,);

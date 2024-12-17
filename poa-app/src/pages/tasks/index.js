@@ -15,7 +15,9 @@ const Tasks = () => {
 
   useEffect(() => {
     if (router.query.projectId !== undefined) {
-      setSelectedProjectId(router.query.projectId);
+      const rawProjectId = decodeURIComponent(router.query.projectId); // Decode the query parameter
+      console.log("Decoded projectId from query:", rawProjectId);
+      setSelectedProjectId(rawProjectId);
     }
     else {
       setSelectedProjectId(projects[0].id);

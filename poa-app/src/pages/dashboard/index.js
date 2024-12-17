@@ -308,7 +308,7 @@ const PerpetualOrgDashboard = () => {
                 <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={2}>
                   {recommendedTasks?.slice(0, 3).map((task) => (
                     <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
-                      <Link2 href={`/tasks/?task=${task.id}&projectId=${task.projectId}&userDAO=${userDAO}`}>
+                      <Link2 href={`/tasks/?task=${task.id}&projectId=${encodeURIComponent(decodeURIComponent(task.projectId))}&userDAO=${userDAO}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
                           <Text mt="-2" fontSize="md" lineHeight="99%" fontWeight="extrabold">
                             {task.taskInfo.name}
