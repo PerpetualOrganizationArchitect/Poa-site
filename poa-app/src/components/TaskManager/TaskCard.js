@@ -9,10 +9,11 @@ const TaskCard = ({ id, name, description, difficulty, estHours, index, columnId
   const { userDAO } = router.query;
 
   const openTask = () => {
-    console.log("projectId: ", projectId);
+
+    const safeProjectId = encodeURIComponent(decodeURIComponent(projectId));
     router.push({
       pathname: `/tasks/`,
-      query: { userDAO: userDAO, task: id, projectId: projectId },
+      query: { userDAO: userDAO, task: id, projectId: safeProjectId },
     }, undefined, { shallow: true });
   };
 

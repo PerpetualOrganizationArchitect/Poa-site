@@ -134,7 +134,11 @@ export const DataBaseProvider = ({ children }) => {
       
       
 
-    const [selectedProjectId, setSelectedProjectId] = useState('');
+    function setSelectedProjectId(projectId){
+  
+      const project = projects.find(project => project.id === projectId);
+      setSelectedProject(project);
+    }
 
     const [selectedProject,setSelectedProject] = useState('')
 
@@ -144,7 +148,7 @@ export const DataBaseProvider = ({ children }) => {
     
     return (
         <DataBaseContext.Provider
-        value={{projects, selectedProjectId, setSelectedProjectId, selectedProject, setSelectedProject
+        value={{projects,  setSelectedProjectId, selectedProject, setSelectedProject
         }}
         >
         {children}

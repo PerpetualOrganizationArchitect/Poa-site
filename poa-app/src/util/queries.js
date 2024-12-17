@@ -57,6 +57,7 @@ export const FETCH_ALL_PO_DATA = gql`
         }
         activeTaskAmount
         completedTaskAmount
+        deletedTaskAmount
       }
       ParticipationToken {
         id

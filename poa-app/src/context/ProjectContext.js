@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { FETCH_PROJECT_DATA, FETCH_ALL_PO_DATA } from '../util/queries';
 import { useRouter } from 'next/router';
 import { useAccount } from 'wagmi';
+import { BigNumber } from 'ethers';
 
 const ProjectContext = createContext();
 
@@ -46,11 +47,12 @@ export const ProjectProvider = ({ children }) => {
       console.log("data", data);
       const projects = data.perpetualOrganization.TaskManager.projects;
 
-      let taskCount = 0;
-      projects.forEach(project => {
-        taskCount += project.tasks.length;
-      });
-      setTaskCount(taskCount);
+      const totalTaskCount =
+        BigNumber.from(data.perpetualOrganization.TaskManager.activeTaskAmount).toNumber() +
+        BigNumber.from(data.perpetualOrganization.TaskManager.completedTaskAmount).toNumber() +
+        BigNumber.from(data.perpetualOrganization.TaskManager.deletedTaskAmount).toNumber();
+      
+      setTaskCount(totalTaskCount);
 
       const recommendedTasks = projects
       .flatMap(project => project.tasks.map(task => ({ ...task, projectId: project.id })))
