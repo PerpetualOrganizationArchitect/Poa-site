@@ -128,9 +128,11 @@ export default function Home() {
         alignItems="center"
         justifyContent="top"
         minH="100vh"
-        p={6}
+        p={[3, 4, 6]}
         position="relative"
         fontFamily="Inter, sans-serif"
+        overflowX="hidden"
+        width="100%"
       >
         {/* Background Gradient */}
         <Box
@@ -140,6 +142,8 @@ export default function Home() {
           right="0"
           bottom="0"
           bg="radial-gradient(circle, rgba(255, 255, 255, 10) 80%, rgba(154, 215, 255, 0.8) 115%)"
+          width="100%"
+          overflow="hidden"
         />
 
         {/* Beta Badge */}
@@ -159,10 +163,9 @@ export default function Home() {
           Beta
         </Box>
         {/* Hamburger Menu */}
-        <Box position="absolute" top="30px" right="7%" zIndex={4}>
+        <Box position="absolute" top="30px" right={["14px", "7%"]} zIndex={4}>
           <Menu zIndex={4}>
             <MenuButton
-
               as={IconButton}
               icon={<HamburgerIcon w={[6,8]} h={[6,8]} />} 
               variant="outline"
@@ -202,9 +205,10 @@ export default function Home() {
         <Text
           zIndex={3}
           fontWeight="1000"
-          fontSize={["25px", "27px", "31px", "39px"]}
+          fontSize={["22px", "25px", "31px", "39px"]}
           textAlign="center"
           mt={["8", "6", "6"]}
+          w={["95%", "95%", "auto"]}
           css={{
             lineHeight: "1.3",
             background: "linear-gradient(90deg, #ff416c, #f28500)",
@@ -248,10 +252,12 @@ export default function Home() {
         <Flex
           justifyContent={["center", "center", "center"]}
           direction={["column", "column", "row"]}
-          gap={12}
+          gap={[6, 8, 12]}
           mt={["15", "12"]}
           mb={["6"]}
           zIndex={1}
+          width="100%"
+          px={[2, 3, 4]}
         >
           {/* Left Box */}
           <Box
@@ -261,21 +267,23 @@ export default function Home() {
             maxW={["100%", "100%", "650px"]}
             flex="1"
             order={[2, 2, 1]}
+            width="100%"
           >
             <HStack
               display="flex"
-              spacing={[2, 4]}
+              spacing={[1, 2, 4]}
               bg="purple.200"
               borderRadius="3xl"
-              p={[4, 6]}
+              p={[3, 4, 6]}
               justifyContent="center"
+              width="100%"
             >
               <Image
-                mr={["1", "4"]}
+                mr={["1", "2", "4"]}
                 src="/images/high_res_poa.png"
                 alt="Poa Logo"
-                width={[100, 140, 180, 220]}
-                height={[100, 140, 180, 220]}
+                width={[80, 100, 140, 220]}
+                height={[80, 100, 140, 220]}
               />
               <Box borderRadius="2xl" bg="white" p={[3, 4]}>
                 <Text
@@ -301,14 +309,15 @@ export default function Home() {
           </Box>
 
           {/* Right Box */}
-          <Box mb="6" maxW={["100%", "100%", "650px"]} flex="1" order={[1, 1, 2]}>
+          <Box mb="6" maxW={["100%", "100%", "650px"]} flex="1" order={[1, 1, 2]} width="100%">
             {/* Mobile View */}
             <VStack
               display={["flex", "flex", "none"]}
               spacing={4}
               bg="blue.200"
               borderRadius="3xl"
-              p={6}
+              p={[4, 5, 6]}
+              width="100%"
             >
               <Box borderRadius="2xl" bg="white" p={[4, 4]}>
                 <Text
@@ -395,11 +404,12 @@ export default function Home() {
             {/* Desktop View */}
             <HStack
               display={["none", "none", "flex"]}
-              spacing={8}
+              spacing={[4, 6, 8]}
               bg="blue.200"
               borderRadius="3xl"
-              p={6}
+              p={[4, 5, 6]}
               justifyContent="center"
+              width="100%"
             >
               <Box
                 bg={useColorModeValue("gray.800", "white")}
@@ -483,7 +493,9 @@ export default function Home() {
         </Flex>
 
         {/* AutoPlay Video */}
-        <AutoPlayVideo1 />
+        <Box width="100%" maxW="100vw" overflow="hidden">
+          <AutoPlayVideo1 />
+        </Box>
 
         {/* Community Links */}
         <VStack mt="14" zIndex={"4"}>
