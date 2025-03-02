@@ -706,25 +706,38 @@ export default function Home() {
           </Box>
         </Flex>
 
-        {/* AutoPlay Video - Enhanced container */}
-        <Box 
-          width="100%" 
-          maxW="100vw" 
-          overflow="hidden"
-          borderRadius={["lg", "xl", "2xl"]}
-          boxShadow="0 8px 30px -5px rgba(0, 0, 0, 0.1)"
-          mx={[3, 4, 6]}
+        {/* AutoPlay Video - Completely revised centering solution */}
+        <Box
+          width="100%"
           mt={[4, 6, 8]}
           animation="fadeIn 1s ease-out 1.2s forwards"
           opacity="0"
+          position="relative"
           sx={{
             '@keyframes fadeIn': {
               '0%': { opacity: 0 },
               '100%': { opacity: 1 },
+            },
+            '& > div': {
+              margin: '0 auto !important',
+              display: 'flex !important',
+              justifyContent: 'center !important'
+            },
+            '& video': {
+              maxWidth: '100% !important',
+              height: 'auto !important',
+              margin: '0 auto !important'
             }
           }}
         >
-          <AutoPlayVideo1 />
+          <Box
+            maxW="1200px"
+            mx="auto"
+            px={[3, 4, 6]}
+            textAlign="center"
+          >
+            <AutoPlayVideo1 />
+          </Box>
         </Box>
 
         {/* Community Links - Enhanced styling */}
