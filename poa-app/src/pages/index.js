@@ -389,50 +389,67 @@ export default function Home() {
           >
             <HStack
               display="flex"
-              spacing={[1, 2, 4]}
+              spacing={0}
               bg="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)"
               borderRadius="3xl"
-              p={[4, 5, 6]}
-              justifyContent="center"
+              p={[3, 4, 5]}
+              justifyContent="space-between"
               width="100%"
               boxShadow="0 5px 20px -5px rgba(0, 0, 0, 0.2)"
             >
-              <Image
-                mr={["1", "2", "4"]}
-                src="/images/high_res_poa.png"
-                alt="Poa Logo"
-                width={[80, 100, 140, 220]}
-                height={[80, 100, 140, 220]}
-                transition="transform 0.3s ease"
-                _groupHover={{ transform: "scale(1.05)" }}
-              />
-              <Box borderRadius="2xl" bg="white" p={[3, 4]} boxShadow="md">
+              <Box
+                width="45%"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                pl={[2, 2, 3]}
+              >
+                <Image
+                  src="/images/high_res_poa.png"
+                  alt="Poa Logo"
+                  width={["100px", "110px", "130px", "180px"]}
+                  height={["100px", "110px", "130px", "180px"]}
+                  objectFit="contain"
+                  transition="transform 0.3s ease"
+                  _groupHover={{ transform: "scale(1.05)" }}
+                />
+              </Box>
+              <Box 
+                borderRadius="2xl" 
+                bg="white" 
+                p={[2, 2, 3]} 
+                boxShadow="md" 
+                width="52%"
+                mr={[2, 2, 3]}
+              >
                 <Text
                   fontWeight="500"
-                  fontSize={["13px", "14px", "16px"]}
+                  fontSize={["11px", "12px", "14px", "16px"]}
                   color="black.900"
                   fontFamily="Inter, sans-serif"
+                  lineHeight="1.3"
                 >
                   Hi, I'm Poa! I'll help you Customize your own
                   Community-powered Organization!
                 </Text>
                 <Text
-                  mt={3}
-                  fontSize={["16px", "17px", "19px"]}
+                  mt={[1, 2, 3]}
+                  fontSize={["13px", "14px", "16px", "19px"]}
                   color="black.900"
                   fontWeight="800"
                   fontFamily="Roboto, sans-serif"
                   bgGradient="linear(to-r, #ff416c, #f28500)"
                   bgClip="text"
+                  lineHeight="1.2"
                 >
                   Build your Organization for Free in Minutes
                 </Text>
                 
-                {/* Added mobile-friendly CTA button */}
+                {/* Mobile CTA button - slightly smaller */}
                 <Button 
                   display={["block", "block", "none"]}
                   size="sm" 
-                  mt={3}
+                  mt={2}
                   width="100%"
                   colorScheme="blue"
                   bgGradient="linear(to-r, #ff416c, #ff4b2b)"
@@ -440,6 +457,8 @@ export default function Home() {
                   _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
                   borderRadius="full"
                   boxShadow="md"
+                  fontSize={["xs", "xs"]}
+                  height="24px"
                 >
                   Get Started
                 </Button>
