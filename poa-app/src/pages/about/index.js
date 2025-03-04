@@ -23,13 +23,13 @@ const AboutPage = () => {
         align="stretch"
         p={8}
         alignItems={"center"}
-        pt="4.5rem"
+        pt="2rem"
         w="full"
         overflowY="auto"
         pr="1.5rem"
         pl="1.5rem"
       >
-        <Text fontSize="5xl" fontWeight="bold" color="grey.600" pt="2rem">
+        <Text fontSize="5xl" fontWeight="bold" color="grey.600" pt="0.5rem">
           What is Poa?
         </Text>
         <Text fontSize={"2xl"} textAlign={"center"} pr="15vh" pl="15vh">
@@ -84,7 +84,7 @@ const AboutPage = () => {
           color="grey.600"
         >
           Full decentralization is our priority. We want to ensure that the
-          created Perpetual Organizations can’t be stopped or changed by anyone
+          created Perpetual Organizations can't be stopped or changed by anyone
           but the community members.{" "}
         </Text>
         <Box

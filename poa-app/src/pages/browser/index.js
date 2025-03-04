@@ -24,23 +24,19 @@ const BrowserPage = () => {
   }, [perpetualOrganizations, fetchImageFromIpfs]);
 
   return (
-    <>
-      <Layout />
+    <Layout>
       <Flex
         direction="column"
         align="center"
         minH="100vh"
-        pt="3rem"
-       
       >
         {/* Hero Section */}
         <Box
           w="100%"
           bgSize="cover"
           bgPosition="center"
-          py="70px"
+          py="30px"
           textAlign="center"
-         
         >
           <Heading as="h1" size={["md","2xl"]} fontWeight="bold">
             Browse and Join a Perpetual Organization
@@ -102,7 +98,7 @@ const BrowserPage = () => {
           ))}
         </Grid>
       </Flex>
-    </>
+    </Layout>
   );
 };
 
