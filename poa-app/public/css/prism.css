@@ -1,0 +1,257 @@
+/* PrismJS 1.29.0
+https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+bash+jsx+tsx+typescript */
+/**
+ * prism.js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/chriskempson/tomorrow-theme
+ * @author Rose Pritchard
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #ccc;
+	background: none;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.5em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #2d2d2d;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #999;
+}
+
+.token.punctuation {
+	color: #ccc;
+}
+
+.token.tag,
+.token.attr-name,
+.token.namespace,
+.token.deleted {
+	color: #e2777a;
+}
+
+.token.function-name {
+	color: #6196cc;
+}
+
+.token.boolean,
+.token.number,
+.token.function {
+	color: #f08d49;
+}
+
+.token.property,
+.token.class-name,
+.token.constant,
+.token.symbol {
+	color: #f8c555;
+}
+
+.token.selector,
+.token.important,
+.token.atrule,
+.token.keyword,
+.token.builtin {
+	color: #cc99cd;
+}
+
+.token.string,
+.token.char,
+.token.attr-value,
+.token.regex,
+.token.variable {
+	color: #7ec699;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+	color: #67cdcc;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+
+.token.inserted {
+	color: green;
+}
+
+/* Line highlighting */
+pre[data-line] {
+	position: relative;
+	padding: 1em 0 1em 3em;
+}
+
+.line-highlight {
+	position: absolute;
+	left: 0;
+	right: 0;
+	padding: inherit 0;
+	margin-top: 1em;
+	background: rgba(153, 122, 102, 0.08);
+	pointer-events: none;
+	line-height: inherit;
+	white-space: pre;
+}
+
+.line-highlight:before,
+.line-highlight[data-end]:after {
+	content: attr(data-start);
+	position: absolute;
+	top: .4em;
+	left: .6em;
+	min-width: 1em;
+	padding: 0 .5em;
+	background-color: rgba(153, 122, 102, 0.4);
+	color: #f5f2f0;
+	font: bold 65%/1.5 sans-serif;
+	text-align: center;
+	vertical-align: .3em;
+	border-radius: 999px;
+	text-shadow: none;
+	box-shadow: 0 1px white;
+}
+
+.line-highlight[data-end]:after {
+	content: attr(data-end);
+	top: auto;
+	bottom: .4em;
+}
+
+.line-numbers .line-highlight:before,
+.line-numbers .line-highlight:after {
+	content: none;
+}
+
+/* Dark mode adaptations */
+.chakra-ui-dark code[class*="language-"],
+.chakra-ui-dark pre[class*="language-"] {
+	color: #f8f8f2;
+}
+
+.chakra-ui-dark :not(pre) > code[class*="language-"],
+.chakra-ui-dark pre[class*="language-"] {
+	background: #282a36;
+}
+
+.chakra-ui-dark .token.comment,
+.chakra-ui-dark .token.prolog,
+.chakra-ui-dark .token.doctype,
+.chakra-ui-dark .token.cdata {
+	color: #6272a4;
+}
+
+.chakra-ui-dark .token.punctuation {
+	color: #f8f8f2;
+}
+
+.chakra-ui-dark .token.namespace {
+	opacity: .7;
+}
+
+.chakra-ui-dark .token.property,
+.chakra-ui-dark .token.tag,
+.chakra-ui-dark .token.constant,
+.chakra-ui-dark .token.symbol,
+.chakra-ui-dark .token.deleted {
+	color: #ff79c6;
+}
+
+.chakra-ui-dark .token.boolean,
+.chakra-ui-dark .token.number {
+	color: #bd93f9;
+}
+
+.chakra-ui-dark .token.selector,
+.chakra-ui-dark .token.attr-name,
+.chakra-ui-dark .token.string,
+.chakra-ui-dark .token.char,
+.chakra-ui-dark .token.builtin,
+.chakra-ui-dark .token.inserted {
+	color: #50fa7b;
+}
+
+.chakra-ui-dark .token.operator,
+.chakra-ui-dark .token.entity,
+.chakra-ui-dark .token.url,
+.chakra-ui-dark .language-css .token.string,
+.chakra-ui-dark .style .token.string,
+.chakra-ui-dark .token.variable {
+	color: #f8f8f2;
+}
+
+.chakra-ui-dark .token.atrule,
+.chakra-ui-dark .token.attr-value,
+.chakra-ui-dark .token.function,
+.chakra-ui-dark .token.class-name {
+	color: #f1fa8c;
+}
+
+.chakra-ui-dark .token.keyword {
+	color: #8be9fd;
+}
+
+.chakra-ui-dark .token.regex,
+.chakra-ui-dark .token.important {
+	color: #ffb86c;
+}
+
+.chakra-ui-dark .token.important,
+.chakra-ui-dark .token.bold {
+	font-weight: bold;
+}
+
+.chakra-ui-dark .token.italic {
+	font-style: italic;
+}
+
+.chakra-ui-dark .token.entity {
+	cursor: help;
+} 

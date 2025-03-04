@@ -1,193 +1,388 @@
-import { getAllPostIds, getPostData } from '../../util/posts';
-
-import  Navigation from '@/components/Navigation';
 import { useEffect, useState } from 'react';
-import { Box, Heading, Text, Flex, Divider, extendTheme, ChakraProvider, useBreakpointValue, HStack } from '@chakra-ui/react';
-import SideBar from '@/components/docs/SideBar';
+import { getPostData, getAllPostIds } from '../../util/posts';
+import { 
+  Box, 
+  Text, 
+  Flex, 
+  VStack,
+  Heading,
+  Container,
+  Icon,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  useBreakpointValue,
+  useColorModeValue,
+  Button,
+  Divider,
+  HStack,
+  useDisclosure,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  IconButton,
+  Tag
+} from '@chakra-ui/react';
+import Layout from '../../components/Layout';
+import SideBar from '../../components/docs/SideBar';
+import { FaHome, FaChevronRight, FaBars, FaArrowLeft, FaArrowRight, FaBook } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-const theme = extendTheme({
-    styles: {
-        global: {
-            body: {
-                bgGradient: "linear(to-r, orange.200, pink.200)",
-                color: "#001443",
-              },
-            'h1, h2, h3, h4, h5, h6': {
-                fontWeight: 'bold',
-              },
-              'h1': {
-                fontSize: '2.25rem', // 36px
-                marginTop: '1.5rem',
-                marginBottom: '0.75rem',
-              },
-              'h2': {
-                fontSize: '2rem', // 32px
-                marginTop: '1.5rem',
-                marginBottom: '0.75rem',
-              },
-              'h3': {
-                fontSize: '1.75rem', // 28px
-                marginTop: '1.5rem',
-                marginBottom: '0.5rem',
-              },
-              'h4': {
-                fontSize: '1.5rem', // 24px
-                marginTop: '1.5rem',
-                marginBottom: '0.5rem',
-              },
-              'h5': {
-                fontSize: '1.25rem', // 20px
-                marginTop: '1.5rem',
-                marginBottom: '0.5rem',
-              },
-              'h6': {
-                fontSize: '1rem', // 16px
-                marginTop: '1.5rem',
-                marginBottom: '0.5rem',
-              },
-              'p': {
-                fontSize: '1.2rem',
-                lineHeight: '1.75rem',
-                marginBottom: '1rem',
-              },
-              'ul, ol': {
-                marginLeft: '1.25rem',
-                marginBottom: '1rem',
-              },
-              'li': {
-                marginBottom: '0.25rem',
-              },
-              'a': {
-                color: 'black.500',
-                textDecoration: 'underline',
-              },
-              'blockquote': {
-                paddingLeft: '1rem',
-                borderLeft: '4px solid gray',
-                margin: '1rem 0',
-                color: 'gray.400',
-              },
-              'code': {
-                fontFamily: 'monospace',
-                fontSize: '0.95rem',
-                fontWeight: 'bold',
-                padding: '0.2rem 0.5rem',
-                backgroundColor: 'gray.700',
-                borderRadius: '6px',
-              },
-              'pre': {
-                fontFamily: 'monospace',
-                overflowX: 'auto',
-                padding: '1rem',
-                backgroundColor: 'gray.700',
-                borderRadius: '6px',
-              },
-              'table': {
-                width: '100%',
-                marginBottom: '1rem',
-                borderCollapse: 'collapse',
-              },
-              'th, td': {
-                border: '1px solid gray',
-                padding: '0.5rem',
-                textAlign: 'left',
-              },
-              'img': {
-                maxWidth: '100%',
-                height: 'auto',
-              },
-              '.katex-mathml': {
-                display: 'none', 
-            },
-        },
-    },
-});
+// Motion components
+const MotionBox = motion(Box);
+const MotionText = motion(Text);
 
-
-
-export default function Post({ postData }) {
-  if (!postData) {
-    console.log("No post data available");
-    return <p>No Post Found</p>;
-  }
-
-  console.log(postData.contentHtml);
-
+export default function Post({ postData, navigationData }) {
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const showSidebar = useBreakpointValue({ base: false, md: true });
-  const [marginLeft, setMarginLeft] = useState('0px');
+  
+  // Design tokens
+  const contentBg = useColorModeValue('white', 'gray.800');
+  const contentBorder = useColorModeValue('gray.200', 'gray.700');
+  const headingColor = useColorModeValue('blue.600', 'blue.300');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
+  const breadcrumbColor = useColorModeValue('gray.500', 'gray.400');
+  
+  // Extract navigation links
+  const { prev, next } = navigationData || { prev: null, next: null };
 
   useEffect(() => {
-    const checkAndSetMargin = () => {
-      const requiredMargin = 250;
-      const availableSpace = window.innerWidth - 850-230;
-      console.log(availableSpace);
+    setIsClient(true);
+  }, []);
 
-      if (showSidebar && availableSpace < requiredMargin) {
-        setMarginLeft('230px');
-      } else {
-        setMarginLeft('0px');
-      }
+  // Functions to determine category for current post
+  const getCategory = (id) => {
+    if (['create', 'perpetualOrganization', 'join'].includes(id)) return 'Get Started';
+    if (['hybridVoting', 'contributionVoting', 'directDemocracy'].includes(id)) return 'Voting';
+    if (['AlphaV1', 'TheGraph'].includes(id)) return 'Features';
+    return 'Documentation';
+  };
+
+  const getCategoryColor = (category) => {
+    const categoryColors = {
+      'Get Started': 'green',
+      'Voting': 'purple',
+      'Features': 'blue'
     };
+    return categoryColors[category] || 'blue';
+  };
 
-    // Check and set margin initially and on window resize
-    checkAndSetMargin();
-    window.addEventListener('resize', checkAndSetMargin);
+  const currentCategory = getCategory(postData.id);
+  const categoryColor = getCategoryColor(currentCategory);
 
-    // Cleanup listener when the component unmounts
-    return () => {
-      window.removeEventListener('resize', checkAndSetMargin);
-    };
-  }, [showSidebar]);
+  // Animation variants
+  const contentVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
 
   return (
-    <ChakraProvider theme={theme}>
-      <Navigation />
-      <Flex position="relative" minHeight="110vh" width="100%">
-        {showSidebar && (
-          <Flex position="absolute" top="0" left="0" ml="3%" width="200px">
-            <SideBar />
+    <Layout>
+      <Box>
+        {isClient && (
+          <Flex direction={{ base: 'column', md: 'row' }} maxWidth="1400px" mx="auto">
+            {/* Mobile Sidebar Drawer */}
+            {!showSidebar && (
+              <>
+                <IconButton
+                  aria-label="Open navigation"
+                  icon={<FaBars />}
+                  position="fixed"
+                  top="80px"
+                  left="20px"
+                  zIndex={20}
+                  onClick={onOpen}
+                  colorScheme="blue"
+                  variant="outline"
+                />
+                
+                <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader borderBottomWidth="1px">
+                      Documentation
+                    </DrawerHeader>
+                    <DrawerBody>
+                      <SideBar />
+                    </DrawerBody>
+                  </DrawerContent>
+                </Drawer>
+              </>
+            )}
+            
+            {/* Desktop Sidebar */}
+            {showSidebar && (
+              <Box display={{ base: 'none', md: 'block' }}>
+                <SideBar />
+              </Box>
+            )}
+            
+            {/* Main Content */}
+            <Box flex="1" px={{ base: 4, md: 8 }} pt={{ base: 24, md: 6 }} pb={10}>
+              <Container maxW="container.md">
+                {/* Breadcrumb Navigation */}
+                <Breadcrumb 
+                  separator={<Icon as={FaChevronRight} color={breadcrumbColor} fontSize="xs" />}
+                  mb={6}
+                  color={breadcrumbColor}
+                  fontSize="sm"
+                >
+                  <BreadcrumbItem>
+                    <BreadcrumbLink as={Link} href="/" passHref>
+                      <Flex align="center">
+                        <Icon as={FaHome} mr={1} />
+                        Home
+                      </Flex>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  
+                  <BreadcrumbItem>
+                    <BreadcrumbLink as={Link} href="/docs" passHref>
+                      Documentation
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  
+                  <BreadcrumbItem isCurrentPage>
+                    <BreadcrumbLink>{postData.title || postData.id}</BreadcrumbLink>
+                  </BreadcrumbItem>
+                </Breadcrumb>
+                
+                {/* Document Header */}
+                <MotionBox
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  mb={8}
+                >
+                  <Tag 
+                    size="md" 
+                    colorScheme={categoryColor} 
+                    borderRadius="full" 
+                    mb={3}
+                  >
+                    {currentCategory}
+                  </Tag>
+                  <Heading 
+                    as="h1" 
+                    size="2xl" 
+                    color={headingColor}
+                    fontWeight="bold"
+                    lineHeight="1.2"
+                    mb={4}
+                  >
+                    {postData.title || postData.id}
+                  </Heading>
+                  
+                  {postData.date && (
+                    <Text 
+                      color={breadcrumbColor} 
+                      fontSize="md"
+                    >
+                      Last updated: {new Date(postData.date).toLocaleDateString()}
+                    </Text>
+                  )}
+                </MotionBox>
+                
+                {/* Main Content */}
+                <MotionBox
+                  variants={contentVariants}
+                  initial="hidden"
+                  animate="visible"
+                  p={8}
+                  borderRadius="xl"
+                  bg={contentBg}
+                  borderWidth="1px"
+                  borderColor={contentBorder}
+                  boxShadow="md"
+                  mb={8}
+                >
+                  <MotionText
+                    className="markdown-content"
+                    color={textColor}
+                    fontSize="lg"
+                    lineHeight="1.8"
+                    sx={{
+                      '& h1': {
+                        fontSize: '2xl',
+                        fontWeight: 'bold',
+                        mt: 8,
+                        mb: 4,
+                        color: headingColor,
+                      },
+                      '& h2': {
+                        fontSize: 'xl',
+                        fontWeight: 'bold',
+                        mt: 6,
+                        mb: 3,
+                        color: headingColor,
+                      },
+                      '& h3': {
+                        fontSize: 'lg',
+                        fontWeight: 'bold',
+                        mt: 5,
+                        mb: 2,
+                        color: headingColor,
+                      },
+                      '& p': {
+                        my: 4,
+                      },
+                      '& ul, & ol': {
+                        ml: 6,
+                        mb: 4,
+                      },
+                      '& li': {
+                        mb: 2,
+                      },
+                      '& code': {
+                        bg: useColorModeValue('gray.100', 'gray.700'),
+                        px: 1,
+                        borderRadius: 'md',
+                        fontSize: 'sm',
+                      },
+                      '& pre': {
+                        bg: useColorModeValue('gray.100', 'gray.700'),
+                        p: 4,
+                        borderRadius: 'md',
+                        overflowX: 'auto',
+                        my: 4,
+                      },
+                      '& blockquote': {
+                        borderLeftWidth: '4px',
+                        borderLeftColor: `${categoryColor}.500`,
+                        pl: 4,
+                        py: 1,
+                        my: 4,
+                        bg: useColorModeValue('gray.50', 'gray.700'),
+                        borderRadius: 'md',
+                      },
+                      '& a': {
+                        color: `${categoryColor}.500`,
+                        textDecoration: 'underline',
+                        _hover: {
+                          textDecoration: 'none',
+                        },
+                      },
+                      '& img': {
+                        maxWidth: '100%',
+                        borderRadius: 'md',
+                        my: 4,
+                      },
+                      '& table': {
+                        width: '100%',
+                        my: 4,
+                        borderWidth: '1px',
+                        borderRadius: 'md',
+                      },
+                      '& th': {
+                        bg: useColorModeValue('gray.100', 'gray.700'),
+                        p: 2,
+                        fontWeight: 'bold',
+                      },
+                      '& td': {
+                        p: 2,
+                        borderTopWidth: '1px',
+                      },
+                    }}
+                    dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
+                  />
+                </MotionBox>
+                
+                {/* Next/Previous Navigation */}
+                <Flex 
+                  justifyContent="space-between" 
+                  alignItems="center" 
+                  mt={8}
+                  flexWrap="wrap"
+                  gap={4}
+                >
+                  {prev ? (
+                    <Link href={`/docs/${prev.id}`} passHref>
+                      <Button 
+                        as="a"
+                        leftIcon={<FaArrowLeft />}
+                        variant="outline"
+                        colorScheme={categoryColor}
+                        size="md"
+                      >
+                        Previous: {prev.title || prev.id}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Box />
+                  )}
+                  
+                  <Link href="/docs" passHref>
+                    <Button 
+                      as="a"
+                      leftIcon={<FaBook />}
+                      colorScheme="gray"
+                      size="md"
+                      variant="outline"
+                    >
+                      All Documentation
+                    </Button>
+                  </Link>
+                  
+                  {next ? (
+                    <Link href={`/docs/${next.id}`} passHref>
+                      <Button 
+                        as="a"
+                        rightIcon={<FaArrowRight />}
+                        colorScheme={categoryColor}
+                        size="md"
+                      >
+                        Next: {next.title || next.id}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Box />
+                  )}
+                </Flex>
+              </Container>
+            </Box>
           </Flex>
         )}
-
-        <Flex
-          align="start"
-          justify="center"
-          width="100%"
-          ml={marginLeft}
-        >
-          <Box
-            mt="100px"
-            mb="10"
-            textColor="white"
-            bg="#1A202C"
-            pl={["4", "8", "8"]}
-            pr={["4", "8", "8"]}
-            maxW="850px"
-            borderRadius="xl"
-            width="100%"
-          >
-            <Box dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
-          </Box>
-        </Flex>
-      </Flex>
-    </ChakraProvider>
+      </Box>
+    </Layout>
   );
 }
 
 export async function getStaticPaths() {
-    const paths = getAllPostIds();
-    return {
-        paths,
-        fallback: false,
-    };
+  const paths = getAllPostIds();
+  return {
+    paths,
+    fallback: false,
+  };
 }
 
 export async function getStaticProps({ params }) {
-    const postData = await getPostData(params.id);
-
-    return {
-        props: {
-            postData,
-        },
-    };
+  const postData = await getPostData(params.id);
+  
+  // Get navigation data
+  const allPostIds = getAllPostIds().map(path => path.params.id);
+  const currentIndex = allPostIds.indexOf(params.id);
+  
+  const navigationData = {
+    prev: currentIndex > 0 ? { id: allPostIds[currentIndex - 1] } : null,
+    next: currentIndex < allPostIds.length - 1 ? { id: allPostIds[currentIndex + 1] } : null
+  };
+  
+  return {
+    props: {
+      postData,
+      navigationData
+    },
+  };
 }

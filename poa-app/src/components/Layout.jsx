@@ -33,14 +33,17 @@ const Layout = ({ children, isArchitectPage }) => {
             />
           </Link>
         </Flex>
-          </>
+        <Box as="main">{children}</Box>
+        </>
       ) : (
-        <Box>
-          <Navigation />
-        </Box>
+        <>
+          <Box>
+            <Navigation />
+          </Box>
+          {/* Add padding to ensure content is below the navbar */}
+          <Box as="main" pt="80px" bgGradient="linear(to-r, #ffecd2, #fcb69f)" minH="100vh">{children}</Box>
+        </>
       )}
-      {/* Ensure content is always below the navbar */}
-      <Box as="main">{children}</Box>
       {/* {!isArchitectPage && (
         <Box p={4}>
           © {new Date().getFullYear()} Perpetuate. All rights reserved.

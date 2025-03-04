@@ -9,6 +9,8 @@ import { POProvider } from "@/context/POContext";
 import { VotingProvider } from "@/context/VotingContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import '@rainbow-me/rainbowkit/styles.css';
+import '../styles/globals.css';
+import '/public/css/prism.css';
 import {
   getDefaultConfig,
   RainbowKitProvider,
