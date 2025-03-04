@@ -36,12 +36,13 @@ const SideBar = () => {
       overflowY="auto"
       p={4}
       borderRadius="xl"
-      bg="rgba(255, 243, 230, 0.7)"
+      bg="rgba(0, 0, 0, 0.8)"
       backdropFilter="blur(10px)"
       borderWidth="1px"
-      borderColor="#e2d6ca"
+      borderColor="rgba(255, 255, 255, 0.1)"
       width="250px"
       ml={4}
+      color="white"
       css={{
         '&::-webkit-scrollbar': {
           width: '4px',
@@ -50,7 +51,7 @@ const SideBar = () => {
           width: '6px',
         },
         '&::-webkit-scrollbar-thumb': {
-          background: 'rgba(0, 0, 0, 0.2)',
+          background: 'rgba(255, 255, 255, 0.3)',
           borderRadius: '24px',
         },
       }}
@@ -60,7 +61,7 @@ const SideBar = () => {
           <AccordionItem border="none">
             <AccordionButton px={0} _hover={{ bg: 'transparent' }}>
               <Flex align="center" flex="1">
-                <Icon as={FaBook} mr={2} color="green.600" />
+                <Icon as={FaBook} mr={2} color="green.300" />
                 <Text fontWeight="700" fontSize="18px">Get Started</Text>
               </Flex>
               <AccordionIcon />
@@ -74,17 +75,15 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/create' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/create' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/create' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/create' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/create' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
-                    Creating a PO
+                    Create
                   </ChakraLink>
                 </Link>
                 
@@ -136,7 +135,7 @@ const SideBar = () => {
           <AccordionItem border="none" mt={2}>
             <AccordionButton px={0} _hover={{ bg: 'transparent' }}>
               <Flex align="center" flex="1">
-                <Icon as={FaVoteYea} mr={2} color="purple.600" />
+                <Icon as={FaVoteYea} mr={2} color="purple.300" />
                 <Text fontWeight="700" fontSize="18px">Voting</Text>
               </Flex>
               <AccordionIcon />
@@ -212,8 +211,8 @@ const SideBar = () => {
           <AccordionItem border="none" mt={2}>
             <AccordionButton px={0} _hover={{ bg: 'transparent' }}>
               <Flex align="center" flex="1">
-                <Icon as={FaInfoCircle} mr={2} color="blue.600" />
-                <Text fontWeight="700" fontSize="18px">Features</Text>
+                <Icon as={FaInfoCircle} mr={2} color="blue.300" />
+                <Text fontWeight="700" fontSize="18px">Blog</Text>
               </Flex>
               <AccordionIcon />
             </AccordionButton>

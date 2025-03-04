@@ -41,7 +41,7 @@ const Layout = ({ children, isArchitectPage }) => {
             <Navigation />
           </Box>
           {/* Add padding to ensure content is below the navbar */}
-          <Box as="main" pt="80px" bgGradient="linear(to-r, #ffecd2, #fcb69f)" minH="100vh">{children}</Box>
+          <Box as="main" pt="80px" minH="100vh">{children}</Box>
         </>
       )}
       {/* {!isArchitectPage && (

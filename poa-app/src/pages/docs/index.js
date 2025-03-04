@@ -33,7 +33,7 @@ export default function Home({ allPostsData }) {
   const categoryColors = {
     'Get Started': 'green',
     'Voting': 'purple',
-    'Features': 'blue'
+    'Blog': 'blue'
   };
 
   // Card design values
@@ -62,15 +62,15 @@ export default function Home({ allPostsData }) {
     post.id === 'hybridVoting' || post.id === 'contributionVoting' || post.id === 'directDemocracy'
   );
   
-  const featurePosts = allPostsData.filter(post => 
-    post.id === 'AlphaV1' || post.id === 'TheGraph'
+  const blogPosts = allPostsData.filter(post => 
+    post.id === 'AlphaV1' || post.id === 'TheGraph' || post.category === 'Features'
   );
 
   // Other posts - for anything that doesn't fit in the categories above
   const otherPosts = allPostsData.filter(post => 
     !getStartedPosts.includes(post) && 
     !votingPosts.includes(post) && 
-    !featurePosts.includes(post) &&
+    !blogPosts.includes(post) &&
     post.id !== 'test' && 
     post.id !== 'test2' &&
     post.id !== 'letsSee'
@@ -104,9 +104,20 @@ export default function Home({ allPostsData }) {
     
     return (
       <VStack align="stretch" spacing={6} width="100%" mb={10}>
-        <Flex align="center" mb={2}>
-          <Icon as={icon} mr={2} color={`${categoryColors[title]}.500`} />
-          <Heading size="lg" color={headingColor} fontWeight="bold" letterSpacing="tight">
+        <Flex 
+          align="center" 
+          mb={4} 
+          pb={2}
+          borderBottomWidth="2px" 
+          borderBottomColor={`${categoryColors[title]}.400`}
+        >
+          <Icon as={icon} mr={3} color={`${categoryColors[title]}.400`} boxSize={7} />
+          <Heading 
+            size="xl" 
+            color="white" 
+            fontWeight="bold" 
+            letterSpacing="tight"
+          >
             {title}
           </Heading>
         </Flex>
@@ -143,18 +154,6 @@ export default function Home({ allPostsData }) {
                   bg: categoryColors[title] ? `${categoryColors[title]}.500` : 'blue.500'
                 }}
               >
-                <Tag 
-                  size="sm" 
-                  colorScheme={categoryColors[title] || 'blue'} 
-                  alignSelf="flex-start" 
-                  mb={3}
-                  px={3}
-                  py={1}
-                  borderRadius="full"
-                >
-                  {title}
-                </Tag>
-                
                 <Heading size="md" mb={2} fontWeight="bold">
                   {title}
                 </Heading>
@@ -181,6 +180,66 @@ export default function Home({ allPostsData }) {
     );
   };
 
+  const getStartedLabel = () => (
+    <Flex align="center" mb={6} mt={6}>
+      <Box 
+        bg="rgba(0, 0, 0, 0.7)" 
+        p={2} 
+        borderRadius="md" 
+        mr={3}
+      >
+        <Icon as={FaBook} color="green.300" boxSize={5} />
+      </Box>
+      <Heading 
+        size="lg" 
+        color="black" 
+        fontWeight="bold"
+      >
+        Get Started
+      </Heading>
+    </Flex>
+  );
+
+  const votingLabel = () => (
+    <Flex align="center" mb={6} mt={10}>
+      <Box 
+        bg="rgba(0, 0, 0, 0.7)" 
+        p={2} 
+        borderRadius="md" 
+        mr={3}
+      >
+        <Icon as={FaVoteYea} color="purple.300" boxSize={5} />
+      </Box>
+      <Heading 
+        size="lg" 
+        color="black" 
+        fontWeight="bold"
+      >
+        Voting
+      </Heading>
+    </Flex>
+  );
+
+  const blogLabel = () => (
+    <Flex align="center" mb={6} mt={10}>
+      <Box 
+        bg="rgba(0, 0, 0, 0.7)" 
+        p={2} 
+        borderRadius="md" 
+        mr={3}
+      >
+        <Icon as={FaInfoCircle} color="blue.300" boxSize={5} />
+      </Box>
+      <Heading 
+        size="lg" 
+        color="black" 
+        fontWeight="bold"
+      >
+        Blog
+      </Heading>
+    </Flex>
+  );
+
   return (
     <Layout>
       <Box>
@@ -197,21 +256,23 @@ export default function Home({ allPostsData }) {
                 align="center"
                 justify="center"
                 textAlign="center"
-                bg={heroBg}
-                bgGradient="linear(to-r, #f5e6d8, #fad2d2)"
+                bg="rgba(0, 0, 0, 0.8)"
+                backdropFilter="blur(10px)"
                 borderRadius="xl"
                 p={{ base: 8, md: 12 }}
                 mb={12}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                boxShadow="sm"
+                boxShadow="md"
+                borderWidth="1px"
+                borderColor="rgba(255, 255, 255, 0.1)"
               >
                 <Heading 
                   as="h1" 
                   size="2xl" 
                   mb={4} 
-                  color="blue.600"
+                  color="white"
                   fontWeight="extrabold"
                   letterSpacing="tight"
                 >
@@ -220,7 +281,7 @@ export default function Home({ allPostsData }) {
                 <Text 
                   fontSize="xl" 
                   maxW="3xl" 
-                  color="gray.700"
+                  color="gray.300"
                   mb={6}
                 >
                   Everything you need to know about creating, joining, and participating in Perpetual Organizations
@@ -237,10 +298,13 @@ export default function Home({ allPostsData }) {
                   </Link>
                   <Link href="/docs/hybrid-voting" passHref>
                     <Button 
-                      colorScheme="purple" 
                       variant="outline" 
                       size="lg" 
                       leftIcon={<Icon as={FaVoteYea} />}
+                      bg="transparent"
+                      color="white"
+                      borderColor="white"
+                      _hover={{ bg: "whiteAlpha.200" }}
                     >
                       Learn about Voting
                     </Button>
@@ -254,10 +318,180 @@ export default function Home({ allPostsData }) {
                   initial="hidden"
                   animate="visible"
                 >
-                  {renderCategorySection('Get Started', getStartedPosts, FaBook)}
-                  {renderCategorySection('Voting', votingPosts, FaVoteYea)}
-                  {renderCategorySection('Features', featurePosts, FaInfoCircle)}
-                  {otherPosts.length > 0 && renderCategorySection('Other Resources', otherPosts, FaBook)}
+                  {/* Get Started Section */}
+                  {getStartedLabel()}
+                  <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+                    {getStartedPosts.map(post => (
+                      <Link href={`/docs/${post.id}`} key={post.id} passHref>
+                        <MotionBox
+                          variants={itemVariants}
+                          whileHover={{ 
+                            y: -5, 
+                            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                          }}
+                          as="a"
+                          display="flex"
+                          flexDir="column"
+                          height="100%"
+                          p={6}
+                          borderWidth="1px"
+                          borderRadius="xl"
+                          bg="white"
+                          borderColor="#e2d6ca"
+                          boxShadow="sm"
+                          transition="all 0.3s ease"
+                          position="relative"
+                          overflow="hidden"
+                          _before={{
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '4px',
+                            bg: 'green.500'
+                          }}
+                        >
+                          <Heading size="md" mb={2} fontWeight="bold">
+                            {post.title}
+                          </Heading>
+                          
+                          {post.description && (
+                            <Text color="gray.600" mb={4} flex="1">
+                              {post.description}
+                            </Text>
+                          )}
+                          
+                          <Flex 
+                            mt="auto"
+                            align="center" 
+                            color="green.500"
+                            fontWeight="medium"
+                          >
+                            Read more <Icon as={FaArrowRight} ml={1} fontSize="xs" />
+                          </Flex>
+                        </MotionBox>
+                      </Link>
+                    ))}
+                  </SimpleGrid>
+
+                  {/* Voting Section */}
+                  {votingLabel()}
+                  <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+                    {votingPosts.map(post => (
+                      <Link href={`/docs/${post.id}`} key={post.id} passHref>
+                        <MotionBox
+                          variants={itemVariants}
+                          whileHover={{ 
+                            y: -5, 
+                            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                          }}
+                          as="a"
+                          display="flex"
+                          flexDir="column"
+                          height="100%"
+                          p={6}
+                          borderWidth="1px"
+                          borderRadius="xl"
+                          bg="white"
+                          borderColor="#e2d6ca"
+                          boxShadow="sm"
+                          transition="all 0.3s ease"
+                          position="relative"
+                          overflow="hidden"
+                          _before={{
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '4px',
+                            bg: 'purple.500'
+                          }}
+                        >
+                          <Heading size="md" mb={2} fontWeight="bold">
+                            {post.title}
+                          </Heading>
+                          
+                          {post.description && (
+                            <Text color="gray.600" mb={4} flex="1">
+                              {post.description}
+                            </Text>
+                          )}
+                          
+                          <Flex 
+                            mt="auto"
+                            align="center" 
+                            color="purple.500"
+                            fontWeight="medium"
+                          >
+                            Read more <Icon as={FaArrowRight} ml={1} fontSize="xs" />
+                          </Flex>
+                        </MotionBox>
+                      </Link>
+                    ))}
+                  </SimpleGrid>
+
+                  {/* Blog Section */}
+                  {blogPosts.length > 0 && (
+                    <>
+                      {blogLabel()}
+                      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+                        {blogPosts.map(post => (
+                          <Link href={`/docs/${post.id}`} key={post.id} passHref>
+                            <MotionBox
+                              variants={itemVariants}
+                              whileHover={{ 
+                                y: -5, 
+                                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                              }}
+                              as="a"
+                              display="flex"
+                              flexDir="column"
+                              height="100%"
+                              p={6}
+                              borderWidth="1px"
+                              borderRadius="xl"
+                              bg="white"
+                              borderColor="#e2d6ca"
+                              boxShadow="sm"
+                              transition="all 0.3s ease"
+                              position="relative"
+                              overflow="hidden"
+                              _before={{
+                                content: '""',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '4px',
+                                bg: 'blue.500'
+                              }}
+                            >
+                              <Heading size="md" mb={2} fontWeight="bold">
+                                {post.title}
+                              </Heading>
+                              
+                              {post.description && (
+                                <Text color="gray.600" mb={4} flex="1">
+                                  {post.description}
+                                </Text>
+                              )}
+                              
+                              <Flex 
+                                mt="auto"
+                                align="center" 
+                                color="blue.500"
+                                fontWeight="medium"
+                              >
+                                Read more <Icon as={FaArrowRight} ml={1} fontSize="xs" />
+                              </Flex>
+                            </MotionBox>
+                          </Link>
+                        ))}
+                      </SimpleGrid>
+                    </>
+                  )}
                 </MotionBox>
               </Container>
             </Box>
