@@ -350,6 +350,14 @@ export default function Home() {
           display={["none", "none", "block"]}
           fontFamily="Inter, sans-serif"
           letterSpacing="tight"
+          animation="fadeIn 1s ease-out 0.9s forwards"
+          opacity="0"
+          sx={{
+            '@keyframes fadeIn': {
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1 },
+            }
+          }}
         >
           Voting power is based on Membership and Contribution, not capital
         </Text>
