@@ -68,6 +68,25 @@ const SideBar = () => {
             </AccordionButton>
             <AccordionPanel pb={4} pl={6}>
               <VStack align="flex-start" width="100%" spacing={3}>
+                <Link href={`/docs/perpetualOrganization`} passHref>
+                  <ChakraLink 
+                    as="span" 
+                    display="block" 
+                    width="100%" 
+                    p={2} 
+                    borderRadius="md"
+                    bg={currentPath === '/docs/perpetualOrganization' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/perpetualOrganization' ? 'white' : 'gray.300'}
+                    fontWeight={currentPath === '/docs/perpetualOrganization' ? '600' : '500'}
+                    _hover={{ 
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
+                    }}
+                  >
+                    What is a Perpetual Organization
+                  </ChakraLink>
+                </Link>
+                
                 <Link href={`/docs/create`} passHref>
                   <ChakraLink 
                     as="span" 
@@ -83,28 +102,7 @@ const SideBar = () => {
                       color: 'white'
                     }}
                   >
-                    Create
-                  </ChakraLink>
-                </Link>
-                
-                <Link href={`/docs/perpetualOrganization`} passHref>
-                  <ChakraLink 
-                    as="span" 
-                    display="block" 
-                    width="100%" 
-                    p={2} 
-                    borderRadius="md"
-                    bg={currentPath === '/docs/perpetualOrganization' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/perpetualOrganization' ? activeColor : 'inherit'}
-                    fontWeight={currentPath === '/docs/perpetualOrganization' ? '600' : '500'}
-                    _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
-                    }}
-                    transition="all 0.2s"
-                  >
-                    What is a PO?
+                    Creating a PO
                   </ChakraLink>
                 </Link>
                 
@@ -115,15 +113,13 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/join' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/join' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/join' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/join' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/join' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
                     Joining a PO
                   </ChakraLink>
@@ -149,15 +145,13 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/hybridVoting' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/hybridVoting' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/hybridVoting' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/hybridVoting' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/hybridVoting' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
                     Hybrid Voting
                   </ChakraLink>
@@ -170,17 +164,15 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/contributionVoting' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/contributionVoting' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/contributionVoting' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/contributionVoting' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/contributionVoting' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
-                    Contribution Based
+                    Contribution Based Voting
                   </ChakraLink>
                 </Link>
                 
@@ -191,15 +183,13 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/directDemocracy' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/directDemocracy' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/directDemocracy' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/directDemocracy' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/directDemocracy' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
                     Direct Democracy
                   </ChakraLink>
@@ -225,17 +215,15 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/AlphaV1' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/AlphaV1' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/AlphaV1' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/AlphaV1' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/AlphaV1' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
-                    AlphaV1
+                    Alpha V1
                   </ChakraLink>
                 </Link>
                 
@@ -246,15 +234,13 @@ const SideBar = () => {
                     width="100%" 
                     p={2} 
                     borderRadius="md"
-                    bg={currentPath === '/docs/TheGraph' ? activeBg : 'transparent'}
-                    color={currentPath === '/docs/TheGraph' ? activeColor : 'inherit'}
+                    bg={currentPath === '/docs/TheGraph' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+                    color={currentPath === '/docs/TheGraph' ? 'white' : 'gray.300'}
                     fontWeight={currentPath === '/docs/TheGraph' ? '600' : '500'}
                     _hover={{ 
-                      bg: activeBg,
-                      transform: "translateX(5px)",
-                      transition: "transform 0.2s"
+                      bg: 'rgba(255, 255, 255, 0.15)',
+                      color: 'white'
                     }}
-                    transition="all 0.2s"
                   >
                     The Graph
                   </ChakraLink>

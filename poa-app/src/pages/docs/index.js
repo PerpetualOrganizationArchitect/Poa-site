@@ -53,10 +53,32 @@ export default function Home({ allPostsData }) {
     setIsClient(true);
   }, []);
 
-  // Group posts by category
-  const getStartedPosts = allPostsData.filter(post => 
-    post.id === 'create' || post.id === 'perpetualOrganization' || post.id === 'join'
-  );
+  // Custom title mapping
+  const customTitles = {
+    'create': 'Creating a PO',
+    'join': 'Joining a PO',
+    'perpetualOrganization': 'What is a Perpetual Organization?',
+    'hybridVoting': 'Hybrid Voting',
+    'contributionVoting': 'Contribution Based Voting',
+    'directDemocracy': 'Direct Democracy',
+    'AlphaV1': 'Alpha V1',
+    'TheGraph': 'The Graph'
+  };
+
+  // Group posts by category with custom order
+  const getStartedPosts = allPostsData
+    .filter(post => 
+      post.id === 'perpetualOrganization' || post.id === 'create' || post.id === 'join'
+    )
+    .sort((a, b) => {
+      // Custom sort order: perpetualOrganization, create, join
+      const order = {
+        'perpetualOrganization': 1,
+        'create': 2,
+        'join': 3
+      };
+      return order[a.id] - order[b.id];
+    });
   
   const votingPosts = allPostsData.filter(post => 
     post.id === 'hybridVoting' || post.id === 'contributionVoting' || post.id === 'directDemocracy'
@@ -155,7 +177,7 @@ export default function Home({ allPostsData }) {
                 }}
               >
                 <Heading size="md" mb={2} fontWeight="bold">
-                  {title}
+                  {customTitles[id] || title}
                 </Heading>
                 
                 {description && (
@@ -353,7 +375,7 @@ export default function Home({ allPostsData }) {
                           }}
                         >
                           <Heading size="md" mb={2} fontWeight="bold">
-                            {post.title}
+                            {customTitles[post.id] || post.title}
                           </Heading>
                           
                           {post.description && (
@@ -410,7 +432,7 @@ export default function Home({ allPostsData }) {
                           }}
                         >
                           <Heading size="md" mb={2} fontWeight="bold">
-                            {post.title}
+                            {customTitles[post.id] || post.title}
                           </Heading>
                           
                           {post.description && (
@@ -469,7 +491,7 @@ export default function Home({ allPostsData }) {
                               }}
                             >
                               <Heading size="md" mb={2} fontWeight="bold">
-                                {post.title}
+                                {customTitles[post.id] || post.title}
                               </Heading>
                               
                               {post.description && (
