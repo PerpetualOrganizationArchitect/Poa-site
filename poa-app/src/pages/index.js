@@ -386,29 +386,32 @@ export default function Home() {
             borderRadius="3xl"
             overflow="hidden"
             position="relative"
+            role="group"
+            bg="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)"
+            boxShadow="0 5px 20px -5px rgba(0, 0, 0, 0.2)"
           >
             <HStack
               display="flex"
               spacing={0}
-              bg="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)"
               borderRadius="3xl"
-              p={[3, 4, 5]}
+              p={[2, 3, 4]}
               justifyContent="space-between"
               width="100%"
-              boxShadow="0 5px 20px -5px rgba(0, 0, 0, 0.2)"
+              height="100%"
+              pointerEvents="none"
             >
               <Box
-                width="45%"
+                width="40%"
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                pl={[2, 2, 3]}
+                pl={[0, 1, 2]}
               >
                 <Image
                   src="/images/high_res_poa.png"
                   alt="Poa Logo"
-                  width={["100px", "110px", "130px", "180px"]}
-                  height={["100px", "110px", "130px", "180px"]}
+                  width={["110px", "120px", "140px", "190px"]}
+                  height={["110px", "120px", "140px", "190px"]}
                   objectFit="contain"
                   transition="transform 0.3s ease"
                   _groupHover={{ transform: "scale(1.05)" }}
@@ -419,12 +422,12 @@ export default function Home() {
                 bg="white" 
                 p={[2, 2, 3]} 
                 boxShadow="md" 
-                width="52%"
-                mr={[2, 2, 3]}
+                width="57%"
+                mr={[1, 1, 2]}
               >
                 <Text
                   fontWeight="500"
-                  fontSize={["11px", "12px", "14px", "16px"]}
+                  fontSize={["12px", "12px", "15px", "17px"]}
                   color="black.900"
                   fontFamily="Inter, sans-serif"
                   lineHeight="1.3"
@@ -434,7 +437,7 @@ export default function Home() {
                 </Text>
                 <Text
                   mt={[1, 2, 3]}
-                  fontSize={["13px", "14px", "16px", "19px"]}
+                  fontSize={["13px", "14px", "17px", "21px"]}
                   color="black.900"
                   fontWeight="800"
                   fontFamily="Roboto, sans-serif"
@@ -444,24 +447,6 @@ export default function Home() {
                 >
                   Build your Organization for Free in Minutes
                 </Text>
-                
-                {/* Mobile CTA button - slightly smaller */}
-                <Button 
-                  display={["block", "block", "none"]}
-                  size="sm" 
-                  mt={2}
-                  width="100%"
-                  colorScheme="blue"
-                  bgGradient="linear(to-r, #ff416c, #ff4b2b)"
-                  color="white"
-                  _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
-                  borderRadius="full"
-                  boxShadow="md"
-                  fontSize={["xs", "xs"]}
-                  height="24px"
-                >
-                  Get Started
-                </Button>
               </Box>
             </HStack>
           </Box>
@@ -576,22 +561,6 @@ export default function Home() {
                 >
                   Discover and join existing Perpetual Organizations
                 </Text>
-                
-                {/* Added visual indicator */}
-                <Box 
-                  mt={3} 
-                  borderRadius="full" 
-                  bg="whiteAlpha.300" 
-                  p={1} 
-                  width="40px" 
-                  height="40px" 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center"
-                  margin="0 auto"
-                >
-                  <Text fontSize="xl">🔍</Text>
-                </Box>
               </Box>
             </VStack>
 
@@ -637,22 +606,6 @@ export default function Home() {
                 >
                   Discover and join existing Perpetual Organizations
                 </Text>
-                
-                {/* Added visual indicator */}
-                <Box 
-                  mt={2} 
-                  borderRadius="full" 
-                  bg="whiteAlpha.300" 
-                  p={1} 
-                  width="30px" 
-                  height="30px" 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center"
-                  margin="0 auto"
-                >
-                  <Text fontSize="md">🔍</Text>
-                </Box>
               </Box>
               <Box borderRadius="2xl" bg="white" p={[3, 4]} boxShadow="md">
                 <Text
