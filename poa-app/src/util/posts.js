@@ -132,14 +132,31 @@ export async function getPostData(id) {
     // Use gray-matter to parse the post metadata section
     const matterResult = matter(fileContents);
 
-    // Use remark to convert markdown into HTML string
-    const processedContent = await remark()
-        .use(html, { sanitize: false })
-        .use(remarkGfm)
-        .use(remarkPrism)
-        .process(matterResult.content);
-    
-    const contentHtml = processedContent.toString();
+    // Extract headings for table of contents
+    const headings = [];
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    let match;
+    while ((match = headingRegex.exec(matterResult.content)) !== null) {
+        const level = match[1].length;
+        const text = match[2].trim();
+        const slug = text.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-');
+        headings.push({ level, text, slug });
+    }
+
+    // Process markdown content to HTML
+    const processedContent = await processMarkdown(matterResult.content);
+
+    // Inject heading IDs for the table of contents
+    let contentHtml = processedContent;
+    headings.forEach(heading => {
+        const headingRegex = new RegExp(`<h${heading.level}>(${heading.text})<\/h${heading.level}>`, 'i');
+        contentHtml = contentHtml.replace(
+            headingRegex, 
+            `<h${heading.level} id="${heading.slug}">${heading.text}</h${heading.level}>`
+        );
+    });
 
     // Ensure date is properly formatted or use file creation time as fallback
     let date = matterResult.data.date;
@@ -178,6 +195,7 @@ export async function getPostData(id) {
     return {
         id,
         contentHtml,
+        headings,
         date,
         title,
         description,
