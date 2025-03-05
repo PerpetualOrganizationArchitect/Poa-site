@@ -276,8 +276,7 @@ const AboutPage = () => {
               
               <Image 
                 src="/images/high_res_poa.png" 
-                alt="Poa character" 
-                fallbackSrc="https://via.placeholder.com/500x400?text=Poa" 
+                alt="Poa character"
               />
             </MotionBox>
           </Flex>

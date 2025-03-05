@@ -23,6 +23,23 @@ const processMarkdown = async (markdown) => {
   return result.toString();
 };
 
+// Create a function to clean heading text for slug creation
+const cleanHeadingText = (text) => {
+  return text
+    .replace(/\*\*/g, '') // Bold
+    .replace(/\*/g, '')   // Italic
+    .replace(/`/g, '')    // Code
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Links
+    .trim();
+};
+
+// Create slug from text
+const createSlug = (text) => {
+  return text.toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-');
+};
+
 export function getAllPostIds() {
     const fileNames = fs.readdirSync(postsDirectory);
     return fileNames.map(fileName => ({
@@ -139,25 +156,60 @@ export async function getPostData(id) {
     while ((match = headingRegex.exec(matterResult.content)) !== null) {
         const level = match[1].length;
         const text = match[2].trim();
-        const slug = text.toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-');
-        headings.push({ level, text, slug });
+        
+        // Create clean version of the heading text
+        const plainText = cleanHeadingText(text);
+        const slug = createSlug(plainText);
+            
+        headings.push({ level, text, plainText, slug });
     }
 
     // Process markdown content to HTML
     const processedContent = await processMarkdown(matterResult.content);
 
-    // Inject heading IDs for the table of contents
+    // We'll add IDs to headings using a safer approach
+    // Create a simple HTML parser
     let contentHtml = processedContent;
-    headings.forEach(heading => {
-        const headingRegex = new RegExp(`<h${heading.level}>(${heading.text})<\/h${heading.level}>`, 'i');
-        contentHtml = contentHtml.replace(
-            headingRegex, 
-            `<h${heading.level} id="${heading.slug}">${heading.text}</h${heading.level}>`
-        );
-    });
-
+    
+    // Add IDs to each heading using a safer string manipulation
+    for (const heading of headings) {
+        // Generate all the heading opening formats we might encounter
+        const possibleOpenings = [
+            `<h${heading.level}>`,
+            `<h${heading.level} >`,
+            `<h${heading.level} class="`,
+        ];
+        
+        // Try each possible opening format
+        for (const opening of possibleOpenings) {
+            const htmlParts = contentHtml.split(opening);
+            
+            if (htmlParts.length > 1) {
+                // Check each part to find the one containing our heading text
+                for (let i = 1; i < htmlParts.length; i++) {
+                    // Get the content up to the closing tag
+                    const closingTagIndex = htmlParts[i].indexOf(`</h${heading.level}>`);
+                    if (closingTagIndex !== -1) {
+                        const headingContent = htmlParts[i].substring(0, closingTagIndex);
+                        // Check if this section contains our plain heading text
+                        if (headingContent.includes(heading.plainText)) {
+                            // Replace with the ID version
+                            htmlParts[i-1] = htmlParts[i-1] + `<h${heading.level} id="${heading.slug}">`;
+                            // Skip the opening tag we just handled
+                            htmlParts[i] = htmlParts[i].substring(opening.length - 1);
+                            // Join it back together
+                            contentHtml = htmlParts.join('');
+                            // Break out of the inner loop - we've found and replaced this heading
+                            break;
+                        }
+                    }
+                }
+                // Break out of the outer loop - we've found and replaced this heading
+                break;
+            }
+        }
+    }
+    
     // Ensure date is properly formatted or use file creation time as fallback
     let date = matterResult.data.date;
     if (!date) {
