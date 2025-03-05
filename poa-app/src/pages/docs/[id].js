@@ -130,14 +130,15 @@ export default function Post({ postData, navigationData }) {
             )}
             
             {/* Main Content */}
-            <Box flex="1" px={{ base: 4, md: 8 }} pt={{ base: 24, md: 6 }} pb={10}>
-              <Container maxW="container.md">
+            <Box flex="1" px={{ base: 2, md: 8 }} pt={{ base: 16, md: 6 }} pb={10}>
+              <Container maxW="container.md" px={{ base: 1, sm: 4 }}>
                 {/* Breadcrumb Navigation */}
                 <Breadcrumb 
                   separator={<Icon as={FaChevronRight} color={breadcrumbColor} fontSize="xs" />}
                   mb={6}
                   color={breadcrumbColor}
                   fontSize="sm"
+                  display={{ base: 'none', sm: 'flex' }}
                 >
                   <BreadcrumbItem>
                     <BreadcrumbLink as={Link} href="/" passHref>
@@ -159,48 +160,62 @@ export default function Post({ postData, navigationData }) {
                   </BreadcrumbItem>
                 </Breadcrumb>
                 
+                {/* Mobile Back Button - REMOVED */}
+                
                 {/* Document Header */}
                 <MotionBox
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  mb={8}
+                  mb={6}
                 >
-                  <Tag 
-                    size="md" 
-                    colorScheme={categoryColor} 
-                    borderRadius="full" 
-                    mb={3}
+                  <Flex 
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    flexWrap="wrap"
+                    gap={3}
                   >
-                    {currentCategory}
-                  </Tag>
+                    <Tag 
+                      size="md" 
+                      colorScheme={categoryColor} 
+                      borderRadius="full"
+                    >
+                      {currentCategory}
+                    </Tag>
+                    
+                    {postData.date && (
+                      <Text 
+                        color={breadcrumbColor} 
+                        fontSize="sm"
+                      >
+                        Last updated: {new Date(postData.date).toLocaleDateString()}
+                      </Text>
+                    )}
+                  </Flex>
+                  
                   <Heading 
                     as="h1" 
-                    size="2xl" 
+                    size={{ base: "xl", md: "2xl" }} 
                     color={headingColor}
                     fontWeight="bold"
                     lineHeight="1.2"
-                    mb={4}
+                    mb={3}
+                    mt={3}
+                    display="none"
                   >
                     {postData.title || postData.id}
                   </Heading>
-                  
-                  {postData.date && (
-                    <Text 
-                      color={breadcrumbColor} 
-                      fontSize="md"
-                    >
-                      Last updated: {new Date(postData.date).toLocaleDateString()}
-                    </Text>
-                  )}
                 </MotionBox>
+                
+                {/* Table of Contents for Desktop - Removed */}
                 
                 {/* Main Content */}
                 <MotionBox
                   variants={contentVariants}
                   initial="hidden"
                   animate="visible"
-                  p={8}
+                  p={{ base: 1, sm: 3, md: 6 }}
                   borderRadius="xl"
                   bg={contentBg}
                   borderWidth="1px"
@@ -209,92 +224,10 @@ export default function Post({ postData, navigationData }) {
                   mb={8}
                 >
                   <MotionText
-                    className="markdown-content"
+                    className="markdown-content article-content"
                     color={textColor}
-                    fontSize="lg"
+                    fontSize={{ base: "md", md: "lg" }}
                     lineHeight="1.8"
-                    sx={{
-                      '& h1': {
-                        fontSize: '2xl',
-                        fontWeight: 'bold',
-                        mt: 8,
-                        mb: 4,
-                        color: headingColor,
-                      },
-                      '& h2': {
-                        fontSize: 'xl',
-                        fontWeight: 'bold',
-                        mt: 6,
-                        mb: 3,
-                        color: headingColor,
-                      },
-                      '& h3': {
-                        fontSize: 'lg',
-                        fontWeight: 'bold',
-                        mt: 5,
-                        mb: 2,
-                        color: headingColor,
-                      },
-                      '& p': {
-                        my: 4,
-                      },
-                      '& ul, & ol': {
-                        ml: 6,
-                        mb: 4,
-                      },
-                      '& li': {
-                        mb: 2,
-                      },
-                      '& code': {
-                        bg: useColorModeValue('gray.100', 'gray.700'),
-                        px: 1,
-                        borderRadius: 'md',
-                        fontSize: 'sm',
-                      },
-                      '& pre': {
-                        bg: useColorModeValue('gray.100', 'gray.700'),
-                        p: 4,
-                        borderRadius: 'md',
-                        overflowX: 'auto',
-                        my: 4,
-                      },
-                      '& blockquote': {
-                        borderLeftWidth: '4px',
-                        borderLeftColor: `${categoryColor}.500`,
-                        pl: 4,
-                        py: 1,
-                        my: 4,
-                        bg: useColorModeValue('gray.50', 'gray.700'),
-                        borderRadius: 'md',
-                      },
-                      '& a': {
-                        color: `${categoryColor}.500`,
-                        textDecoration: 'underline',
-                        _hover: {
-                          textDecoration: 'none',
-                        },
-                      },
-                      '& img': {
-                        maxWidth: '100%',
-                        borderRadius: 'md',
-                        my: 4,
-                      },
-                      '& table': {
-                        width: '100%',
-                        my: 4,
-                        borderWidth: '1px',
-                        borderRadius: 'md',
-                      },
-                      '& th': {
-                        bg: useColorModeValue('gray.100', 'gray.700'),
-                        p: 2,
-                        fontWeight: 'bold',
-                      },
-                      '& td': {
-                        p: 2,
-                        borderTopWidth: '1px',
-                      },
-                    }}
                     dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
                   />
                 </MotionBox>
@@ -304,7 +237,7 @@ export default function Post({ postData, navigationData }) {
                   justifyContent="space-between" 
                   alignItems="center" 
                   mt={8}
-                  flexWrap="wrap"
+                  flexWrap={{ base: "wrap", md: "nowrap" }}
                   gap={4}
                 >
                   {prev ? (
@@ -314,9 +247,12 @@ export default function Post({ postData, navigationData }) {
                         leftIcon={<FaArrowLeft />}
                         variant="outline"
                         colorScheme={categoryColor}
-                        size="md"
+                        size={{ base: "sm", md: "md" }}
+                        w={{ base: "full", md: "auto" }}
                       >
-                        Previous: {prev.title || prev.id}
+                        <Text noOfLines={1}>
+                          Previous: {prev.title || prev.id}
+                        </Text>
                       </Button>
                     </Link>
                   ) : (
@@ -328,8 +264,9 @@ export default function Post({ postData, navigationData }) {
                       as="a"
                       leftIcon={<FaBook />}
                       colorScheme="gray"
-                      size="md"
+                      size={{ base: "sm", md: "md" }}
                       variant="outline"
+                      display={{ base: "none", md: "flex" }}
                     >
                       All Documentation
                     </Button>
@@ -341,9 +278,12 @@ export default function Post({ postData, navigationData }) {
                         as="a"
                         rightIcon={<FaArrowRight />}
                         colorScheme={categoryColor}
-                        size="md"
+                        size={{ base: "sm", md: "md" }}
+                        w={{ base: "full", md: "auto" }}
                       >
-                        Next: {next.title || next.id}
+                        <Text noOfLines={1}>
+                          Next: {next.title || next.id}
+                        </Text>
                       </Button>
                     </Link>
                   ) : (
