@@ -173,41 +173,18 @@ export async function getPostData(id) {
     
     // Add IDs to each heading using a safer string manipulation
     for (const heading of headings) {
-        // Generate all the heading opening formats we might encounter
-        const possibleOpenings = [
-            `<h${heading.level}>`,
-            `<h${heading.level} >`,
-            `<h${heading.level} class="`,
-        ];
+        // Find each heading tag in the HTML
+        const headingRegexPattern = new RegExp(`<h${heading.level}[^>]*>(.*?)</h${heading.level}>`, 'g');
         
-        // Try each possible opening format
-        for (const opening of possibleOpenings) {
-            const htmlParts = contentHtml.split(opening);
-            
-            if (htmlParts.length > 1) {
-                // Check each part to find the one containing our heading text
-                for (let i = 1; i < htmlParts.length; i++) {
-                    // Get the content up to the closing tag
-                    const closingTagIndex = htmlParts[i].indexOf(`</h${heading.level}>`);
-                    if (closingTagIndex !== -1) {
-                        const headingContent = htmlParts[i].substring(0, closingTagIndex);
-                        // Check if this section contains our plain heading text
-                        if (headingContent.includes(heading.plainText)) {
-                            // Replace with the ID version
-                            htmlParts[i-1] = htmlParts[i-1] + `<h${heading.level} id="${heading.slug}">`;
-                            // Skip the opening tag we just handled
-                            htmlParts[i] = htmlParts[i].substring(opening.length - 1);
-                            // Join it back together
-                            contentHtml = htmlParts.join('');
-                            // Break out of the inner loop - we've found and replaced this heading
-                            break;
-                        }
-                    }
-                }
-                // Break out of the outer loop - we've found and replaced this heading
-                break;
+        // Use a replacer function to add the ID attribute while preserving content
+        contentHtml = contentHtml.replace(headingRegexPattern, (match, content) => {
+            // Only replace if this heading contains our target content
+            if (content.includes(heading.plainText)) {
+                return `<h${heading.level} id="${heading.slug}">${content}</h${heading.level}>`;
             }
-        }
+            // Otherwise return the original match
+            return match;
+        });
     }
     
     // Ensure date is properly formatted or use file creation time as fallback
