@@ -89,6 +89,7 @@ const ArchitectPage = () => {
   const [currentStep, setCurrentStep] = useState(steps.ORGANIZATION_DETAILS);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const previousMessagesRef = useRef([]);
 
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
@@ -153,16 +154,26 @@ const ArchitectPage = () => {
     setThread(thread);
 
     const introMessage =
-      '#### Hello! I\'m **Poa**, your Perpetual Organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
+      'Hello! I\'m Poa\n\n' +
+      'I\'m your Perpetual Organization architect. I\'m here to help you build unstoppable, fully community-owned organizations.\n\n' +
       'Feel free to ask me any questions as you go through the setup process on the right side of the screen.';
 
     addMessage(introMessage, "Poa");
+    
+    // Store the intro message in the reference for collapse/expand
+    previousMessagesRef.current = [{
+      speaker: "Poa",
+      text: introMessage,
+      isTyping: false,
+      isPreTyped: false
+    }];
   };
 
   const addMessage = (text, speaker = "Poa", isTyping = false) => {
+    const messageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     setMessages((prevMessages) => [
       ...prevMessages,
-      { speaker, text, isTyping },
+      { speaker, text, isTyping, isPreTyped: false, id: messageId },
     ]);
   };
 
@@ -179,39 +190,70 @@ const ArchitectPage = () => {
 
   const askChatBot = async (input) => {
     setIsWaiting(true);
-    addMessage("", "Poa", true);
-    await openai.beta.threads.messages.create(thread.id, {
-      role: "user",
-      content: input,
-    });
-    const run = await openai.beta.threads.runs.create(thread.id, {
-      assistant_id: assistant.id,
-    });
-    let response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+    // Add a unique ID to the message to help track it
+    const messageId = `message-${Date.now()}`;
+    
+    // Add a typing placeholder message with the unique ID
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { speaker: "Poa", text: "", isTyping: true, isPreTyped: false, id: messageId },
+    ]);
+    
+    try {
+      await openai.beta.threads.messages.create(thread.id, {
+        role: "user",
+        content: input,
+      });
+      
+      const run = await openai.beta.threads.runs.create(thread.id, {
+        assistant_id: assistant.id,
+      });
+      
+      let response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
 
-    while (response.status === "in_progress" || response.status === "queued") {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-    }
+      while (response.status === "in_progress" || response.status === "queued") {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        response = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+      }
 
-    setIsWaiting(false);
-    const messageList = await openai.beta.threads.messages.list(thread.id);
-    const lastMessage = messageList.data.find(
-      (message) => message.run_id === run.id && message.role === "assistant"
-    );
-
-    if (lastMessage) {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1
-            ? {
-                ...msg,
-                text: lastMessage.content[0]["text"].value,
-                isTyping: false,
-              }
-            : msg
-        )
+      setIsWaiting(false);
+      const messageList = await openai.beta.threads.messages.list(thread.id);
+      const lastMessage = messageList.data.find(
+        (message) => message.run_id === run.id && message.role === "assistant"
       );
+
+      if (lastMessage) {
+        // Update the message with the unique ID, preserving its identity
+        setMessages((prevMessages) => {
+          const updatedMessages = prevMessages.map((msg) =>
+            msg.id === messageId
+              ? {
+                  ...msg,
+                  text: lastMessage.content[0]["text"].value,
+                  isTyping: false,
+                  isPreTyped: false,
+                  id: messageId,
+                }
+              : msg
+          );
+          
+          // Update stored messages when we get a response
+          previousMessagesRef.current = JSON.parse(JSON.stringify(updatedMessages));
+          
+          return updatedMessages;
+        });
+      }
+    } catch (error) {
+      console.error("Error in chat:", error);
+      setIsWaiting(false);
+      
+      // Remove the typing indicator if there's an error
+      setMessages((prevMessages) => 
+        prevMessages.filter((msg) => msg.id !== messageId)
+      );
+      
+      // Add error message
+      addMessage("Sorry, I encountered an error. Please try again.", "Poa");
     }
   };
 
@@ -337,7 +379,28 @@ const ArchitectPage = () => {
   const [linksAdded, setLinksAdded] = useState(false);
   const [logoUploaded, setLogoUploaded] = useState(false);
 
-  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+  const toggleCollapse = () => {
+    const newCollapsedState = !isCollapsed;
+    
+    if (newCollapsedState) {
+      // Store current messages before collapsing
+      previousMessagesRef.current = JSON.parse(JSON.stringify(messages));
+    } else {
+      // When expanding, immediately show all previous messages as pre-typed
+      if (previousMessagesRef.current.length > 0) {
+        setMessages(previousMessagesRef.current.map(msg => {
+          // Preserve the message ID, but mark as pre-typed to avoid animation
+          return {
+            ...msg,
+            isPreTyped: true, // Mark as pre-typed so they don't animate again
+            isTyping: false   // Ensure no messages are still in typing state
+          };
+        }));
+      }
+    }
+    
+    setIsCollapsed(newCollapsedState);
+  };
 
   // Responsive values using useBreakpointValue
   const formPadding = useBreakpointValue({ base: 3, lg: 4, xl: 6 });
@@ -566,27 +629,30 @@ const ArchitectPage = () => {
               onClick={toggleCollapse}
               borderRadius="full"
               colorScheme="teal"
+              zIndex="10"
             >
               <ChevronLeftIcon />
             </Button>
             <Box
-              overflowY="auto"
+              position="relative"
+              overflowY="hidden"
+              height="100%"
               width="full"
               pt="4"
               pb="100px"
-              pl="3"
-              pr="3"
+              pl="2"
+              pr="0"
             >
-              <Center mb="4">
+              <Center mb={4}>
                 <Image
                   src="/images/high_res_poa.png"
-                  alt="Poa Logo"
+                  alt="Poa"
                   width={{ base: "80px", md: "100px" }}
                   height={{ base: "80px", md: "100px" }}
                 />
               </Center>
 
-              <ConversationLog messages={messages} />
+              <ConversationLog messages={messages} selectionHeight={80} />
             </Box>
             {isInputVisible && (
               <Box
@@ -596,6 +662,7 @@ const ArchitectPage = () => {
                 p={0}
                 bg="gray.100"
                 borderTop="1px solid #e2e8f0"
+                height="80px"
               >
                 <ArchitectInput
                   value={userInput}

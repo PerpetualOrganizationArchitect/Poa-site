@@ -382,4 +382,108 @@
 .chakra-ui-dark .toc-item:hover {
   color: #63b3ed;
   border-left-color: #63b3ed;
+}
+
+/* Chat bubble specific styling */
+.speech-bubble .markdown-content {
+  word-break: break-word;
+}
+
+.speech-bubble .markdown-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.speech-bubble .markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.speech-bubble .markdown-content h1,
+.speech-bubble .markdown-content h2,
+.speech-bubble .markdown-content h3,
+.speech-bubble .markdown-content h4 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.speech-bubble .markdown-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.speech-bubble .markdown-content ul,
+.speech-bubble .markdown-content ol {
+  margin: 0.5rem 0 0.75rem 0;
+  padding-left: 1.25rem;
+}
+
+.speech-bubble .markdown-content li {
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .speech-bubble .markdown-content p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+  
+  .speech-bubble .markdown-content h4 {
+    font-size: 0.95rem;
+  }
+  
+  .speech-bubble .markdown-content li {
+    font-size: 0.9rem;
+  }
+}
+
+/* Chat specific styles */
+.speech-bubble:last-child {
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+}
+
+/* Ensure bottom content is visible in scrollable containers */
+.scroll-container {
+  scroll-padding-bottom: 100px;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Custom scrollbar positioning */
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+  position: absolute;
+  right: 0;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  width: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+}
+
+/* Firefox scrollbar */
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+
+/* For all elements with scrollbars */
+* {
+  scrollbar-width: thin;
+}
+
+@media (max-width: 768px) {
+  .speech-bubble:last-child {
+    margin-bottom: 40px;
+  }
 } 
