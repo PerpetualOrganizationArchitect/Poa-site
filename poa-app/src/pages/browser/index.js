@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Layout from "../../components/Layout";
 import { useprofileHubContext } from "../../context/profileHubContext";
 import { useIPFScontext } from "@/context/ipfsContext";
@@ -22,10 +22,19 @@ import {
   InputRightElement,
   Divider,
   HStack,
-  Skeleton
+  Skeleton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  IconButton
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { FaSearch, FaUsers, FaArrowRight, FaGlobe } from "react-icons/fa";
+import { FaSearch, FaUsers, FaArrowRight, FaGlobe, FaInfoCircle } from "react-icons/fa";
 
 // Motion components for animations
 const MotionBox = motion(Box);
@@ -39,6 +48,16 @@ const BrowserPage = () => {
   const [images, setImages] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Open description modal
+  const openDescriptionModal = (org, e) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation(); // Prevent event bubbling
+    setSelectedOrg(org);
+    onOpen();
+  };
 
   // Color mode values
   const cardBg = useColorModeValue("white", "gray.800");
@@ -101,8 +120,68 @@ const BrowserPage = () => {
 
   return (
     <Layout>
-      <Box width="100%">
-        {/* Hero Section */}
+      {/* Description Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+        <ModalOverlay 
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px)"
+        />
+        <ModalContent>
+          <ModalHeader>
+            <Flex align="center" gap={3}>
+              <Box 
+                width="90px" 
+                height="90px" 
+                borderRadius="md"
+                overflow="hidden"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                mr={2}
+              >
+                <Image 
+                  src={selectedOrg && (images[selectedOrg.id] || '/images/poa_logo.png')} 
+                  alt={selectedOrg?.id || "Organization logo"}
+                  objectFit="contain"
+                  width="84px"
+                  height="84px"
+                />
+              </Box>
+              <Heading as="h3" size="md" fontWeight="bold">
+                {selectedOrg?.id}
+                <Badge colorScheme="blue" ml={2} verticalAlign="middle">PO</Badge>
+              </Heading>
+            </Flex>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            {selectedOrg?.aboutInfo?.description && (
+              <Text fontSize="md" lineHeight="tall">
+                {selectedOrg.aboutInfo.description}
+              </Text>
+            )}
+            {selectedOrg?.totalMembers && (
+              <Flex align="center" mt={4} bg={useColorModeValue("blue.50", "blue.900")} p={3} borderRadius="md">
+                <Icon as={FaUsers} color={accentColor} mr={2} boxSize="18px" />
+                <Text fontWeight="medium">{selectedOrg.totalMembers} Members</Text>
+              </Flex>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Link href={`/home?userDAO=${selectedOrg?.id}`} passHref>
+              <Button colorScheme="blue" rightIcon={<FaArrowRight />}>
+                Visit Organization
+              </Button>
+            </Link>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Box width="100%" position="relative">
+        {/* Hero Section with Fading Edges */}
         <Box
           bgGradient={heroGradient}
           mt="3"
@@ -270,9 +349,6 @@ const BrowserPage = () => {
                   <GridItem key={po.id}>
                     <MotionBox
                       variants={itemVariants}
-                      as={Link}
-                      href={`/home?userDAO=${po.id}`}
-                      display="block"
                       height="100%"
                     >
                       <Box
@@ -290,46 +366,79 @@ const BrowserPage = () => {
                           borderColor: accentColor,
                         }}
                       >
-                        <Box
-                          bg={useColorModeValue("gray.100", "gray.900")}
-                          p={5}
-                          display="flex"
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <Image
-                            src={images[po.id] || '/images/poa_logo.png'}
-                            alt={po.id}
-                            borderRadius="lg"
-                            boxSize="120px"
-                            objectFit="contain"
-                          />
-                        </Box>
+                        <Link href={`/home?userDAO=${po.id}`} passHref>
+                          <Box
+                            as="a"
+                            bg={useColorModeValue("gray.100", "gray.900")}
+                            p={6}
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Image
+                              src={images[po.id] || '/images/poa_logo.png'}
+                              alt={po.id}
+                              borderRadius="lg"
+                              boxSize="120px"
+                              objectFit="contain"
+                            />
+                          </Box>
+                        </Link>
                         
                         <Box p={5}>
-                          <Flex justify="space-between" align="center" mb={2}>
-                            <Heading
-                              as="h3"
-                              fontSize="xl"
-                              fontWeight="bold"
-                              noOfLines={1}
-                            >
-                              {po.id}
-                            </Heading>
+                          <Flex justify="space-between" align="center" mb={3}>
+                            <Link href={`/home?userDAO=${po.id}`} passHref>
+                              <Heading
+                                as="a"
+                                fontSize="xl"
+                                fontWeight="bold"
+                                noOfLines={1}
+                              >
+                                {po.id}
+                              </Heading>
+                            </Link>
                             <Badge colorScheme="blue" borderRadius="full" px={2}>
                               PO
                             </Badge>
                           </Flex>
                           
                           {po.aboutInfo?.description && (
-                            <Text
-                              fontSize="md"
-                              color={useColorModeValue("gray.600", "gray.300")}
-                              mb={3}
-                              noOfLines={2}
+                            <Box 
+                              mb={3} 
+                              position="relative" 
+                              minH="80px" 
+                              display="flex" 
+                              flexDirection="column" 
+                              justifyContent="center"
                             >
-                              {po.aboutInfo.description}
-                            </Text>
+                              <Text
+                                fontSize={po.aboutInfo.description.length < 50 ? "lg" : "md"}
+                                lineHeight={po.aboutInfo.description.length < 50 ? "1.5" : "normal"}
+                                fontWeight={po.aboutInfo.description.length < 50 ? "medium" : "normal"}
+                                color={useColorModeValue("gray.600", "gray.300")}
+                                noOfLines={3}
+                                position="relative"
+                                pr="5px"
+                              >
+                                {po.aboutInfo.description}
+                              </Text>
+                              <Button
+                                aria-label="Read full description"
+                                position="absolute"
+                                right="0"
+                                bottom="0"
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="blue"
+                                width="24px"
+                                height="24px"
+                                minWidth="0"
+                                p="0"
+                                onClick={(e) => openDescriptionModal(po, e)}
+                              >
+                                <Icon as={FaInfoCircle} fontSize="16px" />
+                              </Button>
+                            </Box>
                           )}
                           
                           <Divider my={3} />
@@ -341,7 +450,17 @@ const BrowserPage = () => {
                                 {po.totalMembers || "0"} Members
                               </Text>
                             </HStack>
-                            <Icon as={FaArrowRight} color={accentColor} />
+                            <Link href={`/home?userDAO=${po.id}`} passHref>
+                              <Button 
+                                as="a" 
+                                size="sm" 
+                                colorScheme="blue" 
+                                variant="ghost"
+                                rightIcon={<FaArrowRight />}
+                              >
+                                Visit
+                              </Button>
+                            </Link>
                           </Flex>
                         </Box>
                       </Box>
