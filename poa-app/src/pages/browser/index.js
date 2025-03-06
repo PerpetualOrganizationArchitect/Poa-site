@@ -121,30 +121,37 @@ const BrowserPage = () => {
   return (
     <Layout>
       {/* Description Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+      <Modal isOpen={isOpen} onClose={onClose} size={{ base: "full", md: "lg" }} isCentered>
         <ModalOverlay 
           bg="blackAlpha.300"
           backdropFilter="blur(10px)"
         />
-        <ModalContent>
+        <ModalContent margin={{ base: 0, md: "auto" }} borderRadius={{ base: 0, md: "md" }}>
           <ModalHeader>
-            <Flex align="center" gap={3}>
+            <Flex 
+              align="center" 
+              gap={3} 
+              direction={{ base: "column", sm: "row" }}
+              textAlign={{ base: "center", sm: "left" }}
+            >
               <Box 
-                width="90px" 
-                height="90px" 
+                width={{ base: "80px", sm: "90px" }} 
+                height={{ base: "80px", sm: "90px" }} 
                 borderRadius="md"
                 overflow="hidden"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                mr={2}
+                mr={{ base: 0, sm: 2 }}
+                mb={{ base: 2, sm: 0 }}
+                alignSelf={{ base: "center", sm: "flex-start" }}
               >
                 <Image 
                   src={selectedOrg && (images[selectedOrg.id] || '/images/poa_logo.png')} 
                   alt={selectedOrg?.id || "Organization logo"}
                   objectFit="contain"
-                  width="84px"
-                  height="84px"
+                  width={{ base: "74px", sm: "84px" }}
+                  height={{ base: "74px", sm: "84px" }}
                 />
               </Box>
               <Heading as="h3" size="md" fontWeight="bold">
@@ -167,12 +174,12 @@ const BrowserPage = () => {
               </Flex>
             )}
           </ModalBody>
-          <ModalFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+          <ModalFooter flexDirection={{ base: "column", sm: "row" }} gap={{ base: 2, sm: 0 }}>
+            <Button variant="outline" mr={{ base: 0, sm: 3 }} mb={{ base: 2, sm: 0 }} w={{ base: "100%", sm: "auto" }} onClick={onClose}>
               Close
             </Button>
-            <Link href={`/home?userDAO=${selectedOrg?.id}`} passHref>
-              <Button colorScheme="blue" rightIcon={<FaArrowRight />}>
+            <Link href={`/home?userDAO=${selectedOrg?.id}`} passHref style={{ width: "100%" }}>
+              <Button colorScheme="blue" rightIcon={<FaArrowRight />} w={{ base: "100%", sm: "auto" }}>
                 Visit Organization
               </Button>
             </Link>
@@ -185,11 +192,11 @@ const BrowserPage = () => {
         <Box
           bgGradient={heroGradient}
           mt="3"
-          py={{ base: "40px", md: "70px" }}
+          py={{ base: "30px", md: "70px" }}
           px={{ base: 4, md: 8 }}
           borderBottomWidth="1px"
           borderColor={borderColor}
-          mb={{ base: 6, md: 10 }}
+          mb={{ base: 4, md: 10 }}
         >
           <Container maxW="container.xl">
             <MotionFlex
@@ -202,28 +209,32 @@ const BrowserPage = () => {
             >
               <MotionHeading
                 as="h1"
-                size={{ base: "xl", md: "2xl" }}
+                size={{ base: "lg", md: "2xl" }}
                 fontWeight="extrabold"
-                mb={4}
+                mb={{ base: 2, md: 4 }}
+                px={{ base: 2, md: 0 }}
               >
                 Browse and Join a <Box as="span" color={accentColor}>Perpetual Organization</Box>
               </MotionHeading>
               <MotionText
-                fontSize={{ base: "lg", md: "xl" }}
+                fontSize={{ base: "sm", md: "xl" }}
                 maxW="700px"
-                mb={8}
+                mb={{ base: 4, md: 8 }}
                 opacity={0.8}
+                px={{ base: 2, md: 0 }}
+                lineHeight={{ base: "1.4", md: "tall" }}
               >
                 Discover communities that share your interests and passions. Connect, contribute, and grow with like-minded individuals.
               </MotionText>
               
               {/* Search Bar */}
               <InputGroup
-                size="lg"
+                size={{ base: "md", md: "lg" }}
                 maxW="600px"
-                mb={8}
+                mb={{ base: 6, md: 8 }}
                 boxShadow="md"
                 borderRadius="full"
+                width={{ base: "95%", md: "auto" }}
               >
                 <Input
                   placeholder="Search organizations..."
@@ -234,14 +245,14 @@ const BrowserPage = () => {
                   borderWidth="2px"
                   borderColor={borderColor}
                   _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
-                  fontSize="md"
-                  h="56px"
-                  pl={6}
+                  fontSize={{ base: "sm", md: "md" }}
+                  h={{ base: "48px", md: "56px" }}
+                  pl={{ base: 4, md: 6 }}
                 />
-                <InputRightElement h="56px" w="56px" pr={1}>
+                <InputRightElement h={{ base: "48px", md: "56px" }} w={{ base: "48px", md: "56px" }} pr={1}>
                   <Button
-                    h="40px"
-                    w="40px"
+                    h={{ base: "34px", md: "40px" }}
+                    w={{ base: "34px", md: "40px" }}
                     borderRadius="full"
                     bg={accentColor}
                     color="white"
@@ -254,24 +265,30 @@ const BrowserPage = () => {
               
               {/* Stats/Info */}
               <HStack 
-                spacing={8} 
+                spacing={{ base: 2, md: 8 }} 
                 mt={2} 
-                divider={<Box h="40px" w="1px" bg={borderColor} />}
+                divider={<Box h="40px" w="1px" bg={borderColor} display={{ base: "none", sm: "block" }} />}
                 mb="-6"
+                overflow="auto"
+                width="100%"
+                justifyContent="center"
+                px={{ base: 2, md: 0 }}
+                pb={{ base: 2, md: 0 }}
+                flexWrap={{ base: "wrap", sm: "nowrap" }}
               >
-                <Box textAlign="center">
-                  <Text fontWeight="bold" fontSize="xl">{perpetualOrganizations.length}</Text>
-                  <Text opacity={0.7} fontSize="sm">Organizations</Text>
+                <Box textAlign="center" minWidth={{ base: "80px", md: "auto" }} mb={{ base: 1, sm: 0 }}>
+                  <Text fontWeight="bold" fontSize={{ base: "lg", md: "xl" }}>{perpetualOrganizations.length}</Text>
+                  <Text opacity={0.7} fontSize={{ base: "xs", sm: "sm" }}>Organizations</Text>
                 </Box>
-                <Box textAlign="center">
-                  <Text fontWeight="bold" fontSize="xl">
+                <Box textAlign="center" minWidth={{ base: "80px", md: "auto" }} mb={{ base: 1, sm: 0 }}>
+                  <Text fontWeight="bold" fontSize={{ base: "lg", md: "xl" }}>
                     {perpetualOrganizations.reduce((acc, po) => acc + (parseInt(po.totalMembers) || 0), 0)}
                   </Text>
-                  <Text opacity={0.7} fontSize="sm">Members</Text>
+                  <Text opacity={0.7} fontSize={{ base: "xs", sm: "sm" }}>Members</Text>
                 </Box>
-                <Box textAlign="center">
-                  <Text fontWeight="bold" fontSize="xl">100%</Text>
-                  <Text opacity={0.7} fontSize="sm">Community-owned</Text>
+                <Box textAlign="center" minWidth={{ base: "80px", md: "auto" }} mb={{ base: 1, sm: 0 }}>
+                  <Text fontWeight="bold" fontSize={{ base: "lg", md: "xl" }}>100%</Text>
+                  <Text opacity={0.7} fontSize={{ base: "xs", sm: "sm" }}>Community-owned</Text>
                 </Box>
               </HStack>
             </MotionFlex>
@@ -279,7 +296,7 @@ const BrowserPage = () => {
         </Box>
 
         {/* Organizations Grid */}
-        <Container maxW="container.xl" px={{ base: 4, md: 6 }} mb={16}>
+        <Container maxW="container.xl" px={{ base: 3, md: 6 }} mb={16}>
           <MotionBox
             variants={containerVariants}
             initial="hidden"
@@ -293,7 +310,7 @@ const BrowserPage = () => {
                   md: "repeat(3, 1fr)",
                   lg: "repeat(4, 1fr)"
                 }}
-                gap={6}
+                gap={{ base: 4, md: 6 }}
               >
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <GridItem key={i}>
@@ -317,10 +334,10 @@ const BrowserPage = () => {
                 ))}
               </Grid>
             ) : filteredOrganizations.length === 0 ? (
-              <Flex direction="column" align="center" justify="center" py={16}>
-                <Icon as={FaGlobe} boxSize={12} color={accentColor} mb={4} />
-                <Heading size="lg" mb={2}>No organizations found</Heading>
-                <Text textAlign="center" maxW="500px" mb={6}>
+              <Flex direction="column" align="center" justify="center" py={{ base: 10, md: 16 }}>
+                <Icon as={FaGlobe} boxSize={{ base: 8, md: 12 }} color={accentColor} mb={4} />
+                <Heading size={{ base: "md", md: "lg" }} mb={2} textAlign="center">No organizations found</Heading>
+                <Text textAlign="center" maxW="500px" mb={6} px={{ base: 4, md: 0 }}>
                   {searchTerm ? 
                     `No organizations matching "${searchTerm}" were found. Try a different search.` : 
                     "There are no organizations available at the moment. Check back later."}
@@ -330,6 +347,7 @@ const BrowserPage = () => {
                     variant="outline" 
                     colorScheme="blue" 
                     onClick={() => setSearchTerm("")}
+                    size={{ base: "sm", md: "md" }}
                   >
                     Clear Search
                   </Button>
@@ -343,7 +361,7 @@ const BrowserPage = () => {
                   md: "repeat(3, 1fr)",
                   lg: "repeat(4, 1fr)"
                 }}
-                gap={6}
+                gap={{ base: 4, md: 6 }}
               >
                 {filteredOrganizations.map((po) => (
                   <GridItem key={po.id}>
@@ -361,8 +379,8 @@ const BrowserPage = () => {
                         transition="all 0.3s"
                         height="100%"
                         _hover={{
-                          transform: "translateY(-8px)",
-                          boxShadow: "xl",
+                          transform: { base: "none", md: "translateY(-8px)" },
+                          boxShadow: { base: "md", md: "xl" },
                           borderColor: accentColor,
                         }}
                       >
@@ -370,7 +388,7 @@ const BrowserPage = () => {
                           <Box
                             as="a"
                             bg={useColorModeValue("gray.100", "gray.900")}
-                            p={6}
+                            p={{ base: 4, md: 6 }}
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
@@ -379,18 +397,18 @@ const BrowserPage = () => {
                               src={images[po.id] || '/images/poa_logo.png'}
                               alt={po.id}
                               borderRadius="lg"
-                              boxSize="120px"
+                              boxSize={{ base: "100px", md: "120px" }}
                               objectFit="contain"
                             />
                           </Box>
                         </Link>
                         
-                        <Box p={5}>
+                        <Box p={{ base: 4, md: 5 }}>
                           <Flex justify="space-between" align="center" mb={3}>
                             <Link href={`/home?userDAO=${po.id}`} passHref>
                               <Heading
                                 as="a"
-                                fontSize="xl"
+                                fontSize={{ base: "lg", md: "xl" }}
                                 fontWeight="bold"
                                 noOfLines={1}
                               >
@@ -406,17 +424,17 @@ const BrowserPage = () => {
                             <Box 
                               mb={3} 
                               position="relative" 
-                              minH="80px" 
+                              minH={{ base: "60px", md: "80px" }} 
                               display="flex" 
                               flexDirection="column" 
                               justifyContent="center"
                             >
                               <Text
-                                fontSize={po.aboutInfo.description.length < 50 ? "lg" : "md"}
+                                fontSize={{ base: "sm", md: po.aboutInfo.description.length < 50 ? "lg" : "md" }}
                                 lineHeight={po.aboutInfo.description.length < 50 ? "1.5" : "normal"}
                                 fontWeight={po.aboutInfo.description.length < 50 ? "medium" : "normal"}
                                 color={useColorModeValue("gray.600", "gray.300")}
-                                noOfLines={3}
+                                noOfLines={{ base: 2, md: 3 }}
                                 position="relative"
                                 pr="5px"
                               >
@@ -443,7 +461,12 @@ const BrowserPage = () => {
                           
                           <Divider my={3} />
                           
-                          <Flex justify="space-between" align="center">
+                          <Flex 
+                            justify="space-between" 
+                            align="center"
+                            flexDirection={{ base: "column", sm: "row" }}
+                            gap={{ base: 2, sm: 0 }}
+                          >
                             <HStack>
                               <Icon as={FaUsers} color={accentColor} />
                               <Text fontSize="sm" fontWeight="medium">
@@ -455,8 +478,9 @@ const BrowserPage = () => {
                                 as="a" 
                                 size="sm" 
                                 colorScheme="blue" 
-                                variant="ghost"
+                                variant={{ base: "solid", sm: "ghost" }}
                                 rightIcon={<FaArrowRight />}
+                                width={{ base: "100%", sm: "auto" }}
                               >
                                 Visit
                               </Button>
