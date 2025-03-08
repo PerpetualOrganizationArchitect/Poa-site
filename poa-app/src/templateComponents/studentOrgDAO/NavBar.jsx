@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Flex, Image, Link, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, VStack, Text, Button, useBreakpointValue } from "@chakra-ui/react";
 import { HamburgerIcon } from '@chakra-ui/icons';
+import { FaHome } from 'react-icons/fa';
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import LoginButton from "@/components/LoginButton";
@@ -31,27 +32,80 @@ const Navbar = () => {
       bg="black" 
       p={2.5} 
       alignItems={"center"}
-      position="relative"
+      position={{ base: "fixed", md: "relative" }}
+      top="0"
+      left="0"
       zIndex={100}
       width="100%"
+      boxShadow={{ base: "0px 1px 5px rgba(0,0,0,0.3)", md: "none" }}
+      backdropFilter={{ base: "blur(10px)", md: "none" }}
+      borderBottom={{ base: "1px solid rgba(255,255,255,0.1)", md: "none" }}
     >
       <Flex
         alignItems="center"
-        h="60px"
+        h={{ base: "40px", md: "60px" }}
         maxW="100%"
         justifyContent="space-between"
       >
+        {/* Left side - Logo (desktop) or Home icon (mobile) */}
         <Box h="100%" w={{ base: "40%", md: "12%" }} mr={{ base: "2", md: "4" }}>
           <Link as={NextLink} href={`/home/?userDAO=${userDAO}`} passHref>
+            {/* Desktop Logo */}
             <Image
               src="/images/high_res_poa.png"
-              alt="Your Logo"
-              height="113%"
+              alt="PoA Logo"
+              height="111%"
+              width="auto"
+              objectFit="contain"
+              display={{ base: 'none', md: 'block' }}
+            />
+            {/* Mobile Home Icon */}
+            <IconButton
+              icon={<FaHome size="34px" />}
+              aria-label="Home"
+              variant="ghost"
+              color="white"
+              display={{ base: 'flex', md: 'none' }}
+              _hover={{ bg: "whiteAlpha.200" }}
+              size="sm"
+              p={0}
+              mt={1}
+            />
+          </Link>
+        </Box>
+        
+        {/* Center Logo for Mobile only */}
+        <Flex 
+          justify="center" 
+          align="center" 
+          position="absolute" 
+          left="0" 
+          right="0" 
+          mx="auto"
+          display={{ base: 'flex', md: 'none' }}
+          pointerEvents="auto"
+          h="100%"
+          zIndex={1}
+          width="40%"
+        >
+          <Link 
+            href="https://poa.community" 
+            isExternal 
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            h="100%"
+            w="100%"
+          >
+            <Image
+              src="/images/high_res_poa.png"
+              alt="PoA Logo"
+              maxH="87%"
               width="auto"
               objectFit="contain"
             />
           </Link>
-        </Box>
+        </Flex>
         
         {/* Desktop Navigation */}
         <Flex

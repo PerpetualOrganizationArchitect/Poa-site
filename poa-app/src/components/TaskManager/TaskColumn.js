@@ -26,7 +26,7 @@ const glassLayerStyle = {
 
 
 
-const TaskColumn = ({ title, tasks, columnId, projectName, isMobile = false, isEmpty = false }) => {
+const TaskColumn = ({ title, tasks, columnId, projectName, isMobile = false, isEmpty = false, hideTitleInMobile = false }) => {
   const router = useRouter();
   const {userDAO} = router.query;
   const { moveTask, addTask, editTask } = useTaskBoard();
@@ -201,102 +201,105 @@ const TaskColumn = ({ title, tasks, columnId, projectName, isMobile = false, isE
 
     return (
       <Box
-      ref={drop}
-      w="100%"
-      h="100%"
-      bg="transparent" 
-      borderRadius="xl"
-      boxShadow={isMobile ? "none" : "lg"}
-      style={{ ...columnStyle, position: 'relative' }}
-      zIndex={1}
-    >
-      <div className="glass" style={glassLayerStyle} />
-      
-      {(!isMobile || (isMobile && !isEmpty)) && (
-        <Heading size="md" mb={3} mt={0} ml={3} alignItems="center" color='white'>
-          {title}
-          {title === 'Open' && (
-            <IconButton
-              ml={8}
-              icon={<AddIcon color="white" />}
-              aria-label="Add task"
-              onClick={handleOpenAddTaskModal}
-              h="1.60rem"
-              w="1.60rem"
-              minW={0}
-              bg=""
-              border= ".5px solid white"
-              boxshadow="md"
-            />
-          )}
-        </Heading>
-      )}
-      
-      {isMobile && title === 'Open' && (
-        <IconButton
-          id="mobileAddTaskBtn"
-          aria-label="Add task mobile"
-          icon={<AddIcon />}
-          onClick={handleOpenAddTaskModal}
-          position="absolute"
-          opacity="0"
-          pointerEvents={isEmpty ? "none" : "auto"}
-        />
-      )}
-      
-      {(!isMobile || (isMobile && !isEmpty)) && (
-        <Box
-          h={isMobile ? "calc(100% - 3rem)" : "calc(100% - 3rem)"}
-          borderRadius="md"
-          bg="transparent"
-          p={isMobile ? 1 : 2}
-          style={columnStyle}
-          overflowY="auto"
-          css={{
-            '&::-webkit-scrollbar': {
-              width: '4px',
-            },
-            '&::-webkit-scrollbar-track': {
-              width: '6px',
-              background: 'rgba(0,0,0,0.1)',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: 'rgba(255,255,255,0.2)',
-              borderRadius: '24px',
-            },
-          }}
-        >
-          {tasks.map((task, index) => (
-            <TaskCard
-              key={task.id}
-              id={task.id}
-              name={task.name}
-              description={task.description}
-              difficulty={task.difficulty}
-              estHours={task.estHours}
-              submission={task.submission}
-              claimedBy={task.claimedBy}
-              Payout={task.Payout}
-              claimerUsername={task.claimerUsername}
-              columnId={columnId}
-              projectId={task.projectId}
-              onEditTask={(updatedTask) => handleEditTask(updatedTask, index)}
-              isMobile={isMobile}
-            />
-          ))}
-        </Box>
-      )}
+        ref={drop}
+        w="100%"
+        h="100%"
+        minH={isMobile ? "500px" : "auto"}
+        bg="transparent" 
+        borderRadius="xl"
+        boxShadow={isMobile ? "none" : "lg"}
+        style={{ ...columnStyle, position: 'relative' }}
+        zIndex={1}
+        display="flex"
+        flexDirection="column"
+      >
+        <div className="glass" style={glassLayerStyle} />
+        
+        {(!isMobile || (isMobile && !hideTitleInMobile && !isEmpty)) && (
+          <Heading size="md" mb={3} mt={0} ml={3} alignItems="center" color='white'>
+            {title}
+            {title === 'Open' && (
+              <IconButton
+                ml={8}
+                icon={<AddIcon color="white" />}
+                aria-label="Add task"
+                onClick={handleOpenAddTaskModal}
+                h="1.60rem"
+                w="1.60rem"
+                minW={0}
+                bg=""
+                border= ".5px solid white"
+                boxshadow="md"
+              />
+            )}
+          </Heading>
+        )}
+        
+        {isMobile && title === 'Open' && (
+          <IconButton
+            id="mobileAddTaskBtn"
+            aria-label="Add task mobile"
+            icon={<AddIcon />}
+            onClick={handleOpenAddTaskModal}
+            position="absolute"
+            opacity="0"
+            pointerEvents={isEmpty ? "none" : "auto"}
+          />
+        )}
+        
+        {(!isMobile || (isMobile && !isEmpty)) && (
+          <Box
+            h={isMobile ? "calc(100% - 3rem)" : "calc(100% - 3rem)"}
+            borderRadius="md"
+            bg="transparent"
+            p={isMobile ? 1 : 2}
+            style={columnStyle}
+            overflowY="auto"
+            css={{
+              '&::-webkit-scrollbar': {
+                width: '4px',
+              },
+              '&::-webkit-scrollbar-track': {
+                width: '6px',
+                background: 'rgba(0,0,0,0.1)',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'rgba(255,255,255,0.2)',
+                borderRadius: '24px',
+              },
+            }}
+          >
+            {tasks.map((task, index) => (
+              <TaskCard
+                key={task.id}
+                id={task.id}
+                name={task.name}
+                description={task.description}
+                difficulty={task.difficulty}
+                estHours={task.estHours}
+                submission={task.submission}
+                claimedBy={task.claimedBy}
+                Payout={task.Payout}
+                claimerUsername={task.claimerUsername}
+                columnId={columnId}
+                projectId={task.projectId}
+                onEditTask={(updatedTask) => handleEditTask(updatedTask, index)}
+                isMobile={isMobile}
+              />
+            ))}
+          </Box>
+        )}
 
-      {title === 'Open' && (
-        <AddTaskModal
-          isOpen={isAddTaskModalOpen}
-          onClose={handleCloseAddTaskModal}
-          onAddTask={handleAddTask}
-        />
-      )}
-    </Box>
-  );
-};
+        {title === 'Open' && (
+          <AddTaskModal
+            isOpen={isAddTaskModalOpen}
+            onClose={handleCloseAddTaskModal}
+            onAddTask={handleAddTask}
+          />
+        )}
+      </Box>
+    );
+  };
   
 export default TaskColumn;
   
