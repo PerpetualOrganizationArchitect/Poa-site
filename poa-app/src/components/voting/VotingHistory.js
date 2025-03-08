@@ -1,5 +1,5 @@
 import React from "react";
-import { Heading, Box, Flex, SimpleGrid } from "@chakra-ui/react";
+import { Heading, Box, Flex, SimpleGrid, useBreakpointValue } from "@chakra-ui/react";
 import HistoryCard from "./HistoryCard";
 import PaginationControls from "./PaginationControls";
 import EmptyState from "./EmptyState";
@@ -10,7 +10,10 @@ const VotingHistory = ({
   onPreviousClick,
   onNextClick
 }) => {
-  // Calculate appropriate column sizing based on number of proposals and make sure they fit on smaller screens
+  // Use responsive sizing based on breakpoints
+  const headingSize = useBreakpointValue({ base: "xl", md: "2xl" });
+  
+  // Calculate appropriate column sizing based on number of proposals
   const getColumnCount = (count) => {
     if (count === 1) return { base: 1 };
     if (count === 2) return { base: 1, md: 2 };
@@ -18,8 +21,13 @@ const VotingHistory = ({
   };
 
   return (
-    <Box w="100%" mt={6}>
-      <Heading pl={2} color="rgba(333, 333, 333, 1)" fontSize="2xl" mb={4}>
+    <Box w="100%" mt={{ base: 4, md: 6 }}>
+      <Heading 
+        pl={2} 
+        color="rgba(333, 333, 333, 1)" 
+        fontSize={headingSize} 
+        mb={{ base: 3, md: 4 }}
+      >
         Voting History
       </Heading>
       

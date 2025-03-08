@@ -4,7 +4,8 @@ import {
   TabList, 
   Tab, 
   TabPanels,
-  Box
+  Box,
+  useBreakpointValue
 } from "@chakra-ui/react";
 
 const glassLayerStyle = {
@@ -25,20 +26,25 @@ const VotingTabs = ({
   PTVoteType, 
   children 
 }) => {
+  // Use responsive sizing based on breakpoints
+  const tabFontSize = useBreakpointValue({ base: "lg", sm: "xl", md: "2xl" });
+  const tabPadding = useBreakpointValue({ base: 2, sm: 3, md: 4 });
+  const listPadding = useBreakpointValue({ base: 3, sm: 4, md: 6 });
+  
   return (
     <Tabs
       index={selectedTab}
       isFitted
       variant="soft-rounded"
       onChange={handleTabsChange}
-      mb={6}
+      mb={{ base: 4, md: 6 }}
     >
       <TabList
         alignItems="center"
         justifyContent="center"
         borderRadius="3xl"
         boxShadow="lg"
-        p={6}
+        p={listPadding}
         w="100%"
         mx="auto"
         maxW="1440px"
@@ -47,7 +53,7 @@ const VotingTabs = ({
         display="flex"
         zIndex={0}
         color="rgba(333, 333, 333, 1)"
-        spacing={6}
+        spacing={4}
       >
         <Box 
           className="glass" 
@@ -61,7 +67,7 @@ const VotingTabs = ({
           zIndex={-1}
         />
         <Tab
-          fontSize="2xl"
+          fontSize={tabFontSize}
           fontWeight="extrabold"
           color="rgba(333, 333, 333, 1)"
           _selected={{ 
@@ -74,13 +80,19 @@ const VotingTabs = ({
             backgroundColor: "rgba(148, 115, 220, 0.3)"
           }}
           borderRadius="xl"
-          py={4}
+          py={tabPadding}
+          px={{ base: 2, md: 4 }}
           transition="all 0.3s ease"
+          flex="1"
+          minW={0}
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
+          overflow="hidden"
         >
           Direct Democracy
         </Tab>
         <Tab
-          fontSize="2xl"
+          fontSize={tabFontSize}
           fontWeight="extrabold"
           color="rgba(333, 333, 333, 1)"
           _selected={{ 
@@ -93,8 +105,14 @@ const VotingTabs = ({
             backgroundColor: "rgba(148, 115, 220, 0.3)"
           }}
           borderRadius="xl"
-          py={4}
+          py={tabPadding}
+          px={{ base: 2, md: 4 }}
           transition="all 0.3s ease"
+          flex="1"
+          minW={0}
+          textOverflow="ellipsis"
+          whiteSpace="nowrap"
+          overflow="hidden"
         >
           {PTVoteType}
         </Tab>

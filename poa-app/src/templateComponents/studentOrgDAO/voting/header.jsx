@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Heading, Spacer, Text, Box, Icon } from "@chakra-ui/react";
+import { Flex, Heading, Spacer, Text, Box, Icon, useBreakpointValue } from "@chakra-ui/react";
 import { CheckCircleIcon, LockIcon } from "@chakra-ui/icons";
 
 const glassLayerStyle = {
@@ -15,6 +15,12 @@ const glassLayerStyle = {
 };
 
 const HeadingVote = ({ selectedTab, PTVoteType }) => {
+  // Use responsive sizing based on breakpoints
+  const headingSize = useBreakpointValue({ base: "xl", md: "2xl" });
+  const iconSize = useBreakpointValue({ base: 5, md: 6 });
+  const textSize = useBreakpointValue({ base: "md", md: "lg" });
+  const paddingY = useBreakpointValue({ base: 1, md: 2 });
+
   const getIcon = () => {
     if (selectedTab === 0) {
       return CheckCircleIcon;
@@ -38,13 +44,13 @@ const HeadingVote = ({ selectedTab, PTVoteType }) => {
   return (
     <Flex
       align="center"
-      mb={6}
+      mb={{ base: 4, md: 6 }}
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
       borderRadius="3xl"
       boxShadow="lg"
-      p="2%"
+      p={{ base: "3%", md: "2%" }}
       w="100%"
       maxW="1440px"
       mx="auto"
@@ -70,10 +76,16 @@ const HeadingVote = ({ selectedTab, PTVoteType }) => {
         zIndex={-1}
       />
 
-      <Flex direction="column" align="center" py={2}>
+      <Flex direction="column" align="center" py={paddingY}>
         <Flex align="center" mb={1}>
-          <Icon as={getIcon()} color="purple.400" mr={3} boxSize={6} />
-          <Heading color="ghostwhite" size="2xl" bgGradient="linear(to-r, purple.400, blue.300)" bgClip="text">
+          <Icon as={getIcon()} color="purple.400" mr={2} boxSize={iconSize} />
+          <Heading 
+            color="ghostwhite" 
+            size={headingSize} 
+            bgGradient="linear(to-r, purple.400, blue.300)" 
+            bgClip="text"
+            textAlign="center"
+          >
             {selectedTab === 0 
               ? "Democracy Voting" 
               : PTVoteType === "Hybrid" 
@@ -82,7 +94,13 @@ const HeadingVote = ({ selectedTab, PTVoteType }) => {
           </Heading>
         </Flex>
 
-        <Text mt={2} color="ghostwhite" fontSize="lg" fontWeight="medium" textAlign="center">
+        <Text 
+          mt={{ base: 1, md: 2 }} 
+          color="ghostwhite" 
+          fontSize={textSize} 
+          fontWeight="medium" 
+          textAlign="center"
+        >
           {getTagline()}
         </Text>
       </Flex>

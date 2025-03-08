@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Button, HStack, VStack, Badge, Flex } from "@chakra-ui/react";
+import { Box, Text, Button, HStack, VStack, Badge, Flex, useBreakpointValue } from "@chakra-ui/react";
 import CountDown from "@/templateComponents/studentOrgDAO/voting/countDown";
 
 const glassLayerStyle = {
@@ -22,6 +22,11 @@ const VoteCard = ({
   onPollClick, 
   contractAddress 
 }) => {
+  // Use responsive sizing based on breakpoints
+  const titleFontSize = useBreakpointValue({ base: "sm", sm: "md" });
+  const cardHeight = useBreakpointValue({ base: "180px", sm: "200px" });
+  const cardPadding = useBreakpointValue({ base: 3, sm: 4 });
+  
   return (
     <Box
       flexDirection="column"
@@ -31,13 +36,13 @@ const VoteCard = ({
       boxShadow="lg"
       display="flex"
       w="100%"
-      maxWidth="380px"
+      maxWidth={{ base: "320px", sm: "380px" }}
       bg="transparent"
       position="relative"
       color="rgba(333, 333, 333, 1)"
-      p={4}
+      p={cardPadding}
       zIndex={1}
-      h="200px"
+      h={cardHeight}
       transition="all 0.3s ease"
       cursor="pointer"
       _hover={{ 
@@ -67,10 +72,10 @@ const VoteCard = ({
         transition="all 0.3s ease"
       />
       
-      <VStack spacing={2} align="stretch" w="100%">
-        <Box h="48px" mb={1}>
+      <VStack spacing={{ base: 1, sm: 2 }} align="stretch" w="100%">
+        <Box h={{ base: "40px", sm: "48px" }} mb={1}>
           <Text 
-            fontSize="md" 
+            fontSize={titleFontSize}
             fontWeight="extrabold"
             borderBottom="2px solid rgba(148, 115, 220, 0.5)" 
             pb={1}
@@ -105,7 +110,7 @@ const VoteCard = ({
           )}
         </Flex>
         
-        <VStack align="stretch" mt={1}>
+        <VStack align="stretch" mt={{ base: 0, sm: 1 }}>
           <Text fontWeight="bold" fontSize="xs" color="rgba(148, 115, 220, 0.9)">
             Voting Options:
           </Text>
