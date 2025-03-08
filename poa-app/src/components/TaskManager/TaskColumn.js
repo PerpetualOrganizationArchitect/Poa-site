@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, use } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Heading, IconButton, Toast} from '@chakra-ui/react';
+import { Box, Heading, IconButton, Toast, Flex } from '@chakra-ui/react';
 import { useDrop } from 'react-dnd';
 import TaskCard from './TaskCard';
 import { useTaskBoard } from '../../context/TaskBoardContext';
@@ -26,7 +26,7 @@ const glassLayerStyle = {
 
 
 
-const TaskColumn = ({ title, tasks, columnId, projectName }) => {
+const TaskColumn = ({ title, tasks, columnId, projectName, isMobile = false, isEmpty = false }) => {
   const router = useRouter();
   const {userDAO} = router.query;
   const { moveTask, addTask, editTask } = useTaskBoard();
@@ -188,6 +188,17 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
   
     const columnStyle = isOver ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : {};
   
+    // Mobile-specific column header style
+    const mobileHeaderStyle = {
+      fontSize: '1.1rem',
+      fontWeight: 'bold',
+      color: 'white',
+      marginBottom: '10px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    };
+
     return (
       <Box
       ref={drop}
@@ -195,68 +206,98 @@ const TaskColumn = ({ title, tasks, columnId, projectName }) => {
       h="100%"
       bg="transparent" 
       borderRadius="xl"
-      boxShadow="lg"
-      style={{ ...columnStyle, position: 'relative' }} // Add position: 'relative'
+      boxShadow={isMobile ? "none" : "lg"}
+      style={{ ...columnStyle, position: 'relative' }}
       zIndex={1}
     >
       <div className="glass" style={glassLayerStyle} />
-        <Heading size="md" mb={3} mt={0}ml={3}alignItems="center" color='white'>
+      
+      {(!isMobile || (isMobile && !isEmpty)) && (
+        <Heading size="md" mb={3} mt={0} ml={3} alignItems="center" color='white'>
           {title}
           {title === 'Open' && (
             <IconButton
-            
               ml={8}
-              icon={<AddIcon color="white" />} // Change color to white
+              icon={<AddIcon color="white" />}
               aria-label="Add task"
               onClick={handleOpenAddTaskModal}
-              h="1.60rem" // Adjust height
-              w="1.60rem" // Adjust width
-              minW={0} // Set minimum width to 0
-              bg="" // Set background color to black
+              h="1.60rem"
+              w="1.60rem"
+              minW={0}
+              bg=""
               border= ".5px solid white"
               boxshadow="md"
             />
-
           )}
         </Heading>
+      )}
+      
+      {isMobile && title === 'Open' && (
+        <IconButton
+          id="mobileAddTaskBtn"
+          aria-label="Add task mobile"
+          icon={<AddIcon />}
+          onClick={handleOpenAddTaskModal}
+          position="absolute"
+          opacity="0"
+          pointerEvents={isEmpty ? "none" : "auto"}
+        />
+      )}
+      
+      {(!isMobile || (isMobile && !isEmpty)) && (
         <Box
-            h="calc(100% - 3rem)"
-            borderRadius="md"
-            bg="transparent"
-            p={2} // Change p value
-            style={columnStyle}
-            overflowY="auto"
-          >
-            {tasks.map((task, index) => (
-              <TaskCard
-                key={task.id}
-                id={task.id}
-                name={task.name}
-                description={task.description}
-                difficulty={task.difficulty}
-                estHours={task.estHours}
-                submission={task.submission}
-                claimedBy={task.claimedBy}
-                Payout={task.Payout}
-                claimerUsername={task.claimerUsername}
-                columnId={columnId}
-                projectId={task.projectId}
-                onEditTask={(updatedTask) => handleEditTask(updatedTask, index)}
-              />
-            ))}
-          </Box>
+          h={isMobile ? "calc(100% - 3rem)" : "calc(100% - 3rem)"}
+          borderRadius="md"
+          bg="transparent"
+          p={isMobile ? 1 : 2}
+          style={columnStyle}
+          overflowY="auto"
+          css={{
+            '&::-webkit-scrollbar': {
+              width: '4px',
+            },
+            '&::-webkit-scrollbar-track': {
+              width: '6px',
+              background: 'rgba(0,0,0,0.1)',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'rgba(255,255,255,0.2)',
+              borderRadius: '24px',
+            },
+          }}
+        >
+          {tasks.map((task, index) => (
+            <TaskCard
+              key={task.id}
+              id={task.id}
+              name={task.name}
+              description={task.description}
+              difficulty={task.difficulty}
+              estHours={task.estHours}
+              submission={task.submission}
+              claimedBy={task.claimedBy}
+              Payout={task.Payout}
+              claimerUsername={task.claimerUsername}
+              columnId={columnId}
+              projectId={task.projectId}
+              onEditTask={(updatedTask) => handleEditTask(updatedTask, index)}
+              isMobile={isMobile}
+            />
+          ))}
+        </Box>
+      )}
 
-        {title === 'Open' && (
-          <AddTaskModal
-            isOpen={isAddTaskModalOpen}
-            onClose={handleCloseAddTaskModal}
-            onAddTask={handleAddTask}
-          />
-        )}
-      </Box>
-    );
-  };
+      {title === 'Open' && (
+        <AddTaskModal
+          isOpen={isAddTaskModalOpen}
+          onClose={handleCloseAddTaskModal}
+          onAddTask={handleAddTask}
+        />
+      )}
+    </Box>
+  );
+};
   
-  export default TaskColumn;
+export default TaskColumn;
   
  
