@@ -111,6 +111,7 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
   const swipeContainerRef = useRef(null);
+  const taskColumnsRef = useRef([]);
   const [isSwiping, setIsSwiping] = useState(false);
   
   // Higher threshold for swipe detection to prevent accidental triggers
@@ -300,7 +301,7 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
             mt={1}
             overflow="hidden"
           >
-            <HStack spacing={3} py={2} px={3} w="100%" align="center" justify="space-between">
+            <HStack spacing={3} py={2} px={3} w="100%" align="center" justify="space-between" overflow="visible">
               <IconButton
                 icon={<ChevronLeftIcon />}
                 onClick={() => handleNavigate('prev')}
@@ -318,11 +319,42 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
                 color="white"
                 flex={1}
                 noOfLines={1}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
                 {columnTitle}
                 <Badge ml={2} colorScheme="purple" fontSize="0.7em">
                   {getTaskCount(columnId)}
                 </Badge>
+                {columnTitle === 'Open' && (
+                  <IconButton
+                    ml={3}
+                    icon={<AddIcon color="white" boxSize="1em" />}
+                    aria-label="Add task mobile"
+                    onClick={() => {
+                      // Find the current column and get its reference to call its handleOpenAddTaskModal
+                      const columnRef = taskColumnsRef.current[activeTabIndex];
+                      if (columnRef && columnRef.handleOpenAddTaskModal) {
+                        columnRef.handleOpenAddTaskModal();
+                      }
+                    }}
+                    size="sm"
+                    minW="24px"
+                    minH="20px"
+                    p={0}
+                    bg="purple.500"
+                    _hover={{ bg: "purple.600" }}
+                    _active={{ bg: "purple.700" }}
+                    boxShadow="0px 3px 6px rgba(0, 0, 0, 0.2)"
+                    borderRadius="md"
+                    display="inline-flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    verticalAlign="middle"
+                    transform="translateY(0px)"
+                  />
+                )}
               </Text>
               
               <IconButton
@@ -378,6 +410,7 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
                 </Flex>
               ) : (
                 <TaskColumn
+                  ref={el => taskColumnsRef.current[activeTabIndex] = el}
                   title={columnTitle}
                   tasks={currentColumn?.tasks || []}
                   columnId={columnId}
@@ -432,7 +465,7 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
           height="100%"
         >
           {taskColumns &&
-            taskColumns.map((column) => (
+            taskColumns.map((column, index) => (
               <Box
                 key={column.id}
                 height={{ base: "auto", md: "80vh" }}
@@ -455,6 +488,7 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
                   </Flex>
                 ) : (
                   <TaskColumn
+                    ref={el => taskColumnsRef.current[index] = el}
                     title={column.title}
                     tasks={column.tasks}
                     columnId={column.id}
