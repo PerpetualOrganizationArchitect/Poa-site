@@ -29,7 +29,6 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 import Link2 from "next/link";
 import Typist from "react-typist";
-import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 import { usePOContext } from "@/context/POContext";
 import { useIPFScontext } from "@/context/ipfsContext";
 
@@ -84,7 +83,7 @@ const fadeIn = keyframes`
   }
 `;
 
-// Improved wave background with original color scheme
+// Improved wave background with peach/pink gradient but transparent base
 const WaveBackground = styled.div`
   position: fixed;
   top: 0;
@@ -92,7 +91,7 @@ const WaveBackground = styled.div`
   width: 100%;
   height: 100%;
   z-index: 0;
-  background: linear-gradient(135deg, #f8d49f 0%, #eebba9 50%, #e6a4bc 100%);
+  background: transparent;
   overflow: hidden;
   
   &::before, &::after {
@@ -102,14 +101,14 @@ const WaveBackground = styled.div`
     height: 150%;
     top: -25%;
     left: -25%;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    background: transparent; 
     animation: ${waveAnimation} 15s ease-in-out infinite;
   }
   
   &::after {
     top: 30%;
     left: 20%;
-    background: radial-gradient(ellipse at center, rgba(232, 161, 232, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    background: radial-gradient(ellipse at center, rgba(232, 161, 232, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
     animation-delay: -5s;
     animation-duration: 20s;
   }
@@ -117,7 +116,7 @@ const WaveBackground = styled.div`
   @media (max-width: 768px) {
     height: 100%;
     &::before, &::after {
-      opacity: 0.6;
+      opacity: 0.8;
     }
   }
 `;
@@ -160,47 +159,137 @@ const PulseButton = styled(Button)`
   }
 `;
 
-// Card design with glass morphism effect - update colors to match new scheme
-const GlassCard = styled(Box)`
-  background: rgba(35, 30, 25, 0.85);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+// Enhanced hovering badge with subtle animation
+const EnhancedBadge = styled(Box)`
+  background: rgba(15, 15, 15, 0.7);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35em 0.8em;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
   
   &:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-  
-  @media (max-width: 768px) {
-    width: 92%;
-    margin: 0 auto;
-    background: rgba(25, 20, 15, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(30, 30, 30, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 `;
 
-// Second card with darker background
-const DarkGlassCard = styled(Box)`
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
+// Artistic Card with refined glass effect
+const GlassCard = styled(Box)`
+  background: rgba(35, 30, 25, 0.85);
+  backdrop-filter: blur(12px);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: perspective(1000px) translateZ(0);
   overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  }
   
   &:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    transform: perspective(1000px) translateZ(10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
   
   @media (max-width: 768px) {
     width: 92%;
     margin: 0 auto;
-    background: rgba(0, 0, 0, 0.92);
+    background: rgba(35, 30, 25, 0.9);
+  }
+`;
+
+// Dark artistic card
+const DarkGlassCard = styled(Box)`
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: perspective(1000px) translateZ(0);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
+  
+  &:hover {
+    transform: perspective(1000px) translateZ(10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  @media (max-width: 768px) {
+    width: 92%;
+    margin: 0 auto;
+    background: rgba(10, 10, 10, 0.95);
+  }
+`;
+
+// Refined button with animation and style
+const ArtisticButton = styled(Button)`
+  background: linear-gradient(135deg, #65B891 0%, #4C9A7A 100%);
+  color: white;
+  border-radius: 30px;
+  border: none;
+  padding: 0.7em 1.8em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #59A583 0%, #3E8C6C 100%);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -337,6 +426,102 @@ const MobileNav = ({ userDAO }) => {
   );
 };
 
+// Desktop navigation bar component - darker
+const DesktopNav = ({ userDAO }) => {
+  return (
+    <Flex
+      as="nav"
+      align="center"
+      justify="space-between"
+      wrap="wrap"
+      w="100%"
+      p={4}
+      bg="rgba(25, 20, 15, 0.95)"
+      backdropFilter="blur(8px)"
+      position="fixed"
+      top={0}
+      left={0}
+      zIndex={10}
+      borderBottom="1px solid rgba(255, 255, 255, 0.2)"
+    >
+      <Flex align="center">
+        <Image
+          src="/poa-logo.png"
+          alt="PoA Logo"
+          borderRadius="full"
+          boxSize="32px"
+          mr={3}
+          fallbackSrc="https://via.placeholder.com/32"
+          border="1px solid #ffffff"
+          p="2px"
+        />
+        <Text
+          fontWeight="bold"
+          fontSize="lg"
+          color="white"
+          letterSpacing="wide"
+        >
+          {userDAO}
+        </Text>
+      </Flex>
+
+      <HStack spacing={8} display="flex">
+        <Link2 href={`/dashboard/?userDAO=${userDAO}`}>
+          <Button
+            variant="ghost"
+            color="white"
+            borderColor="rgba(255, 255, 255, 0.3)"
+            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+          >
+            Dashboard
+          </Button>
+        </Link2>
+        <Link2 href={`/tasks/?userDAO=${userDAO}`}>
+          <Button
+            variant="ghost"
+            color="white"
+            borderColor="rgba(255, 255, 255, 0.3)"
+            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+          >
+            Tasks
+          </Button>
+        </Link2>
+        <Link2 href={`/voting/?userDAO=${userDAO}`}>
+          <Button
+            variant="ghost"
+            color="white"
+            borderColor="rgba(255, 255, 255, 0.3)"
+            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+          >
+            Voting
+          </Button>
+        </Link2>
+        <Link2 href={`/learn/?userDAO=${userDAO}`}>
+          <Button
+            variant="ghost"
+            color="white"
+            borderColor="rgba(255, 255, 255, 0.3)"
+            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+          >
+            Learn & Earn
+          </Button>
+        </Link2>
+        <Link2 href={`/user/?userDAO=${userDAO}`}>
+          <Button
+            size="md"
+            bg="#65B891"
+            color="white"
+            _hover={{ bg: "#4C9A7A" }}
+            fontWeight="bold"
+          >
+            Join or Connect
+          </Button>
+        </Link2>
+      </HStack>
+    </Flex>
+  );
+};
+
 const Home = () => {
   const{logoHash, poDescription, poLinks} = usePOContext();
 
@@ -375,12 +560,12 @@ const Home = () => {
 
   return (
     <>
-      {isMobile ? <MobileNav userDAO={userDAO} /> : <Navbar />}
+      {isMobile ? <MobileNav userDAO={userDAO} /> : <DesktopNav userDAO={userDAO} />}
       
       <WaveBackground />
       
       <Box 
-        pt={{ base: "65px", md: "20px" }} 
+        pt={{ base: "65px", md: "80px" }} 
         position="relative" 
         minH="100vh"
         display="flex"
@@ -389,7 +574,7 @@ const Home = () => {
         justifyContent="center"
       >
         <VStack 
-          spacing={{ base: 6, md: 10 }} 
+          spacing={{ base: 8, md: 12 }} 
           w="100%" 
           px={4} 
           py={{ base: 6, md: 10 }}
@@ -400,6 +585,7 @@ const Home = () => {
             delay="0.1s" 
             width={{ base: "92%", md: "65%" }}
             display={isLoaded ? "block" : "none"}
+            transform="translateZ(0)"
           >
             <GlassCard p={{ base: 6, md: 8 }}>
               <VStack spacing={5} align="center">
@@ -411,6 +597,8 @@ const Home = () => {
                   letterSpacing="tight"
                   fontWeight="extrabold"
                   textShadow="0 2px 4px rgba(0,0,0,0.3)"
+                  bgGradient="linear(to-r, white, #f0f0f0)"
+                  bgClip="text"
                 >
                   Welcome to {userDAO}
                 </Heading>
@@ -423,7 +611,8 @@ const Home = () => {
                   lineHeight="tall"
                   fontWeight="medium"
                   letterSpacing="0.3px"
-                  textShadow="0 1px 2px rgba(0,0,0,0.2)"
+                  maxW="760px"
+                  mx="auto"
                 >
                   A Perpetual Organization built with Poa. Fully owned and controlled 
                   by the {userDAO} community itself. Learn more about how to build your 
@@ -432,41 +621,39 @@ const Home = () => {
                 
                 <Link2 href="https://poa.community">
                   <Text 
-                    color="#ffffff" 
+                    color="#79dcba" 
                     textAlign="center" 
                     fontSize={{ base: "md", md: "md" }}
                     fontWeight="bold"
                     textDecoration="underline"
-                    _hover={{ color: "#f0f0f0" }}
+                    _hover={{ color: "#8FEFD9", textDecoration: "none" }}
                     transition="all 0.3s ease"
-                    textShadow="0 1px 2px rgba(0,0,0,0.3)"
+                    letterSpacing="0.5px"
                   >
                     poa.community
                   </Text>
                 </Link2>
                 
                 <Link2 href={`/user/?userDAO=${userDAO}`}>
-                  <PulseButton
+                  <ArtisticButton
                     size={{ base: "md", md: "lg" }}
-                    bg="#65B891"
-                    color="white"
-                    _hover={{ bg: "#4C9A7A" }}
-                    px={{ base: 6, md: 8 }}
-                    py={6}
-                    borderRadius="full"
-                    fontWeight="bold"
-                    letterSpacing="wide"
-                    mt={2}
-                    boxShadow="0 4px 8px rgba(0, 0, 0, 0.3)"
+                    mt={4}
+                    mb={2}
                   >
                     Join or Login
-                  </PulseButton>
+                  </ArtisticButton>
                 </Link2>
                 
-                <HStack mt={2} spacing={2} wrap="wrap" justify="center">
-                  <Badge bg="rgba(0, 0, 0, 0.4)" color="white" px={3} py={1} borderRadius="full" fontWeight="medium">Decentralized</Badge>
-                  <Badge bg="rgba(0, 0, 0, 0.4)" color="white" px={3} py={1} borderRadius="full" fontWeight="medium">Community-Owned</Badge>
-                  <Badge bg="rgba(0, 0, 0, 0.4)" color="white" px={3} py={1} borderRadius="full" fontWeight="medium">Transparent</Badge>
+                <HStack mt={3} spacing={3} wrap="wrap" justify="center">
+                  <EnhancedBadge>
+                    <Box as="span" mr={1} fontSize="0.9em">🔗</Box> Decentralized
+                  </EnhancedBadge>
+                  <EnhancedBadge>
+                    <Box as="span" mr={1} fontSize="0.9em">👥</Box> Community-Owned
+                  </EnhancedBadge>
+                  <EnhancedBadge>
+                    <Box as="span" mr={1} fontSize="0.9em">🔍</Box> Transparent
+                  </EnhancedBadge>
                 </HStack>
               </VStack>
             </GlassCard>
@@ -476,6 +663,7 @@ const Home = () => {
             delay="0.3s" 
             width={{ base: "92%", md: "65%" }}
             display={isLoaded ? "block" : "none"}
+            transform="translateZ(0)"
           >
             <DarkGlassCard p={{ base: 6, md: 8 }}>
               <VStack spacing={5} align="center">
@@ -486,7 +674,8 @@ const Home = () => {
                   textAlign="center"
                   fontWeight="bold"
                   letterSpacing="wide"
-                  textShadow="0 2px 4px rgba(0,0,0,0.3)"
+                  bgGradient="linear(to-r, white, #f0f0f0)"
+                  bgClip="text"
                 >
                   About {userDAO}
                 </Heading>
@@ -498,25 +687,27 @@ const Home = () => {
                   lineHeight="tall"
                   fontWeight="medium"
                   letterSpacing="0.3px"
-                  textShadow="0 1px 2px rgba(0,0,0,0.2)"
+                  maxW="760px"
+                  mx="auto"
                 >
                   {poDescription}
                 </Text>
                 
                 {image && (
                   <Box 
-                    bg="rgba(255, 255, 255, 0.1)" 
+                    bg="rgba(255, 255, 255, 0.05)" 
                     p={4} 
                     borderRadius="xl" 
                     width={{ base: "70%", md: "50%" }}
                     mx="auto"
                     mt={4}
-                    border="1px solid rgba(255, 255, 255, 0.2)"
+                    border="1px solid rgba(255, 255, 255, 0.1)"
                     transition="all 0.3s ease"
-                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.3)"
+                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.2)"
                     _hover={{
-                      transform: "scale(1.02)",
-                      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.3)"
+                      transform: "scale(1.02) translateY(-5px)",
+                      boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
+                      border: "1px solid rgba(255, 255, 255, 0.2)"
                     }}
                   >
                     <Image
@@ -531,26 +722,36 @@ const Home = () => {
                 
                 {/* Social links or quick access buttons */}
                 <HStack spacing={4} mt={2} wrap="wrap" justify="center">
-                  {poLinks && Array.isArray(poLinks) && poLinks.length > 0 ? (
-                    poLinks.map((link, index) => (
-                      <Link2 href={link.url} key={index}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          color="white"
-                          borderColor="rgba(255, 255, 255, 0.3)"
-                          _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                          leftIcon={<span>{link.icon || '🔗'}</span>}
-                          fontWeight="medium"
-                        >
-                          {link.name || 'Link'}
-                        </Button>
-                      </Link2>
-                    ))
-                  ) : (
-                    // Render nothing if poLinks is not an array or empty
-                    null
-                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    color="white"
+                    borderColor="rgba(255, 255, 255, 0.2)"
+                    bg="rgba(255, 255, 255, 0.05)"
+                    _hover={{ bg: "rgba(255, 255, 255, 0.1)", borderColor: "rgba(255, 255, 255, 0.3)" }}
+                    leftIcon={<span>🌐</span>}
+                    fontWeight="medium"
+                    borderRadius="full"
+                    boxShadow="0 2px 5px rgba(0,0,0,0.2)"
+                    onClick={() => window.open(`https://poa.community`, '_blank')}
+                  >
+                    Website
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    color="white"
+                    borderColor="rgba(255, 255, 255, 0.2)"
+                    bg="rgba(255, 255, 255, 0.05)"
+                    _hover={{ bg: "rgba(255, 255, 255, 0.1)", borderColor: "rgba(255, 255, 255, 0.3)" }}
+                    leftIcon={<span>📖</span>}
+                    fontWeight="medium"
+                    borderRadius="full"
+                    boxShadow="0 2px 5px rgba(0,0,0,0.2)"
+                    onClick={() => window.open(`https://docs.poa.community`, '_blank')}
+                  >
+                    Docs
+                  </Button>
                 </HStack>
               </VStack>
             </DarkGlassCard>
@@ -558,12 +759,14 @@ const Home = () => {
           
           <Text 
             fontSize="xs" 
-            color="rgba(0, 0, 0, 0.8)" 
-            fontWeight="bold"
+            color="rgba(0, 0, 0, 0.7)" 
+            fontWeight="medium"
             textAlign="center"
             mt={8}
             display={isLoaded ? "block" : "none"}
-            textShadow="0 1px 0 rgba(255,255,255,0.2)"
+            letterSpacing="0.5px"
+            transition="all 0.3s ease"
+            _hover={{ color: "rgba(0, 0, 0, 0.9)" }}
           >
             Powered by Poa • Built on Blockchain • Designed for Community
           </Text>
