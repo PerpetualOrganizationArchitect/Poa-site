@@ -5,11 +5,15 @@ export default function Document() {
   return (
     <>
     <Html lang="en">
-      <Head />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
-        rel="stylesheet"
-      />
+      <Head>
+        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#000000" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
       <body>
         <Main />
         <NextScript />
