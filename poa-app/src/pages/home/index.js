@@ -31,6 +31,7 @@ import Link2 from "next/link";
 import Typist from "react-typist";
 import { usePOContext } from "@/context/POContext";
 import { useIPFScontext } from "@/context/ipfsContext";
+import Navbar from "@/templateComponents/studentOrgDAO/NavBar";
 
 // CSS for the wave animation (slowed down and more subtle)
 const waveAnimation = keyframes`
@@ -90,9 +91,10 @@ const WaveBackground = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: -1;
   background: transparent;
   overflow: hidden;
+  pointer-events: none;
   
   &::before, &::after {
     content: '';
@@ -103,6 +105,7 @@ const WaveBackground = styled.div`
     left: -25%;
     background: transparent; 
     animation: ${waveAnimation} 15s ease-in-out infinite;
+    pointer-events: none;
   }
   
   &::after {
@@ -293,235 +296,6 @@ const ArtisticButton = styled(Button)`
   }
 `;
 
-// Custom mobile-friendly navigation with improved styling
-const MobileNav = ({ userDAO }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  
-  return (
-    <>
-      <Flex 
-        as="nav" 
-        align="center" 
-        justify="space-between" 
-        wrap="wrap" 
-        w="100%" 
-        p={3} 
-        bg="rgba(25, 20, 15, 0.95)"
-        backdropFilter="blur(8px)"
-        position="fixed"
-        top={0}
-        left={0}
-        zIndex={10}
-        borderBottom="1px solid rgba(255, 255, 255, 0.2)"
-      >
-        <Flex align="center">
-          <Image
-            src="/poa-logo.png"
-            alt="PoA Logo"
-            borderRadius="full"
-            boxSize="28px"
-            mr={2}
-            fallbackSrc="https://via.placeholder.com/28"
-            border="1px solid #ffffff"
-            p="2px"
-          />
-          <Text 
-            fontWeight="bold" 
-            fontSize="md" 
-            color="white"
-            letterSpacing="wide"
-          >
-            {userDAO}
-          </Text>
-        </Flex>
-        
-        <IconButton
-          aria-label="Open menu"
-          icon={<HamburgerIcon />}
-          size="sm"
-          color="white"
-          variant="ghost"
-          _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
-          onClick={onOpen}
-        />
-      </Flex>
-      
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="xs">
-        <DrawerOverlay backdropFilter="blur(8px)" bg="rgba(0,0,0,0.5)" />
-        <DrawerContent bg="rgba(59, 52, 42, 0.95)" backdropFilter="blur(10px)">
-          <DrawerCloseButton color="white" />
-          <DrawerHeader borderBottomWidth="1px" borderColor="rgba(255, 255, 255, 0.2)" color="white">
-            {userDAO} Menu
-          </DrawerHeader>
-          <DrawerBody>
-            <VStack spacing={4} align="stretch" mt={6}>
-              <Link2 href={`/dashboard/?userDAO=${userDAO}`}>
-                <Button 
-                  w="100%" 
-                  variant="outline" 
-                  color="white"
-                  borderColor="rgba(255, 255, 255, 0.3)"
-                  _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                  leftIcon={<span>📊</span>}
-                >
-                  Dashboard
-                </Button>
-              </Link2>
-              <Link2 href={`/tasks/?userDAO=${userDAO}`}>
-                <Button 
-                  w="100%" 
-                  variant="outline" 
-                  color="white"
-                  borderColor="rgba(255, 255, 255, 0.3)"
-                  _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                  leftIcon={<span>✅</span>}
-                >
-                  Tasks
-                </Button>
-              </Link2>
-              <Link2 href={`/voting/?userDAO=${userDAO}`}>
-                <Button 
-                  w="100%" 
-                  variant="outline" 
-                  color="white"
-                  borderColor="rgba(255, 255, 255, 0.3)"
-                  _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                  leftIcon={<span>🗳️</span>}
-                >
-                  Voting
-                </Button>
-              </Link2>
-              <Link2 href={`/learn/?userDAO=${userDAO}`}>
-                <Button 
-                  w="100%" 
-                  variant="outline" 
-                  color="white"
-                  borderColor="rgba(255, 255, 255, 0.3)"
-                  _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                  leftIcon={<span>📚</span>}
-                >
-                  Learn & Earn
-                </Button>
-              </Link2>
-              
-              <Divider borderColor="rgba(255, 255, 255, 0.2)" />
-              
-              <Link2 href={`/user/?userDAO=${userDAO}`}>
-                <PulseButton
-                  w="100%"
-                  bg="#65B891"
-                  color="white"
-                  fontWeight="bold"
-                  _hover={{ bg: "#4C9A7A" }}
-                  mt={2}
-                >
-                  Join or Connect
-                </PulseButton>
-              </Link2>
-            </VStack>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </>
-  );
-};
-
-// Desktop navigation bar component - darker
-const DesktopNav = ({ userDAO }) => {
-  return (
-    <Flex
-      as="nav"
-      align="center"
-      justify="space-between"
-      wrap="wrap"
-      w="100%"
-      p={4}
-      bg="rgba(25, 20, 15, 0.95)"
-      backdropFilter="blur(8px)"
-      position="fixed"
-      top={0}
-      left={0}
-      zIndex={10}
-      borderBottom="1px solid rgba(255, 255, 255, 0.2)"
-    >
-      <Flex align="center">
-        <Image
-          src="/poa-logo.png"
-          alt="PoA Logo"
-          borderRadius="full"
-          boxSize="32px"
-          mr={3}
-          fallbackSrc="https://via.placeholder.com/32"
-          border="1px solid #ffffff"
-          p="2px"
-        />
-        <Text
-          fontWeight="bold"
-          fontSize="lg"
-          color="white"
-          letterSpacing="wide"
-        >
-          {userDAO}
-        </Text>
-      </Flex>
-
-      <HStack spacing={8} display="flex">
-        <Link2 href={`/dashboard/?userDAO=${userDAO}`}>
-          <Button
-            variant="ghost"
-            color="white"
-            borderColor="rgba(255, 255, 255, 0.3)"
-            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-          >
-            Dashboard
-          </Button>
-        </Link2>
-        <Link2 href={`/tasks/?userDAO=${userDAO}`}>
-          <Button
-            variant="ghost"
-            color="white"
-            borderColor="rgba(255, 255, 255, 0.3)"
-            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-          >
-            Tasks
-          </Button>
-        </Link2>
-        <Link2 href={`/voting/?userDAO=${userDAO}`}>
-          <Button
-            variant="ghost"
-            color="white"
-            borderColor="rgba(255, 255, 255, 0.3)"
-            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-          >
-            Voting
-          </Button>
-        </Link2>
-        <Link2 href={`/learn/?userDAO=${userDAO}`}>
-          <Button
-            variant="ghost"
-            color="white"
-            borderColor="rgba(255, 255, 255, 0.3)"
-            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-          >
-            Learn & Earn
-          </Button>
-        </Link2>
-        <Link2 href={`/user/?userDAO=${userDAO}`}>
-          <Button
-            size="md"
-            bg="#65B891"
-            color="white"
-            _hover={{ bg: "#4C9A7A" }}
-            fontWeight="bold"
-          >
-            Join or Connect
-          </Button>
-        </Link2>
-      </HStack>
-    </Flex>
-  );
-};
-
 const Home = () => {
   const{logoHash, poDescription, poLinks} = usePOContext();
 
@@ -534,10 +308,20 @@ const Home = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // This ensures navbar gets rendered only after userDAO is available
+  const [isNavbarReady, setIsNavbarReady] = useState(false);
+
   // Check and log poLinks to debug
   useEffect(() => {
     console.log('poLinks type:', typeof poLinks, poLinks);
   }, [poLinks]);
+
+  useEffect(() => {
+    // Set navbar ready when userDAO is available
+    if (userDAO) {
+      setIsNavbarReady(true);
+    }
+  }, [userDAO]);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -560,18 +344,20 @@ const Home = () => {
 
   return (
     <>
-      {isMobile ? <MobileNav userDAO={userDAO} /> : <DesktopNav userDAO={userDAO} />}
+      {/* Only render Navbar after userDAO is available to prevent undefined props */}
+      {isNavbarReady && <Navbar userDAO={userDAO} />}
       
       <WaveBackground />
       
       <Box 
-        pt={{ base: "65px", md: "80px" }} 
+        pt={{ base: "80px", md: "100px" }} /* Increased to ensure content is below navbar */
         position="relative" 
         minH="100vh"
         display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
+        zIndex={1} /* Ensure content is above background but below navbar */
       >
         <VStack 
           spacing={{ base: 8, md: 12 }} 
@@ -600,8 +386,8 @@ const Home = () => {
                   bgGradient="linear(to-r, white, #f0f0f0)"
                   bgClip="text"
                 >
-                  Welcome to {userDAO}
-                </Heading>
+              Welcome to {userDAO} 
+            </Heading>
                 
                 <Text 
                   fontSize={{ base: "md", md: "lg" }} 
@@ -631,18 +417,18 @@ const Home = () => {
                     letterSpacing="0.5px"
                   >
                     poa.community
-                  </Text>
+            </Text>
                 </Link2>
                 
-                <Link2 href={`/user/?userDAO=${userDAO}`}>
+            <Link2 href={`/user/?userDAO=${userDAO}`}>
                   <ArtisticButton
                     size={{ base: "md", md: "lg" }}
                     mt={4}
                     mb={2}
-                  >
-                    Join or Login
+              >
+                Join or Login
                   </ArtisticButton>
-                </Link2>
+            </Link2>
                 
                 <HStack mt={3} spacing={3} wrap="wrap" justify="center">
                   <EnhancedBadge>
@@ -677,21 +463,21 @@ const Home = () => {
                   bgGradient="linear(to-r, white, #f0f0f0)"
                   bgClip="text"
                 >
-                  About {userDAO}
-                </Heading>
+              About {userDAO}
+            </Heading>
                 
-                <Text
+            <Text
                   fontSize={{ base: "md", md: "md" }}
                   color="white"
-                  textAlign="left"
+              textAlign="left"
                   lineHeight="tall"
                   fontWeight="medium"
                   letterSpacing="0.3px"
                   maxW="760px"
                   mx="auto"
-                >
-                  {poDescription}
-                </Text>
+            >
+              {poDescription}
+            </Text>
                 
                 {image && (
                   <Box 
@@ -710,11 +496,11 @@ const Home = () => {
                       border: "1px solid rgba(255, 255, 255, 0.2)"
                     }}
                   >
-                    <Image
-                      src={image}
-                      alt="Organization Logo"
+            <Image
+              src={image}
+              alt="Organization Logo"
                       width="100%"
-                      height="auto"
+              height="auto"
                       borderRadius="md"
                     />
                   </Box>
@@ -771,7 +557,7 @@ const Home = () => {
             Powered by Poa • Built on Blockchain • Designed for Community
           </Text>
         </VStack>
-      </Box>
+        </Box>
     </>
   );
 };
