@@ -454,21 +454,23 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
       <Box
         width="100%"
         height="100%"
-        pt={4}
+        pt={3}
         pb={0}
-        mt="-2"
+        mt={0}
+        overflow="hidden"
       >
         <SimpleGrid 
           columns={{ base: 1, md: 2, lg: 4 }}
           spacing={2}
           width="100%"
           height="100%"
+          mb={0}
         >
           {taskColumns &&
             taskColumns.map((column, index) => (
               <Box
                 key={column.id}
-                height={{ base: "auto", md: "80vh" }}
+                height={{ base: "auto", md: "78vh" }}
                 minH="400px"
                 borderRadius="xl"
                 position="relative"
@@ -477,26 +479,20 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
                 flexDirection="column"
                 alignItems="center"
                 p={2}
+                mb={0}
+                overflow="hidden"
               >
-                {column.tasks?.length === 0 ? (
-                  <Flex direction="column" h="100%" p={2} w="100%" align="center">
-                    <Heading size="md" mb={3} textAlign="center" color="white">
-                      {column.title}
-                    </Heading>
-                    <EmptyColumnState columnType={column.title} />
-                    <Box flex="1" w="100%" minH="200px" /> 
-                  </Flex>
-                ) : (
-                  <TaskColumn
-                    ref={el => taskColumnsRef.current[index] = el}
-                    title={column.title}
-                    tasks={column.tasks}
-                    columnId={column.id}
-                    projectName={projectName}
-                    zIndex={1}
-                    isMobile={false}
-                  />
-                )}
+                {/* Always use TaskColumn component regardless of whether the column is empty */}
+                <TaskColumn
+                  ref={el => taskColumnsRef.current[index] = el}
+                  title={column.title}
+                  tasks={column.tasks || []}
+                  columnId={column.id}
+                  projectName={projectName}
+                  zIndex={1}
+                  isMobile={false}
+                  isEmpty={column.tasks?.length === 0}
+                />
               </Box>
             ))}
         </SimpleGrid>
@@ -552,6 +548,7 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
         width="100%"
         height={{ base: "auto", md: "calc(100vh - 120px)" }}
         overflow={{ base: "visible", md: "hidden" }}
+        mb={0}
       >
         {isMobile ? renderMobileView() : renderDesktopView()}
       </Box>

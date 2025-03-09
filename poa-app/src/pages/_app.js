@@ -58,7 +58,6 @@ const theme = extendTheme({
       body: {
         bgGradient: "linear(to-r, orange.200, pink.200)",
         color: "#001443",
-        paddingTop: { base: "45px", md: "0" },
       },
       
     },

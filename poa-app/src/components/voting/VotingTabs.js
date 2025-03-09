@@ -27,7 +27,7 @@ const VotingTabs = ({
   children 
 }) => {
   // Use responsive sizing based on breakpoints
-  const tabFontSize = useBreakpointValue({ base: "lg", sm: "xl", md: "2xl" });
+  const tabFontSize = useBreakpointValue({ base: "md", sm: "xl", md: "2xl" });
   const tabPadding = useBreakpointValue({ base: 2, sm: 3, md: 4 });
   const listPadding = useBreakpointValue({ base: 3, sm: 4, md: 6 });
   

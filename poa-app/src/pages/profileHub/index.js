@@ -167,14 +167,22 @@ const UserprofileHub = () => {
         ) : (
           <Grid
             color="white"
-            templateAreas={[
-              `'welcome welcome' 'userinfo tierinfo' 'userinfo tierinfo' 'proposals proposals' 'completedtasks completedtasks'`,
-              `'welcome welcome' 'userinfo tierinfo' 'userinfo tierinfo' 'proposals proposals' 'completedtasks completedtasks'`
-            ]}
-            templateColumns="repeat(2, 1fr)"
+            templateAreas={{
+              base: `'welcome'
+                     'userinfo'
+                     'tierinfo'
+                     'proposals'
+                     'completedtasks'`,
+              md: `'welcome welcome'
+                   'userinfo tierinfo'
+                   'userinfo tierinfo'
+                   'proposals proposals'
+                   'completedtasks completedtasks'`
+            }}
+            templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
             gap={4}
           >
-            <GridItem area={'userinfo'} >
+            <GridItem area={'userinfo'} colSpan={{ base: 2, md: 1 }}>
               <Box
                 w="100%"
                 borderRadius="2xl"
@@ -182,12 +190,13 @@ const UserprofileHub = () => {
                 boxShadow="lg"
                 position="relative"
                 zIndex={2}
+                mt={{ base: 12, md: 0 }}
 
               >
                 <div style={glassLayerStyle} />
                 <VStack position="relative" borderTopRadius="2xl" align="flex-start">
                   <div style={glassLayerStyle} />
-                  <Text pl={8} letterSpacing="-1%" mt={0} fontSize="4xl" id="kubix-earned" fontWeight="bold">
+                  <Text pl={8} letterSpacing="-1%" mt={0} fontSize={{ base: "3xl", md: "4xl" }} id="kubix-earned" fontWeight="bold">
                     Tokens Earned{' '}
                     {countFinished ? (
                       <chakra.span {...animationProps}>{userInfo.ptBalance}</chakra.span>
@@ -199,7 +208,7 @@ const UserprofileHub = () => {
                   </Text>
                 </VStack>
                 <VStack p={0} pt={2} align="center" height={"100%"}>
-                  <Text fontSize="3xl" fontWeight="bold">{userInfo.tier} Tier Contributor</Text>
+                  <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="bold">{userInfo.tier} Tier Contributor</Text>
                   <Spacer />
                   <Image
                     width="50%"
@@ -219,7 +228,7 @@ const UserprofileHub = () => {
                 </VStack>
               </Box>
             </GridItem>
-            <GridItem area={'tierinfo'}>
+            <GridItem area={'tierinfo'} colSpan={2}>
               <Box
                 w="100%"
                 borderRadius="2xl"
@@ -231,8 +240,8 @@ const UserprofileHub = () => {
                 <div style={glassLayerStyle} />
                 <HStack pt={1} pb={1} position="relative" borderTopRadius="2xl">
                   <div style={glassLayerStyle} />
-                  <Text pl={6} fontSize="3xl" fontWeight="extrabold">{userInfo.username}</Text>
-                  <Text pt={0} pl={2} fontSize="lg">{userInfo.memberStatus}</Text>
+                  <Text pl={6} fontSize={{ base: "2xl", md: "3xl" }} fontWeight="extrabold">{userInfo.username}</Text>
+                  <Text pt={0} pl={2} fontSize={{ base: "md", md: "lg" }}>{userInfo.memberStatus}</Text>
                 </HStack>
                 <IconButton
                   icon={<SettingsIcon />}
@@ -251,8 +260,8 @@ const UserprofileHub = () => {
                   isOpen={isSettingsModalOpen}
                   onClose={closeSettingsModal}
                 />
-                <HStack pb={4} pt={2} spacing="4%">
-                  <VStack mt="1" align={'flex-start'} ml="5%" spacing={1}>
+                <HStack pb={4} pt={2} spacing={{ base: "2%", md: "4%" }} flexDir={{ base: "column", md: "row" }}>
+                  <VStack mt="1" align={'flex-start'} ml={{ base: "3%", md: "5%" }} spacing={1}>
                     <Text fontWeight="bold" fontSize="md">Tasks Completed: {userInfo.tasksCompleted}</Text>
                     <Text fontWeight="bold" fontSize="md">Total Votes: {userInfo.totalVotes}</Text>
                     <HStack spacing={1}>
@@ -260,27 +269,26 @@ const UserprofileHub = () => {
                       <Text fontSize="sm">{userInfo.dateJoined}</Text>
                     </HStack>
                   </VStack>
-                  <Spacer />
-                  <VStack mt="1" align={'flex-start'} spacing={3}>
-                  <Box mt="2" alignSelf="flex-start" mr="3">
-                    <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
+                  <Spacer display={{ base: "none", md: "block" }} />
+                  <VStack mt={{ base: 4, md: 1 }} align={{ base: 'center', md: 'flex-start' }} spacing={3} width={{ base: "100%", md: "auto" }}>
+                    <Box mt="2" alignSelf="flex-start" mr="3">
+                      <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
                     </Box>
-                      {isExec && (
-                        <>
-                          <Button 
-                            size="sm"
-                            onClick={openExecutiveMenu}
-                            alignSelf="start"
-                            justifySelf="end"
-                            colorScheme="teal"
-                          >
-                            Executive Menu
-                          </Button>
-                          <ExecutiveMenuModal isOpen={isExecutiveMenuOpen} onClose={closeExecutiveMenu} />
-                        </>
-                      )}
-                      </VStack>
-                  
+                    {isExec && (
+                      <>
+                        <Button 
+                          size="sm"
+                          onClick={openExecutiveMenu}
+                          alignSelf="start"
+                          justifySelf="end"
+                          colorScheme="teal"
+                        >
+                          Executive Menu
+                        </Button>
+                        <ExecutiveMenuModal isOpen={isExecutiveMenuOpen} onClose={closeExecutiveMenu} />
+                      </>
+                    )}
+                  </VStack>
                 </HStack>
                 
               </Box>
@@ -289,13 +297,13 @@ const UserprofileHub = () => {
                 <div style={glassLayerStyle} />
                 <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
                   <div style={glassLayerStyle} />
-                  <Text pl={6} fontWeight="bold" fontSize="2xl">
+                  <Text pl={6} fontWeight="bold" fontSize={{ base: "xl", md: "2xl" }}>
                     {claimedTasks && claimedTasks.length > 0 ? 'Claimed Tasks' : 'Recommended Tasks'}
                   </Text>
                 </VStack>
-                <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
+                <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4} flexDir={{ base: "column", md: "row" }} align={{ base: "stretch", md: "flex-start" }}>
                   {((claimedTasks && claimedTasks.length > 0) ? claimedTasks : recommendedTasks)?.slice(0, 3).map((task) => (
-                    <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
+                    <Box key={task.id} w={{ base: "100%", md: "31%" }} mb={{ base: 4, md: 0 }} _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                       <Link2 href={`/tasks/?task=${task.id}&projectId=${encodeURIComponent(decodeURIComponent(task.projectId))}&userDAO=${userDAO}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
                           <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
@@ -323,7 +331,7 @@ const UserprofileHub = () => {
                 <div style={glassLayerStyle} />
                 <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
                   <div style={glassLayerStyle} />
-                  <Text pl={6} fontWeight="bold" fontSize="2xl">
+                  <Text pl={6} fontWeight="bold" fontSize={{ base: "xl", md: "2xl" }}>
                     {userProposals && userProposals.length > 0 ? 'My Proposals' : 'Ongoing Proposals'}{' '}
                   </Text>
                 </VStack>
@@ -349,14 +357,14 @@ const UserprofileHub = () => {
                 <div style={glassLayerStyle} />
                 <VStack pb={2} align="flex-start" position="relative" borderTopRadius="2xl">
                   <div style={glassLayerStyle} />
-                  <Text pl={6} fontWeight="bold" fontSize="2xl">
+                  <Text pl={6} fontWeight="bold" fontSize={{ base: "xl", md: "2xl" }}>
                     My Completed Tasks
                   </Text>
                 </VStack>
-                <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4}>
+                <HStack spacing="3.5%" pb={2} ml={4} mr={4} pt={4} flexDir={{ base: "column", md: "row" }} align={{ base: "stretch", md: "flex-start" }}>
                   {userData && userData.completedTasks && userData.completedTasks.length > 0 ? (
                     userData.completedTasks.map((task) => (
-                      <Box key={task.id} w="31%" _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
+                      <Box key={task.id} w={{ base: "100%", md: "31%" }} mb={{ base: 4, md: 0 }} _hover={{ boxShadow: "md", transform: "scale(1.07)"}} p={4} borderRadius="2xl" overflow="hidden" bg="black">
                         <Link2 href={`/tasks/?task=${task.id}&projectId=${encodeURIComponent(decodeURIComponent(task.projectId))}`}>
                           <VStack textColor="white" align="stretch" spacing={3}>
                             <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">

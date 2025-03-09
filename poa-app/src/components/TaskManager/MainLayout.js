@@ -19,8 +19,8 @@ const mobileHeaderStyle = {
   padding: '8px 12px',
   boxShadow: '0 3px 10px rgba(0, 0, 0, 0.2)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
-  marginBottom: '4px',
-  marginTop: '20px',
+  marginBottom: '3px',
+  marginTop: '64px',
 };
 
 const MainLayout = () => {
@@ -248,10 +248,11 @@ const MainLayout = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <Flex 
-        minHeight={`calc(100vh - 80px)`} 
+        height="calc(100vh - 80px)"
         direction={{ base: "column", md: "row" }} 
         position="relative"
         overflow="hidden"
+        mb={0}
       >
         {/* Only show the sidebar on desktop and when visible */}
         {!isMobile && sidebarVisible && (
@@ -266,51 +267,85 @@ const MainLayout = () => {
           </Box>
         )}
         
-        {/* Show mobile project selector on mobile */}
-        {isMobile && renderMobileProjectSelector()}
-        
         {/* Main content area */}
         <Box 
           flex="1"
           position="relative"
-          overflow="auto"
-          maxHeight={{ md: "calc(100vh - 70px)" }}
+          overflow={isMobile ? "auto" : "hidden"} // Keep this scrollable on mobile
+          height={isMobile ? "100%" : "auto"}
           width="100%"
           zIndex={2}
           transition="all 0.3s ease"
+          display="flex"
+          flexDirection="column"
+          pb={isMobile ? "1px" : undefined} // Add extra padding at bottom for mobile
         >
+          {/* Place mobile project selector inside the scrollable area */}
+          {isMobile && (
+            <Box width="100%" pt={2} px={2}>
+              {renderMobileProjectSelector()}
+            </Box>
+          )}
+          
           {selectedProject ? (
-            <TaskBoardProvider 
-              key={selectedProject.id}
-              projectId={selectedProject.id}
-              initialColumns={selectedProject.columns}
-              account={account}
-            >
-              <TaskBoard 
-                columns={selectedProject.columns} 
-                projectName={selectedProject.name}
-                hideTitleBar={isMobile}
-                sidebarVisible={sidebarVisible}
-                toggleSidebar={toggleSidebar}
-                isDesktop={!isMobile}
+            <Box flex="1" width="100%" overflow={isMobile ? "visible" : "auto"}>
+              <TaskBoardProvider 
+                key={selectedProject.id}
+                projectId={selectedProject.id}
+                initialColumns={selectedProject.columns}
+                account={account}
               >
-              </TaskBoard>
-            </TaskBoardProvider>
+                <TaskBoard 
+                  columns={selectedProject.columns} 
+                  projectName={selectedProject.name}
+                  hideTitleBar={isMobile}
+                  sidebarVisible={sidebarVisible}
+                  toggleSidebar={toggleSidebar}
+                  isDesktop={!isMobile}
+                >
+                </TaskBoard>
+              </TaskBoardProvider>
+            </Box>
           ) : projects.length > 0 ? (
-            <Flex 
-              flexGrow={1} 
-              justifyContent="center" 
-              alignItems="center"
-              p={4}
-              bg="rgba(0, 0, 0, 0.4)"
-              borderRadius="md"
-              mx={4}
-            >
-              <Text color="white" textAlign="center">
-                Please select a project to view and manage tasks.
-              </Text>
-            </Flex>
-          ) : null}
+            <Box flex="1" width="100%">
+              <Flex 
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
+                color="white"
+                px={4}
+                py={8}
+                textAlign="center"
+              >
+                <Heading size="md" mb={2}>Select a Project</Heading>
+                <Text fontSize="md" mb={4}>Choose a project from the dropdown above to view tasks</Text>
+              </Flex>
+            </Box>
+          ) : (
+            <Box flex="1" width="100%">
+              <Flex 
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
+                color="white"
+                px={4}
+                py={8}
+                textAlign="center"
+              >
+                <Heading size="md" mb={2}>Create Your First Project</Heading>
+                <Text fontSize="md" mb={4}>Get started by creating a project</Text>
+                <Button 
+                  colorScheme="purple" 
+                  onClick={() => setShowMobileProjectCreator(true)}
+                  leftIcon={<AddIcon />}
+                >
+                  Create Project
+                </Button>
+              </Flex>
+            </Box>
+          )}
         </Box>
       </Flex>
     </DndProvider>

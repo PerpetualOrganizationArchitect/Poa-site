@@ -278,23 +278,18 @@ const VotingPage = () => {
     });
   }, [safeVotingOngoing]);
 
-  // Effect to handle URL parameter for poll selection
+  // Effect to check for the poll id in the URL
   useEffect(() => {
     if (router.query.poll) {
-      const pollID = router.query.poll;
-
+      const pollId = router.query.poll;
+      
       const findPoll = (proposals) => {
-        for (const proposal of proposals) {
-          if (proposal.id === pollID) {
-            return proposal;
-          }
-        }
-        return null;
+        return proposals.find((proposal) => proposal.id === pollId || proposal.name === pollId);
       };
-
+      
       let pollFound = null;
       let pollType = "";
-
+      
       if (Array.isArray(democracyVotingOngoing) && democracyVotingOngoing.length > 0) {
         pollFound = findPoll(democracyVotingOngoing);
         if (pollFound) pollType = "Direct Democracy";
@@ -365,7 +360,7 @@ const VotingPage = () => {
           <Spinner size="xl" />
         </Center>
       ) : (
-        <Container maxW="container.2xl" py={4} px={"3.8%"}>
+        <Container maxW="container.2xl" py={{ base: 20, md: 4 }} px={{ base: "1%", md: "3%" }}>
           <HeadingVote selectedTab={selectedTab} PTVoteType={PTVoteType} />
           
           <VotingTabs
