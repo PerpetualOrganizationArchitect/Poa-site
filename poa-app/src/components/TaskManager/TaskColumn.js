@@ -6,7 +6,6 @@ import TaskCard from './TaskCard';
 import { useTaskBoard } from '../../context/TaskBoardContext';
 import AddTaskModal from './AddTaskModal';
 import { useWeb3Context } from '../../context/web3Context';
-import { useDataBaseContext } from '../../context/dataBaseContext';
 import {usePOContext} from '@/context/POContext';
 import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -55,7 +54,6 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
 
   let hasExecNFT = userHasExecNFT;
   let hasMemberNFT = userHasMemberNFT;
-  const { getUsernameByAddress } = useDataBaseContext();
   const hasMemberNFTRef = useRef(hasMemberNFT);
   const hasExecNFTRef = useRef(hasExecNFT);
 
@@ -190,7 +188,19 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
         };
         
         console.log(`Moving task from ${item.columnId} to ${columnId}, index: ${newIndex}`);
-        router.push({ pathname: `/tasks/`, query: { userDAO: account } }, undefined, { shallow: true });
+        
+        // Fix URL update to include proper parameters (like the TaskCard openTask function does)
+        const safeProjectId = projectName ? encodeURIComponent(decodeURIComponent(projectName + "-" + taskManagerContractAddress)) : '';
+        
+        // Use the router.query.userDAO to maintain consistency
+        router.push({
+          pathname: `/tasks/`,
+          query: { 
+            userDAO: router.query.userDAO, 
+            projectId: safeProjectId,
+            task: draggedTask.id 
+          }
+        }, undefined, { shallow: true });
         
         try {
           await moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
@@ -326,7 +336,7 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
         bg="transparent"
         p={isMobile ? 1 : 2}
         style={columnStyle}
-        overflowY="auto"
+        overflowY={tasks && tasks.length > 0 ? "auto" : "hidden"}
         flex="1"
         width="100%"
         css={{
@@ -363,7 +373,14 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
             />
           ))
         ) : (
-          renderEmptyState()
+          <Flex 
+            justify="center" 
+            align="center" 
+            height="100%" 
+            width="100%"
+          >
+            {renderEmptyState()}
+          </Flex>
         )}
       </Box>
 

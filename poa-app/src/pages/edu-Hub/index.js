@@ -142,6 +142,7 @@ const EducationHub = () => {
           {/* Main Box */}
           <Box
             p={5}
+            pt={{ base: 4, md: 5 }}
             sx={{
               backdropFilter: 'blur(20px)',
               backgroundColor: 'rgba(0, 0, 0, 0.73)',
@@ -150,7 +151,7 @@ const EducationHub = () => {
             }}
             borderRadius="lg"
             mx="auto"
-            mt={6}
+            mt={{ base: 20, md: 6 }}
             maxWidth="800px"
             textAlign="center"
           >
