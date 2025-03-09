@@ -20,7 +20,7 @@ const mobileHeaderStyle = {
   boxShadow: '0 3px 10px rgba(0, 0, 0, 0.2)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
   marginBottom: '4px',
-  marginTop: '20px',
+  marginTop: '64px',
 };
 
 const MainLayout = () => {

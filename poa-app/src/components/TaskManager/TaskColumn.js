@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, use, forwardRef, useImperativeHandle } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Heading, IconButton, Toast, Flex } from '@chakra-ui/react';
+import { Box, Heading, IconButton, Toast, Flex, Text } from '@chakra-ui/react';
 import { useDrop } from 'react-dnd';
 import TaskCard from './TaskCard';
 import { useTaskBoard } from '../../context/TaskBoardContext';
@@ -11,6 +11,7 @@ import {usePOContext} from '@/context/POContext';
 import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useProjectContext } from '@/context/ProjectContext';
+import { useUserContext } from '@/context/UserContext';
 
 
 const glassLayerStyle = {
@@ -35,9 +36,25 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
   const { taskManagerContractAddress,  } = usePOContext();
   const {taskCount, } = useProjectContext();
   const toast = useToast();
+  const { graphUsername, hasExecNFT: userHasExecNFT, hasMemberNFT: userHasMemberNFT } = useUserContext();
 
-  let hasExecNFT= true;
-  let hasMemberNFT= true;
+  // Empty state icons and messages, moved from TaskBoard for consistency
+  const emptyStateIcons = {
+    'Open': '🚀',
+    'In Progress': '⚙️',
+    'Review': '🔍',
+    'Completed': '🏆'
+  };
+
+  const emptyStateMessages = {
+    'Open': 'Looks like a blank canvas! Create a task and start building something amazing.',
+    'In Progress': 'No tasks in the works yet. Claim one from "Open" to show your skills!',
+    'Review': 'Nothing to review at the moment. Good work happens before great feedback!',
+    'Completed': 'The finish line is waiting for your first completed task. Keep pushing!'
+  };
+
+  let hasExecNFT = userHasExecNFT;
+  let hasMemberNFT = userHasMemberNFT;
   const { getUsernameByAddress } = useDataBaseContext();
   const hasMemberNFTRef = useRef(hasMemberNFT);
   const hasExecNFTRef = useRef(hasExecNFT);
@@ -127,10 +144,12 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
 
   };
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  // Enhanced drop behavior with debugging for tracing issues
+  const [{ isOver, canDrop }, drop] = useDrop(() => ({
     accept: 'task',
+    canDrop: () => true, // Always allow dropping
     drop: async(item) => {
-      
+      console.log(`Attempting to drop in ${title} column:`, item);
       
       if (!hasMemberNFTRef.current && title != 'Completed') {
         alert('You must own an NFT to move tasks. Go to user to join');
@@ -144,7 +163,6 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
         console.log("item.claimedBy: ", item.claimedBy)
         console.log("item.kubixPayout: ", item.kubixPayout)
         setTimeout(async() => {await mintKUBIX(item.claimedBy, item.kubixPayout, true)}, 2100);
-
       }
 
       if (item.columnId === 'completed') {
@@ -153,11 +171,13 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
       }
 
       if (item.columnId !== columnId) {
-        const newIndex = tasks.length;
-        console.log(item.claimerUsername)
+        const newIndex = tasks?.length || 0;
+        
         const claimedByValue = title === 'In Progress' ? account : item.claimedBy;
-        const claimerUserValue = title === 'In Progress' ?  await getUsernameByAddress(account) : item.claimerUsername;
-        console.log("claimerUserValue: ", claimerUserValue)
+        const claimerUserValue = title === 'In Progress' ? graphUsername : item.claimerUsername;
+        
+        console.log("Using username:", claimerUserValue);
+        
         const draggedTask = {
           ...item,
           id: item.id,
@@ -168,24 +188,43 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
           claimedBy: claimedByValue,
           claimerUsername: claimerUserValue,
         };
-        router.push({ pathname: `/tasks/`, query: { userDAO: account } }, undefined, { shallow: true });
-        await moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
-        toast({
-          title: "Task moved.",
-          description: "Your task was successfully moved.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
         
+        console.log(`Moving task from ${item.columnId} to ${columnId}, index: ${newIndex}`);
+        router.push({ pathname: `/tasks/`, query: { userDAO: account } }, undefined, { shallow: true });
+        
+        try {
+          await moveTask(draggedTask, item.columnId, columnId, newIndex, item.submission, claimedByValue);
+          toast({
+            title: "Task moved.",
+            description: "Your task was successfully moved.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        } catch (error) {
+          console.error("Error moving task:", error);
+          toast({
+            title: "Error moving task.",
+            description: "There was an issue moving the task. Please try again.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
       }
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
     }),
   }));
 
-  const columnStyle = isOver ? { backgroundColor: 'rgba(0, 255, 0, 0.1)' } : {};
+  // Apply visual feedback for drop zones
+  const columnStyle = isOver ? { 
+    backgroundColor: 'rgba(123, 104, 238, 0.15)',
+    transition: 'background-color 0.3s ease',
+    boxShadow: 'inset 0 0 10px rgba(123, 104, 238, 0.3)'
+  } : {};
 
   // Mobile-specific column header style
   const mobileHeaderStyle = {
@@ -198,6 +237,24 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
     justifyContent: 'space-between',
   };
 
+  // Enhanced empty state style with drop zone highlighting
+  const emptyStateStyle = {
+    width: '100%',
+    height: '100%',
+    minHeight: '200px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '16px',
+    textAlign: 'center',
+    backgroundColor: isOver ? 'rgba(123, 104, 238, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+    borderRadius: '8px',
+    border: isOver ? '1px dashed rgba(123, 104, 238, 0.5)' : '1px dashed rgba(255, 255, 255, 0.2)',
+    margin: '0 auto 16px auto',
+    transition: 'all 0.3s ease',
+  };
+
   const handleOpenAddTaskModal = () => {
     if (title === 'Open') {
       if (hasExecNFT) {
@@ -207,6 +264,21 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
       }
     }
   };
+
+  // Render the empty state content
+  const renderEmptyState = () => (
+    <Box style={emptyStateStyle}>
+      <Text fontSize="3xl" mb={2}>
+        {emptyStateIcons[title] || '✨'}
+      </Text>
+      <Text color="white" fontWeight="medium" fontSize="sm" mb={2}>
+        {title}
+      </Text>
+      <Text color="whiteAlpha.700" fontSize="xs">
+        {emptyStateMessages[title] || 'Drag tasks here to populate this column.'}
+      </Text>
+    </Box>
+  );
 
   return (
     <Box
@@ -221,10 +293,12 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
       zIndex={1}
       display="flex"
       flexDirection="column"
+      data-column-id={columnId}
+      data-column-title={title}
     >
       <div className="glass" style={glassLayerStyle} />
       
-      {(!isMobile || (isMobile && !hideTitleInMobile && !isEmpty)) && (
+      {(!isMobile || (isMobile && !hideTitleInMobile)) && (
         <Heading size="md" mb={3} mt={0} ml={3} alignItems="center" color='white'>
           {title}
           {title === 'Open' && (
@@ -246,29 +320,31 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
         </Heading>
       )}
       
-      {(!isMobile || (isMobile && !isEmpty)) && (
-        <Box
-          h={isMobile ? "calc(100% - 3rem)" : "calc(100% - 3rem)"}
-          borderRadius="md"
-          bg="transparent"
-          p={isMobile ? 1 : 2}
-          style={columnStyle}
-          overflowY="auto"
-          css={{
-            '&::-webkit-scrollbar': {
-              width: '4px',
-            },
-            '&::-webkit-scrollbar-track': {
-              width: '6px',
-              background: 'rgba(0,0,0,0.1)',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: 'rgba(255,255,255,0.2)',
-              borderRadius: '24px',
-            },
-          }}
-        >
-          {tasks.map((task, index) => (
+      <Box
+        h={isMobile ? "calc(100% - 3rem)" : "calc(100% - 3rem)"}
+        borderRadius="md"
+        bg="transparent"
+        p={isMobile ? 1 : 2}
+        style={columnStyle}
+        overflowY="auto"
+        flex="1"
+        width="100%"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '4px',
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px',
+            background: 'rgba(0,0,0,0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'rgba(255,255,255,0.2)',
+            borderRadius: '24px',
+          },
+        }}
+      >
+        {tasks && tasks.length > 0 ? (
+          tasks.map((task, index) => (
             <TaskCard
               key={task.id}
               id={task.id}
@@ -285,9 +361,11 @@ const TaskColumn = forwardRef(({ title, tasks, columnId, projectName, isMobile =
               onEditTask={(updatedTask) => handleEditTask(updatedTask, index)}
               isMobile={isMobile}
             />
-          ))}
-        </Box>
-      )}
+          ))
+        ) : (
+          renderEmptyState()
+        )}
+      </Box>
 
       {title === 'Open' && (
         <AddTaskModal

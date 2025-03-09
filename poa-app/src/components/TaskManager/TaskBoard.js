@@ -478,25 +478,17 @@ const TaskBoard = ({ columns, projectName, hideTitleBar, sidebarVisible, toggleS
                 alignItems="center"
                 p={2}
               >
-                {column.tasks?.length === 0 ? (
-                  <Flex direction="column" h="100%" p={2} w="100%" align="center">
-                    <Heading size="md" mb={3} textAlign="center" color="white">
-                      {column.title}
-                    </Heading>
-                    <EmptyColumnState columnType={column.title} />
-                    <Box flex="1" w="100%" minH="200px" /> 
-                  </Flex>
-                ) : (
-                  <TaskColumn
-                    ref={el => taskColumnsRef.current[index] = el}
-                    title={column.title}
-                    tasks={column.tasks}
-                    columnId={column.id}
-                    projectName={projectName}
-                    zIndex={1}
-                    isMobile={false}
-                  />
-                )}
+                {/* Always use TaskColumn component regardless of whether the column is empty */}
+                <TaskColumn
+                  ref={el => taskColumnsRef.current[index] = el}
+                  title={column.title}
+                  tasks={column.tasks || []}
+                  columnId={column.id}
+                  projectName={projectName}
+                  zIndex={1}
+                  isMobile={false}
+                  isEmpty={column.tasks?.length === 0}
+                />
               </Box>
             ))}
         </SimpleGrid>
