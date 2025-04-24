@@ -335,17 +335,44 @@ const EducationHub = () => {
                       <Heading as="h3" fontSize="27" mb={6} color="white">
                         {module.name}
                       </Heading>
-                      <Text fontSize="16" color="gray.200">
-                        {module.info?.description}
-                      </Text>
+                      {module.isIndexing ? (
+                        <Box 
+                          p={4} 
+                          bg="purple.100" 
+                          borderRadius="md" 
+                          color="purple.800"
+                          mb={4}
+                        >
+                          <Text fontWeight="bold">
+                            Module information is being indexed from IPFS
+                          </Text>
+                          <Text fontSize="sm" mt={2}>
+                            This module was recently created and its data is still being indexed from IPFS to the subgraph.
+                            Please check back in a few moments when indexing is complete.
+                          </Text>
+                        </Box>
+                      ) : (
+                        <Text fontSize="16" color="gray.200">
+                          {module.description}
+                        </Text>
+                      )}
                     </Box>
                     <Box mt="auto">
                       <Text mb={2} fontSize="lg" fontWeight="bold" color="white">
                         Reward: {module.payout} Tokens
                       </Text>
                       <Flex justifyContent="space-between" alignItems="center" mt={4}>
-                        {module.info?.link ? (
-                          <ChakraLink href={module.info.link} isExternal>
+                        {module.isIndexing ? (
+                          <Button
+                            _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
+                            size="lg"
+                            colorScheme="gray"
+                            isDisabled={true}
+                          >
+                            Coming Soon
+                          </Button>
+                        ) : module.link ? (
+                          <ChakraLink href={module.link} isExternal>
                             <Button
                               _hover={{ transform: 'scale(1.07)', boxShadow: 'xl' }}
                               size="lg"
@@ -365,7 +392,7 @@ const EducationHub = () => {
                             </Button>
                           </ChakraLink>
                         )}
-                        <QuizModal module={module} />
+                        {!module.isIndexing && <QuizModal module={module} />}
                       </Flex>
                     </Box>
                   </GridItem>

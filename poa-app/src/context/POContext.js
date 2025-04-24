@@ -93,7 +93,19 @@ export const POProvider = ({ children }) => {
 
             // Fetch modules from EducationHubContract
             const modules = po.EducationHubContract?.modules || [];
-            setEducationModules(modules);
+            
+            // Add isIndexing flag to modules where info is not yet available
+            const processedModules = modules.map(module => ({
+                ...module,
+                isIndexing: !module.info,
+                name: module.info?.name || module.name || 'Indexing...',
+                description: module.info?.description || 'Module information is being indexed from IPFS',
+                link: module.info?.link || '',
+                question: module.info?.question || '',
+                answers: module.info?.answers || []
+            }));
+            
+            setEducationModules(processedModules);
 
             fetchLeaderboardData(combinedID, po.Users).then(data => {
                 setLeaderboardData(data);
