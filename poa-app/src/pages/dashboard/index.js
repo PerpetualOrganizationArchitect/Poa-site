@@ -348,10 +348,14 @@ const PerpetualOrgDashboard = () => {
                       <Link2 href={`/tasks/?task=${task.id}&projectId=${encodeURIComponent(decodeURIComponent(task.projectId))}&userDAO=${userDAO}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
                           <Text mt="-2" fontSize={textSize} lineHeight="99%" fontWeight="extrabold">
-                            {task.taskInfo.name}
+                            {task.isIndexing ? 'Indexing...' : task.taskInfo?.name}
                           </Text>
                           <HStack justify="space-between">
-                            <Badge colorScheme={difficultyColorScheme[task.taskInfo.difficulty.toLowerCase().replace(" ", "")]}>{task.taskInfo.difficulty}</Badge>
+                            {task.isIndexing ? (
+                              <Badge colorScheme="purple">Indexing from IPFS</Badge>
+                            ) : (
+                              <Badge colorScheme={difficultyColorScheme[task.taskInfo?.difficulty?.toLowerCase().replace(" ", "")]}>{task.taskInfo?.difficulty}</Badge>
+                            )}
                             <Text fontWeight="bold">{task.payout} Tokens</Text>
                           </HStack>
                         </VStack>
@@ -505,14 +509,14 @@ const PerpetualOrgDashboard = () => {
                       >
                         
                           <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold">
-                            {module.name}
+                            {module.isIndexing ? 'Indexing...' : module.name}
                           </Text>
                           <HStack mt={6} justifyContent="space-between">
                         {/* <Text mt={2}>{module.description}</Text> */}
                         <Link2 href={`/edu-Hub`}>
                           
                           <Button colorScheme="teal" size={{ base: "xs", md: "sm" }}>
-                            Start Module
+                            {module.isIndexing ? 'Coming Soon' : 'Start Module'}
                           </Button>
                           
                         </Link2>

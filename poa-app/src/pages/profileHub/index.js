@@ -307,10 +307,14 @@ const UserprofileHub = () => {
                       <Link2 href={`/tasks/?task=${task.id}&projectId=${encodeURIComponent(decodeURIComponent(task.projectId))}&userDAO=${userDAO}`}>
                         <VStack textColor="white" align="stretch" spacing={3}>
                           <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
-                            {task.taskInfo.name}
+                            {task.isIndexing ? 'Indexing...' : task.taskInfo?.name}
                           </Text>
                           <HStack justify="space-between">
-                            <Badge colorScheme={difficultyColorScheme[task.taskInfo.difficulty.toLowerCase().replace(" ", "")]}>{task.taskInfo.difficulty}</Badge>
+                            {task.isIndexing ? (
+                              <Badge colorScheme="purple">Indexing from IPFS</Badge>
+                            ) : (
+                              <Badge colorScheme={difficultyColorScheme[task.taskInfo?.difficulty?.toLowerCase().replace(" ", "")]}>{task.taskInfo?.difficulty}</Badge>
+                            )}
                             <Text fontWeight="bold">Payout {task.payout}</Text>
                           </HStack>
                         </VStack>
@@ -368,10 +372,14 @@ const UserprofileHub = () => {
                         <Link2 href={`/tasks/?task=${task.id}&projectId=${encodeURIComponent(decodeURIComponent(task.projectId))}`}>
                           <VStack textColor="white" align="stretch" spacing={3}>
                             <Text fontSize="md" lineHeight="99%" fontWeight="extrabold">
-                              {task.taskInfo.name}
+                              {task.isIndexing ? 'Indexing...' : task.taskInfo?.name}
                             </Text>
                             <HStack justify="space-between">
-                              <Badge colorScheme={difficultyColorScheme[task.taskInfo.difficulty.toLowerCase().replace(" ", "")]}>{task.taskInfo.difficulty}</Badge>
+                              {task.isIndexing ? (
+                                <Badge colorScheme="purple">Indexing from IPFS</Badge>
+                              ) : (
+                                <Badge colorScheme={difficultyColorScheme[task.taskInfo?.difficulty?.toLowerCase().replace(" ", "")]}>{task.taskInfo?.difficulty}</Badge>
+                              )}
                               <Text fontWeight="bold">Payout {task.payout}</Text>
                             </HStack>
                           </VStack>

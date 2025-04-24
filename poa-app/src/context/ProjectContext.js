@@ -56,7 +56,7 @@ export const ProjectProvider = ({ children }) => {
 
       const recommendedTasks = projects
       .flatMap(project => project.tasks.map(task => ({ ...task, projectId: project.id })))
-        .filter(task => task.taskInfo.location === 'Open')
+        .filter(task => task.taskInfo && task.taskInfo.location === 'Open')
         .sort(() => Math.random() - 0.5);
 
 
@@ -79,8 +79,8 @@ export const ProjectProvider = ({ children }) => {
           const taskInfo = task.taskInfo || {};
           const transformedTask = {
             id: task.id,
-            name: taskInfo.name || '',
-            description: taskInfo.description || '',
+            name: taskInfo.name || 'Indexing...',
+            description: taskInfo.description || 'Task information is being indexed from IPFS',
             difficulty: taskInfo.difficulty || '',
             estHours: taskInfo.estimatedHours || '',
             claimedBy: task.claimer || '',
@@ -90,6 +90,7 @@ export const ProjectProvider = ({ children }) => {
             completed: task.completed,
             claimerUsername: task.user?.Account?.userName || '',
             submission: taskInfo.submissionContent || '',
+            isIndexing: !task.taskInfo,
           };
 
           let columnTitle = transformedTask.location;

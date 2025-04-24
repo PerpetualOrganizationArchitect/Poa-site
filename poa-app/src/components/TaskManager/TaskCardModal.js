@@ -262,45 +262,59 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
           <ModalCloseButton />
           <Box pt={4} borderTopRadius="2xl" bg="transparent" boxShadow="lg" position="relative" zIndex={-1}>
             <div className="glass" style={glassLayerStyle} />
-            <Text ml="6" fontSize="2xl" fontWeight="bold">{task.name}</Text>
+            <Text ml="6" fontSize="2xl" fontWeight="bold">{task.isIndexing ? 'Indexing Task Data...' : task.name}</Text>
           </Box>
           <ModalBody>
             <VStack spacing={4} align="start">
-              <Box>
-                <Text mb="4" mt="4" lineHeight="6" fontSize="md" fontWeight="bold" style={{ whiteSpace: 'pre-wrap' }}>{task.description}</Text>
-              </Box>
-              <HStack width="100%">
-                <Badge colorScheme={difficultyColorScheme[task.difficulty.toLowerCase().replace(" ", "")]}>
-                  {task.difficulty}
-                </Badge>
-                <Badge colorScheme="blue">{task.estHours} hrs</Badge>
-                <Spacer />
-                {task.claimedBy && (
-                  <Text fontSize="sm" mr={4}>
-                    Claimed By: {task.claimerUsername}
+              {task.isIndexing ? (
+                <Box w="100%" p={4} bg="purple.100" borderRadius="md">
+                  <Text color="purple.800" fontWeight="bold">
+                    Task information is being indexed from IPFS
                   </Text>
-                )}
-              </HStack>
-              {columnId === 'inProgress' && (
-                <FormControl>
-                  <FormLabel fontWeight="bold" fontSize="lg">
-                    Submission:
-                  </FormLabel>
-                  <Textarea
-                    height="200px"
-                    placeholder="Type your submission here"
-                    value={submission}
-                    onChange={(e) => setSubmission(e.target.value)}
-                  />
-                </FormControl>
-              )}
-              {(columnId === 'inReview' || columnId === 'completed') && (
-                <Box>
-                  <Text color="gray" fontWeight="bold" fontSize="lg">
-                    Submission:
+                  <Text color="purple.700" fontSize="sm" mt={2}>
+                    This task was recently created and its data is still being indexed from IPFS to the subgraph.
+                    Please check back in a few moments when indexing is complete.
                   </Text>
-                  <Text>{task.submission}</Text>
                 </Box>
+              ) : (
+                <>
+                  <Box>
+                    <Text mb="4" mt="4" lineHeight="6" fontSize="md" fontWeight="bold" style={{ whiteSpace: 'pre-wrap' }}>{task.description}</Text>
+                  </Box>
+                  <HStack width="100%">
+                    <Badge colorScheme={difficultyColorScheme[task.difficulty?.toLowerCase()?.replace(" ", "") || 'easy']}>
+                      {task.difficulty || 'Unknown'}
+                    </Badge>
+                    <Badge colorScheme="blue">{task.estHours || '0'} hrs</Badge>
+                    <Spacer />
+                    {task.claimedBy && (
+                      <Text fontSize="sm" mr={4}>
+                        Claimed By: {task.claimerUsername}
+                      </Text>
+                    )}
+                  </HStack>
+                  {columnId === 'inProgress' && (
+                    <FormControl>
+                      <FormLabel fontWeight="bold" fontSize="lg">
+                        Submission:
+                      </FormLabel>
+                      <Textarea
+                        height="200px"
+                        placeholder="Type your submission here"
+                        value={submission}
+                        onChange={(e) => setSubmission(e.target.value)}
+                      />
+                    </FormControl>
+                  )}
+                  {(columnId === 'inReview' || columnId === 'completed') && (
+                    <Box>
+                      <Text color="gray" fontWeight="bold" fontSize="lg">
+                        Submission:
+                      </Text>
+                      <Text>{task.submission}</Text>
+                    </Box>
+                  )}
+                </>
               )}
             </VStack>
           </ModalBody>
@@ -314,19 +328,19 @@ const TaskCardModal = ({ task, columnId, onEditTask }) => {
               <Button textColor={"white"} variant="outline" onClick={copyLinkToClipboard} mr={2}>
                 Share
               </Button>
-              {columnId === 'open' && (
+              {!task.isIndexing && columnId === 'open' && (
                 <Button textColor={"white"} variant="outline" onClick={handleOpenEditTaskModal} mr={2}>
                   Edit
                 </Button>
               )}
-              <Button onClick={handleButtonClick} colorScheme="teal">
+              <Button onClick={handleButtonClick} colorScheme="teal" isDisabled={task.isIndexing}>
                 {buttonText()}
               </Button>
             </Box>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      {columnId === 'open' && (
+      {columnId === 'open' && !task.isIndexing && (
         <EditTaskModal
           isOpen={isEditTaskModalOpen}
           onClose={handleCloseEditTaskModal}
